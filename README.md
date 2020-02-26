@@ -51,6 +51,36 @@ Other common tools:
 [ark]ade install nginx-ingress
 
 [ark]ade install metrics-server
+```
+
+We use strongly typed Go CLI flags, so that you can run `--help` instead of trawling through countless Helm chart README files to find the correct `--set` combination for what you want.
+
+```
+[ark]ade install inlets-operator --help
+
+Install inlets-operator to get public IPs for your cluster
+
+Usage:
+  arkade install inlets-operator [flags]
+
+Examples:
+  arkade install inlets-operator --namespace default
+
+Flags:
+      --helm3                     Use helm3, if set to false uses helm2 (default true)
+  -h, --help                      help for inlets-operator
+  -l, --license string            The license key if using inlets-pro
+  -n, --namespace string          The namespace used for installation (default "default")
+      --organization-id string    The organization id (Scaleway
+      --pro-client-image string   Docker image for inlets-pro's client
+      --project-id string         Project ID to be used (for GCE and Packet)
+  -p, --provider string           Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'gce' or 'ec2' (default "digitalocean")
+  -r, --region string             The default region to provision the exit node (DigitalOcean, Packet and Scaleway (default "lon1")
+      --set stringArray           Use custom flags or override existing flags 
+                                  (example --set=image=org/repo:tag)
+  -t, --token-file string         Text file containing token or a service account JSON file
+      --update-repo               Update the helm repo (default true)
+  -z, --zone string               The zone to provision the exit node (Used by GCE (default "us-central1-a")
 
 [ark]ade install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
