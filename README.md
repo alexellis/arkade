@@ -2,11 +2,24 @@
 
 Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. bazaar (baz for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
+How else can you think of bazaar? It's like brew, for Kubernetes. And yes, of course it works with k3s and where possible, apps are available for ARM.
+
 [![Build
 Status](https://travis-ci.com/alexellis/bazaar.svg?branch=master)](https://travis-ci.com/alexellis/bazaar)
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/bazaar)](https://goreportcard.com/report/github.com/alexellis/bazaar) 
 [![GoDoc](https://godoc.org/github.com/alexellis/bazaar?status.svg)](https://godoc.org/github.com/alexellis/bazaar) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/bazaar/total)
+
+## Get bazaar
+
+```bash
+curl -sLS https://get-bazaar.com | sh
+sudo install bazaar /usr/local/bin/
+
+bazaar --help
+```
+
+An alias of `baz` is created at installation time.
 
 ## Usage
 
@@ -21,8 +34,6 @@ Here's a few examples of apps you can install, for a complete list run: `[baz]aa
 
 [baz]aar install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
-
-An alias of `baz` is created at installation time.
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
 
