@@ -2,13 +2,19 @@
 
 Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. bazaar (baz for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
-How else can you think of bazaar? It's like brew, for Kubernetes. And yes, of course it works with k3s and where possible, apps are available for ARM.
-
 [![Build
 Status](https://travis-ci.com/alexellis/bazaar.svg?branch=master)](https://travis-ci.com/alexellis/bazaar)
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/bazaar)](https://goreportcard.com/report/github.com/alexellis/bazaar) 
 [![GoDoc](https://godoc.org/github.com/alexellis/bazaar?status.svg)](https://godoc.org/github.com/alexellis/bazaar) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/bazaar/total)
+
+## What about helm and `k3sup`?
+
+In the same way that brew uses git and Makefiles to compile applications for your Mac, bazaar uses upstream helm charts and kubectl to install applications to your Kubernetes cluster.
+
+On k3sup vs. bazaar: The codebase in this project is derived from `k3sup`. k3sup (ketchup) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why bazaar has come to exist.
+
+And yes, of course it works with k3s and where possible, apps are available for ARM.
 
 ## Get bazaar
 
@@ -79,10 +85,6 @@ Before contributing code, please see the [CONTRIBUTING guide](https://github.com
 Both Issues and PRs have their own templates. Please fill out the whole template.
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
-
-### k3sup vs. bazaar
-
-The codebase in this project is derived from `k3sup`. k3sup (ketchup) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why bazaar has come to exist.
 
 ### License
 
