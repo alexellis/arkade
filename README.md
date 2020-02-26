@@ -12,10 +12,13 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 ## Get arkade
 
 ```bash
-curl -sLS https://dl.get-arkade.dev | sh
-sudo install arkade /usr/local/bin/
+curl -sLS https://dl.get-arkade.dev | sudo sh
 
 arkade --help
+
+# Note: you can also run without `sudo` and move the binary yourself
+
+curl -sLS https://dl.get-arkade.dev | sh
 ```
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
