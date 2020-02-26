@@ -6,7 +6,7 @@
 #########################
 
 export VERIFY_CHECKSUM=0
-export ALIAS="baz"
+export ALIAS="ark"
 export OWNER=alexellis
 export REPO=arkade
 export SUCCESS_CMD="$REPO version"
