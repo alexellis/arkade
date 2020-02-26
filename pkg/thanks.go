@@ -1,3 +1,3 @@
 package pkg
 
-const ThanksForUsing = `Thanks for using bazaar!`
+const ThanksForUsing = `Thanks for using arkade!`

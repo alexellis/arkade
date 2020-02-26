@@ -6,10 +6,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ func MakeInstallCronConnector() *cobra.Command {
 		Use:          "cron-connector",
 		Short:        "Install cron-connector for OpenFaaS",
 		Long:         `Install cron-connector for OpenFaaS`,
-		Example:      `  bazaar install cron-connector`,
+		Example:      `  arkade install cron-connector`,
 		SilenceUsage: true,
 	}
 

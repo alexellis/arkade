@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/sethvargo/go-password/password"
 
 	"github.com/spf13/cobra"
@@ -22,7 +22,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		Use:          "openfaas",
 		Short:        "Install openfaas",
 		Long:         `Install openfaas`,
-		Example:      `  bazaar install openfaas --loadbalancer`,
+		Example:      `  arkade install openfaas --loadbalancer`,
 		SilenceUsage: true,
 	}
 

@@ -7,10 +7,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 		Use:          "inlets-operator",
 		Short:        "Install inlets-operator",
 		Long:         `Install inlets-operator to get public IPs for your cluster`,
-		Example:      `  bazaar install inlets-operator --namespace default`,
+		Example:      `  arkade install inlets-operator --namespace default`,
 		SilenceUsage: true,
 	}
 

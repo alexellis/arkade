@@ -11,7 +11,7 @@ import (
 
 	"text/template"
 
-	"github.com/alexellis/bazaar/pkg"
+	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
 )
@@ -27,7 +27,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		Use:          "openfaas-ingress",
 		Short:        "Install openfaas ingress with TLS",
 		Long:         `Install openfaas ingress. Requires cert-manager 0.11.0 or higher installation in the cluster. Please set --domain to your custom domain and set --email to your email - this email is used by letsencrypt for domain expiry etc.`,
-		Example:      `  bazaar install openfaas-ingress --domain openfaas.example.com --email openfaas@example.com`,
+		Example:      `  arkade install openfaas-ingress --domain openfaas.example.com --email openfaas@example.com`,
 		SilenceUsage: true,
 	}
 
@@ -105,7 +105,7 @@ func createTempDirectory(directory string) (string, error) {
 }
 
 func writeTempFile(input []byte, fileLocation string) (string, error) {
-	var tempDirectory, dirErr = createTempDirectory(".bazaar/")
+	var tempDirectory, dirErr = createTempDirectory(".arkade/")
 	if dirErr != nil {
 		return "", dirErr
 	}

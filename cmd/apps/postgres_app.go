@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ func MakeInstallPostgresql() *cobra.Command {
 		Use:          "postgresql",
 		Short:        "Install postgresql",
 		Long:         `Install postgresql`,
-		Example:      `  bazaar install postgresql`,
+		Example:      `  arkade install postgresql`,
 		SilenceUsage: true,
 	}
 

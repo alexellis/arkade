@@ -6,10 +6,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ func MakeInstallNginx() *cobra.Command {
 		Use:          "nginx-ingress",
 		Short:        "Install nginx-ingress",
 		Long:         `Install nginx-ingress. This app can be installed with Host networking for cases where an external LB is not available. please see the --host-mode flag and the nginx-ingress docs for more info`,
-		Example:      `  bazaar install nginx-ingress --namespace default`,
+		Example:      `  arkade install nginx-ingress --namespace default`,
 		SilenceUsage: true,
 	}
 
@@ -157,7 +157,7 @@ func MakeInstallNginx() *cobra.Command {
 }
 
 const NginxIngressInfoMsg = `# If you're using a local environment such as "minikube" or "KinD",
-# then try the inlets operator with "bazaar install inlets-operator"
+# then try the inlets operator with "arkade install inlets-operator"
 
 # If you're using a managed Kubernetes service, then you'll find
 # your LoadBalancer's IP under "EXTERNAL-IP" via:

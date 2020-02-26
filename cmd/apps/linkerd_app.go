@@ -12,10 +12,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
+	"github.com/alexellis/arkade/pkg"
 
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
 	execute "github.com/alexellis/go-execute/pkg/v1"
 	"github.com/spf13/cobra"
 )
@@ -27,7 +27,7 @@ func MakeInstallLinkerd() *cobra.Command {
 		Use:          "linkerd",
 		Short:        "Install linkerd",
 		Long:         `Install linkerd`,
-		Example:      `  bazaar install linkerd`,
+		Example:      `  arkade install linkerd`,
 		SilenceUsage: true,
 	}
 

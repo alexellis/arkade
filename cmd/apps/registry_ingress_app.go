@@ -8,7 +8,7 @@ import (
 
 	"text/template"
 
-	"github.com/alexellis/bazaar/pkg"
+	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
 )
@@ -26,7 +26,7 @@ func MakeInstallRegistryIngress() *cobra.Command {
 		Use:          "docker-registry-ingress",
 		Short:        "Install registry ingress with TLS",
 		Long:         `Install registry ingress. Requires cert-manager 0.11.0 or higher installation in the cluster. Please set --domain to your custom domain and set --email to your email - this email is used by letsencrypt for domain expiry etc.`,
-		Example:      `  bazaar install registry-ingress --domain registry.example.com --email openfaas@example.com`,
+		Example:      `  arkade install registry-ingress --domain registry.example.com --email openfaas@example.com`,
 		SilenceUsage: true,
 	}
 

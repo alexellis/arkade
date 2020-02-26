@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/alexellis/bazaar/cmd"
+	"github.com/alexellis/arkade/cmd"
 	"github.com/spf13/cobra"
 )
 
@@ -13,12 +13,12 @@ func main() {
 	cmdInstall := cmd.MakeInstall()
 	cmdInfo := cmd.MakeInfo()
 
-	printbazaarASCIIArt := cmd.PrintBazaarASCIIArt
+	printarkadeASCIIArt := cmd.PrintArkadeASCIIArt
 
 	var rootCmd = &cobra.Command{
-		Use: "bazaar",
+		Use: "arkade",
 		Run: func(cmd *cobra.Command, args []string) {
-			printbazaarASCIIArt()
+			printarkadeASCIIArt()
 			cmd.Help()
 		},
 	}

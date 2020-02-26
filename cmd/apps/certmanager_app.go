@@ -6,10 +6,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ func MakeInstallCertManager() *cobra.Command {
 		Use:          "cert-manager",
 		Short:        "Install cert-manager",
 		Long:         "Install cert-manager for obtaining TLS certificates from LetsEncrypt",
-		Example:      "bazaar install cert-manager",
+		Example:      "arkade install cert-manager",
 		SilenceUsage: true,
 	}
 

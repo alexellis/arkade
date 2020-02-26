@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg/env"
+	"github.com/alexellis/arkade/pkg/env"
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 

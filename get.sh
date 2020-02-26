@@ -8,7 +8,7 @@
 export VERIFY_CHECKSUM=0
 export ALIAS="baz"
 export OWNER=alexellis
-export REPO=bazaar
+export REPO=arkade
 export SUCCESS_CMD="$REPO version"
 export BINLOCATION="/usr/local/bin"
 

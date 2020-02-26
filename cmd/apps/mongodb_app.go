@@ -7,10 +7,10 @@ import (
 	"path"
 	"strconv"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -19,7 +19,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		Use:          "mongodb",
 		Short:        "Install mongodb",
 		Long:         `Install mongodb`,
-		Example:      `  bazaar install mongodb`,
+		Example:      `  arkade install mongodb`,
 		SilenceUsage: true,
 	}
 	command.Flags().String("namespace", "default", "Namespace for the app")
