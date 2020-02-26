@@ -29,6 +29,7 @@ func MakeInstallNginx() *cobra.Command {
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
+		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -78,7 +79,7 @@ func MakeInstallNginx() *cobra.Command {
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/nginx-ingress", helm3)
+		err = fetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -120,8 +121,9 @@ func MakeInstallNginx() *cobra.Command {
 
 			err := helm3Upgrade(outputPath, "stable/nginx-ingress", ns,
 				"values.yaml",
-				"",
-				overrides)
+				defaultVersion,
+				overrides,
+				wait)
 
 			if err != nil {
 				return err
@@ -134,7 +136,6 @@ func MakeInstallNginx() *cobra.Command {
 				ns,
 				outputPath,
 				"values.yaml",
-				"",
 				overrides)
 
 			if err != nil {

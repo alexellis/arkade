@@ -33,6 +33,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
+		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -97,7 +98,7 @@ func MakeInstallRegistry() *cobra.Command {
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/docker-registry", helm3)
+		err = fetchChart(chartPath, "stable/docker-registry", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -120,8 +121,9 @@ func MakeInstallRegistry() *cobra.Command {
 
 			err := helm3Upgrade(outputPath, "stable/docker-registry", ns,
 				"values.yaml",
-				"",
-				overrides)
+				defaultVersion,
+				overrides,
+				wait)
 
 			if err != nil {
 				return err
@@ -134,7 +136,6 @@ func MakeInstallRegistry() *cobra.Command {
 				ns,
 				outputPath,
 				"values.yaml",
-				"",
 				overrides)
 
 			if err != nil {
