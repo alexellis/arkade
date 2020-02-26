@@ -9,14 +9,6 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-## What about helm and `k3sup`?
-
-In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
-
-On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. [k3sup (ketchup)](https://k3sup.dev/) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
-
-And yes, of course it works with k3s and where possible, apps are available for ARM.
-
 ## Get arkade
 
 ```bash
@@ -26,64 +18,55 @@ sudo install arkade /usr/local/bin/
 arkade --help
 ```
 
-An alias of `ark` is created at installation time.
+An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
 ## Usage
 
-Here's a few examples of apps you can install, for a complete list run: `[ark]ade install --help`.
+Here's a few examples of apps you can install, for a complete list run: `arkade install --help`.
 
 ### Install an app
 
 No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
 
 ```bash
-[ark]ade install openfaas --gateways 2 --load-balancer false
+arkade install openfaas --gateways 2 --load-balancer false
 ```
 
 [Normally up to a dozen commands](https://cert-manager.io/docs/installation/kubernetes/) (including finding and downloading helm), now just one. No searching for the correct CRD to apply, no trying to install helm, no trying to find the correct helm repo to add:
 
 ```bash
-[ark]ade install cert-manager
+arkade install cert-manager
 ```
 
 Other common tools:
 
 ```bash
-[ark]ade install nginx-ingress
+arkade install nginx-ingress
 
-[ark]ade install metrics-server
+arkade install metrics-server
 ```
 
 We use strongly typed Go CLI flags, so that you can run `--help` instead of trawling through countless Helm chart README files to find the correct `--set` combination for what you want.
 
-```
-[ark]ade install inlets-operator --help
+```bash
+arkade install nginx-ingress --help
 
-Install inlets-operator to get public IPs for your cluster
+Install nginx-ingress. This app can be installed with Host networking for 
+cases where an external LB is not available. please see the --host-mode 
+flag and the nginx-ingress docs for more info
 
 Usage:
-  arkade install inlets-operator [flags]
+  arkade install nginx-ingress [flags]
 
 Examples:
-  arkade install inlets-operator --namespace default
+  arkade install nginx-ingress --namespace default
 
 Flags:
-      --helm3                     Use helm3, if set to false uses helm2 (default true)
-  -h, --help                      help for inlets-operator
-  -l, --license string            The license key if using inlets-pro
-  -n, --namespace string          The namespace used for installation (default "default")
-      --organization-id string    The organization id (Scaleway
-      --pro-client-image string   Docker image for inlets-pro's client
-      --project-id string         Project ID to be used (for GCE and Packet)
-  -p, --provider string           Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'gce' or 'ec2' (default "digitalocean")
-  -r, --region string             The default region to provision the exit node (DigitalOcean, Packet and Scaleway (default "lon1")
-      --set stringArray           Use custom flags or override existing flags 
-                                  (example --set=image=org/repo:tag)
-  -t, --token-file string         Text file containing token or a service account JSON file
-      --update-repo               Update the helm repo (default true)
-  -z, --zone string               The zone to provision the exit node (Used by GCE (default "us-central1-a")
-
-[ark]ade install inlets-operator --access-token $HOME/digitalocean --region lon1
+      --helm3              Use helm3, if set to false uses helm2 (default true)
+  -h, --help               help for nginx-ingress
+      --host-mode          If we should install nginx-ingress in host mode.
+  -n, --namespace string   The namespace used for installation (default "default")
+      --update-repo        Update the helm repo (default true)
 ```
 
 You can also set helm overrides, for apps which use helm via `--set`
@@ -162,13 +145,21 @@ openfaas-ingress        Install openfaas ingress with TLS
 postgresql              Install postgresql
 ```
 
+## Community & contributing
+
+### What about helm and `k3sup`?
+
+In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
+
+On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. [k3sup (ketchup)](https://k3sup.dev/) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
+
+And yes, of course it works with k3s and where possible, apps are available for ARM.
+
 ### Tools and cached versions of helm
 
 When required, tools, CLIs, and the helm binaries are downloaded and extracted to `$HOME/.arkade`.
 
 If installing a tool which uses helm3, arkade will check for a cached version and use that, otherwise it will download it on demand.
-
-## Contributing
 
 ### Suggesting a new app
 
@@ -181,6 +172,10 @@ Before contributing code, please see the [CONTRIBUTING guide](https://github.com
 Both Issues and PRs have their own templates. Please fill out the whole template.
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
+
+### Join us on Slack
+
+Join #arkade on [slack.openfaas.io](https://slack.openfaas.io)
 
 ### License
 
