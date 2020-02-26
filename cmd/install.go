@@ -1,0 +1,83 @@
+package cmd
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/alexellis/bazaar/cmd/apps"
+	"github.com/spf13/cobra"
+)
+
+func MakeInstall() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "install",
+		Short: "Install Kubernetes apps from helm charts or YAML files",
+		Long: `Install Kubernetes apps from helm charts or YAML files using the "install" 
+command. Helm 2 is used by default unless a --helm3 flag exists and is passed. 
+You can also find the post-install message for each app with the "info" 
+command.`,
+		Example: `  bazaar install
+  bazaar install openfaas --helm3 --gateways=2
+  bazaar install inlets-operator --token-file $HOME/do-token`,
+		SilenceUsage: false,
+	}
+
+	command.PersistentFlags().String("kubeconfig", "kubeconfig", "Local path for your kubeconfig file")
+
+	command.RunE = func(command *cobra.Command, args []string) error {
+
+		if len(args) == 0 {
+			fmt.Printf("You can install: %s\n%s\n\n", strings.TrimRight("\n - "+strings.Join(getApps(), "\n - "), "\n - "),
+				`Run bazaar install NAME --help to see configuration options.`)
+			return nil
+		}
+
+		return nil
+	}
+
+	command.AddCommand(apps.MakeInstallOpenFaaS())
+	command.AddCommand(apps.MakeInstallMetricsServer())
+	command.AddCommand(apps.MakeInstallInletsOperator())
+	command.AddCommand(apps.MakeInstallCertManager())
+	command.AddCommand(apps.MakeInstallOpenFaaSIngress())
+	command.AddCommand(apps.MakeInstallNginx())
+	command.AddCommand(apps.MakeInstallChart())
+	command.AddCommand(apps.MakeInstallLinkerd())
+	command.AddCommand(apps.MakeInstallCronConnector())
+	command.AddCommand(apps.MakeInstallKafkaConnector())
+	command.AddCommand(apps.MakeInstallMinio())
+	command.AddCommand(apps.MakeInstallPostgresql())
+	command.AddCommand(apps.MakeInstallKubernetesDashboard())
+	command.AddCommand(apps.MakeInstallIstio())
+	command.AddCommand(apps.MakeInstallCrossplane())
+	command.AddCommand(apps.MakeInstallMongoDB())
+	command.AddCommand(apps.MakeInstallRegistry())
+	command.AddCommand(apps.MakeInstallRegistryIngress())
+
+	command.AddCommand(MakeInfo())
+
+	return command
+}
+
+func getApps() []string {
+	return []string{"openfaas",
+		"nginx-ingress",
+		"cert-manager",
+		"openfaas-ingress",
+		"inlets-operator",
+		"metrics-server",
+		"chart",
+		"tiller",
+		"linkerd",
+		"cron-connector",
+		"kafka-connector",
+		"minio",
+		"postgresql",
+		"kubernetes-dashboard",
+		"istio",
+		"crosspane",
+		"mongodb",
+		"docker-registry",
+		"docker-registry-ingress",
+	}
+}

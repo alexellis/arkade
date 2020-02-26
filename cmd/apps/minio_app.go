@@ -21,7 +21,7 @@ func MakeInstallMinio() *cobra.Command {
 		Use:          "minio",
 		Short:        "Install minio",
 		Long:         `Install minio`,
-		Example:      `  bazaar app install minio`,
+		Example:      `  bazaar install minio`,
 		SilenceUsage: true,
 	}
 

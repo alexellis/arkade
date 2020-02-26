@@ -13,12 +13,12 @@ func MakeInfo() *cobra.Command {
 		Use:   "info",
 		Short: "Find info about a Kubernetes app",
 		Long:  "Find info about how to use the installed Kubernetes app",
-		Example: `  bazaar app info [APP]
-bazaar app info openfaas
-bazaar app info inlets-operator
-bazaar app info mongodb
-bazaar app info
-bazaar app info --help`,
+		Example: `  bazaar info [APP]
+bazaar info openfaas
+bazaar info inlets-operator
+bazaar info mongodb
+bazaar info
+bazaar info --help`,
 		SilenceUsage: true,
 	}
 

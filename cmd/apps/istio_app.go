@@ -21,7 +21,7 @@ func MakeInstallIstio() *cobra.Command {
 		Use:          "istio",
 		Short:        "Install istio",
 		Long:         `Install istio`,
-		Example:      `  bazaar app install istio --loadbalancer`,
+		Example:      `  bazaar install istio --loadbalancer`,
 		SilenceUsage: true,
 	}
 	istio.Flags().Bool("update-repo", true, "Update the helm repo")

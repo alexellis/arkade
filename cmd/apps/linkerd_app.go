@@ -27,7 +27,7 @@ func MakeInstallLinkerd() *cobra.Command {
 		Use:          "linkerd",
 		Short:        "Install linkerd",
 		Long:         `Install linkerd`,
-		Example:      `  bazaar app install linkerd`,
+		Example:      `  bazaar install linkerd`,
 		SilenceUsage: true,
 	}
 

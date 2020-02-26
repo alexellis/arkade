@@ -20,7 +20,7 @@ func MakeInstallPostgresql() *cobra.Command {
 		Use:          "postgresql",
 		Short:        "Install postgresql",
 		Long:         `Install postgresql`,
-		Example:      `  bazaar app install postgresql`,
+		Example:      `  bazaar install postgresql`,
 		SilenceUsage: true,
 	}
 

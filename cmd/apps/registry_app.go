@@ -21,7 +21,7 @@ func MakeInstallRegistry() *cobra.Command {
 		Use:          "docker-registry",
 		Short:        "Install a Docker registry",
 		Long:         `Install a Docker registry`,
-		Example:      `  bazaar app install registry --namespace default`,
+		Example:      `  bazaar install registry --namespace default`,
 		SilenceUsage: true,
 	}
 

@@ -23,7 +23,7 @@ Note: You may need to install a CRD or run other additional steps
 before using the generic helm chart installer command.`,
 		Example: `  bazaar install chart --repo-name stable/nginx-ingress \
      --set controller.service.type=NodePort
-  bazaar app install chart --repo-name inlets/inlets-operator \
+  bazaar install chart --repo-name inlets/inlets-operator \
      --repo-url https://inlets.github.io/inlets-operator/`,
 		SilenceUsage: true,
 	}

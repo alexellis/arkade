@@ -19,7 +19,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		Use:          "mongodb",
 		Short:        "Install mongodb",
 		Long:         `Install mongodb`,
-		Example:      `  bazaar app install mongodb`,
+		Example:      `  bazaar install mongodb`,
 		SilenceUsage: true,
 	}
 	command.Flags().String("namespace", "default", "Namespace for the app")
