@@ -45,6 +45,12 @@ Here's a few examples of apps you can install, for a complete list run: `[ark]ad
 [ark]ade install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
 
+You can also set helm overrides, for apps which use helm via `--set`
+
+```
+ark install openfaas --set=faasIdler.dryRun=false
+```
+
 After installation, an info message will be printed with help for usage, you can get back to this at any time via:
 
 ```bash
