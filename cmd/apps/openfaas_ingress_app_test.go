@@ -65,9 +65,9 @@ func Test_writeTempFile_writes_to_tmp(t *testing.T) {
 }
 
 func Test_createTempDirectory_creates(t *testing.T) {
-	var want = filepath.Join(os.TempDir(), ".bazaar")
+	var want = filepath.Join(os.TempDir(), ".arkade")
 
-	got, _ := createTempDirectory(".bazaar")
+	got, _ := createTempDirectory(".arkade")
 
 	if got != want {
 		t.Errorf("suffix, want: %q, got: %q", want, got)

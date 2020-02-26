@@ -7,10 +7,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -21,7 +21,7 @@ func MakeInstallIstio() *cobra.Command {
 		Use:          "istio",
 		Short:        "Install istio",
 		Long:         `Install istio`,
-		Example:      `  bazaar install istio --loadbalancer`,
+		Example:      `  arkade install istio --loadbalancer`,
 		SilenceUsage: true,
 	}
 	istio.Flags().Bool("update-repo", true, "Update the helm repo")

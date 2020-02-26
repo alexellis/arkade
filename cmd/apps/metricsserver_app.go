@@ -6,10 +6,10 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 		Use:          "metrics-server",
 		Short:        "Install metrics-server",
 		Long:         `Install metrics-server to provide metrics on nodes and Pods in your cluster.`,
-		Example:      `  bazaar install metrics-server --namespace kube-system --helm3`,
+		Example:      `  arkade install metrics-server --namespace kube-system --helm3`,
 		SilenceUsage: true,
 	}
 

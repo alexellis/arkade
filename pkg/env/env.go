@@ -32,7 +32,7 @@ func GetClientArch() (string, string) {
 
 func LocalBinary(name, subdir string) string {
 	home := os.Getenv("HOME")
-	val := path.Join(home, ".bazaar/bin/")
+	val := path.Join(home, ".arkade/bin/")
 	if len(subdir) > 0 {
 		val = path.Join(val, subdir)
 	}

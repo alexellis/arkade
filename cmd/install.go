@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/alexellis/bazaar/cmd/apps"
+	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/spf13/cobra"
 )
 
@@ -16,9 +16,9 @@ func MakeInstall() *cobra.Command {
 command. Helm 2 is used by default unless a --helm3 flag exists and is passed. 
 You can also find the post-install message for each app with the "info" 
 command.`,
-		Example: `  bazaar install
-  bazaar install openfaas --helm3 --gateways=2
-  bazaar install inlets-operator --token-file $HOME/do-token`,
+		Example: `  arkade install
+  arkade install openfaas --helm3 --gateways=2
+  arkade install inlets-operator --token-file $HOME/do-token`,
 		SilenceUsage: false,
 	}
 
@@ -28,7 +28,7 @@ command.`,
 
 		if len(args) == 0 {
 			fmt.Printf("You can install: %s\n%s\n\n", strings.TrimRight("\n - "+strings.Join(getApps(), "\n - "), "\n - "),
-				`Run bazaar install NAME --help to see configuration options.`)
+				`Run arkade install NAME --help to see configuration options.`)
 			return nil
 		}
 

@@ -8,10 +8,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
@@ -21,7 +21,7 @@ func MakeInstallMinio() *cobra.Command {
 		Use:          "minio",
 		Short:        "Install minio",
 		Long:         `Install minio`,
-		Example:      `  bazaar install minio`,
+		Example:      `  arkade install minio`,
 		SilenceUsage: true,
 	}
 

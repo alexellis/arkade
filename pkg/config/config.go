@@ -11,7 +11,7 @@ const K3sVersion = "v1.17.2+k3s1"
 
 func InitUserDir() (string, error) {
 	home := os.Getenv("HOME")
-	root := fmt.Sprintf("%s/.bazaar/", home)
+	root := fmt.Sprintf("%s/.arkade/", home)
 
 	if len(home) == 0 {
 		return home, fmt.Errorf("env-var HOME, not set")

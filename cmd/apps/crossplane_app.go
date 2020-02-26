@@ -7,10 +7,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ func MakeInstallCrossplane() *cobra.Command {
 		Short: "Install Crossplane",
 		Long: `Install Crossplane to deploy managed services across cloud providers and
 schedule workloads to any Kubernetes cluster`,
-		Example:      `  bazaar install crossplane`,
+		Example:      `  arkade install crossplane`,
 		SilenceUsage: true,
 	}
 

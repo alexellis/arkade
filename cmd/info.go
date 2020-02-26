@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/alexellis/bazaar/cmd/apps"
+	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/spf13/cobra"
 )
 
@@ -13,12 +13,12 @@ func MakeInfo() *cobra.Command {
 		Use:   "info",
 		Short: "Find info about a Kubernetes app",
 		Long:  "Find info about how to use the installed Kubernetes app",
-		Example: `  bazaar info [APP]
-bazaar info openfaas
-bazaar info inlets-operator
-bazaar info mongodb
-bazaar info
-bazaar info --help`,
+		Example: `  arkade info [APP]
+arkade info openfaas
+arkade info inlets-operator
+arkade info mongodb
+arkade info
+arkade info --help`,
 		SilenceUsage: true,
 	}
 

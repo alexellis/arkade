@@ -7,10 +7,10 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/bazaar/pkg"
-	"github.com/alexellis/bazaar/pkg/config"
-	"github.com/alexellis/bazaar/pkg/env"
-	"github.com/alexellis/bazaar/pkg/helm"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +21,9 @@ func MakeInstallChart() *cobra.Command {
 		Long: `Install the specified helm chart without using tiller.
 Note: You may need to install a CRD or run other additional steps
 before using the generic helm chart installer command.`,
-		Example: `  bazaar install chart --repo-name stable/nginx-ingress \
+		Example: `  arkade install chart --repo-name stable/nginx-ingress \
      --set controller.service.type=NodePort
-  bazaar install chart --repo-name inlets/inlets-operator \
+  arkade install chart --repo-name inlets/inlets-operator \
      --repo-url https://inlets.github.io/inlets-operator/`,
 		SilenceUsage: true,
 	}

@@ -3,7 +3,7 @@ package apps
 import (
 	"fmt"
 
-	"github.com/alexellis/bazaar/pkg"
+	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
 )
@@ -13,7 +13,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 		Use:          "kubernetes-dashboard",
 		Short:        "Install kubernetes-dashboard",
 		Long:         `Install kubernetes-dashboard`,
-		Example:      `  bazaar install kubernetes-dashboard`,
+		Example:      `  arkade install kubernetes-dashboard`,
 		SilenceUsage: true,
 	}
 
