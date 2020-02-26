@@ -12,7 +12,7 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 
 In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
 
-On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. k3sup (ketchup) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
+On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. [k3sup (ketchup)](https://k3sup.dev/) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
 
 And yes, of course it works with k3s and where possible, apps are available for ARM.
 
