@@ -69,7 +69,6 @@ func getApps() []string {
 		"inlets-operator",
 		"metrics-server",
 		"chart",
-		"tiller",
 		"linkerd",
 		"cron-connector",
 		"kafka-connector",
