@@ -16,12 +16,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type InputData struct {
+type inputData struct {
 	IngressDomain    string
 	CertmanagerEmail string
 	IngressClass     string
+	IssuerType       string
+	IssuerAPI        string
 }
 
+//MakeInstallOpenFaaSIngess will install a clusterissuer and request a cert from certmanager for the domain you specify
 func MakeInstallOpenFaaSIngress() *cobra.Command {
 	var openfaasIngress = &cobra.Command{
 		Use:          "openfaas-ingress",
@@ -34,6 +37,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 	openfaasIngress.Flags().StringP("domain", "d", "", "Custom Ingress Domain")
 	openfaasIngress.Flags().StringP("email", "e", "", "Letsencrypt Email")
 	openfaasIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
+	openfaasIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 
 	openfaasIngress.RunE = func(command *cobra.Command, args []string) error {
 
@@ -57,7 +61,9 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		yamlBytes, templateErr := buildYAML(domain, email, ingressClass)
+		staging, _ := command.Flags().GetBool("staging")
+
+		yamlBytes, templateErr := buildYAML(domain, email, ingressClass, staging)
 		if templateErr != nil {
 			log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 			return templateErr
@@ -119,17 +125,24 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 	return filename, nil
 }
 
-func buildYAML(domain, email, ingressClass string) ([]byte, error) {
+func buildYAML(domain, email, ingressClass string, staging bool) ([]byte, error) {
 	tmpl, err := template.New("yaml").Parse(ingressYamlTemplate)
 
 	if err != nil {
 		return nil, err
 	}
 
-	inputData := InputData{
+	inputData := inputData{
 		IngressDomain:    domain,
 		CertmanagerEmail: email,
 		IngressClass:     ingressClass,
+		IssuerType:       "letsencrypt-prod",
+		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
+	}
+
+	if staging {
+		inputData.IssuerType = "letsencrypt-staging"
+		inputData.IssuerAPI = "https://acme-staging-v02.api.letsencrypt.org/directory"
 	}
 
 	var tpl bytes.Buffer
@@ -178,7 +191,7 @@ metadata:
   name: openfaas-gateway
   namespace: openfaas
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: {{.IssuerType}}
     kubernetes.io/ingress.class: {{.IngressClass}}
 spec:
   rules:
@@ -197,11 +210,11 @@ spec:
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: {{.IssuerType}}
 spec:
   acme:
     email: {{.CertmanagerEmail}}
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: {{.IssuerAPI}}
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
