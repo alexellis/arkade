@@ -19,7 +19,7 @@ And yes, of course it works with k3s and where possible, apps are available for 
 ## Get arkade
 
 ```bash
-curl -sLS https://get-arkade.com | sh
+curl -sLS https://dl.get-arkade.dev | sh
 sudo install arkade /usr/local/bin/
 
 arkade --help
