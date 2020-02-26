@@ -129,7 +129,7 @@ arkade install openfaas-ingress \
 And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets-pro](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
 
 ```bash
-[ark]ade install inlets-operator \
+arkade install inlets-operator \
   --access-token $HOME/digitalocean-token \
   --region lon1 \
   --license $(cat $HOME/license.txt)
