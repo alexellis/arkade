@@ -1,6 +1,6 @@
 # bazaar - get Kubernetes apps, the easy way
 
-With bazaar, you can install around a dozen of the most popular cloud native tools to Kubernetes including: nginx-ingress, Minio, OpenFaaS, Istio, cert-manager and many more. Save yourself the hassle of traversing dozens of README files, bazaar automates everything for you including the downloading of helm.
+Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. bazaar (baz for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 [![Build
 Status](https://travis-ci.com/alexellis/bazaar.svg?branch=master)](https://travis-ci.com/alexellis/bazaar)
