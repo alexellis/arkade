@@ -31,6 +31,8 @@ An alias of `ark` is created at installation time.
 
 Here's a few examples of apps you can install, for a complete list run: `[ark]ade install --help`.
 
+### Install an app
+
 ```bash
 [ark]ade install openfaas --gateways 2 --load-balancer false
 
@@ -38,8 +40,18 @@ Here's a few examples of apps you can install, for a complete list run: `[ark]ad
 
 [ark]ade install nginx-ingress
 
+[ark]ade install metrics-server
+
 [ark]ade install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
+
+After installation, an info message will be printed with help for usage, you can get back to this at any time via:
+
+```bash
+arkade app info <NAME>
+```
+
+### Get a self-hosted TLS registry with authentication
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
 
@@ -52,6 +64,8 @@ arkade install docker-registry-ingress \
   --domain reg.example.com
 ```
 
+### Get OpenFaaS with TLS
+
 The same for OpenFaaS would look like this:
 
 ```bash
@@ -63,14 +77,49 @@ arkade install openfaas-ingress \
   --domain reg.example.com
 ```
 
-And if you're running on a private cloud, on-premises or on your laptop, you can simply add the inlets-operator using inlets-pro to get a secure TCP tunnel and a public IP address.
+### Get a public IP for a private cluster and your IngressController
+
+And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets-pro](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
 
 ```bash
 [ark]ade install inlets-operator \
-  --access-token $HOME/digitalocean \
+  --access-token $HOME/digitalocean-token \
   --region lon1 \
   --license $(cat $HOME/license.txt)
 ```
+
+### Explore the apps
+
+```bash
+arkade install --help
+ark --help
+
+cert-manager            Install cert-manager
+chart                   Install the specified helm chart
+cron-connector          Install cron-connector for OpenFaaS
+crossplane              Install Crossplane
+docker-registry         Install a Docker registry
+docker-registry-ingress Install registry ingress with TLS
+info                    Find info about a Kubernetes app
+inlets-operator         Install inlets-operator
+istio                   Install istio
+kafka-connector         Install kafka-connector for OpenFaaS
+kubernetes-dashboard    Install kubernetes-dashboard
+linkerd                 Install linkerd
+metrics-server          Install metrics-server
+minio                   Install minio
+mongodb                 Install mongodb
+nginx-ingress           Install nginx-ingress
+openfaas                Install openfaas
+openfaas-ingress        Install openfaas ingress with TLS
+postgresql              Install postgresql
+```
+
+### Tools and cached versions of helm
+
+When required, tools, CLIs, and the helm binaries are downloaded and extracted to `$HOME/.arkade`.
+
+If installing a tool which uses helm3, arkade will check for a cached version and use that, otherwise it will download it on demand.
 
 ## Contributing
 
