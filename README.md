@@ -33,11 +33,21 @@ Here's a few examples of apps you can install, for a complete list run: `[ark]ad
 
 ### Install an app
 
+No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
+
 ```bash
 [ark]ade install openfaas --gateways 2 --load-balancer false
+```
 
+[Normally up to a dozen commands](https://cert-manager.io/docs/installation/kubernetes/) (including finding and downloading helm), now just one. No searching for the correct CRD to apply, no trying to install helm, no trying to find the correct helm repo to add:
+
+```bash
 [ark]ade install cert-manager
+```
 
+Other common tools:
+
+```bash
 [ark]ade install nginx-ingress
 
 [ark]ade install metrics-server
@@ -47,7 +57,7 @@ Here's a few examples of apps you can install, for a complete list run: `[ark]ad
 
 You can also set helm overrides, for apps which use helm via `--set`
 
-```
+```bash
 ark install openfaas --set=faasIdler.dryRun=false
 ```
 
