@@ -1,6 +1,6 @@
 # arkade - get Kubernetes apps, the easy way
 
-Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. arkade (baz for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 [![Build
 Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travis-ci.com/alexellis/arkade)
@@ -10,7 +10,7 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 
 ## What about helm and `k3sup`?
 
-In the same way that brew uses git and Makefiles to compile applications for your Mac, arkade uses upstream helm charts and kubectl to install applications to your Kubernetes cluster.
+In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream helm charts and kubectl to install applications to your Kubernetes cluster.
 
 On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. k3sup (ketchup) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
 
@@ -25,20 +25,20 @@ sudo install arkade /usr/local/bin/
 arkade --help
 ```
 
-An alias of `baz` is created at installation time.
+An alias of `ark` is created at installation time.
 
 ## Usage
 
-Here's a few examples of apps you can install, for a complete list run: `[baz]aar install --help`.
+Here's a few examples of apps you can install, for a complete list run: `[ark]aar install --help`.
 
 ```bash
-[baz]aar install openfaas --gateways 2 --load-balancer false
+[ark]aar install openfaas --gateways 2 --load-balancer false
 
-[baz]aar install cert-manager
+[ark]aar install cert-manager
 
-[baz]aar install nginx-ingress
+[ark]aar install nginx-ingress
 
-[baz]aar install inlets-operator --access-token $HOME/digitalocean --region lon1
+[ark]aar install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
@@ -66,7 +66,7 @@ arkade install openfaas-ingress \
 And if you're running on a private cloud, on-premises or on your laptop, you can simply add the inlets-operator using inlets-pro to get a secure TCP tunnel and a public IP address.
 
 ```bash
-[baz]aar install inlets-operator \
+[ark]aar install inlets-operator \
   --access-token $HOME/digitalocean \
   --region lon1 \
   --license $(cat $HOME/license.txt)
