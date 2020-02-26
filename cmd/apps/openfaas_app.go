@@ -17,6 +17,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const latestVersion = ""
+
 func MakeInstallOpenFaaS() *cobra.Command {
 	var openfaas = &cobra.Command{
 		Use:          "openfaas",
@@ -27,6 +29,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	}
 
 	openfaas.Flags().BoolP("basic-auth", "a", true, "Enable authentication")
+	openfaas.Flags().String("basic-auth-password", "", "Overide the default random basic-auth-password if this is set")
 	openfaas.Flags().BoolP("load-balancer", "l", false, "Add a loadbalancer")
 	openfaas.Flags().StringP("namespace", "n", "openfaas", "The namespace for the core services")
 	openfaas.Flags().Bool("update-repo", true, "Update the helm repo")
@@ -46,7 +49,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
-
+		wait, _ := command.Flags().GetBool("wait")
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -109,9 +112,14 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		pass, err := password.Generate(25, 10, 0, false, true)
-		if err != nil {
-			return err
+		pass, _ := command.Flags().GetString("basic-auth-password")
+
+		if len(pass) == 0 {
+			var err error
+			pass, err = password.Generate(25, 10, 0, false, true)
+			if err != nil {
+				return err
+			}
 		}
 
 		res, secretErr := kubectlTask("-n", namespace, "create", "secret", "generic",
@@ -129,8 +137,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "openfaas/openfaas", helm3)
-
+		err = fetchChart(chartPath, "openfaas/openfaas", defaultVersion, helm3)
 		if err != nil {
 			return err
 		}
@@ -199,7 +206,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			err := helm3Upgrade(outputPath, "openfaas/openfaas", namespace,
 				"values"+valuesSuffix+".yaml",
 				"",
-				overrides)
+				overrides,
+				wait)
 
 			if err != nil {
 				return err
@@ -211,7 +219,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				namespace,
 				outputPath,
 				"values"+valuesSuffix+".yaml",
-				"",
 				overrides)
 
 			if err != nil {

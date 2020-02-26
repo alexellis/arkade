@@ -1,6 +1,8 @@
 # arkade - get Kubernetes apps, the easy way
 
-Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults. arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
+
+arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 [![Build
 Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travis-ci.com/alexellis/arkade)
@@ -81,7 +83,7 @@ ark install openfaas --set=faasIdler.dryRun=false
 After installation, an info message will be printed with help for usage, you can get back to this at any time via:
 
 ```bash
-arkade app info <NAME>
+arkade info <NAME>
 ```
 
 ### Get a self-hosted TLS registry with authentication
