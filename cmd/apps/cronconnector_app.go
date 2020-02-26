@@ -18,7 +18,7 @@ func MakeInstallCronConnector() *cobra.Command {
 		Use:          "cron-connector",
 		Short:        "Install cron-connector for OpenFaaS",
 		Long:         `Install cron-connector for OpenFaaS`,
-		Example:      `  bazaar app install cron-connector`,
+		Example:      `  bazaar install cron-connector`,
 		SilenceUsage: true,
 	}
 

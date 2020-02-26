@@ -18,7 +18,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		Use:          "kafka-connector",
 		Short:        "Install kafka-connector for OpenFaaS",
 		Long:         `Install kafka-connector for OpenFaaS`,
-		Example:      `  bazaar app install kafka-connector`,
+		Example:      `  bazaar install kafka-connector`,
 		SilenceUsage: true,
 	}
 

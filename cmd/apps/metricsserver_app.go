@@ -18,7 +18,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 		Use:          "metrics-server",
 		Short:        "Install metrics-server",
 		Long:         `Install metrics-server to provide metrics on nodes and Pods in your cluster.`,
-		Example:      `  bazaar app install metrics-server --namespace kube-system --helm3`,
+		Example:      `  bazaar install metrics-server --namespace kube-system --helm3`,
 		SilenceUsage: true,
 	}
 

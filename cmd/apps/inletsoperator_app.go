@@ -19,7 +19,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 		Use:          "inlets-operator",
 		Short:        "Install inlets-operator",
 		Long:         `Install inlets-operator to get public IPs for your cluster`,
-		Example:      `  bazaar app install inlets-operator --namespace default`,
+		Example:      `  bazaar install inlets-operator --namespace default`,
 		SilenceUsage: true,
 	}
 

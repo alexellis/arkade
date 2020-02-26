@@ -20,7 +20,7 @@ func MakeInstallCrossplane() *cobra.Command {
 		Short: "Install Crossplane",
 		Long: `Install Crossplane to deploy managed services across cloud providers and
 schedule workloads to any Kubernetes cluster`,
-		Example:      `  bazaar app install crossplane`,
+		Example:      `  bazaar install crossplane`,
 		SilenceUsage: true,
 	}
 

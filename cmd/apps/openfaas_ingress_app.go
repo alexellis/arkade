@@ -27,7 +27,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		Use:          "openfaas-ingress",
 		Short:        "Install openfaas ingress with TLS",
 		Long:         `Install openfaas ingress. Requires cert-manager 0.11.0 or higher installation in the cluster. Please set --domain to your custom domain and set --email to your email - this email is used by letsencrypt for domain expiry etc.`,
-		Example:      `  bazaar app install openfaas-ingress --domain openfaas.example.com --email openfaas@example.com`,
+		Example:      `  bazaar install openfaas-ingress --domain openfaas.example.com --email openfaas@example.com`,
 		SilenceUsage: true,
 	}
 

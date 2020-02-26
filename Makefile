@@ -16,8 +16,8 @@ test:
 .PHONY: dist
 dist:
 	mkdir -p bin
-	GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -mod=vendor -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar
-	GO111MODULE=on CGO_ENABLED=0 GOOS=darwin go build -mod=vendor -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-darwin
-	GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -mod=vendor -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-armhf
-	GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -mod=vendor -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-arm64
-	GO111MODULE=on CGO_ENABLED=0 GOOS=windows go build -mod=vendor -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar.exe
+	GO111MODULE=on CGO_ENABLED=0 GOOS=linux go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar
+	GO111MODULE=on CGO_ENABLED=0 GOOS=darwin go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-darwin
+	GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-armhf
+	GO111MODULE=on CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar-arm64
+	GO111MODULE=on CGO_ENABLED=0 GOOS=windows go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/bazaar.exe
