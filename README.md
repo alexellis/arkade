@@ -1,6 +1,6 @@
 # arkade - get Kubernetes apps, the easy way
 
-Gone are the days of contending with dozens of README files just to get the right version of helm and to install a chart with sane defaults. arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults. arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 [![Build
 Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travis-ci.com/alexellis/arkade)
@@ -10,7 +10,7 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 
 ## What about helm and `k3sup`?
 
-In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream helm charts and kubectl to install applications to your Kubernetes cluster.
+In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
 
 On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. k3sup (ketchup) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
 
