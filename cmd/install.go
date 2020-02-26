@@ -13,7 +13,9 @@ func MakeInstall() *cobra.Command {
 		Use:   "install",
 		Short: "Install Kubernetes apps from helm charts or YAML files",
 		Long: `Install Kubernetes apps from helm charts or YAML files using the "install" 
-command. Helm 2 is used by default unless a --helm3 flag exists and is passed. 
+command. Helm 3 is used by default unless you pass --helm3=false, then helm 2
+will be used to generate YAML files which are applied without tiller.
+
 You can also find the post-install message for each app with the "info" 
 command.`,
 		Example: `  arkade install
