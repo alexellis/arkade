@@ -29,16 +29,16 @@ An alias of `ark` is created at installation time.
 
 ## Usage
 
-Here's a few examples of apps you can install, for a complete list run: `[ark]aar install --help`.
+Here's a few examples of apps you can install, for a complete list run: `[ark]ade install --help`.
 
 ```bash
-[ark]aar install openfaas --gateways 2 --load-balancer false
+[ark]ade install openfaas --gateways 2 --load-balancer false
 
-[ark]aar install cert-manager
+[ark]ade install cert-manager
 
-[ark]aar install nginx-ingress
+[ark]ade install nginx-ingress
 
-[ark]aar install inlets-operator --access-token $HOME/digitalocean --region lon1
+[ark]ade install inlets-operator --access-token $HOME/digitalocean --region lon1
 ```
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
@@ -66,7 +66,7 @@ arkade install openfaas-ingress \
 And if you're running on a private cloud, on-premises or on your laptop, you can simply add the inlets-operator using inlets-pro to get a secure TCP tunnel and a public IP address.
 
 ```bash
-[ark]aar install inlets-operator \
+[ark]ade install inlets-operator \
   --access-token $HOME/digitalocean \
   --region lon1 \
   --license $(cat $HOME/license.txt)
