@@ -77,7 +77,7 @@ func getApps() []string {
 		"postgresql",
 		"kubernetes-dashboard",
 		"istio",
-		"crosspane",
+		"crossplane",
 		"mongodb",
 		"docker-registry",
 		"docker-registry-ingress",
