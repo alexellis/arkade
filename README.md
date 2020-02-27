@@ -9,7 +9,7 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
-![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
+<!-- ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total) -->
 
 Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
 
