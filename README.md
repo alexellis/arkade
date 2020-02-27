@@ -1,5 +1,7 @@
 # arkade - get Kubernetes apps, the easy way
 
+<img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
+
 Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
 
 arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
