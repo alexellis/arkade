@@ -4,4 +4,4 @@ kubeconfig
 .DS_Store
 .idea/
 mc
-arkade-*
+/arkade-*
