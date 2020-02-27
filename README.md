@@ -1,10 +1,10 @@
 # arkade - get Kubernetes apps, the easy way
 
+arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
 Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
-
-arkade (ark for short) provides a clean CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 [![Build
 Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travis-ci.com/alexellis/arkade)
@@ -16,20 +16,20 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 ## Get arkade
 
 ```bash
+# Note: you can also run without `sudo` and move the binary yourself
 curl -sLS https://dl.get-arkade.dev | sudo sh
 
 arkade --help
-
-# Note: you can also run without `sudo` and move the binary yourself
-
-curl -sLS https://dl.get-arkade.dev | sh
+ark --help  # a handy alias
 ```
-
-An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
 ## Usage
 
 Here's a few examples of apps you can install, for a complete list run: `arkade install --help`.
+
+* `arkade install` - install an app
+* `arkade update` - update arkade
+* `arkade info` - the post-install screen for an app
 
 ### Install an app
 
@@ -38,6 +38,8 @@ No need to worry about whether you're installing to Intel or ARM architecture, t
 ```bash
 arkade install openfaas --gateways 2 --load-balancer false
 ```
+
+#### Reduce the repetition
 
 [Normally up to a dozen commands](https://cert-manager.io/docs/installation/kubernetes/) (including finding and downloading helm), now just one. No searching for the correct CRD to apply, no trying to install helm, no trying to find the correct helm repo to add:
 
@@ -52,6 +54,8 @@ arkade install nginx-ingress
 
 arkade install metrics-server
 ```
+
+#### Bye-bye values.yaml, hello flags
 
 We use strongly typed Go CLI flags, so that you can run `--help` instead of trawling through countless Helm chart README files to find the correct `--set` combination for what you want.
 
@@ -76,6 +80,8 @@ Flags:
       --update-repo        Update the helm repo (default true)
 ```
 
+#### Override with `--set`
+
 You can also set helm overrides, for apps which use helm via `--set`
 
 ```bash
@@ -88,7 +94,7 @@ After installation, an info message will be printed with help for usage, you can
 arkade info <NAME>
 ```
 
-### Get a self-hosted TLS registry with authentication
+#### Get a self-hosted TLS registry with authentication
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
 
@@ -101,7 +107,7 @@ arkade install docker-registry-ingress \
   --domain reg.example.com
 ```
 
-### Get OpenFaaS with TLS
+#### Get OpenFaaS with TLS
 
 The same for OpenFaaS would look like this:
 
@@ -114,7 +120,7 @@ arkade install openfaas-ingress \
   --domain reg.example.com
 ```
 
-### Get a public IP for a private cluster and your IngressController
+#### Get a public IP for a private cluster and your IngressController
 
 And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets-pro](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
 
@@ -125,7 +131,7 @@ arkade install inlets-operator \
   --license $(cat $HOME/license.txt)
 ```
 
-### Explore the apps
+#### Explore the apps
 
 ```bash
 arkade install --help
