@@ -9,7 +9,7 @@ Status](https://travis-ci.com/alexellis/arkade.svg?branch=master)](https://travi
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
-<!-- ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total) -->
+![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
 Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
 
@@ -22,6 +22,12 @@ curl -sLS https://dl.get-arkade.dev | sudo sh
 arkade --help
 ark --help  # a handy alias
 ```
+
+An alias of `ark` is created at installation time, so you can also run `ark install APP`
+
+<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-7abf1d53_1024x1024@2x.jpg?v=1582970151)" width="250">
+
+[You can buy an arkade t-shirt in the OpenFaaS Ltd store](https://store.openfaas.com/collections/frontpage/products/arkade-t-shirt)
 
 ## Usage
 
