@@ -2,14 +2,9 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/spf13/cobra"
 )
 
@@ -23,108 +18,21 @@ func MakeInstallMetricsServer() *cobra.Command {
 	}
 
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-	metricsServer.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
-		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
 
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
 		namespace, _ := command.Flags().GetString("namespace")
 
-		if namespace != "kube-system" {
-			return fmt.Errorf(`to override the "kube-system", install via tiller`)
-		}
+		app := apps.MakeAppMetricsServer()
+		app.Namespace = namespace
 
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
-		if err != nil {
-			return err
-		}
-
-		err = updateHelmRepos(helm3)
-		if err != nil {
-			return err
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/metrics-server", defaultVersion, helm3)
+		err := app.Install()
 
 		if err != nil {
 			return err
 		}
 
-		overrides := map[string]string{}
-		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
-		fmt.Println("Chart path: ", chartPath)
-
-		if helm3 {
-			outputPath := path.Join(chartPath, "metrics-server")
-
-			err := helm3Upgrade(outputPath, "stable/metrics-server", namespace,
-				"values.yaml",
-				defaultVersion,
-				overrides,
-				wait)
-
-			if err != nil {
-				return err
-			}
-
-		} else {
-			outputPath := path.Join(chartPath, "metrics-server/rendered")
-
-			err = templateChart(chartPath,
-				"metrics-server",
-				namespace,
-				outputPath,
-				"values.yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			applyRes, applyErr := kubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
-			if applyErr != nil {
-				return applyErr
-			}
-			if applyRes.ExitCode > 0 {
-				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
-			}
-
-		}
-
-		fmt.Println(`=======================================================================
-= metrics-server has been installed.                                  =
-=======================================================================
-
-# It can take a few minutes for the metrics-server to collect data
-# from the cluster. Try these commands and wait a few moments if
-# no data is showing.
-
-` + MetricsInfoMsg + `
-
-` + pkg.ThanksForUsing)
+		fmt.Print(app.GetInfoMessage())
 
 		return nil
 	}
@@ -132,7 +40,15 @@ func MakeInstallMetricsServer() *cobra.Command {
 	return metricsServer
 }
 
-const MetricsInfoMsg = `# Check pod usage
+const MetricsInfoMsg = `=======================================================================
+= metrics-server has been installed.                                  =
+=======================================================================
+
+# It can take a few minutes for the metrics-server to collect data
+# from the cluster. Try these commands and wait a few moments if
+# no data is showing.
+
+# Check pod usage
 
 kubectl top pod
 
@@ -142,4 +58,6 @@ kubectl top node
 
 
 # Find out more at:
-# https://github.com/helm/charts/tree/master/stable/metrics-server`
+# https://github.com/helm/charts/tree/master/stable/metrics-server
+
+` + pkg.ThanksForUsing
