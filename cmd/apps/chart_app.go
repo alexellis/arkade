@@ -38,10 +38,12 @@ before using the generic helm chart installer command.`,
 	chartCmd.Flags().String("values-file", "", "Give the values.yaml file to use from the upstream chart repo")
 	chartCmd.Flags().String("repo-name", "", "Chart name")
 	chartCmd.Flags().String("repo-url", "", "Chart repo")
+	chartCmd.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	chartCmd.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
 
 	chartCmd.RunE = func(command *cobra.Command, args []string) error {
+		wait, _ := command.Flags().GetBool("wait")
 		chartRepoName, _ := command.Flags().GetString("repo-name")
 		chartRepoURL, _ := command.Flags().GetString("repo-url")
 
@@ -66,6 +68,11 @@ before using the generic helm chart installer command.`,
 		}
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+		helm3, _ := command.Flags().GetBool("helm3")
+
+		if helm3 {
+			fmt.Println("Using helm3")
+		}
 
 		namespace, _ := command.Flags().GetString("namespace")
 
@@ -82,19 +89,19 @@ before using the generic helm chart installer command.`,
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, false)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
 		if err != nil {
 			return err
 		}
 
 		if len(chartRepoURL) > 0 {
-			err = addHelmRepo(chartPrefix, chartRepoURL, false)
+			err = addHelmRepo(chartPrefix, chartRepoURL, helm3)
 			if err != nil {
 				return err
 			}
 		}
 
-		err = updateHelmRepos(false)
+		err = updateHelmRepos(helm3)
 		if err != nil {
 			return err
 		}
@@ -114,12 +121,10 @@ before using the generic helm chart installer command.`,
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, chartRepoName, defaultVersion, false)
+		err = fetchChart(chartPath, chartRepoName, defaultVersion, helm3)
 		if err != nil {
 			return err
 		}
-
-		outputPath := path.Join(chartPath, "chart/rendered")
 
 		setMap := map[string]string{}
 		setVals, _ := chartCmd.Flags().GetStringArray("set")
@@ -134,15 +139,29 @@ before using the generic helm chart installer command.`,
 				setMap[k] = v
 			}
 		}
+		outputPath := path.Join(chartPath, chartName)
+		if helm3 {
+			err := helm3Upgrade(outputPath, chartRepoName, namespace,
+				"values.yaml",
+				defaultVersion,
+				setMap,
+				wait)
 
-		err = templateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
-		if err != nil {
-			return err
-		}
+			if err != nil {
+				return err
+			}
 
-		err = kubectl("apply", "--namespace", namespace, "-R", "-f", outputPath)
-		if err != nil {
-			return err
+		} else {
+			outputPath = path.Join(chartPath, "chart/rendered")
+			err = templateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
+			if err != nil {
+				return err
+			}
+			err = kubectl("apply", "--namespace", namespace, "-R", "-f", outputPath)
+			if err != nil {
+				return err
+			}
+
 		}
 
 		fmt.Println(
