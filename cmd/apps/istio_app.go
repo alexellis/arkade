@@ -74,7 +74,7 @@ func MakeInstallIstio() *cobra.Command {
 			return err
 		}
 
-		istioVer := "1.3.3"
+		istioVer := "1.4.5"
 
 		err = addHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3)
 		if err != nil {
@@ -114,11 +114,11 @@ func MakeInstallIstio() *cobra.Command {
 		outputPath := path.Join(chartPath, "istio")
 
 		if initIstio, _ := command.Flags().GetBool("init"); initIstio {
-			err = helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, wait)
+			// Waiting for the crds to appear
+			err = helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, true)
 			if err != nil {
 				return fmt.Errorf("unable to istio-init install chart with helm %s", err)
 			}
-
 		}
 
 		customFlags, customFlagErr := command.Flags().GetStringArray("set")
