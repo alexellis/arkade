@@ -175,7 +175,7 @@ func getUserPath() (string, error) {
 }
 
 func getExportPath() string {
-	userPath, _ := getUserPath()
+	userPath := config.GetUserDir()
 	return path.Join(userPath, "bin/")
 }
 
