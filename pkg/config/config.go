@@ -9,6 +9,12 @@ import (
 // K3sVersion default version
 const K3sVersion = "v1.17.2+k3s1"
 
+func GetUserDir() string {
+	home := os.Getenv("HOME")
+	root := fmt.Sprintf("%s/.arkade/", home)
+	return root
+}
+
 func InitUserDir() (string, error) {
 	home := os.Getenv("HOME")
 	root := fmt.Sprintf("%s/.arkade/", home)
