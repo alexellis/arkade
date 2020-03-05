@@ -83,6 +83,9 @@ arkade info --help`,
 		case "docker-registry-ingress":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.RegistryIngressInfoMsg)
+		case "traefik2":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.Traefik2InfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
