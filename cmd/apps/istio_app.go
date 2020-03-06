@@ -74,7 +74,7 @@ func MakeInstallIstio() *cobra.Command {
 			return err
 		}
 
-		istioVer := "1.4.5"
+		istioVer := "1.5.0"
 
 		err = addHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3)
 		if err != nil {
