@@ -14,7 +14,7 @@ import (
 )
 
 const helmVersion = "v2.16.0"
-const helm3Version = "v3.0.2"
+const helm3Version = "v3.1.1"
 
 func TryDownloadHelm(userPath, clientArch, clientOS string, helm3 bool) (string, error) {
 	helmVal := "helm"
