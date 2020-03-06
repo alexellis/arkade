@@ -28,7 +28,7 @@ func MakeInstallCertManager() *cobra.Command {
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		const certManagerVersion = "v0.12.0"
+		const certManagerVersion = "v0.13.1"
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
