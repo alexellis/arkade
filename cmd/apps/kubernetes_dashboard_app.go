@@ -30,7 +30,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		_, err := kubectlTask("apply", "-f",
-			"https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc2/aio/deploy/recommended.yaml")
+			"https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml")
 		if err != nil {
 			return err
 		}
