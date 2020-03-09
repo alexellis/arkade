@@ -1,3 +1,6 @@
+// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package apps
 
 import (
@@ -15,9 +18,11 @@ import (
 
 func MakeInstallNginx() *cobra.Command {
 	var nginx = &cobra.Command{
-		Use:          "nginx-ingress",
-		Short:        "Install nginx-ingress",
-		Long:         `Install nginx-ingress. This app can be installed with Host networking for cases where an external LB is not available. please see the --host-mode flag and the nginx-ingress docs for more info`,
+		Use:   "nginx-ingress",
+		Short: "Install nginx-ingress",
+		Long: `Install nginx-ingress. This app can be installed with Host networking for 
+cases where an external LB is not available. please see the --host-mode 
+flag and the nginx-ingress docs for more info`,
 		Example:      `  arkade install nginx-ingress --namespace default`,
 		SilenceUsage: true,
 	}
