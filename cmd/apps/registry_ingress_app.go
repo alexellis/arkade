@@ -1,3 +1,6 @@
+// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package apps
 
 import (
@@ -23,9 +26,11 @@ type RegInputData struct {
 
 func MakeInstallRegistryIngress() *cobra.Command {
 	var registryIngress = &cobra.Command{
-		Use:          "docker-registry-ingress",
-		Short:        "Install registry ingress with TLS",
-		Long:         `Install registry ingress. Requires cert-manager 0.11.0 or higher installation in the cluster. Please set --domain to your custom domain and set --email to your email - this email is used by letsencrypt for domain expiry etc.`,
+		Use:   "docker-registry-ingress",
+		Short: "Install registry ingress with TLS",
+		Long: `Install registry ingress. Requires cert-manager 0.11.0 or higher installation 
+in the cluster. Please set --domain to your custom domain and set --email 
+to your email - this email is used by letsencrypt for domain expiry etc.`,
 		Example:      `  arkade install registry-ingress --domain registry.example.com --email openfaas@example.com`,
 		SilenceUsage: true,
 	}
