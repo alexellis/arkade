@@ -47,6 +47,13 @@ func MakeInstallMinio() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
+		arch := getNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
+		if arch != IntelArch {
+			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+		}
+
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
