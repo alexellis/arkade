@@ -33,6 +33,7 @@ func MakeInstallTraefik2() *cobra.Command {
 	traefik2.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set key=value)")
 	traefik2.Flags().Bool("wait", false, "Wait for the chart to be installed")
+	traefik2.Flags().Bool("ingress-provider", true, "Add Traefik's ingressprovider along with the CRD provider")
 
 	traefik2.RunE = func(command *cobra.Command, args []string) error {
 
@@ -81,6 +82,7 @@ func MakeInstallTraefik2() *cobra.Command {
 		lb, _ := command.Flags().GetBool("load-balancer")
 		dashboard, _ := command.Flags().GetBool("dashboard")
 		wait, _ := command.Flags().GetBool("wait")
+		ingressProvider, _ := command.Flags().GetBool("ingress-provider")
 
 		svc := "NodePort"
 		if lb {
@@ -93,6 +95,10 @@ func MakeInstallTraefik2() *cobra.Command {
 
 		if dashboard {
 			overrides["dashboard.ingressRoute"] = "true"
+		}
+
+		if ingressProvider {
+			overrides["additionalArguments"] = `{--providers.kubernetesingress}`
 		}
 
 		customFlags, err := command.Flags().GetStringArray("set")
