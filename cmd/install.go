@@ -89,6 +89,6 @@ func getApps() []string {
 		"docker-registry-ingress",
 		"traefik2",
 		"grafana",
-        "tekton",
+		"tekton",
 	}
 }

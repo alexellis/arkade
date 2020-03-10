@@ -32,16 +32,16 @@ func MakeInstallTekton() *cobra.Command {
 		arch := getNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-        fmt.Println("Installing Tekton pipelines...")
+		fmt.Println("Installing Tekton pipelines...")
 		_, err := kubectlTask("apply", "-f",
-            "https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml")
+			"https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml")
 		if err != nil {
 			return err
 		}
 
-        fmt.Println("Installing Tekton dashboard...")
-		_, err := kubectlTask("apply", "-f",
-            "https://github.com/tektoncd/dashboard/releases/download/v0.5.1/tekton-dashboard-release.yaml")
+		fmt.Println("Installing Tekton dashboard...")
+		_, err = kubectlTask("apply", "-f",
+			"https://github.com/tektoncd/dashboard/releases/download/v0.5.1/tekton-dashboard-release.yaml")
 		if err != nil {
 			return err
 		}
