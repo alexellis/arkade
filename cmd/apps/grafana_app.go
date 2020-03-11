@@ -117,10 +117,7 @@ func MakeInstallGrafana() *cobra.Command {
 	return grafana
 }
 
-const grafanaInstallMsg = `=======================================================================
-=                      grafana has been installed                     =
-=======================================================================
-
+const GrafanaInfoMsg = `
 # Get the admin password:
 
   kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
@@ -133,4 +130,9 @@ const grafanaInstallMsg = `=====================================================
 
   arkade install grafana --persistence
 
-` + pkg.ThanksForUsing
+`
+
+var grafanaInstallMsg = `=======================================================================
+=                      grafana has been installed                     =
+=======================================================================` +
+	"\n\n" + GrafanaInfoMsg + "\n\n" + pkg.ThanksForUsing
