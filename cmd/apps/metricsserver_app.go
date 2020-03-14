@@ -1,6 +1,3 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
-// Licensed under the MIT license. See LICENSE file in the project root for full license information.
-
 package apps
 
 import (
@@ -48,6 +45,9 @@ func MakeInstallMetricsServer() *cobra.Command {
 			return fmt.Errorf(`to override the "kube-system", install via tiller`)
 		}
 
+		arch := getNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
 		helm3, _ := command.Flags().GetBool("helm3")
 
 		if helm3 {
@@ -78,6 +78,15 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 		overrides := map[string]string{}
 		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
+		switch arch {
+		case "arm":
+			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm`
+			break
+		case "arm64", "aarch64":
+			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm64`
+			break
+		}
+
 		fmt.Println("Chart path: ", chartPath)
 
 		if helm3 {
