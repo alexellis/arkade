@@ -46,7 +46,7 @@ func MakeInstallTekton() *cobra.Command {
 			return err
 		}
 
-		fmt.Println(TektonInfoMsg)
+		fmt.Println(TektonInstallMsg)
 
 		return nil
 	}
