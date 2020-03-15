@@ -27,6 +27,9 @@ func fetchChart(path, chart, version string, helm3 bool) error {
 		subdir = "helm3"
 	}
 
+	// First remove any existing folder
+	os.RemoveAll(path)
+
 	mkErr := os.MkdirAll(path, 0700)
 
 	if mkErr != nil {
