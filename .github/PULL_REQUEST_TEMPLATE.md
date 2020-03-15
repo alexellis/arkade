@@ -31,3 +31,6 @@
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 
+<!--- In case it is a new application -->
+- [ ] New application can be installed on ARM platform.
+- [ ] New application shows an error message if the architecture is not supported.
