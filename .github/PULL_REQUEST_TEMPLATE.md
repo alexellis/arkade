@@ -31,3 +31,5 @@
 - [ ] I have added tests to cover my changes.
 - [ ] All new and existing tests passed.
 
+<!--- In case it is a new application -->
+- [ ] I have tested this on arm, or have added code to prevent deployment
