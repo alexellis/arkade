@@ -92,6 +92,9 @@ arkade info --help`,
 		case "tekton":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.TektonInfoMsg)
+		case "grafana":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.GrafanaInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}

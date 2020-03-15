@@ -46,6 +46,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker")
 	openfaas.Flags().Int("gateways", 1, "Replicas of gateway")
 
+	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
+
 	openfaas.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
@@ -178,6 +180,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		gateways, _ := command.Flags().GetInt("gateways")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 
+		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
+
 		overrides["clusterRole"] = clusterRoleVal
 		overrides["gateway.directFunctions"] = directFunctionsVal
 		overrides["operator.create"] = createOperatorVal
@@ -186,6 +190,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["basicAuthPlugin.replicas"] = "1"
 		overrides["gateway.replicas"] = fmt.Sprintf("%d", gateways)
 		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
+		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
 
 		basicAuth, _ := command.Flags().GetBool("basic-auth")
 
