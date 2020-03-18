@@ -113,7 +113,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		err = helm3Upgrade(outputPath, "stable/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
-			return fmt.Errorf("unable to mongodb chart with helm %s", err)
+			return fmt.Errorf("unable to install mongodb chart with helm %s", err)
 		}
 		fmt.Println(mongoDBPostInstallMsg)
 		return nil

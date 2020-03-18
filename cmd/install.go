@@ -15,11 +15,11 @@ func MakeInstall() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "install",
 		Short: "Install Kubernetes apps from helm charts or YAML files",
-		Long: `Install Kubernetes apps from helm charts or YAML files using the "install" 
+		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
 command. Helm 3 is used by default unless you pass --helm3=false, then helm 2
 will be used to generate YAML files which are applied without tiller.
 
-You can also find the post-install message for each app with the "info" 
+You can also find the post-install message for each app with the "info"
 command.`,
 		Example: `  arkade install
   arkade install openfaas --helm3 --gateways=2
@@ -63,6 +63,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallGrafana())
 	command.AddCommand(apps.MakeInstallArgoCD())
 	command.AddCommand(apps.MakeInstallPortainer())
+	command.AddCommand(apps.MakeInstallPrometheusOperator())
 
 	command.AddCommand(MakeInfo())
 
@@ -90,5 +91,6 @@ func getApps() []string {
 		"docker-registry-ingress",
 		"traefik2",
 		"grafana",
+		"prometheus-operator",
 	}
 }

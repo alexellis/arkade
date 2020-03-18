@@ -98,6 +98,9 @@ arkade info --help`,
 		case "portainer":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.PortainerInfoMsg)
+		case "prometheus-operator":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.PrometheusOperatorInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
