@@ -32,6 +32,7 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeUpdate())
 	rootCmd.AddCommand(cmd.MakeGet())
 	rootCmd.AddCommand(cmd.MakeUninstall())
+	rootCmd.AddCommand(cmd.MakeCompletion())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
