@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	k8s "github.com/alexellis/arkade/pkg/kubernetes"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -33,7 +35,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -66,20 +68,20 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false)
+		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(false)
+			err = helm.UpdateHelmRepos(false)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "openfaas/kafka-connector", defaultVersion, false)
+		err = helm.FetchChart(chartPath, "openfaas/kafka-connector", defaultVersion, false)
 
 		if err != nil {
 			return err
@@ -109,7 +111,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
 			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
@@ -120,7 +122,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		outputPath := path.Join(chartPath, "kafka-connector/rendered")
 
 		ns := namespace
-		err = templateChart(chartPath,
+		err = helm.TemplateChart(chartPath,
 			"kafka-connector",
 			ns,
 			outputPath,
@@ -131,7 +133,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		err = kubectl("apply", "-R", "-f", outputPath)
+		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 		if err != nil {
 			return err

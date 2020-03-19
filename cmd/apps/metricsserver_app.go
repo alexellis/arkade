@@ -13,6 +13,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	k8s "github.com/alexellis/arkade/pkg/kubernetes"
 	"github.com/spf13/cobra"
 )
 
@@ -30,7 +31,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -48,7 +49,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 			return fmt.Errorf(`to override the "kube-system", install via tiller`)
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		helm3, _ := command.Flags().GetBool("helm3")
@@ -67,13 +68,13 @@ func MakeInstallMetricsServer() *cobra.Command {
 			return err
 		}
 
-		err = updateHelmRepos(helm3)
+		err = helm.UpdateHelmRepos(helm3)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/metrics-server", defaultVersion, helm3)
+		err = helm.FetchChart(chartPath, "stable/metrics-server", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -95,7 +96,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 		if helm3 {
 			outputPath := path.Join(chartPath, "metrics-server")
 
-			err := helm3Upgrade(outputPath, "stable/metrics-server", namespace,
+			err := helm.Helm3Upgrade(outputPath, "stable/metrics-server", namespace,
 				"values.yaml",
 				defaultVersion,
 				overrides,
@@ -108,7 +109,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 		} else {
 			outputPath := path.Join(chartPath, "metrics-server/rendered")
 
-			err = templateChart(chartPath,
+			err = helm.TemplateChart(chartPath,
 				"metrics-server",
 				namespace,
 				outputPath,
@@ -119,7 +120,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}

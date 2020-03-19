@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	k8s "github.com/alexellis/arkade/pkg/kubernetes"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -33,7 +35,7 @@ flag and the nginx-ingress docs for more info`,
 	nginx.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -71,20 +73,20 @@ flag and the nginx-ingress docs for more info`,
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = helm.UpdateHelmRepos(helm3)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3)
+		err = helm.FetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -94,7 +96,7 @@ flag and the nginx-ingress docs for more info`,
 
 		overrides["defaultBackend.enabled"] = "false"
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		switch arch {
@@ -124,7 +126,7 @@ flag and the nginx-ingress docs for more info`,
 		if helm3 {
 			outputPath := path.Join(chartPath, "nginx-ingress")
 
-			err := helm3Upgrade(outputPath, "stable/nginx-ingress", ns,
+			err := helm.Helm3Upgrade(outputPath, "stable/nginx-ingress", ns,
 				"values.yaml",
 				defaultVersion,
 				overrides,
@@ -136,7 +138,7 @@ flag and the nginx-ingress docs for more info`,
 		} else {
 			outputPath := path.Join(chartPath, "nginx-ingress/rendered")
 
-			err = templateChart(chartPath,
+			err = helm.TemplateChart(chartPath,
 				"nginx-ingress",
 				ns,
 				outputPath,
@@ -147,7 +149,7 @@ flag and the nginx-ingress docs for more info`,
 				return err
 			}
 
-			err = kubectl("apply", "-R", "-f", outputPath)
+			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 			if err != nil {
 				return err

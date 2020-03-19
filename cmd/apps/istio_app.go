@@ -14,6 +14,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	k8s "github.com/alexellis/arkade/pkg/kubernetes"
 	"github.com/spf13/cobra"
 )
 
@@ -35,7 +36,7 @@ func MakeInstallIstio() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set=prometheus.enabled=false)")
 
 	istio.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -50,7 +51,7 @@ func MakeInstallIstio() *cobra.Command {
 			return fmt.Errorf(`to override the "istio-system" namespace, install Istio via helm manually`)
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
@@ -79,7 +80,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		istioVer := "1.4.5"
 
-		err = addHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3)
+		err = helm.AddHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
@@ -87,13 +88,13 @@ func MakeInstallIstio() *cobra.Command {
 		updateRepo, _ := istio.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = helm.UpdateHelmRepos(helm3)
 			if err != nil {
 				return fmt.Errorf("unable to update repos %s", err)
 			}
 		}
 
-		_, err = kubectlTask("create", "ns", "istio-system")
+		_, err = k8s.KubectlTask("create", "ns", "istio-system")
 
 		if err != nil {
 			return fmt.Errorf("unable to create namespace %s", err)
@@ -101,7 +102,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "istio/istio", defaultVersion, helm3)
+		err = helm.FetchChart(chartPath, "istio/istio", defaultVersion, helm3)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -118,7 +119,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		if initIstio, _ := command.Flags().GetBool("init"); initIstio {
 			// Waiting for the crds to appear
-			err = helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, true)
+			err = helm.Helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, true)
 			if err != nil {
 				return fmt.Errorf("unable to istio-init install chart with helm %s", err)
 			}
@@ -133,7 +134,7 @@ func MakeInstallIstio() *cobra.Command {
 			return err
 		}
 
-		err = helm3Upgrade(outputPath, "istio/istio", namespace, valuesFile, defaultVersion, overrides, wait)
+		err = helm.Helm3Upgrade(outputPath, "istio/istio", namespace, valuesFile, defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to istio install chart with helm %s", err)
 		}

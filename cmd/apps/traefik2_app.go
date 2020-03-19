@@ -37,7 +37,7 @@ func MakeInstallTraefik2() *cobra.Command {
 
 	traefik2.RunE = func(command *cobra.Command, args []string) error {
 
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -60,20 +60,20 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", helm3)
+		err = helm.AddHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", helm3)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = helm.UpdateHelmRepos(helm3)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "traefik/traefik", "", helm3)
+		err = helm.FetchChart(chartPath, "traefik/traefik", "", helm3)
 		if err != nil {
 			return fmt.Errorf("Unable fetch chart: %s", err)
 		}
@@ -111,7 +111,7 @@ func MakeInstallTraefik2() *cobra.Command {
 		}
 
 		outputPath := path.Join(chartPath, "traefik")
-		err = helm3Upgrade(outputPath, "traefik/traefik", namespace,
+		err = helm.Helm3Upgrade(outputPath, "traefik/traefik", namespace,
 			"values.yaml",
 			"",
 			overrides,

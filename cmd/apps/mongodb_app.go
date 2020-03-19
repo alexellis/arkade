@@ -14,6 +14,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	k8s "github.com/alexellis/arkade/pkg/kubernetes"
 	"github.com/spf13/cobra"
 )
 
@@ -34,7 +35,7 @@ func MakeInstallMongoDB() *cobra.Command {
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -44,7 +45,7 @@ func MakeInstallMongoDB() *cobra.Command {
 
 		namespace, _ := command.Flags().GetString("namespace")
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
@@ -73,7 +74,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", helm3)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
@@ -81,7 +82,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = helm.UpdateHelmRepos(helm3)
 			if err != nil {
 				return fmt.Errorf("unable to update repos %s", err)
 			}
@@ -89,7 +90,7 @@ func MakeInstallMongoDB() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "stable/mongodb", defaultVersion, helm3)
+		err = helm.FetchChart(chartPath, "stable/mongodb", defaultVersion, helm3)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -110,7 +111,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm3Upgrade(outputPath, "stable/mongodb",
+		err = helm.Helm3Upgrade(outputPath, "stable/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
