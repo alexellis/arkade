@@ -137,9 +137,9 @@ schedule workloads to any Kubernetes cluster`,
 }
 
 const CrossplanInfoMsg = `# Get started by installing a stack for your favorite provider:
-* stack-gcp: https://crossplane.io/docs/master/install-crossplane.html#gcp-stack
-* stack-aws: https://crossplane.io/docs/master/install-crossplane.html#aws-stack
-* stack-azure: https://crossplane.io/docs/master/install-crossplane.html#azure-stack
+* provider-gcp: https://crossplane.io/docs/master/install-crossplane.html#gcp-provider
+* provider-aws: https://crossplane.io/docs/master/install-crossplane.html#aws-provider
+* provider-azure: https://crossplane.io/docs/master/install-crossplane.html#azure-provider
 
 Learn more about Crossplane: https://crossplaneio.github.io/docs/`
 
