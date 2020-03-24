@@ -25,7 +25,7 @@ ark --help  # a handy alias
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
-<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-7abf1d53_1024x1024@2x.jpg?v=1582970151)" width="250">
+<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-b5d3b58c_1024x1024@2x.jpg?v=1583309183)" width="250">
 
 [You can buy an arkade t-shirt in the OpenFaaS Ltd store](https://store.openfaas.com/collections/frontpage/products/arkade-t-shirt)
 
