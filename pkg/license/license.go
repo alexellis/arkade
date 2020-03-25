@@ -12,9 +12,6 @@ import (
 // ReadLicense    Read the first line of the text file in the filelocation
 // FileLocation   {param}   String file location
 func ReadLicense(fileLocation string) (string, error) {
-	// Open file
-	// Read content
-	// Return license key
 	filePointer, err := os.Open(fileLocation)
 
 	if err != nil {
@@ -23,8 +20,6 @@ func ReadLicense(fileLocation string) (string, error) {
 
 	defer filePointer.Close()
 	return readContents(filePointer)
-
-	// return "", errors.New("Error while reading from liscense file.")
 }
 
 //keyTextLimit   Checks if the size of the text is in the range or not.
