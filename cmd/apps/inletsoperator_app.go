@@ -14,6 +14,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/license"
 	"github.com/spf13/cobra"
 )
 
@@ -36,10 +37,10 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("token-file", "t", "", "Text file containing token or a service account JSON file")
 	inletsOperator.Flags().StringP("secret-key-file", "s", "", "Text file containing secret key, used for providers like ec2")
 	inletsOperator.Flags().Bool("update-repo", true, "Update the helm repo")
-
 	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
 	inletsOperator.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
+	inletsOperator.Flags().String("license-file", "lf", "The text file containing license key for inlets-pro")
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
@@ -159,6 +160,15 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		if val, _ := command.Flags().GetString("license"); len(val) > 0 {
 			overrides["inletsProLicense"] = val
+		}
+
+		if licenseFile, _ := command.Flags().GetString("license-file"); len(licenseFile) > 0 {
+			licenseKey, err := license.ReadLicense(licenseFile)
+			if err != nil {
+				return err
+			}
+
+			overrides["inletsProLicense"] = licenseKey
 		}
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
