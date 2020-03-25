@@ -21,7 +21,12 @@ curl -sLS https://dl.get-arkade.dev | sudo sh
 
 arkade --help
 ark --help  # a handy alias
+
+# Windows users with Git Bash
+curl -sLS https://dl.get-arkade.dev | sh
 ```
+
+> Windows users: arkade requires bash to be available, therefore Windows users can [install Git Bash](https://git-scm.com/downloads).
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
