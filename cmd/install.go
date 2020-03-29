@@ -61,6 +61,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallRegistryIngress())
 	command.AddCommand(apps.MakeInstallTraefik2())
 	command.AddCommand(apps.MakeInstallGrafana())
+	command.AddCommand(apps.MakeInstallArgoCD())
 
 	command.AddCommand(MakeInfo())
 
