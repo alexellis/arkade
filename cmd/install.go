@@ -62,6 +62,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallTraefik2())
 	command.AddCommand(apps.MakeInstallGrafana())
 	command.AddCommand(apps.MakeInstallArgoCD())
+	command.AddCommand(apps.MakeInstallPortainer())
 
 	command.AddCommand(MakeInfo())
 
