@@ -95,6 +95,9 @@ arkade info --help`,
 		case "argocd":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.ArgoCDInfoMsg)
+		case "portainer":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.PortainerInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
