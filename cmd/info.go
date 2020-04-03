@@ -89,6 +89,9 @@ arkade info --help`,
 		case "traefik2":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.Traefik2InfoMsg)
+		case "tekton":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.TektonInfoMsg)
 		case "grafana":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.GrafanaInfoMsg)

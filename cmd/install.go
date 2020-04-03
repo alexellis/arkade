@@ -63,6 +63,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallGrafana())
 	command.AddCommand(apps.MakeInstallArgoCD())
 	command.AddCommand(apps.MakeInstallPortainer())
+	command.AddCommand(apps.MakeInstallTekton())
 
 	command.AddCommand(MakeInfo())
 
@@ -90,5 +91,6 @@ func getApps() []string {
 		"docker-registry-ingress",
 		"traefik2",
 		"grafana",
+		"tekton",
 	}
 }
