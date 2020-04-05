@@ -68,6 +68,9 @@ arkade info --help`,
 		case "kafka-connector":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.KafkaConnectorInfoMsg)
+		case "kube-state-metrics":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.KubeStateMetricsInfoMsg)
 		case "minio":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.MinioInfoMsg)
