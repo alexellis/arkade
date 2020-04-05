@@ -51,6 +51,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallLinkerd())
 	command.AddCommand(apps.MakeInstallCronConnector())
 	command.AddCommand(apps.MakeInstallKafkaConnector())
+	command.AddCommand(apps.MakeInstallKubeStateMetrics())
 	command.AddCommand(apps.MakeInstallMinio())
 	command.AddCommand(apps.MakeInstallPostgresql())
 	command.AddCommand(apps.MakeInstallKubernetesDashboard())
@@ -84,6 +85,7 @@ func getApps() []string {
 		"minio",
 		"postgresql",
 		"kubernetes-dashboard",
+		"kube-state-metrics",
 		"istio",
 		"crossplane",
 		"mongodb",
