@@ -135,14 +135,15 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		}
 
 		fmt.Println(`=======================================================================
-= kube-state-metrics has been installed.                                  =
+=             kube-state-metrics has been installed.                  =
 =======================================================================
+
 # Port-forward
+kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 
-kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 & http://localhost:9000/metrics
-
+# Then access via:
+http://localhost:9000/metrics
 ` + KubeStateMetricsInfoMsg + `
-
 ` + pkg.ThanksForUsing)
 
 		return nil
@@ -152,7 +153,6 @@ kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 }
 
 const KubeStateMetricsInfoMsg = `
-
 # Find out more at:
 # https://github.com/kubernetes/kube-state-metrics
 `
