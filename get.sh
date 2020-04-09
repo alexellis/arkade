@@ -162,10 +162,15 @@ getPackage() {
                 rm "$targetFile"
             fi
 
-            if [ -n "$ALIAS_NAME" ]; then
-                if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
-                    ln -s $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME
-                    echo "Creating alias '$ALIAS_NAME' for '$REPO'."
+            existingAlias=$(whereis -b $ALIAS_NAME | cut -f 2 -d :)
+            if [ ! -z "${existingAlias// }" ]; then
+                echo "There is already a command '${existingAlias// }' in the path, do NOT create alias"
+            else
+                if [ -n "$ALIAS_NAME" ]; then
+                    if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
+                        ln -s $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME
+                        echo "Creating alias '$ALIAS_NAME' for '$REPO'."
+                    fi
                 fi
             fi
 
