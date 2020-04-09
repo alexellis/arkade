@@ -65,6 +65,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallArgoCD())
 	command.AddCommand(apps.MakeInstallPortainer())
 	command.AddCommand(apps.MakeInstallTekton())
+	command.AddCommand(apps.MakeInstallJenkins())
 
 	command.AddCommand(MakeInfo())
 
@@ -94,5 +95,6 @@ func getApps() []string {
 		"traefik2",
 		"grafana",
 		"tekton",
+		"jenkins",
 	}
 }
