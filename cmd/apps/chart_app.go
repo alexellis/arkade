@@ -38,10 +38,12 @@ before using the generic helm chart installer command.`,
 	chartCmd.Flags().String("values-file", "", "Give the values.yaml file to use from the upstream chart repo")
 	chartCmd.Flags().String("repo-name", "", "Chart name")
 	chartCmd.Flags().String("repo-url", "", "Chart repo")
+	chartCmd.Flags().Bool("verbose", false, "Verbose output")
 
 	chartCmd.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
 
 	chartCmd.RunE = func(command *cobra.Command, args []string) error {
+		verbose, _ := command.Flags().GetBool("verbose")
 		chartRepoName, _ := command.Flags().GetString("repo-name")
 		chartRepoURL, _ := command.Flags().GetString("repo-url")
 
@@ -88,13 +90,13 @@ before using the generic helm chart installer command.`,
 		}
 
 		if len(chartRepoURL) > 0 {
-			err = addHelmRepo(chartPrefix, chartRepoURL, false)
+			err = addHelmRepo(chartPrefix, chartRepoURL, false, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
-		err = updateHelmRepos(false)
+		err = updateHelmRepos(false, verbose)
 		if err != nil {
 			return err
 		}
@@ -114,7 +116,7 @@ before using the generic helm chart installer command.`,
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, chartRepoName, defaultVersion, false)
+		err = fetchChart(chartPath, chartRepoName, defaultVersion, false, verbose)
 		if err != nil {
 			return err
 		}
@@ -135,7 +137,7 @@ before using the generic helm chart installer command.`,
 			}
 		}
 
-		err = templateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
+		err = templateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap, verbose)
 		if err != nil {
 			return err
 		}

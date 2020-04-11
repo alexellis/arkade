@@ -27,7 +27,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		Use:          "openfaas",
 		Short:        "Install openfaas",
 		Long:         `Install openfaas`,
-		Example:      `  arkade install openfaas --loadbalancer`,
+		Example:      `  arkade install openfaas --load-balancer`,
 		SilenceUsage: true,
 	}
 
@@ -49,12 +49,14 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
 
 	openfaas.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	openfaas.Flags().Bool("verbose", false, "Verbose output")
 
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -92,7 +94,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", helm3)
+		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -100,7 +102,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		updateRepo, _ := openfaas.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
@@ -142,7 +144,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "openfaas/openfaas", defaultVersion, helm3)
+		err = fetchChart(chartPath, "openfaas/openfaas", defaultVersion, helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -215,7 +217,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				"values"+valuesSuffix+".yaml",
 				"",
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -227,7 +230,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				namespace,
 				outputPath,
 				"values"+valuesSuffix+".yaml",
-				overrides)
+				overrides,
+				verbose)
 
 			if err != nil {
 				return err

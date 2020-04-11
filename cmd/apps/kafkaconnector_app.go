@@ -31,9 +31,11 @@ func MakeInstallKafkaConnector() *cobra.Command {
 	command.Flags().String("broker-host", "kafka", "The host for the Kafka broker")
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set key=value)")
+	command.Flags().Bool("verbose", false, "Verbose output")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
+		verbose, _ := command.Flags().GetBool("verbose")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -66,20 +68,20 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false)
+		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(false)
+			err = updateHelmRepos(false, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "openfaas/kafka-connector", defaultVersion, false)
+		err = fetchChart(chartPath, "openfaas/kafka-connector", defaultVersion, false, verbose)
 
 		if err != nil {
 			return err
@@ -125,7 +127,8 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			ns,
 			outputPath,
 			"values.yaml",
-			overrides)
+			overrides,
+			verbose)
 
 		if err != nil {
 			return err

@@ -31,6 +31,7 @@ flag and the nginx-ingress docs for more info`,
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install nginx-ingress in host mode.")
 	nginx.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	nginx.Flags().Bool("verbose", false, "Verbose output")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
@@ -40,7 +41,7 @@ flag and the nginx-ingress docs for more info`,
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
 
-		updateRepo, _ := nginx.Flags().GetBool("update-repo")
+		updateRepo, _ := command.Flags().GetBool("update-repo")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		helm3, _ := command.Flags().GetBool("helm3")
@@ -48,7 +49,7 @@ flag and the nginx-ingress docs for more info`,
 		if helm3 {
 			fmt.Println("Using helm3")
 		}
-
+		verbose, _ := command.Flags().GetBool("verbose")
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
@@ -71,20 +72,20 @@ flag and the nginx-ingress docs for more info`,
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return err
@@ -128,7 +129,8 @@ flag and the nginx-ingress docs for more info`,
 				"values.yaml",
 				defaultVersion,
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -141,7 +143,8 @@ flag and the nginx-ingress docs for more info`,
 				ns,
 				outputPath,
 				"values.yaml",
-				overrides)
+				overrides,
+				verbose)
 
 			if err != nil {
 				return err

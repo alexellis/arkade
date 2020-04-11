@@ -34,10 +34,12 @@ func MakeInstallTraefik2() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set key=value)")
 	traefik2.Flags().Bool("wait", false, "Wait for the chart to be installed")
 	traefik2.Flags().Bool("ingress-provider", true, "Add Traefik's ingressprovider along with the CRD provider")
+	traefik2.Flags().Bool("verbose", false, "Verbose output")
 
 	traefik2.RunE = func(command *cobra.Command, args []string) error {
 
 		kubeConfigPath := getDefaultKubeconfig()
+		verbose, _ := command.Flags().GetBool("verbose")
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -60,20 +62,20 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", helm3)
+		err = addHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", helm3, verbose)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "traefik/traefik", "", helm3)
+		err = fetchChart(chartPath, "traefik/traefik", "", helm3, verbose)
 		if err != nil {
 			return fmt.Errorf("Unable fetch chart: %s", err)
 		}
@@ -115,7 +117,8 @@ func MakeInstallTraefik2() *cobra.Command {
 			"values.yaml",
 			"",
 			overrides,
-			wait)
+			wait,
+			verbose)
 
 		if err != nil {
 			return err

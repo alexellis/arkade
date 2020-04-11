@@ -29,9 +29,11 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 	kubeStateMetrics.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	kubeStateMetrics.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	kubeStateMetrics.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
+	kubeStateMetrics.Flags().Bool("verbose", false, "Verbose output")
 
 	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -69,13 +71,13 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			return err
 		}
 
-		err = updateHelmRepos(helm3)
+		err = updateHelmRepos(helm3, verbose)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/kube-state-metrics", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/kube-state-metrics", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return err
@@ -104,7 +106,8 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 				"values.yaml",
 				defaultVersion,
 				setMap,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -118,7 +121,8 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 				namespace,
 				outputPath,
 				"values.yaml",
-				setMap)
+				setMap,
+				verbose)
 
 			if err != nil {
 				return err

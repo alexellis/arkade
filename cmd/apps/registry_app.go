@@ -24,7 +24,7 @@ func MakeInstallRegistry() *cobra.Command {
 		Use:          "docker-registry",
 		Short:        "Install a Docker registry",
 		Long:         `Install a Docker registry`,
-		Example:      `  arkade install registry --namespace default`,
+		Example:      `  arkade install docker-registry --namespace default`,
 		SilenceUsage: true,
 	}
 
@@ -33,10 +33,12 @@ func MakeInstallRegistry() *cobra.Command {
 	registry.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	registry.Flags().StringP("username", "u", "admin", "Username for the registry")
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
+	registry.Flags().Bool("verbose", false, "Verbose output")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -88,20 +90,20 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/docker-registry", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/docker-registry", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return err
@@ -126,7 +128,8 @@ func MakeInstallRegistry() *cobra.Command {
 				"values.yaml",
 				defaultVersion,
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -139,7 +142,8 @@ func MakeInstallRegistry() *cobra.Command {
 				ns,
 				outputPath,
 				"values.yaml",
-				overrides)
+				overrides,
+				verbose)
 
 			if err != nil {
 				return err

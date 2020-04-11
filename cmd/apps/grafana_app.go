@@ -28,12 +28,14 @@ func MakeInstallGrafana() *cobra.Command {
 	grafana.Flags().StringP("namespace", "n", "grafana", "The namespace to install grafana")
 	grafana.Flags().Bool("update-repo", true, "Update the helm repo")
 	grafana.Flags().Bool("persistence", false, "Make grafana persistent")
+	grafana.Flags().Bool("verbose", false, "Verbose output")
 
 	grafana.RunE = func(command *cobra.Command, args []string) error {
 
 		const chartVersion = "5.0.4"
 
 		// Get all flags
+		verbose, _ := command.Flags().GetBool("verbose")
 		wait, _ := command.Flags().GetBool("wait")
 		persistence, _ := command.Flags().GetBool("persistence")
 		namespace, _ := command.Flags().GetString("namespace")
@@ -56,7 +58,7 @@ func MakeInstallGrafana() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true, verbose)
 		if err != nil {
 			return err
 		}
@@ -65,7 +67,7 @@ func MakeInstallGrafana() *cobra.Command {
 		updateRepo, _ := grafana.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(true)
+			err = updateHelmRepos(true, verbose)
 			if err != nil {
 				return err
 			}
@@ -84,7 +86,7 @@ func MakeInstallGrafana() *cobra.Command {
 
 		// download the chart
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/grafana", chartVersion, true)
+		err = fetchChart(chartPath, "stable/grafana", chartVersion, true, verbose)
 		if err != nil {
 			return err
 		}
@@ -108,7 +110,8 @@ func MakeInstallGrafana() *cobra.Command {
 			"values.yaml",
 			chartVersion,
 			overrides,
-			wait)
+			wait,
+			verbose)
 
 		if err != nil {
 			return err

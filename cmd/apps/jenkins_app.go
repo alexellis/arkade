@@ -32,10 +32,12 @@ func MakeInstallJenkins() *cobra.Command {
 	jenkins.Flags().Bool("persistence", false, "Enable persistence")
 	jenkins.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
+	jenkins.Flags().Bool("verbose", false, "Verbose output")
 
 	jenkins.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -70,20 +72,20 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(true)
+			err = updateHelmRepos(true, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/jenkins", defaultVersion, true)
+		err = fetchChart(chartPath, "stable/jenkins", defaultVersion, true, verbose)
 
 		if err != nil {
 			return err
@@ -109,7 +111,8 @@ func MakeInstallJenkins() *cobra.Command {
 			"values.yaml",
 			defaultVersion,
 			overrides,
-			wait)
+			wait,
+			verbose)
 
 		if err != nil {
 			return err

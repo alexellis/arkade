@@ -42,10 +42,12 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
 	inletsOperator.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
+	inletsOperator.Flags().Bool("verbose", false, "Verbose output")
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
 
+		verbose, _ := command.Flags().GetBool("verbose")
 		wait, _ := command.Flags().GetBool("wait")
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -86,7 +88,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("inlets", "https://inlets.github.io/inlets-operator/", helm3)
+		err = addHelmRepo("inlets", "https://inlets.github.io/inlets-operator/", helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -94,7 +96,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 		updateRepo, _ := inletsOperator.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
@@ -102,7 +104,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "inlets/inlets-operator", defaultVersion, helm3)
+		err = fetchChart(chartPath, "inlets/inlets-operator", defaultVersion, helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -179,14 +181,14 @@ func MakeInstallInletsOperator() *cobra.Command {
 			outputPath := path.Join(chartPath, "inlets-operator")
 
 			err := helm3Upgrade(outputPath, "inlets/inlets-operator",
-				namespace, "values.yaml", "", overrides, wait)
+				namespace, "values.yaml", "", overrides, wait, verbose)
 			if err != nil {
 				return err
 			}
 
 		} else {
 			outputPath := path.Join(chartPath, "inlets-operator/rendered")
-			err = templateChart(chartPath, "inlets-operator", namespace, outputPath, "values.yaml", overrides)
+			err = templateChart(chartPath, "inlets-operator", namespace, outputPath, "values.yaml", overrides, verbose)
 			if err != nil {
 				return err
 			}

@@ -37,10 +37,12 @@ func MakeInstallMinio() *cobra.Command {
 	minio.Flags().Bool("persistence", false, "Enable persistence")
 	minio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
+	minio.Flags().Bool("verbose", false, "Verbose output")
 
 	minio.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -84,20 +86,20 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/minio", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/minio", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return err
@@ -154,7 +156,8 @@ func MakeInstallMinio() *cobra.Command {
 				"values.yaml",
 				defaultVersion,
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -168,7 +171,8 @@ func MakeInstallMinio() *cobra.Command {
 				ns,
 				outputPath,
 				"values.yaml",
-				overrides)
+				overrides,
+				verbose)
 
 			if err != nil {
 				return err

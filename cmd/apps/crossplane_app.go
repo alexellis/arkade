@@ -30,9 +30,11 @@ schedule workloads to any Kubernetes cluster`,
 	crossplane.Flags().StringP("namespace", "n", "crossplane-system", "The namespace used for installation")
 	crossplane.Flags().Bool("update-repo", true, "Update the helm repo")
 	crossplane.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	crossplane.Flags().Bool("verbose", false, "Verbose output")
 
 	crossplane.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -76,7 +78,7 @@ schedule workloads to any Kubernetes cluster`,
 			return err
 		}
 
-		err = addHelmRepo("crossplane-alpha", "https://charts.crossplane.io/alpha", helm3)
+		err = addHelmRepo("crossplane-alpha", "https://charts.crossplane.io/alpha", helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -84,7 +86,7 @@ schedule workloads to any Kubernetes cluster`,
 		updateRepo, _ := crossplane.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
@@ -92,7 +94,7 @@ schedule workloads to any Kubernetes cluster`,
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "crossplane-alpha/crossplane", defaultVersion, helm3)
+		err = fetchChart(chartPath, "crossplane-alpha/crossplane", defaultVersion, helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -107,14 +109,14 @@ schedule workloads to any Kubernetes cluster`,
 			}
 
 			err := helm3Upgrade(outputPath, "crossplane-alpha/crossplane",
-				namespace, "values.yaml", "", map[string]string{}, wait)
+				namespace, "values.yaml", "", map[string]string{}, wait, verbose)
 			if err != nil {
 				return err
 			}
 
 		} else {
 			outputPath := path.Join(chartPath, "crossplane-alpha/crossplane")
-			err = templateChart(chartPath, "crossplane", namespace, outputPath, "values.yaml", map[string]string{})
+			err = templateChart(chartPath, "crossplane", namespace, outputPath, "values.yaml", map[string]string{}, verbose)
 			if err != nil {
 				return err
 			}

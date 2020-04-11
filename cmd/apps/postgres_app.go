@@ -31,12 +31,14 @@ func MakeInstallPostgresql() *cobra.Command {
 	postgresql.Flags().String("namespace", "default", "Kubernetes namespace for the application")
 
 	postgresql.Flags().Bool("persistence", false, "Enable persistence")
+	postgresql.Flags().Bool("verbose", false, "Verbose output")
 
 	postgresql.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	postgresql.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
+		verbose, _ := command.Flags().GetBool("verbose")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -76,14 +78,14 @@ func MakeInstallPostgresql() *cobra.Command {
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(false)
+			err = updateHelmRepos(false, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/postgresql", defaultVersion, false)
+		err = fetchChart(chartPath, "stable/postgresql", defaultVersion, false, verbose)
 
 		if err != nil {
 			return err
@@ -115,7 +117,8 @@ func MakeInstallPostgresql() *cobra.Command {
 			ns,
 			outputPath,
 			"values.yaml",
-			overrides)
+			overrides,
+			verbose)
 
 		if err != nil {
 			return err

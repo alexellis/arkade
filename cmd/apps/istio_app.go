@@ -30,12 +30,14 @@ func MakeInstallIstio() *cobra.Command {
 	istio.Flags().String("namespace", "istio-system", "Namespace for the app")
 	istio.Flags().Bool("init", true, "Run the Istio init to add CRDs etc")
 	istio.Flags().Bool("helm3", true, "Use Helm 3")
+	istio.Flags().Bool("verbose", false, "Verbose output")
 
 	istio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set=prometheus.enabled=false)")
 
 	istio.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := getDefaultKubeconfig()
+		verbose, _ := command.Flags().GetBool("verbose")
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -79,7 +81,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		istioVer := "1.4.5"
 
-		err = addHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3)
+		err = addHelmRepo("istio", "https://storage.googleapis.com/istio-release/releases/"+istioVer+"/charts", helm3, verbose)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
@@ -87,7 +89,7 @@ func MakeInstallIstio() *cobra.Command {
 		updateRepo, _ := istio.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return fmt.Errorf("unable to update repos %s", err)
 			}
@@ -101,7 +103,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "istio/istio", defaultVersion, helm3)
+		err = fetchChart(chartPath, "istio/istio", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -118,7 +120,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		if initIstio, _ := command.Flags().GetBool("init"); initIstio {
 			// Waiting for the crds to appear
-			err = helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, true)
+			err = helm3Upgrade(outputPath, "istio/istio-init", namespace, "", defaultVersion, overrides, true, verbose)
 			if err != nil {
 				return fmt.Errorf("unable to istio-init install chart with helm %s", err)
 			}
@@ -145,7 +147,7 @@ func MakeInstallIstio() *cobra.Command {
 			return err
 		}
 
-		err = helm3Upgrade(outputPath, "istio/istio", namespace, valuesFile, defaultVersion, overrides, wait)
+		err = helm3Upgrade(outputPath, "istio/istio", namespace, valuesFile, defaultVersion, overrides, wait, verbose)
 		if err != nil {
 			return fmt.Errorf("unable to istio install chart with helm %s", err)
 		}

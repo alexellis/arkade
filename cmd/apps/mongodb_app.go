@@ -30,10 +30,12 @@ func MakeInstallMongoDB() *cobra.Command {
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set=mongodbUsername=admin)")
 	command.Flags().Bool("persistence", false, "Create and bind a persistent volume, not recommended for development")
+	command.Flags().Bool("verbose", false, "Verbose output")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -73,7 +75,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", helm3)
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", helm3, verbose)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
@@ -81,7 +83,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return fmt.Errorf("unable to update repos %s", err)
 			}
@@ -89,7 +91,7 @@ func MakeInstallMongoDB() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "stable/mongodb", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/mongodb", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -111,7 +113,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		err = helm3Upgrade(outputPath, "stable/mongodb",
-			namespace, "values.yaml", defaultVersion, overrides, wait)
+			namespace, "values.yaml", defaultVersion, overrides, wait, verbose)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
 		}

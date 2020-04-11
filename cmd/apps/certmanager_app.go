@@ -28,8 +28,10 @@ func MakeInstallCertManager() *cobra.Command {
 	certManager.Flags().StringP("namespace", "n", "cert-manager", "The namespace to install cert-manager")
 	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
 	certManager.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	certManager.Flags().Bool("verbose", false, "Verbose output")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
+		verbose, _ := command.Flags().GetBool("verbose")
 		wait, _ := command.Flags().GetBool("wait")
 		const certManagerVersion = "v0.12.0"
 		kubeConfigPath := getDefaultKubeconfig()
@@ -68,7 +70,7 @@ func MakeInstallCertManager() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("jetstack", "https://charts.jetstack.io", helm3)
+		err = addHelmRepo("jetstack", "https://charts.jetstack.io", helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -76,7 +78,7 @@ func MakeInstallCertManager() *cobra.Command {
 		updateRepo, _ := certManager.Flags().GetBool("update-repo")
 
 		if updateRepo {
-			err = updateHelmRepos(helm3)
+			err = updateHelmRepos(helm3, verbose)
 			if err != nil {
 				return err
 			}
@@ -93,7 +95,7 @@ func MakeInstallCertManager() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "jetstack/cert-manager", certManagerVersion, helm3)
+		err = fetchChart(chartPath, "jetstack/cert-manager", certManagerVersion, helm3, verbose)
 		if err != nil {
 			return err
 		}
@@ -120,13 +122,14 @@ func MakeInstallCertManager() *cobra.Command {
 				"values.yaml",
 				"v0.12.0",
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
 			}
 		} else {
-			err = templateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
+			err = templateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil, verbose)
 			if err != nil {
 				return err
 			}

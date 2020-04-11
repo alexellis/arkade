@@ -24,11 +24,13 @@ func MakeInstallCronConnector() *cobra.Command {
 
 	command.Flags().StringP("namespace", "n", "openfaas", "The namespace used for installation")
 	command.Flags().Bool("update-repo", true, "Update the helm repo")
+	command.Flags().Bool("verbose", false, "Verbose output")
 
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
+		verbose, _ := command.Flags().GetBool("verbose")
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -62,20 +64,20 @@ func MakeInstallCronConnector() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false)
+		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false, verbose)
 		if err != nil {
 			return err
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(false)
+			err = updateHelmRepos(false, verbose)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "openfaas/cron-connector", defaultVersion, false)
+		err = fetchChart(chartPath, "openfaas/cron-connector", defaultVersion, false, verbose)
 
 		if err != nil {
 			return err
@@ -105,7 +107,8 @@ func MakeInstallCronConnector() *cobra.Command {
 			ns,
 			outputPath,
 			"values.yaml",
-			overrides)
+			overrides,
+			verbose)
 
 		if err != nil {
 			return err

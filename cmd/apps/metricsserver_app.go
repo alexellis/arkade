@@ -27,9 +27,11 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	metricsServer.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	metricsServer.Flags().Bool("verbose", false, "Verbose output")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
+		verbose, _ := command.Flags().GetBool("verbose")
 		kubeConfigPath := getDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -67,13 +69,13 @@ func MakeInstallMetricsServer() *cobra.Command {
 			return err
 		}
 
-		err = updateHelmRepos(helm3)
+		err = updateHelmRepos(helm3, verbose)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/metrics-server", defaultVersion, helm3)
+		err = fetchChart(chartPath, "stable/metrics-server", defaultVersion, helm3, verbose)
 
 		if err != nil {
 			return err
@@ -99,7 +101,8 @@ func MakeInstallMetricsServer() *cobra.Command {
 				"values.yaml",
 				defaultVersion,
 				overrides,
-				wait)
+				wait,
+				verbose)
 
 			if err != nil {
 				return err
@@ -113,7 +116,8 @@ func MakeInstallMetricsServer() *cobra.Command {
 				namespace,
 				outputPath,
 				"values.yaml",
-				overrides)
+				overrides,
+				verbose)
 
 			if err != nil {
 				return err

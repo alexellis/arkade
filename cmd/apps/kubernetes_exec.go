@@ -14,7 +14,7 @@ import (
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
-func fetchChart(path, chart, version string, helm3 bool) error {
+func fetchChart(path, chart, version string, helm3 bool, verbose bool) error {
 	versionStr := ""
 
 	if len(version) > 0 {
@@ -39,7 +39,7 @@ func fetchChart(path, chart, version string, helm3 bool) error {
 	task := execute.ExecTask{
 		Command:     fmt.Sprintf("%s fetch %s --untar=true --untardir %s%s", env.LocalBinary("helm", subdir), chart, path, versionStr),
 		Env:         os.Environ(),
-		StreamStdio: true,
+		StreamStdio: verbose,
 	}
 	res, err := task.Execute()
 
@@ -61,7 +61,7 @@ func getNodeArchitecture() string {
 	return arch
 }
 
-func helm3Upgrade(basePath, chart, namespace, values, version string, overrides map[string]string, wait bool) error {
+func helm3Upgrade(basePath, chart, namespace, values, version string, overrides map[string]string, wait bool, verbose bool) error {
 
 	chartName := chart
 	if index := strings.Index(chartName, "/"); index > -1 {
@@ -99,7 +99,7 @@ func helm3Upgrade(basePath, chart, namespace, values, version string, overrides 
 		Args:        args,
 		Env:         os.Environ(),
 		Cwd:         basePath,
-		StreamStdio: true,
+		StreamStdio: verbose,
 	}
 
 	fmt.Printf("Command: %s %s\n", task.Command, task.Args)
@@ -120,7 +120,7 @@ func helm3Upgrade(basePath, chart, namespace, values, version string, overrides 
 	return nil
 }
 
-func templateChart(basePath, chart, namespace, outputPath, values string, overrides map[string]string) error {
+func templateChart(basePath, chart, namespace, outputPath, values string, overrides map[string]string, verbose bool) error {
 
 	rmErr := os.RemoveAll(outputPath)
 
@@ -150,7 +150,7 @@ func templateChart(basePath, chart, namespace, outputPath, values string, overri
 			env.LocalBinary("helm", ""), chart, chart, namespace, outputPath, valuesStr, overridesStr),
 		Env:         os.Environ(),
 		Cwd:         basePath,
-		StreamStdio: true,
+		StreamStdio: verbose,
 	}
 
 	res, err := task.Execute()
@@ -170,7 +170,7 @@ func templateChart(basePath, chart, namespace, outputPath, values string, overri
 	return nil
 }
 
-func addHelmRepo(name, url string, helm3 bool) error {
+func addHelmRepo(name, url string, helm3 bool, verbose bool) error {
 	subdir := ""
 	if helm3 {
 		subdir = "helm3"
@@ -179,7 +179,7 @@ func addHelmRepo(name, url string, helm3 bool) error {
 	task := execute.ExecTask{
 		Command:     fmt.Sprintf("%s repo add %s %s", env.LocalBinary("helm", subdir), name, url),
 		Env:         os.Environ(),
-		StreamStdio: true,
+		StreamStdio: verbose,
 	}
 	res, err := task.Execute()
 
@@ -193,7 +193,7 @@ func addHelmRepo(name, url string, helm3 bool) error {
 	return nil
 }
 
-func updateHelmRepos(helm3 bool) error {
+func updateHelmRepos(helm3 bool, verbose bool) error {
 	subdir := ""
 	if helm3 {
 		subdir = "helm3"
@@ -201,7 +201,7 @@ func updateHelmRepos(helm3 bool) error {
 	task := execute.ExecTask{
 		Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
 		Env:         os.Environ(),
-		StreamStdio: true,
+		StreamStdio: verbose,
 	}
 
 	res, err := task.Execute()
