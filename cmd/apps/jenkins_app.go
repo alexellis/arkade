@@ -48,7 +48,7 @@ func MakeInstallJenkins() *cobra.Command {
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -122,14 +122,21 @@ func MakeInstallJenkins() *cobra.Command {
 	return jenkins
 }
 
-var JenkinsInfoMsg = `# Forward the Jenkins port to your machine
-kubectl --namespace default port-forward svc/jenkins 8080:8080 &
+var JenkinsInfoMsg = `# Jenkins can take several minutes to install, check its status with:
+kubectl rollout status deploy/jenkins --timeout 10m
 
-# Get the admin-user and admin-password
-printf $(kubectl get secret --namespace default jenkins -o jsonpath="{.data.jenkins-admin-user}" | base64 --decode);echo
-printf $(kubectl get secret --namespace default jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+# Get the Jenkins credentials:
+export USER=$(kubectl get secret jenkins \
+	-o jsonpath="{.data.jenkins-admin-user}" | base64 --decode)
+export PASS=$(kubectl get secret jenkins \
+	-o jsonpath="{.data.jenkins-admin-password}" | base64 --decode)
 
-# Get the Jenkins URL
+echo "Credentials: $USER / $PASS"
+
+# Port-forward the Jenkins service
+kubectl port-forward svc/jenkins 8080:8080 &
+
+# Open the Jenkins UI at:
 echo http://127.0.0.1:8080
 `
 
