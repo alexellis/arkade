@@ -29,5 +29,4 @@ deploy:
   on:
     tags: true
 
-env:
-- GO111MODULE=on
+env: GO111MODULE=on
