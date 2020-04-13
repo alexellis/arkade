@@ -45,7 +45,7 @@ func MakeInstallLinkerd() *cobra.Command {
 		arch := getNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := getUserPath()
