@@ -163,7 +163,7 @@ getPackage() {
             fi
 
             if [ $(which $ALIAS_NAME) ]; then
-                echo "There is already a command '$ALIAS_NAME' in the path, do NOT create alias"
+                echo "There is already a command '$ALIAS_NAME' in the path, NOT creating alias"
             else
                 if [ -n "$ALIAS_NAME" ]; then
                     if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
