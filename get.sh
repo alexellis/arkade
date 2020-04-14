@@ -162,9 +162,8 @@ getPackage() {
                 rm "$targetFile"
             fi
 
-            existingAlias=$(whereis -b $ALIAS_NAME | cut -f 2 -d :)
-            if [ ! -z "${existingAlias// }" ]; then
-                echo "There is already a command '${existingAlias// }' in the path, do NOT create alias"
+            if [ $(which $ALIAS_NAME) ]; then
+                echo "There is already a command '$ALIAS_NAME' in the path, do NOT create alias"
             else
                 if [ -n "$ALIAS_NAME" ]; then
                     if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
