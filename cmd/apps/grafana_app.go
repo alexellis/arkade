@@ -56,6 +56,11 @@ func MakeInstallGrafana() *cobra.Command {
 			return err
 		}
 
+		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true)
+		if err != nil {
+			return err
+		}
+
 		// Update chart repositories
 		updateRepo, _ := grafana.Flags().GetBool("update-repo")
 
