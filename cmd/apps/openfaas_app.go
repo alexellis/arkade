@@ -43,7 +43,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
 	openfaas.Flags().Bool("direct-functions", true, "Invoke functions directly from the gateway")
 
-	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker")
+	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
+	openfaas.Flags().Int("max-inflight", 1, "Max tasks for queue-worker to process in parallel")
 	openfaas.Flags().Int("gateways", 1, "Replicas of gateway")
 
 	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
@@ -178,6 +179,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			directFunctionsVal = "false"
 		}
 		gateways, _ := command.Flags().GetInt("gateways")
+		maxInflight, _ := command.Flags().GetInt("max_inflight")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 
 		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
@@ -189,8 +191,9 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["faasnetes.imagePullPolicy"] = functionPullPolicy
 		overrides["basicAuthPlugin.replicas"] = "1"
 		overrides["gateway.replicas"] = fmt.Sprintf("%d", gateways)
-		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
 		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
+		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
+		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
 
 		basicAuth, _ := command.Flags().GetBool("basic-auth")
 
@@ -242,12 +245,9 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
 			}
 		}
-
 		fmt.Println(openfaasPostInstallMsg)
-
 		return nil
 	}
-
 	return openfaas
 }
 
