@@ -61,7 +61,7 @@ arkade install cert-manager
 Other common tools:
 
 ```bash
-arkade install nginx-ingress
+arkade install ingress-nginx
 
 arkade install metrics-server
 ```
@@ -71,22 +71,25 @@ arkade install metrics-server
 We use strongly typed Go CLI flags, so that you can run `--help` instead of trawling through countless Helm chart README files to find the correct `--set` combination for what you want.
 
 ```bash
-arkade install nginx-ingress --help
+arkade install ingress-nginx --help
 
-Install nginx-ingress. This app can be installed with Host networking for 
-cases where an external LB is not available. please see the --host-mode 
-flag and the nginx-ingress docs for more info
+Install ingress-nginx. This app can be installed with Host networking for
+cases where an external LB is not available. please see the --host-mode
+flag and the ingress-nginx docs for more info
 
 Usage:
-  arkade install nginx-ingress [flags]
+  arkade install ingress-nginx [flags]
+
+Aliases:
+  ingress-nginx, nginx-ingress
 
 Examples:
-  arkade install nginx-ingress --namespace default
+  arkade install ingress-nginx --namespace default
 
 Flags:
       --helm3              Use helm3, if set to false uses helm2 (default true)
-  -h, --help               help for nginx-ingress
-      --host-mode          If we should install nginx-ingress in host mode.
+  -h, --help               help for ingress-nginx
+      --host-mode          If we should install ingress-nginx in host mode.
   -n, --namespace string   The namespace used for installation (default "default")
       --update-repo        Update the helm repo (default true)
 ```
@@ -110,7 +113,7 @@ arkade info <NAME>
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
 
 ```bash
-arkade install nginx-ingress
+arkade install ingress-nginx
 arkade install cert-manager
 arkade install docker-registry
 arkade install docker-registry-ingress \
@@ -123,7 +126,7 @@ arkade install docker-registry-ingress \
 The same for OpenFaaS would look like this:
 
 ```bash
-arkade install nginx-ingress
+arkade install ingress-nginx
 arkade install cert-manager
 arkade install openfaas
 arkade install openfaas-ingress \
@@ -172,7 +175,7 @@ linkerd                 Install linkerd
 metrics-server          Install metrics-server
 minio                   Install minio
 mongodb                 Install mongodb
-nginx-ingress           Install nginx-ingress
+ingress-nginx           Install ingress-nginx
 openfaas                Install openfaas
 openfaas-ingress        Install openfaas ingress with TLS
 postgresql              Install postgresql
