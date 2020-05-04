@@ -168,7 +168,8 @@ func MakeInstallInletsOperator() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			overrides["inletsProLicense"] = string(licenseKey)
+
+			overrides["inletsProLicense"] = strings.TrimSpace(string(licenseKey))
 		}
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
