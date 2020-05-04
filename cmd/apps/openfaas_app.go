@@ -179,7 +179,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			directFunctionsVal = "false"
 		}
 		gateways, _ := command.Flags().GetInt("gateways")
-		maxInflight, _ := command.Flags().GetInt("max_inflight")
+		maxInflight, _ := command.Flags().GetInt("max-inflight")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 
 		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
