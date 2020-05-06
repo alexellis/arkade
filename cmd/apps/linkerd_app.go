@@ -75,6 +75,10 @@ func MakeInstallLinkerd() *cobra.Command {
 			return err
 		}
 		file, err := ioutil.TempFile("", "linkerd")
+		if err != nil {
+			return err
+		}
+
 		w := bufio.NewWriter(file)
 		_, err = w.WriteString(res.Stdout)
 		if err != nil {
@@ -142,6 +146,9 @@ func downloadLinkerd(userPath, clientOS string) error {
 
 		// Write the body to file
 		_, err = io.Copy(out, res.Body)
+		if err != nil {
+			return err
+		}
 
 		err = os.Chmod(filePath, 0755)
 		if err != nil {
