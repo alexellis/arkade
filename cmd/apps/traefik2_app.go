@@ -50,7 +50,6 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		_, clientOS := env.GetClientArch()
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q\n", clientOS)
 		helm3 := true
