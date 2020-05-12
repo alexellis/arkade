@@ -291,7 +291,17 @@ const InletsOperatorInfoMsg = `# The default configuration is for DigitalOcean a
 # stored as "inlets-access-key" in the "default" namespace.
 
 # To get your first Public IP run the following:
+
+# K8s 1.17
 kubectl run nginx-1 --image=nginx --port=80 --restart=Always
+
+# K8s 1.18 and higher:
+
+kubectl apply -f \
+ https://raw.githubusercontent.com/inlets/inlets-operator/master/contrib/nginx-sample-deployment.yaml
+
+# Then expose the Deployment as a LoadBalancer:
+
 kubectl expose deployment nginx-1 --port=80 --type=LoadBalancer
 
 # Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to 
