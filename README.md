@@ -183,6 +183,12 @@ postgresql              Install postgresql
 
 ## Community & contributing
 
+### Sponsored apps
+
+As of May 2020, you can propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a kink to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade. When your sponsorship expires your app can be renewed at that time, or it will disappear automatically based upon the end-date.
+
+Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
+
 ### What about helm and `k3sup`?
 
 In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
