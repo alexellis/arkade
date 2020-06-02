@@ -73,8 +73,15 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string, helm3 bool) err
 		return err
 	}
 
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("download of %s gave status: %d", parsedURL.String(), res.StatusCode)
+	}
+
 	dest := path.Join(path.Join(userPath, "bin"), subdir)
-	os.MkdirAll(dest, 0700)
+	mkErr := os.MkdirAll(dest, 0700)
+	if mkErr != nil {
+		return mkErr
+	}
 
 	defer res.Body.Close()
 	r := ioutil.NopCloser(res.Body)
