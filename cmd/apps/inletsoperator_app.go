@@ -62,7 +62,9 @@ func MakeInstallInletsOperator() *cobra.Command {
 		namespace, _ := command.Flags().GetString("namespace")
 
 		if namespace != "default" {
-			return fmt.Errorf(`to override the namespace, install inlets-operator via helm manually`)
+			if helm3 == false {
+				return fmt.Errorf(`to override the namespace, use helm3 or install inlets-operator via helm manually`)
+			}
 		}
 
 		arch := getNodeArchitecture()
@@ -125,6 +127,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		res, err := kubectlTask("create", "secret", "generic",
 			"inlets-access-key",
+			"--namespace="+namespace,
 			"--from-file", "inlets-access-key="+tokenFileName)
 
 		if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
@@ -140,6 +143,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 		if len(secretKeyFile) > 0 {
 			res, err := kubectlTask("create", "secret", "generic",
 				"inlets-secret-key",
+				"--namespace="+namespace,
 				"--from-file", "inlets-secret-key="+secretKeyFile)
 			if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
 				fmt.Println("[Warning] secret inlets-access-key already exists and will be used.")
@@ -288,7 +292,8 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 }
 
 const InletsOperatorInfoMsg = `# The default configuration is for DigitalOcean and your secret is
-# stored as "inlets-access-key" in the "default" namespace.
+# stored as "inlets-access-key" in the "default" namespace or the namespace 
+# you gave if installing with helm3
 
 # To get your first Public IP run the following:
 
