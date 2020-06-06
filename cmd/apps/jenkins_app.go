@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -34,7 +36,7 @@ func MakeInstallJenkins() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	jenkins.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -44,7 +46,7 @@ func MakeInstallJenkins() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
@@ -70,20 +72,12 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", true)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, true)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(true)
-			if err != nil {
-				return err
-			}
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/jenkins", defaultVersion, true)
+		err = helm.FetchChart("stable/jenkins", defaultVersion, true)
 
 		if err != nil {
 			return err
@@ -103,9 +97,7 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		outputPath := path.Join(chartPath, "jenkins")
-
-		err = helm3Upgrade(outputPath, "stable/jenkins", ns,
+		err = helm.Helm3Upgrade("stable/jenkins", ns,
 			"values.yaml",
 			defaultVersion,
 			overrides,
@@ -122,7 +114,7 @@ func MakeInstallJenkins() *cobra.Command {
 	return jenkins
 }
 
-var JenkinsInfoMsg = `# Jenkins can take several minutes to install, check its status with:
+const JenkinsInfoMsg = `# Jenkins can take several minutes to install, check its status with:
 kubectl rollout status deploy/jenkins --timeout 10m
 
 # Get the Jenkins credentials:

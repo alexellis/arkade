@@ -11,6 +11,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -44,7 +46,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		wait, _ := command.Flags().GetBool("wait")
 		if command.Flags().Changed("kubeconfig") {
@@ -67,7 +69,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 			}
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		userPath, err := config.InitUserDir()
@@ -88,23 +90,15 @@ func MakeInstallInletsOperator() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("inlets", "https://inlets.github.io/inlets-operator/", helm3)
+		updateRepo, _ := inletsOperator.Flags().GetBool("update-repo")
+		err = helm.AddHelmRepo("inlets", "https://inlets.github.io/inlets-operator/", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		updateRepo, _ := inletsOperator.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "inlets/inlets-operator", defaultVersion, helm3)
+		err = helm.FetchChart("inlets/inlets-operator", defaultVersion, helm3)
 		if err != nil {
 			return err
 		}
@@ -114,7 +108,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 			return err
 		}
 
-		_, err = kubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crd.yaml")
+		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crd.yaml")
 		if err != nil {
 			return err
 		}
@@ -125,7 +119,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 			return fmt.Errorf(`--token-file is a required field for your cloud API token or service account JSON file`)
 		}
 
-		res, err := kubectlTask("create", "secret", "generic",
+		res, err := k8s.KubectlTask("create", "secret", "generic",
 			"inlets-access-key",
 			"--namespace="+namespace,
 			"--from-file", "inlets-access-key="+tokenFileName)
@@ -141,7 +135,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
 
 		if len(secretKeyFile) > 0 {
-			res, err := kubectlTask("create", "secret", "generic",
+			res, err := k8s.KubectlTask("create", "secret", "generic",
 				"inlets-secret-key",
 				"--namespace="+namespace,
 				"--from-file", "inlets-secret-key="+secretKeyFile)
@@ -181,9 +175,8 @@ func MakeInstallInletsOperator() *cobra.Command {
 		}
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "inlets-operator")
 
-			err := helm3Upgrade(outputPath, "inlets/inlets-operator",
+			err := helm.Helm3Upgrade("inlets/inlets-operator",
 				namespace, "values.yaml", "", overrides, wait)
 			if err != nil {
 				return err
@@ -191,12 +184,12 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		} else {
 			outputPath := path.Join(chartPath, "inlets-operator/rendered")
-			err = templateChart(chartPath, "inlets-operator", namespace, outputPath, "values.yaml", overrides)
+			err = helm.TemplateChart(chartPath, "inlets-operator", namespace, outputPath, "values.yaml", overrides)
 			if err != nil {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}
