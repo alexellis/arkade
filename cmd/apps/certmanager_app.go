@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -32,7 +34,7 @@ func MakeInstallCertManager() *cobra.Command {
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
 		const certManagerVersion = "v0.12.0"
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -68,21 +70,13 @@ func MakeInstallCertManager() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("jetstack", "https://charts.jetstack.io", helm3)
+		updateRepo, _ := certManager.Flags().GetBool("update-repo")
+		err = helm.AddHelmRepo("jetstack", "https://charts.jetstack.io", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		updateRepo, _ := certManager.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
-		nsRes, nsErr := kubectlTask("create", "namespace", namespace)
+		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
 		if nsErr != nil {
 			return nsErr
 		}
@@ -93,14 +87,14 @@ func MakeInstallCertManager() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "jetstack/cert-manager", certManagerVersion, helm3)
+		err = helm.FetchChart("jetstack/cert-manager", certManagerVersion, helm3)
 		if err != nil {
 			return err
 		}
 
 		log.Printf("Applying CRD\n")
 		crdsURL := "https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml"
-		res, err := kubectlTask("apply", "--validate=false", "-f",
+		res, err := k8s.KubectlTask("apply", "--validate=false", "-f",
 			crdsURL)
 		if err != nil {
 			return err
@@ -114,9 +108,7 @@ func MakeInstallCertManager() *cobra.Command {
 		overrides := map[string]string{}
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "cert-manager")
-
-			err := helm3Upgrade(outputPath, "jetstack/cert-manager", namespace,
+			err := helm.Helm3Upgrade("jetstack/cert-manager", namespace,
 				"values.yaml",
 				"v0.12.0",
 				overrides,
@@ -126,12 +118,12 @@ func MakeInstallCertManager() *cobra.Command {
 				return err
 			}
 		} else {
-			err = templateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
+			err = helm.TemplateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
 			if err != nil {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}

@@ -107,6 +107,9 @@ arkade info --help`,
 		case "jenkins":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.JenkinsInfoMsg)
+		case "loki":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.LokiInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}

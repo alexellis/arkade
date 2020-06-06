@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 )
 
 func GetUserDir() string {
@@ -36,4 +37,25 @@ func InitUserDir() (string, error) {
 	}
 
 	return root, nil
+}
+
+func GetDefaultKubeconfig() string {
+	kubeConfigPath := path.Join(os.Getenv("HOME"), ".kube/config")
+
+	if val, ok := os.LookupEnv("KUBECONFIG"); ok {
+		kubeConfigPath = val
+	}
+
+	return kubeConfigPath
+}
+
+func MergeFlags(existingMap map[string]string, setOverrides []string) error {
+	for _, setOverride := range setOverrides {
+		flag := strings.Split(setOverride, "=")
+		if len(flag) != 2 {
+			return fmt.Errorf("incorrect format for custom flag `%s`", setOverride)
+		}
+		existingMap[flag[0]] = flag[1]
+	}
+	return nil
 }

@@ -10,6 +10,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -33,7 +35,7 @@ schedule workloads to any Kubernetes cluster`,
 
 	crossplane.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -52,7 +54,7 @@ schedule workloads to any Kubernetes cluster`,
 			return fmt.Errorf(`to override the namespace, install crossplane via helm manually`)
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		if !strings.Contains(arch, "64") {
 			return fmt.Errorf(`crossplane is currently only supported on 64-bit architectures`)
 		}
@@ -76,37 +78,27 @@ schedule workloads to any Kubernetes cluster`,
 			return err
 		}
 
-		err = addHelmRepo("crossplane-alpha", "https://charts.crossplane.io/alpha", helm3)
+		updateRepo, _ := crossplane.Flags().GetBool("update-repo")
+		err = helm.AddHelmRepo("crossplane-alpha", "https://charts.crossplane.io/alpha", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		updateRepo, _ := crossplane.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "crossplane-alpha/crossplane", defaultVersion, helm3)
+		err = helm.FetchChart("crossplane-alpha/crossplane", defaultVersion, helm3)
 		if err != nil {
 			return err
 		}
 
 		if helm3 {
 
-			outputPath := path.Join(chartPath, "crossplane")
-
-			_, nsErr := kubectlTask("create", "namespace", "crossplane-system")
+			_, nsErr := k8s.KubectlTask("create", "namespace", "crossplane-system")
 			if nsErr != nil && !strings.Contains(nsErr.Error(), "AlreadyExists") {
 				return nsErr
 			}
 
-			err := helm3Upgrade(outputPath, "crossplane-alpha/crossplane",
+			err := helm.Helm3Upgrade("crossplane-alpha/crossplane",
 				namespace, "values.yaml", "", map[string]string{}, wait)
 			if err != nil {
 				return err
@@ -114,12 +106,12 @@ schedule workloads to any Kubernetes cluster`,
 
 		} else {
 			outputPath := path.Join(chartPath, "crossplane-alpha/crossplane")
-			err = templateChart(chartPath, "crossplane", namespace, outputPath, "values.yaml", map[string]string{})
+			err = helm.TemplateChart(chartPath, "crossplane", namespace, outputPath, "values.yaml", map[string]string{})
 			if err != nil {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}

@@ -66,6 +66,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallPortainer())
 	command.AddCommand(apps.MakeInstallTekton())
 	command.AddCommand(apps.MakeInstallJenkins())
+	command.AddCommand(apps.MakeInstallLoki())
 
 	command.AddCommand(MakeInfo())
 
@@ -96,5 +97,6 @@ func getApps() []string {
 		"grafana",
 		"tekton",
 		"jenkins",
+		"loki",
 	}
 }
