@@ -1,4 +1,4 @@
-# arkade - get Kubernetes apps, the easy way
+# arkade - Kubernetes apps for developers
 
 arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
