@@ -6,6 +6,9 @@ package apps
 import (
 	"fmt"
 
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
@@ -21,7 +24,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 	}
 
 	kubeDashboard.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -29,10 +32,10 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		_, err := kubectlTask("apply", "-f",
+		_, err := k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml")
 		if err != nil {
 			return err

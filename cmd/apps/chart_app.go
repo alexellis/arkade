@@ -10,6 +10,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -59,7 +61,7 @@ before using the generic helm chart installer command.`,
 			return fmt.Errorf("--repo-name required")
 		}
 
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -88,25 +90,20 @@ before using the generic helm chart installer command.`,
 		}
 
 		if len(chartRepoURL) > 0 {
-			err = addHelmRepo(chartPrefix, chartRepoURL, false)
+			err = helm.AddHelmRepo(chartPrefix, chartRepoURL, true, false)
 			if err != nil {
 				return err
 			}
 		}
 
-		err = updateHelmRepos(false)
-		if err != nil {
-			return err
-		}
-
-		res, kcErr := kubectlTask("get", "namespace", namespace)
+		res, kcErr := k8s.KubectlTask("get", "namespace", namespace)
 
 		if kcErr != nil {
 			return err
 		}
 
 		if res.ExitCode != 0 {
-			err = kubectl("create", "namespace", namespace)
+			err = k8s.Kubectl("create", "namespace", namespace)
 			if err != nil {
 				return err
 			}
@@ -114,7 +111,7 @@ before using the generic helm chart installer command.`,
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, chartRepoName, defaultVersion, false)
+		err = helm.FetchChart(chartRepoName, defaultVersion, false)
 		if err != nil {
 			return err
 		}
@@ -135,12 +132,12 @@ before using the generic helm chart installer command.`,
 			}
 		}
 
-		err = templateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
+		err = helm.TemplateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
 		if err != nil {
 			return err
 		}
 
-		err = kubectl("apply", "--namespace", namespace, "-R", "-f", outputPath)
+		err = k8s.Kubectl("apply", "--namespace", namespace, "-R", "-f", outputPath)
 		if err != nil {
 			return err
 		}

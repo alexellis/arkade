@@ -15,6 +15,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 
 	"github.com/alexellis/arkade/pkg/config"
@@ -35,14 +37,14 @@ func MakeInstallLinkerd() *cobra.Command {
 	}
 
 	linkerd.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
@@ -86,7 +88,7 @@ func MakeInstallLinkerd() *cobra.Command {
 		}
 		w.Flush()
 
-		err = kubectl("apply", "-R", "-f", file.Name())
+		err = k8s.Kubectl("apply", "-R", "-f", file.Name())
 		if err != nil {
 			return err
 		}
