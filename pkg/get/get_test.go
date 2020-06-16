@@ -68,6 +68,27 @@ func Test_DownloadKubectlLinux(t *testing.T) {
 	}
 }
 
+func Test_DownloadKubectx(t *testing.T) {
+	tools := MakeTools()
+	name := "kubectx"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("linux", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.0/kubectx"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
+
 func Test_DownloadArmhf(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
