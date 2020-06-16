@@ -7,6 +7,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
@@ -22,7 +25,7 @@ func MakeInstallArgoCD() *cobra.Command {
 	}
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -30,14 +33,14 @@ func MakeInstallArgoCD() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		_, err := kubectlTask("create", "ns",
+		_, err := k8s.KubectlTask("create", "ns",
 			"argocd")
 		if err != nil {
 			if !strings.Contains(err.Error(), "exists") {
@@ -45,7 +48,7 @@ func MakeInstallArgoCD() *cobra.Command {
 			}
 		}
 
-		_, err = kubectlTask("apply", "-f",
+		_, err = k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml", "-n", "argocd")
 		if err != nil {
 			return err

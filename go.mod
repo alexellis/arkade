@@ -7,5 +7,6 @@ require (
 	github.com/morikuni/aec v1.0.0
 	github.com/sethvargo/go-password v0.1.2
 	github.com/spf13/cobra v0.0.5
+	github.com/spf13/pflag v1.0.5 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
 )

@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -39,7 +41,7 @@ func MakeInstallMinio() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	minio.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -54,11 +56,11 @@ func MakeInstallMinio() *cobra.Command {
 			fmt.Println("Using helm3")
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -84,20 +86,13 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/minio", defaultVersion, helm3)
+		err = helm.FetchChart("stable/minio", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -148,9 +143,7 @@ func MakeInstallMinio() *cobra.Command {
 		}
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "minio")
-
-			err := helm3Upgrade(outputPath, "stable/minio", ns,
+			err := helm.Helm3Upgrade("stable/minio", ns,
 				"values.yaml",
 				defaultVersion,
 				overrides,
@@ -163,7 +156,7 @@ func MakeInstallMinio() *cobra.Command {
 		} else {
 			outputPath := path.Join(chartPath, "minio/rendered")
 
-			err = templateChart(chartPath,
+			err = helm.TemplateChart(chartPath,
 				"minio",
 				ns,
 				outputPath,
@@ -174,7 +167,7 @@ func MakeInstallMinio() *cobra.Command {
 				return err
 			}
 
-			err = kubectl("apply", "-R", "-f", outputPath)
+			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 			if err != nil {
 				return err

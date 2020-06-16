@@ -5,8 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -37,7 +35,7 @@ func MakeInstallTraefik2() *cobra.Command {
 
 	traefik2.RunE = func(command *cobra.Command, args []string) error {
 
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -50,7 +48,6 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		_, clientOS := env.GetClientArch()
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q\n", clientOS)
 		helm3 := true
@@ -60,20 +57,12 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", helm3)
+		err = helm.AddHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", updateRepo, helm3)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "traefik/traefik", "", helm3)
+		err = helm.FetchChart("traefik/traefik", "", helm3)
 		if err != nil {
 			return fmt.Errorf("Unable fetch chart: %s", err)
 		}
@@ -110,8 +99,7 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		outputPath := path.Join(chartPath, "traefik")
-		err = helm3Upgrade(outputPath, "traefik/traefik", namespace,
+		err = helm.Helm3Upgrade("traefik/traefik", namespace,
 			"values.yaml",
 			"",
 			overrides,

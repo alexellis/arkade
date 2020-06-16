@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -43,7 +45,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
 	openfaas.Flags().Bool("direct-functions", true, "Invoke functions directly from the gateway")
 
-	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker")
+	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
+	openfaas.Flags().Int("max-inflight", 1, "Max tasks for queue-worker to process in parallel")
 	openfaas.Flags().Int("gateways", 1, "Replicas of gateway")
 
 	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
@@ -53,7 +56,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -72,7 +75,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return fmt.Errorf(`to override the "openfaas", install OpenFaaS via helm manually`)
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		valuesSuffix := getValuesSuffix(arch)
@@ -92,25 +95,17 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", helm3)
-		if err != nil {
-			return err
-		}
-
 		updateRepo, _ := openfaas.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
+		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo, helm3)
+		if err != nil {
+			return err
 		}
 
 		if err != nil {
 			return err
 		}
 
-		_, err = kubectlTask("apply", "-f",
+		_, err = k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml")
 
 		if err != nil {
@@ -127,7 +122,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			}
 		}
 
-		res, secretErr := kubectlTask("-n", namespace, "create", "secret", "generic",
+		res, secretErr := k8s.KubectlTask("-n", namespace, "create", "secret", "generic",
 			"basic-auth",
 			"--from-literal=basic-auth-user=admin",
 			`--from-literal=basic-auth-password=`+pass)
@@ -142,7 +137,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "openfaas/openfaas", defaultVersion, helm3)
+		err = helm.FetchChart("openfaas/openfaas", defaultVersion, helm3)
 		if err != nil {
 			return err
 		}
@@ -178,6 +173,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			directFunctionsVal = "false"
 		}
 		gateways, _ := command.Flags().GetInt("gateways")
+		maxInflight, _ := command.Flags().GetInt("max-inflight")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 
 		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
@@ -189,8 +185,9 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["faasnetes.imagePullPolicy"] = functionPullPolicy
 		overrides["basicAuthPlugin.replicas"] = "1"
 		overrides["gateway.replicas"] = fmt.Sprintf("%d", gateways)
-		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
 		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
+		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
+		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
 
 		basicAuth, _ := command.Flags().GetBool("basic-auth")
 
@@ -209,9 +206,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "openfaas")
-
-			err := helm3Upgrade(outputPath, "openfaas/openfaas", namespace,
+			err := helm.Helm3Upgrade("openfaas/openfaas", namespace,
 				"values"+valuesSuffix+".yaml",
 				"",
 				overrides,
@@ -223,7 +218,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		} else {
 			outputPath := path.Join(chartPath, "openfaas/rendered")
-			err = templateChart(chartPath, "openfaas",
+			err = helm.TemplateChart(chartPath, "openfaas",
 				namespace,
 				outputPath,
 				"values"+valuesSuffix+".yaml",
@@ -233,7 +228,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}
@@ -242,12 +237,9 @@ func MakeInstallOpenFaaS() *cobra.Command {
 				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
 			}
 		}
-
 		fmt.Println(openfaasPostInstallMsg)
-
 		return nil
 	}
-
 	return openfaas
 }
 

@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -18,22 +20,23 @@ import (
 
 func MakeInstallNginx() *cobra.Command {
 	var nginx = &cobra.Command{
-		Use:   "nginx-ingress",
-		Short: "Install nginx-ingress",
-		Long: `Install nginx-ingress. This app can be installed with Host networking for 
-cases where an external LB is not available. please see the --host-mode 
-flag and the nginx-ingress docs for more info`,
-		Example:      `  arkade install nginx-ingress --namespace default`,
+		Use:     "ingress-nginx",
+		Aliases: []string{"nginx-ingress"},
+		Short:   "Install ingress-nginx",
+		Long: `Install ingress-nginx. This app can be installed with Host networking for
+cases where an external LB is not available. please see the --host-mode
+flag and the ingress-nginx docs for more info`,
+		Example:      `  arkade install ingress-nginx --namespace default`,
 		SilenceUsage: true,
 	}
 
 	nginx.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
-	nginx.Flags().Bool("host-mode", false, "If we should install nginx-ingress in host mode.")
+	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
 	nginx.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -71,40 +74,19 @@ flag and the nginx-ingress docs for more info`,
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = helm.AddHelmRepo("ingress-nginx", "https://kubernetes.github.io/ingress-nginx", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/nginx-ingress", defaultVersion, helm3)
+		err = helm.FetchChart("ingress-nginx/ingress-nginx", defaultVersion, helm3)
 
 		if err != nil {
 			return err
 		}
 
 		overrides := map[string]string{}
-
-		overrides["defaultBackend.enabled"] = "false"
-
-		arch := getNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
-
-		switch arch {
-		case "amd64":
-			// use default image
-		case "arm", "arm64":
-			overrides["controller.image.repository"] = fmt.Sprintf("quay.io/kubernetes-ingress-controller/nginx-ingress-controller-%v", arch)
-		default:
-			return fmt.Errorf("architecture %v is not supported by ingress-nginx", arch)
-		}
 
 		hostMode, flagErr := command.Flags().GetBool("host-mode")
 		if flagErr != nil {
@@ -113,7 +95,8 @@ flag and the nginx-ingress docs for more info`,
 		if hostMode {
 			fmt.Println("Running in host networking mode")
 			overrides["controller.hostNetwork"] = "true"
-			overrides["controller.daemonset.useHostPort"] = "true"
+			overrides["controller.hostPort.enabled"] = "true"
+			overrides["controller.service.type"] = "NodePort"
 			overrides["dnsPolicy"] = "ClusterFirstWithHostNet"
 			overrides["controller.kind"] = "DaemonSet"
 		}
@@ -122,9 +105,7 @@ flag and the nginx-ingress docs for more info`,
 		ns := "default"
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "nginx-ingress")
-
-			err := helm3Upgrade(outputPath, "stable/nginx-ingress", ns,
+			err := helm.Helm3Upgrade("ingress-nginx/ingress-nginx", ns,
 				"values.yaml",
 				defaultVersion,
 				overrides,
@@ -134,10 +115,10 @@ flag and the nginx-ingress docs for more info`,
 				return err
 			}
 		} else {
-			outputPath := path.Join(chartPath, "nginx-ingress/rendered")
+			outputPath := path.Join(chartPath, "ingress-nginx/rendered")
 
-			err = templateChart(chartPath,
-				"nginx-ingress",
+			err = helm.TemplateChart(chartPath,
+				"ingress-nginx",
 				ns,
 				outputPath,
 				"values.yaml",
@@ -147,7 +128,7 @@ flag and the nginx-ingress docs for more info`,
 				return err
 			}
 
-			err = kubectl("apply", "-R", "-f", outputPath)
+			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 			if err != nil {
 				return err
@@ -168,12 +149,12 @@ const NginxIngressInfoMsg = `# If you're using a local environment such as "mini
 # If you're using a managed Kubernetes service, then you'll find
 # your LoadBalancer's IP under "EXTERNAL-IP" via:
 
-kubectl get svc nginx-ingress-controller
+kubectl get svc ingress-nginx-controller
 
 # Find out more at:
-# https://github.com/helm/charts/tree/master/stable/nginx-ingress`
+# https://github.com/kubernetes/ingress-nginx/tree/master/charts/ingress-nginx`
 
 const nginxIngressInstallMsg = `=======================================================================
-= nginx-ingress has been installed.                                   =
+= ingress-nginx has been installed.                                   =
 =======================================================================` +
 	"\n\n" + NginxIngressInfoMsg + "\n\n" + pkg.ThanksForUsing

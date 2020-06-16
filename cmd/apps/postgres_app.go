@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -36,7 +38,7 @@ func MakeInstallPostgresql() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	postgresql.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -45,11 +47,11 @@ func MakeInstallPostgresql() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -76,14 +78,14 @@ func MakeInstallPostgresql() *cobra.Command {
 		}
 
 		if updateRepo {
-			err = updateHelmRepos(false)
+			err = helm.UpdateHelmRepos(false)
 			if err != nil {
 				return err
 			}
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/postgresql", defaultVersion, false)
+		err = helm.FetchChart("stable/postgresql", defaultVersion, false)
 
 		if err != nil {
 			return err
@@ -110,7 +112,7 @@ func MakeInstallPostgresql() *cobra.Command {
 
 		outputPath := path.Join(chartPath, "postgresql/rendered")
 
-		err = templateChart(chartPath,
+		err = helm.TemplateChart(chartPath,
 			"postgresql",
 			ns,
 			outputPath,
@@ -121,7 +123,7 @@ func MakeInstallPostgresql() *cobra.Command {
 			return err
 		}
 
-		err = kubectl("apply", "-R", "-f", outputPath)
+		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 		if err != nil {
 			return err

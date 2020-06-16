@@ -11,6 +11,9 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 
 	"github.com/spf13/cobra"
@@ -26,7 +29,7 @@ func MakeInstallPortainer() *cobra.Command {
 	}
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -34,14 +37,14 @@ func MakeInstallPortainer() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch && arch != "arm" {
 			return fmt.Errorf(`only Intel and "arm" is supported for this app`)
 		}
 
-		_, err := kubectlTask("create", "ns",
+		_, err := k8s.KubectlTask("create", "ns",
 			"portainer")
 		if err != nil {
 			if !strings.Contains(err.Error(), "exists") {
@@ -77,7 +80,7 @@ func MakeInstallPortainer() *cobra.Command {
 			return err
 		}
 
-		_, err = kubectlTask("apply", "-f", joined, "-n", "portainer")
+		_, err = k8s.KubectlTask("apply", "-f", joined, "-n", "portainer")
 		if err != nil {
 			return err
 		}

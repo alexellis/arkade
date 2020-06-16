@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/alexellis/arkade/pkg"
@@ -35,7 +37,7 @@ func MakeInstallRegistry() *cobra.Command {
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
@@ -88,20 +90,13 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/docker-registry", defaultVersion, helm3)
+		err = helm.FetchChart("stable/docker-registry", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -112,7 +107,7 @@ func MakeInstallRegistry() *cobra.Command {
 		overrides["persistence.enabled"] = "false"
 		overrides["secrets.htpasswd"] = string(htPasswd)
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		fmt.Println("Chart path: ", chartPath)
@@ -120,9 +115,7 @@ func MakeInstallRegistry() *cobra.Command {
 		ns := "default"
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "docker-registry")
-
-			err := helm3Upgrade(outputPath, "stable/docker-registry", ns,
+			err := helm.Helm3Upgrade("stable/docker-registry", ns,
 				"values.yaml",
 				defaultVersion,
 				overrides,
@@ -134,7 +127,7 @@ func MakeInstallRegistry() *cobra.Command {
 		} else {
 			outputPath := path.Join(chartPath, "docker-registry/rendered")
 
-			err = templateChart(chartPath,
+			err = helm.TemplateChart(chartPath,
 				"docker-registry",
 				ns,
 				outputPath,
@@ -145,7 +138,7 @@ func MakeInstallRegistry() *cobra.Command {
 				return err
 			}
 
-			err = kubectl("apply", "-R", "-f", outputPath)
+			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 			if err != nil {
 				return err

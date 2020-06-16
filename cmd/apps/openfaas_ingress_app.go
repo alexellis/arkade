@@ -12,6 +12,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"text/template"
 
 	"github.com/alexellis/arkade/pkg"
@@ -56,7 +59,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 			return errors.New("--ingress-class must be set")
 		}
 
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -78,7 +81,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 			return tempFileErr
 		}
 
-		res, err := kubectlTask("apply", "-f", tempFile)
+		res, err := k8s.KubectlTask("apply", "-f", tempFile)
 
 		if err != nil {
 			log.Print(err)

@@ -10,6 +10,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -32,7 +34,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 
 	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -46,11 +48,11 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		}
 		namespace, _ := command.Flags().GetString("namespace")
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		helm3, _ := command.Flags().GetBool("helm3")
@@ -69,13 +71,13 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			return err
 		}
 
-		err = updateHelmRepos(helm3)
+		err = helm.UpdateHelmRepos(helm3)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/kube-state-metrics", defaultVersion, helm3)
+		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -98,9 +100,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		fmt.Println("Chart path: ", chartPath)
 
 		if helm3 {
-			outputPath := path.Join(chartPath, "kube-state-metrics")
-
-			err := helm3Upgrade(outputPath, "stable/kube-state-metrics", namespace,
+			err := helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
 				"values.yaml",
 				defaultVersion,
 				setMap,
@@ -113,7 +113,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		} else {
 			outputPath := path.Join(chartPath, "kube-state-metrics/rendered")
 
-			err = templateChart(chartPath,
+			err = helm.TemplateChart(chartPath,
 				"kube-state-metrics",
 				namespace,
 				outputPath,
@@ -124,7 +124,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}
@@ -135,14 +135,15 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		}
 
 		fmt.Println(`=======================================================================
-= kube-state-metrics has been installed.                                  =
+=             kube-state-metrics has been installed.                  =
 =======================================================================
+
 # Port-forward
+kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 
-kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 & http://localhost:9000/metrics
-
+# Then access via:
+http://localhost:9000/metrics
 ` + KubeStateMetricsInfoMsg + `
-
 ` + pkg.ThanksForUsing)
 
 		return nil
@@ -152,7 +153,6 @@ kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 }
 
 const KubeStateMetricsInfoMsg = `
-
 # Find out more at:
 # https://github.com/kubernetes/kube-state-metrics
 `

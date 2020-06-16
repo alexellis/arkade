@@ -10,6 +10,8 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -34,7 +36,7 @@ func MakeInstallMongoDB() *cobra.Command {
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -44,11 +46,11 @@ func MakeInstallMongoDB() *cobra.Command {
 
 		namespace, _ := command.Flags().GetString("namespace")
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -73,23 +75,13 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", helm3)
+		updateRepo, _ := command.Flags().GetBool("update-repo")
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", updateRepo, helm3)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		updateRepo, _ := command.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return fmt.Errorf("unable to update repos %s", err)
-			}
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-
-		err = fetchChart(chartPath, "stable/mongodb", defaultVersion, helm3)
+		err = helm.FetchChart("stable/mongodb", defaultVersion, helm3)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -98,8 +90,6 @@ func MakeInstallMongoDB() *cobra.Command {
 		overrides := map[string]string{}
 
 		overrides["persistence.enabled"] = strconv.FormatBool(persistence)
-
-		outputPath := path.Join(chartPath, "mongodb")
 
 		customFlags, err := command.Flags().GetStringArray("set")
 		if err != nil {
@@ -110,7 +100,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm3Upgrade(outputPath, "stable/mongodb",
+		err = helm.Helm3Upgrade("stable/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)

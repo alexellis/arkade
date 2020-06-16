@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -56,18 +58,14 @@ func MakeInstallGrafana() *cobra.Command {
 			return err
 		}
 
-		// Update chart repositories
 		updateRepo, _ := grafana.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(true)
-			if err != nil {
-				return err
-			}
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, true)
+		if err != nil {
+			return err
 		}
 
 		// create the namespace
-		nsRes, nsErr := kubectlTask("create", "namespace", namespace)
+		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
 		if nsErr != nil {
 			return nsErr
 		}
@@ -78,13 +76,10 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 
 		// download the chart
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/grafana", chartVersion, true)
+		err = helm.FetchChart("stable/grafana", chartVersion, true)
 		if err != nil {
 			return err
 		}
-
-		outputPath := path.Join(chartPath, "grafana")
 
 		// define the values to override
 		// due the missing arm support. datasource and dashboard sidecars are not possible
@@ -99,7 +94,7 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 
 		// install the chart
-		err = helm3Upgrade(outputPath, "stable/grafana", namespace,
+		err = helm.Helm3Upgrade("stable/grafana", namespace,
 			"values.yaml",
 			chartVersion,
 			overrides,
