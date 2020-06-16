@@ -39,8 +39,9 @@ An alias of `ark` is created at installation time, so you can also run `ark inst
 Here's a few examples of apps you can install, for a complete list run: `arkade install --help`.
 
 * `arkade install` - install an app
-* `arkade update` - update arkade
 * `arkade info` - the post-install screen for an app
+* `arkade get` - install a CLI tool such as `kubectl` or `faas-cli`
+* `arkade update` - print instructions to update arkade itself
 
 ### Install an app
 
@@ -49,6 +50,17 @@ No need to worry about whether you're installing to Intel or ARM architecture, t
 ```bash
 arkade install openfaas --gateways 2 --load-balancer false
 ```
+
+### Install a CLI tool
+
+arkade will determine the correct URL to download a CLI tool of your choice taking into account for your Operating System and CPU architecture - whether Intel or ARM.
+
+```bash
+arkade get kubectl
+arkade get faas-cli
+```
+
+This is a time saver compared to searching for download pages every time you need a tool.
 
 #### Reduce the repetition
 
