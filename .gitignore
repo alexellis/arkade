@@ -5,4 +5,4 @@ kubeconfig
 .idea/
 mc
 /arkade-*
-/faas-cli-darwin
+/faas-cli*

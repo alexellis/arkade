@@ -15,7 +15,6 @@ func main() {
 	cmdVersion := cmd.MakeVersion()
 	cmdInstall := cmd.MakeInstall()
 	cmdInfo := cmd.MakeInfo()
-	cmdUpdate := cmd.MakeUpdate()
 
 	printarkadeASCIIArt := cmd.PrintArkadeASCIIArt
 
@@ -30,7 +29,8 @@ func main() {
 	rootCmd.AddCommand(cmdInstall)
 	rootCmd.AddCommand(cmdVersion)
 	rootCmd.AddCommand(cmdInfo)
-	rootCmd.AddCommand(cmdUpdate)
+	rootCmd.AddCommand(cmd.MakeUpdate())
+	rootCmd.AddCommand(cmd.MakeGet())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
