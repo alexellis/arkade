@@ -23,7 +23,8 @@ func MakeGet() *cobra.Command {
 		Use:   "get",
 		Short: "Get a release of a tool or application and install it on your local computer.",
 		Example: `  arkade get kubectl
-  arkade get openfaas`,
+  arkade get openfaas
+  arkade get kubectx`,
 		SilenceUsage: true,
 	}
 
@@ -87,7 +88,7 @@ func MakeGet() *cobra.Command {
 		}
 
 		finalName := tool.Name
-		if strings.Contains(strings.ToLower(operatingSystem), "mingw") {
+		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
 			finalName = finalName + ".exe"
 		}
 
@@ -108,4 +109,6 @@ sudo install -m 755 %s /usr/local/bin/%s
 const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
 
   - kubectl
-  - faas-cli`
+  - faas-cli
+  - kubectx
+  `

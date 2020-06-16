@@ -18,6 +18,7 @@ type Tool struct {
 	Version        string
 	URLTemplate    string
 	BinaryTemplate string
+	NoExtension    bool
 }
 
 var templateFuncs = map[string]interface{}{
@@ -186,6 +187,15 @@ func MakeTools() []Tool {
 {{- end -}}
 
 https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`,
+		},
+		{
+			Owner:       "ahmetb",
+			Repo:        "kubectx",
+			Name:        "kubectx",
+			Version:     "v0.9.0",
+			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
+			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
+			NoExtension: true,
 		},
 	}
 	return tools
