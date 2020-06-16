@@ -183,6 +183,10 @@ postgresql              Install postgresql
 
 ## Community & contributing
 
+### Suggesting a new app
+
+To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade). Think also whether your app suggestion would be a good candidate for a Sponsored App.
+
 ### Sponsored apps
 
 As of May 2020, you can propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a kink to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
@@ -191,17 +195,9 @@ When your sponsorship expires your app can be renewed at that time, or it will d
 
 Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
 
-### Insiders Subscription ☕️ 👏
+### What about helm?
 
-Buy an Insiders Subscription today via [GitHub](https://github.com/users/alexellis/sponsorship).
-
-### What about helm and `k3sup`?
-
-In the same way that brew uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and kubectl to install applications to your Kubernetes cluster.
-
-On k3sup vs. arkade: The codebase in this project is derived from `k3sup`. [k3sup (ketchup)](https://k3sup.dev/) was developed to automate building of k3s clusters over SSH, then gained the powerful feature to install apps in a single command. The presence of the word "k3s" in the name of the application confused many people, this is why arkade has come to exist.
-
-And yes, of course it works with k3s and where possible, apps are available for ARM.
+In the same way that [brew](https://brew.sh) uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and `kubectl` to install applications to your Kubernetes cluster. arkade exposes strongly-typed flags for the various popular options for helm charts, and enables easier discovery through `arkade install --help` and `arkade install APP --help`.
 
 ### Tools and cached versions of helm
 
@@ -209,9 +205,7 @@ When required, tools, CLIs, and the helm binaries are downloaded and extracted t
 
 If installing a tool which uses helm3, arkade will check for a cached version and use that, otherwise it will download it on demand.
 
-### Suggesting a new app
-
-To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade).
+Did you accidentally run arkade as root? **Running as root is not required**, and will mean your KUBECONFIG environment variable will be ignored. You can revert this using [the notes on release 0.1.18](https://github.com/alexellis/arkade/releases/tag/0.1.8).
 
 ### Improving the code or fixing an issue
 
@@ -221,11 +215,10 @@ Both Issues and PRs have their own templates. Please fill out the whole template
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
 
-### Join us on Slack
+### Join us on OpenFaaS Ltd Slack
 
-Join #arkade on [slack.openfaas.io](https://slack.openfaas.io)
+Join `#contributors` at [https://slack.openfaas.io](https://slack.openfaas.io)
 
 ### License
 
 MIT
-
