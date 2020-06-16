@@ -13,14 +13,14 @@ import (
 )
 
 // GetClientArch returns a pair of arch and os
-func GetClientArch() (string, string) {
+func GetClientArch() (arch string, os string) {
 	task := execute.ExecTask{Command: "uname", Args: []string{"-m"}, StreamStdio: false}
 	res, err := task.Execute()
 	if err != nil {
 		log.Println(err)
 	}
 
-	arch := strings.TrimSpace(res.Stdout)
+	archResult := strings.TrimSpace(res.Stdout)
 
 	taskOS := execute.ExecTask{Command: "uname", Args: []string{"-s"}, StreamStdio: false}
 	resOS, errOS := taskOS.Execute()
@@ -28,9 +28,9 @@ func GetClientArch() (string, string) {
 		log.Println(errOS)
 	}
 
-	os := strings.TrimSpace(resOS.Stdout)
+	osResult := strings.TrimSpace(resOS.Stdout)
 
-	return arch, os
+	return archResult, osResult
 }
 
 func LocalBinary(name, subdir string) string {
