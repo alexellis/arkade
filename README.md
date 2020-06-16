@@ -215,7 +215,7 @@ Both Issues and PRs have their own templates. Please fill out the whole template
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
 
-### Join us on OpenFaaS Ltd Slack
+### Join us on Slack
 
 Join `#contributors` at [https://slack.openfaas.io](https://slack.openfaas.io)
 
