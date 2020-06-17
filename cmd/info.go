@@ -110,6 +110,9 @@ arkade info --help`,
 		case "loki":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.LokiInfoMsg)
+		case "nats-connector":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.NATSConnectorInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
