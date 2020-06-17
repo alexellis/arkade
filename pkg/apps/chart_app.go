@@ -5,7 +5,7 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 )
 
-func MakeInstallLoki(options *types.InstallerOptions) (*types.InstallerOutput, error) {
+func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, error) {
 	result := &types.InstallerOutput{}
 	err := helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo, options.Helm.Helm3)
 	if err != nil {
