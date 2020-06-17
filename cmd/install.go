@@ -68,7 +68,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallJenkins())
 	command.AddCommand(apps.MakeInstallLoki())
 	command.AddCommand(apps.MakeInstallNATSConnector())
-
+	command.AddCommand(apps.MakeInstallNfsProvisioner())
 	command.AddCommand(MakeInfo())
 
 	return command
@@ -100,5 +100,6 @@ func getApps() []string {
 		"jenkins",
 		"loki",
 		"nats-connector",
+		"nfs-client-provisioner",
 	}
 }
