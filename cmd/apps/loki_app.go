@@ -83,7 +83,7 @@ func MakeInstallLoki() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallLoki(lokiOptions)
+		_, err = apps.MakeInstallChart(lokiOptions)
 		if err != nil {
 			return err
 		}
