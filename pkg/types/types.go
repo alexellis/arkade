@@ -8,6 +8,7 @@ type InstallerOptions struct {
 	NodeArch       string
 	Helm           *HelmConfig
 	Verbose        bool
+	CrdUrls        []string
 }
 
 type HelmConfig struct {
@@ -60,6 +61,11 @@ func (o *InstallerOptions) WithHelmURL(s string) *InstallerOptions {
 
 func (o *InstallerOptions) WithOverrides(overrides map[string]string) *InstallerOptions {
 	o.Helm.Overrides = overrides
+	return o
+}
+
+func (o *InstallerOptions) WithCrdUrls(crdUrls []string) *InstallerOptions {
+	o.CrdUrls = crdUrls
 	return o
 }
 
