@@ -16,14 +16,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
 	tools := get.MakeTools()
 
 	var command = &cobra.Command{
 		Use:   "get",
-		Short: "Get a release of a tool or application and install it on your local computer.",
+		Short: `The get command downloads a tool`,
+		Long: `The get command downloads a CLI or application from the specific tool's 
+releases or downloads page. The tool is usually downloaded in binary format 
+and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get kubectl
-  arkade get openfaas
+  arkade get faas-cli
   arkade get kubectx`,
 		SilenceUsage: true,
 	}

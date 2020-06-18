@@ -61,7 +61,9 @@ arkade get faas-cli
 arkade get kubectx
 ```
 
-This is a time saver compared to searching for download pages every time you need a tool.
+> This is a time saver compared to searching for download pages every time you need a tool.
+
+Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
 
 #### Reduce the repetition
 
@@ -208,11 +210,17 @@ When your sponsorship expires your app can be renewed at that time, or it will d
 
 Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
 
-### What about helm?
+### How does `arkade` compare to `helm`?
 
 In the same way that [brew](https://brew.sh) uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and `kubectl` to install applications to your Kubernetes cluster. arkade exposes strongly-typed flags for the various popular options for helm charts, and enables easier discovery through `arkade install --help` and `arkade install APP --help`.
 
-### Tools and cached versions of helm
+### What is in scope for `arkade get`?
+
+Generally speaking, tools that are used with the various arkade apps or with Kubernetes are in scope. If you want to propose a tool, raise a GitHub issue.
+
+What about package management? `arkade get` provides a faster alternative to package managers like `apt` and `brew`, you're free to use either or both at the same time.
+
+### Automatic download of tools
 
 When required, tools, CLIs, and the helm binaries are downloaded and extracted to `$HOME/.arkade`.
 
