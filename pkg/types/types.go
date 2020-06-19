@@ -58,6 +58,11 @@ func (o *InstallerOptions) WithHelmURL(s string) *InstallerOptions {
 	return o
 }
 
+func (o *InstallerOptions) WithHelmUpdateRepo(update bool) *InstallerOptions {
+	o.Helm.UpdateRepo = update
+	return o
+}
+
 func (o *InstallerOptions) WithOverrides(overrides map[string]string) *InstallerOptions {
 	o.Helm.Overrides = overrides
 	return o
