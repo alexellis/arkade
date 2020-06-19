@@ -68,6 +68,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallJenkins())
 	command.AddCommand(apps.MakeInstallLoki())
 	command.AddCommand(apps.MakeInstallNATSConnector())
+	command.AddCommand(apps.MakeInstallOpenFaaSLoki())
 	command.AddCommand(apps.MakeInstallNfsProvisioner())
 	command.AddCommand(apps.MakeInstallRedis())
 
@@ -104,5 +105,6 @@ func getApps() []string {
 		"nats-connector",
 		"nfs-client-provisioner",
 		"redis",
+		"openfaas-loki",
 	}
 }
