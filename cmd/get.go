@@ -4,15 +4,20 @@
 package cmd
 
 import (
+	"archive/zip"
+	"bytes"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
+	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -27,8 +32,9 @@ func MakeGet() *cobra.Command {
 releases or downloads page. The tool is usually downloaded in binary format 
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get kubectl
+  arkade get kubectx
   arkade get faas-cli
-  arkade get kubectx`,
+  arkade get helm`,
 		SilenceUsage: true,
 	}
 
@@ -81,14 +87,45 @@ and provides a fast and easy alternative to a package manager.`,
 
 		outFilePath := path.Join(tmp, fileName)
 
-		out, err := os.Create(outFilePath)
-		if err != nil {
-			return err
-		}
-		defer out.Close()
+		if tool.IsArchive() {
+			outFilePathDir := filepath.Dir(outFilePath)
+			outFilePath = path.Join(outFilePathDir, tool.Name)
+			if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
+				outFilePath += ".exe"
+			}
+			r := ioutil.NopCloser(res.Body)
+			if strings.HasSuffix(downloadURL, "tar.gz") {
+				untarErr := helm.Untar(r, outFilePathDir)
+				if untarErr != nil {
+					return untarErr
+				}
+			} else if strings.HasSuffix(downloadURL, "zip") {
+				buff := bytes.NewBuffer([]byte{})
+				size, err := io.Copy(buff, res.Body)
+				if err != nil {
+					return err
+				}
+				reader := bytes.NewReader(buff.Bytes())
+				zipReader, err := zip.NewReader(reader, size)
+				if err != nil {
+					return fmt.Errorf("error creating zip reader")
+				}
+				unzipErr := helm.Unzip(*zipReader, outFilePathDir)
+				if unzipErr != nil {
+					return unzipErr
+				}
+			}
 
-		if _, err = io.Copy(out, res.Body); err != nil {
-			return err
+		} else {
+			out, err := os.Create(outFilePath)
+			if err != nil {
+				return err
+			}
+			defer out.Close()
+
+			if _, err = io.Copy(out, res.Body); err != nil {
+				return err
+			}
 		}
 
 		finalName := tool.Name
@@ -115,4 +152,5 @@ const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
   - kubectl
   - faas-cli
   - kubectx
+  - helm
   `
