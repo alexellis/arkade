@@ -125,6 +125,11 @@ func AddHelmRepo(name, url string, update, helm3 bool) error {
 	if helm3 {
 		subdir = "helm3"
 	}
+
+	if index := strings.Index(name, "/"); index > -1 {
+		name = name[:index]
+	}
+
 	task := execute.ExecTask{
 		Command:     fmt.Sprintf("%s repo add %s %s", env.LocalBinary("helm", subdir), name, url),
 		Env:         os.Environ(),
@@ -193,7 +198,6 @@ func FetchChart(chart, version string, helm3 bool) error {
 	if mkErr != nil {
 		return mkErr
 	}
-
 	task := execute.ExecTask{
 		Command:     fmt.Sprintf("%s fetch %s --untar=true --untardir %s%s", env.LocalBinary("helm", subdir), chart, chartsPath, versionStr),
 		Env:         os.Environ(),
