@@ -4,7 +4,6 @@
 package cmd
 
 import (
-	"archive/zip"
 	"bytes"
 	"fmt"
 	"io"
@@ -15,9 +14,9 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -95,7 +94,7 @@ and provides a fast and easy alternative to a package manager.`,
 			}
 			r := ioutil.NopCloser(res.Body)
 			if strings.HasSuffix(downloadURL, "tar.gz") {
-				untarErr := helm.Untar(r, outFilePathDir)
+				untarErr := archive.Untar(r, outFilePathDir)
 				if untarErr != nil {
 					return untarErr
 				}
@@ -105,12 +104,10 @@ and provides a fast and easy alternative to a package manager.`,
 				if err != nil {
 					return err
 				}
+
 				reader := bytes.NewReader(buff.Bytes())
-				zipReader, err := zip.NewReader(reader, size)
-				if err != nil {
-					return fmt.Errorf("error creating zip reader")
-				}
-				unzipErr := helm.Unzip(*zipReader, outFilePathDir)
+
+				unzipErr := archive.Unzip(reader, size, outFilePathDir)
 				if unzipErr != nil {
 					return unzipErr
 				}

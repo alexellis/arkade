@@ -13,6 +13,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
@@ -88,7 +89,7 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string, helm3 bool) err
 
 	defer res.Body.Close()
 	r := ioutil.NopCloser(res.Body)
-	untarErr := Untar(r, dest)
+	untarErr := archive.Untar(r, dest)
 	if untarErr != nil {
 		return untarErr
 	}
