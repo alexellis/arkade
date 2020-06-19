@@ -26,7 +26,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	natsConnectorApp.Flags().StringP("namespace", "n", "default", "The namespace to install NATS connector (default: default")
+	natsConnectorApp.Flags().StringP("namespace", "n", "openfaas", "The namespace to install NATS connector (default: openfaas")
 	natsConnectorApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	natsConnectorApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set topics=nats-test,)")
 
@@ -76,7 +76,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallNATSConnector(natsConnectorOptions)
+		_, err = apps.MakeInstallChart(natsConnectorOptions)
 		if err != nil {
 			return err
 		}

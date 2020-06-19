@@ -17,7 +17,7 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 	}
 
 	if err := helm.Helm3Upgrade(options.Helm.Repo.Name, options.Namespace,
-		"values.yaml",
+		options.Helm.ValuesFile,
 		options.Helm.Repo.Version,
 		options.Helm.Overrides,
 		options.Helm.Wait); err != nil {
