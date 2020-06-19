@@ -12,13 +12,14 @@ import (
 )
 
 type Tool struct {
-	Name           string
-	Repo           string
-	Owner          string
-	Version        string
-	URLTemplate    string
-	BinaryTemplate string
-	NoExtension    bool
+	Name              string
+	Repo              string
+	Owner             string
+	Version           string
+	URLTemplate       string
+	BinaryTemplate    string
+	NoExtension       bool
+	NeedDecompression bool
 }
 
 var templateFuncs = map[string]interface{}{
@@ -195,7 +196,8 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Version:     "v0.9.0",
 			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
 			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
-			NoExtension: true,
+			NoExtension:       true,
+			NeedDecompression: false,
 		},
 	}
 	return tools
