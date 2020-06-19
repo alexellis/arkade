@@ -52,6 +52,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
 
 	openfaas.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	openfaas.Flags().String("log-provider-url", "", "Set a log provider url for OpenFaaS")
 
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
@@ -152,6 +153,12 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		functionPullPolicy, _ := command.Flags().GetString("function-pull-policy")
 		if len(pullPolicy) == 0 {
 			return fmt.Errorf("you must give a value for function-pull-policy such as IfNotPresent or Always")
+		}
+
+		logUrl, _ := command.Flags().GetString("log-provider-url")
+
+		if logUrl != "" {
+			overrides["gateway.logsProviderURL"] = logUrl
 		}
 
 		createOperator, _ := command.Flags().GetBool("operator")

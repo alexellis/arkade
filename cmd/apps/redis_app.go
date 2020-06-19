@@ -85,7 +85,7 @@ func MakeInstallRedis() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallRedis(redisAppOptions)
+		_, err = apps.MakeInstallChart(redisAppOptions)
 		if err != nil {
 			return err
 		}

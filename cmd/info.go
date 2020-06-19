@@ -113,6 +113,9 @@ arkade info --help`,
 		case "nats-connector":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.NATSConnectorInfoMsg)
+		case "openfaas-loki":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.LokiOFInfoMsg)
 		case "redis":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.RedisInfoMsg)

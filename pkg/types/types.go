@@ -17,6 +17,7 @@ type HelmConfig struct {
 	Overrides  map[string]string
 	UpdateRepo bool
 	Wait       bool
+	ValuesFile string
 }
 
 type HelmRepo struct {
@@ -77,8 +78,9 @@ func DefaultInstallOptions() *InstallerOptions {
 			Repo: &HelmRepo{
 				Version: "",
 			},
-			Helm3: true,
-			Wait:  false,
+			ValuesFile: "values.yaml",
+			Helm3:      true,
+			Wait:       false,
 		},
 		Verbose: false,
 	}
