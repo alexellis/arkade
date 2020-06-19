@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/alexellis/arkade/pkg/env"
 )
 
 type Tool struct {
@@ -19,6 +21,14 @@ type Tool struct {
 	URLTemplate    string
 	BinaryTemplate string
 	NoExtension    bool
+}
+
+func (tool Tool) IsArchive() bool {
+	arch, operatingSystem := env.GetClientArch()
+	version := ""
+
+	downloadURL, _ := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip")
 }
 
 var templateFuncs = map[string]interface{}{
@@ -196,6 +206,27 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
 			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
 			NoExtension: true,
+		},
+		{
+			Owner:   "helm",
+			Repo:    "helm",
+			Name:    "helm",
+			Version: "v3.2.4",
+			URLTemplate: `{{$arch := "arm"}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- end -}}
+
+{{$os := .OS}}
+{{$ext := "tar.gz"}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{$ext = "zip"}}
+{{- end -}}
+
+https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		},
 	}
 	return tools
