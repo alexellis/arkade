@@ -151,3 +151,66 @@ func Test_DownloadWindows(t *testing.T) {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
 }
+
+func Test_DownloadHelmDarwin(t *testing.T) {
+	tools := MakeTools()
+	name := "helm"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("darwin", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://get.helm.sh/helm-v3.2.4-darwin-amd64.tar.gz"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
+
+func Test_DownloadHelmLinux(t *testing.T) {
+	tools := MakeTools()
+	name := "helm"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("linux", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://get.helm.sh/helm-v3.2.4-linux-amd64.tar.gz"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
+
+func Test_DownloadHelmWindows(t *testing.T) {
+	tools := MakeTools()
+	name := "helm"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("mingw64_nt-10.0-18362", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://get.helm.sh/helm-v3.2.4-windows-amd64.zip"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
