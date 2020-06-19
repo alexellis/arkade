@@ -113,6 +113,9 @@ arkade info --help`,
 		case "nats-connector":
 			fmt.Printf("Info for app: %s\n", appName)
 			fmt.Println(apps.NATSConnectorInfoMsg)
+		case "redis":
+			fmt.Printf("Info for app: %s\n", appName)
+			fmt.Println(apps.RedisInfoMsg)
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
