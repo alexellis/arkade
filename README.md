@@ -46,11 +46,14 @@ Here's a few examples of apps you can install, for a complete list run: `arkade 
 
 ### Install a CLI tool
 
-arkade will determine the correct URL to download a CLI tool of your choice taking into account for your Operating System and CPU architecture - whether Intel or ARM.
+arkade downloads the correct version of a CLI for your OS and CPU.
+
+With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
 arkade get faas-cli
 arkade get helm
+arkade get inletsctl
 arkade get k3d
 arkade get kind
 arkade get kubectl
