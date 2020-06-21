@@ -1,8 +1,10 @@
 package get
 
 func MakeTools() []Tool {
-	tools := []Tool{
-		{
+	tools := []Tool{}
+
+	tools = append(tools,
+		Tool{
 			Owner: "openfaas",
 			Repo:  "faas-cli",
 			Name:  "faas-cli",
@@ -17,39 +19,10 @@ func MakeTools() []Tool {
 {{- else if eq .Arch "aarch64" -}}
 {{.Name}}-arm64
 {{- end -}}`,
-		},
-		//https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
-		{
-			Owner:   "kubernetes",
-			Repo:    "kubernetes",
-			Name:    "kubectl",
-			Version: "v1.18.0",
-			URLTemplate: `{{$arch := "arm"}}
+		})
 
-			{{- if eq .Arch "x86_64" -}}
-{{$arch = "amd64"}}
-{{- end -}}
-
-{{$ext := ""}}
-{{$os := .OS}}
-
-{{ if HasPrefix .OS "ming" -}}
-{{$ext = ".exe"}}
-{{$os = "windows"}}
-{{- end -}}
-
-https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`,
-		},
-		{
-			Owner:       "ahmetb",
-			Repo:        "kubectx",
-			Name:        "kubectx",
-			Version:     "v0.9.0",
-			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
-			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
-			NoExtension: true,
-		},
-		{
+	tools = append(tools,
+		Tool{
 			Owner:   "helm",
 			Repo:    "helm",
 			Name:    "helm",
@@ -69,8 +42,84 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 {{- end -}}
 
 https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
-		},
-		{
+		})
+
+	// https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
+	tools = append(tools,
+		Tool{
+			Owner:   "kubernetes",
+			Repo:    "kubernetes",
+			Name:    "kubectl",
+			Version: "v1.18.0",
+			URLTemplate: `{{$arch := "arm"}}
+
+			{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- end -}}
+
+{{$ext := ""}}
+{{$os := .OS}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = ".exe"}}
+{{$os = "windows"}}
+{{- end -}}
+
+https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "ahmetb",
+			Repo:        "kubectx",
+			Name:        "kubectx",
+			Version:     "v0.9.0",
+			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
+			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
+			NoExtension: true,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner: "kubernetes-sigs",
+			Repo:  "kind",
+			Name:  "kind",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-darwin-amd64
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-linux-arm64
+{{- else -}}
+{{.Name}}-linux-amd64
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner: "rancher",
+			Repo:  "k3d",
+			Name:  "k3d",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-darwin-amd64
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-linux-arm64
+{{- else -}}
+{{.Name}}-linux-amd64
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:   "bitnami-labs",
 			Repo:    "sealed-secrets",
 			Name:    "kubeseal",
@@ -95,43 +144,44 @@ https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/ku
 {{- if and ( not ( or ( eq $arch "arm") ( eq $arch "arm64")) ) ( or ( eq .OS "darwin" ) ( eq .OS "linux" )) -}}
 https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{.OS}}-{{$arch}}
 {{- end -}}`,
-		},
-		{
-			Owner: "kubernetes-sigs",
-			Repo:  "kind",
-			Name:  "kind",
-			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-{{.Name}}-windows-amd64
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "inlets",
+			Repo:    "inletsctl",
+			Name:    "inletsctl",
+			Version: "0.5.4",
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .Arch "armv6l" -}}
+{{$fileName = "inletsctl-armhf.tgz"}}
+{{- else if eq .Arch "armv7l" }}
+{{$fileName = "inletsctl-armhf.tgz"}}
+{{- else if eq .Arch "arm64" -}}
+{{$fileName = "inletsctl-arm64.tgz"}}
+{{ else if HasPrefix .OS "ming" -}}
+{{$fileName = "inletsctl.exe.tgz"}}
+{{- else if eq .OS "linux" -}}
+{{$fileName = "inletsctl.tgz"}}
 {{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin-amd64
-{{- else if eq .Arch "armv6l" -}}
-{{.Name}}-linux-arm
-{{- else if eq .Arch "armv7l" -}}
-{{.Name}}-linux-arm
-{{- else if eq .Arch "aarch64" -}}
-{{.Name}}-linux-arm64
-{{- else -}}
-{{.Name}}-linux-amd64
-{{- end -}}`,
-		},
-		{
-			Owner: "rancher",
-			Repo:  "k3d",
-			Name:  "k3d",
+{{$fileName = "inletsctl-darwin.tgz"}}
+{{- end -}}
+https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}`,
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-{{.Name}}-windows-amd64
+{{.Name}}.exe
 {{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin-amd64
+{{.Name}}-darwin
+{{- else if eq .OS "linux" -}}
+{{.Name}}
 {{- else if eq .Arch "armv6l" -}}
-{{.Name}}-linux-arm
+{{.Name}}-armhf
 {{- else if eq .Arch "armv7l" -}}
-{{.Name}}-linux-arm
+{{.Name}}-armhf
 {{- else if eq .Arch "aarch64" -}}
-{{.Name}}-linux-arm64
-{{- else -}}
-{{.Name}}-linux-amd64
+{{.Name}}-arm64
 {{- end -}}`,
-		},
-	}
+		})
+
 	return tools
 }

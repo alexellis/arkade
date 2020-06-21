@@ -370,3 +370,55 @@ func Test_DownloadK3d(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadInletsctl(t *testing.T) {
+	tools := MakeTools()
+	name := "inletsctl"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.5.4",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl.exe.tgz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.5.4",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl.tgz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.5.4",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-darwin.tgz"},
+		{os: "linux",
+			arch:    "armv6l",
+			version: "0.5.4",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-armhf.tgz"},
+		{os: "linux",
+			arch:    "arm64",
+			version: "0.5.4",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-arm64.tgz"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

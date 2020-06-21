@@ -30,11 +30,10 @@ func MakeGet() *cobra.Command {
 		Long: `The get command downloads a CLI or application from the specific tool's 
 releases or downloads page. The tool is usually downloaded in binary format 
 and provides a fast and easy alternative to a package manager.`,
-		Example: `  arkade get kubectl
+		Example: `  arkade get faas-cli
+  arkade get helm
   arkade get kind
-  arkade get kubectx
-  arkade get faas-cli
-  arkade get helm`,
+  arkade get kubectx`,
 		SilenceUsage: true,
 	}
 
@@ -89,12 +88,20 @@ and provides a fast and easy alternative to a package manager.`,
 
 		if tool.IsArchive() {
 			outFilePathDir := filepath.Dir(outFilePath)
-			outFilePath = path.Join(outFilePathDir, tool.Name)
+			if len(tool.BinaryTemplate) > 0 {
+				fileName, err = get.GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch))
+				if err != nil {
+					return err
+				}
+				outFilePath = path.Join(outFilePathDir, fileName)
+			} else {
+				outFilePath = path.Join(outFilePathDir, tool.Name)
+			}
 			if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
 				outFilePath += ".exe"
 			}
 			r := ioutil.NopCloser(res.Body)
-			if strings.HasSuffix(downloadURL, "tar.gz") {
+			if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
 				untarErr := archive.Untar(r, outFilePathDir)
 				if untarErr != nil {
 					return untarErr
@@ -147,11 +154,12 @@ sudo install -m 755 %s /usr/local/bin/%s
 
 const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
 
-  - kubectl
-  - kind
-  - kubectx
-  - kubeseal
-  - faas-cli
-	- helm
-	- k3d
+- faas-cli
+- helm
+- inletsctl
+- k3d
+- kind
+- kubectl
+- kubectx
+- kubeseal
   `
