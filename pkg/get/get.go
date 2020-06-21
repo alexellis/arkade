@@ -3,6 +3,7 @@ package get
 import (
 	"bytes"
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"html/template"
 	"net"
@@ -23,16 +24,42 @@ type Tool struct {
 	NoExtension    bool
 }
 
+var templateFuncs = map[string]interface{}{
+	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+}
+
 func (tool Tool) IsArchive() bool {
 	arch, operatingSystem := env.GetClientArch()
 	version := ""
 
 	downloadURL, _ := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip")
+	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip") || strings.HasSuffix(downloadURL, "tgz")
 }
 
-var templateFuncs = map[string]interface{}{
-	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+func GetBinaryName(tool *Tool, os, arch string) (string, error) {
+	if len(tool.BinaryTemplate) > 0 {
+		var err error
+		t := template.New(tool.Name + "_binaryname")
+		t = t.Funcs(templateFuncs)
+		t, err = t.Parse(tool.BinaryTemplate)
+		if err != nil {
+			return "", err
+		}
+
+		var buf bytes.Buffer
+		err = t.Execute(&buf, map[string]string{
+			"OS":   os,
+			"Arch": arch,
+			"Name": tool.Name,
+		})
+		if err != nil {
+			return "", err
+		}
+		res := strings.TrimSpace(buf.String())
+		return res, nil
+	}
+
+	return "", errors.New("BinaryTemplate is not set")
 }
 
 // Download fetches the download URL for a release of a tool
@@ -52,13 +79,11 @@ func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
 }
 
 func (tool Tool) GetURL(os, arch, version string) (string, error) {
-
 	if len(tool.URLTemplate) == 0 {
 		return getURLByGithubTemplate(tool, os, arch, version)
 	}
 
 	return getByDownloadTemplate(tool, os, arch, version)
-
 }
 
 func (t Tool) Latest() bool {
@@ -77,7 +102,6 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 
 	var err error
 	t := template.New(tool.Name + "binary")
-
 	t = t.Funcs(templateFuncs)
 	t, err = t.Parse(tool.BinaryTemplate)
 	if err != nil {
