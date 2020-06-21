@@ -60,6 +60,8 @@ arkade get kubectl
 arkade get faas-cli
 arkade get kubectx
 arkade get helm
+arkade get kubeseal
+arkade get inletsctl
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
