@@ -2,6 +2,10 @@ package types
 
 import "github.com/alexellis/arkade/pkg/config"
 
+type CustomTask interface {
+	Execute() error
+}
+
 type InstallerOptions struct {
 	Namespace      string
 	KubeconfigPath string
@@ -9,6 +13,8 @@ type InstallerOptions struct {
 	Helm           *HelmConfig
 	Verbose        bool
 	CrdUrls        []string
+	PreTasks       []CustomTask
+	PostTasks      []CustomTask
 }
 
 type HelmConfig struct {

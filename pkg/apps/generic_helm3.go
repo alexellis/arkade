@@ -13,6 +13,15 @@ func MakeInstallHelm3(options *types.InstallerOptions) (*types.InstallerOutput, 
 
 	k8s.KubectlTask("create", "namespace", options.Namespace)
 
+	if options.PreTasks != nil {
+		for _, task := range options.PreTasks {
+			err := task.Execute()
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
 	if options.CrdUrls != nil {
 		for _, crd := range options.CrdUrls {
 			_, err := k8s.KubectlTask("apply", "-f", crd, "-n", options.Namespace)
@@ -37,6 +46,15 @@ func MakeInstallHelm3(options *types.InstallerOptions) (*types.InstallerOutput, 
 		options.Helm.Overrides,
 		options.Helm.Wait); err != nil {
 		return result, err
+	}
+
+	if options.PostTasks != nil {
+		for _, task := range options.PostTasks {
+			err := task.Execute()
+			if err != nil {
+				return nil, err
+			}
+		}
 	}
 
 	return result, nil
