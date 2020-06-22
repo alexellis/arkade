@@ -228,10 +228,37 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		},
+		{
+			Owner:   "bitnami-labs",
+			Repo:    "sealed-secrets",
+			Name:    "kubeseal",
+			Version: "v0.12.4",
+			URLTemplate: `{{$arch := "arm"}}
+{{- if eq .Arch "arm" -}}
+https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{$arch}}
+{{- end -}}
+
+{{- if eq .Arch "arm64" -}}
+https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{.Arch}}
+{{- end -}}
+
+{{- if HasPrefix .OS "ming" -}}
+https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal.exe
+{{- end -}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- end -}}
+
+{{- if and ( not ( or ( eq $arch "arm") ( eq $arch "arm64")) ) ( or ( eq .OS "darwin" ) ( eq .OS "linux" )) -}}
+https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{.OS}}-{{$arch}}
+{{- end -}}`,
+		},
 	}
 	return tools
 }
 
+// https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/kubeseal-linux-amd64
 // makeHTTPClient makes a HTTP client with good defaults for timeouts.
 func makeHTTPClient(timeout *time.Duration, tlsInsecure bool) http.Client {
 	return makeHTTPClientWithDisableKeepAlives(timeout, tlsInsecure, false)
