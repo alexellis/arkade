@@ -13,7 +13,9 @@ import (
 	"time"
 )
 
-// Unzip reads the compressed zip file from r and writes it into dir.
+// Unzip reads the compressed zip file from reader and writes it into dir.
+// Unzip works similar to Untar where support for nested folders is removed
+// so that all files are placed in the same target directory
 func Unzip(reader io.ReaderAt, size int64, dir string) error {
 	zipReader, err := zip.NewReader(reader, size)
 	if err != nil {
