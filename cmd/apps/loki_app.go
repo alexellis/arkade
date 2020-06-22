@@ -28,6 +28,7 @@ func MakeInstallLoki() *cobra.Command {
 
 	lokiApp.Flags().StringP("namespace", "n", "default", "The namespace to install loki (default: default")
 	lokiApp.Flags().Bool("update-repo", true, "Update the helm repo")
+	lokiApp.Flags().Bool("persistence", false, "Use a 10Gi Persistent Volume to store data")
 	lokiApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set grafana.enabled=true)")
 	lokiApp.Flags().Bool("grafana", false, "Install Grafana alongside Loki (default: false)")
 
@@ -50,12 +51,16 @@ func MakeInstallLoki() *cobra.Command {
 			return err
 		}
 
+		persistence, _ := lokiApp.Flags().GetBool("persistence")
 		installGrafana, _ := lokiApp.Flags().GetBool("grafana")
 
 		overrides := map[string]string{}
 
 		if installGrafana {
 			overrides["grafana.enabled"] = "true"
+		}
+		if persistence {
+			overrides["loki.persistence.enabled"] = "true"
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
