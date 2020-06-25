@@ -43,14 +43,6 @@ Here's a few examples of apps you can install, for a complete list run: `arkade 
 * `arkade get` - install a CLI tool such as `kubectl` or `faas-cli`
 * `arkade update` - print instructions to update arkade itself
 
-### Install an app
-
-No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
-
-```bash
-arkade install openfaas --gateways 2 --load-balancer false
-```
-
 ### Install a CLI tool
 
 arkade will determine the correct URL to download a CLI tool of your choice taking into account for your Operating System and CPU architecture - whether Intel or ARM.
@@ -65,6 +57,14 @@ arkade get helm
 > This is a time saver compared to searching for download pages every time you need a tool.
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
+
+### Install an app
+
+No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
+
+```bash
+arkade install openfaas --gateways 2 --load-balancer false
+```
 
 #### Reduce the repetition
 
@@ -214,6 +214,12 @@ Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
 ### How does `arkade` compare to `helm`?
 
 In the same way that [brew](https://brew.sh) uses git and Makefiles to compile applications for your Mac, `arkade` uses upstream [helm](https://helm.sh) charts and `kubectl` to install applications to your Kubernetes cluster. arkade exposes strongly-typed flags for the various popular options for helm charts, and enables easier discovery through `arkade install --help` and `arkade install APP --help`.
+
+### Is arkade suitable for production use?
+
+If you consider helm suitable, and `kubectl` then yes, arkade by definition uses those tools and the upstream artifacts of OSS projects.
+
+Do you want to run arkade in a CI or CD pipeline? Go ahead.
 
 ### What is in scope for `arkade get`?
 
