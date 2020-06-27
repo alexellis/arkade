@@ -205,7 +205,7 @@ To suggest a new app, please check past issues and [raise an issue for it](https
 
 ### Sponsored apps
 
-As of May 2020, you can propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a kink to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
+As of May 2020, you can propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
 
 When your sponsorship expires your app can be renewed at that time, or it will disappear automatically based upon the end-date.
 
