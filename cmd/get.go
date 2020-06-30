@@ -149,6 +149,6 @@ const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
   - kubectl
   - faas-cli
   - kubectx
-	- helm
-	- kubeseal
+  - helm
+  - kubeseal
   `
