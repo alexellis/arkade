@@ -108,7 +108,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 			return err
 		}
 
-		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crd.yaml")
+		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml")
 		if err != nil {
 			return err
 		}
