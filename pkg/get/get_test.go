@@ -2,7 +2,7 @@ package get
 
 import "testing"
 
-const faasCLIVersion = "0.12.4"
+const faasCLIVersion = "0.12.6"
 const arch64bit = "x86_64"
 
 func Test_DownloadDarwin(t *testing.T) {
