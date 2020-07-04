@@ -32,12 +32,13 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'gce' or 'ec2'")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'gce' or 'ec2'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (Used by GCE")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Packet)")
 	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Packet and Scaleway")
 	inletsOperator.Flags().String("organization-id", "", "The organization id (Scaleway")
 	inletsOperator.Flags().StringP("token-file", "t", "", "Text file containing token or a service account JSON file")
+	inletsOperator.Flags().StringP("token", "k", "", "The API access token")
 	inletsOperator.Flags().StringP("secret-key-file", "s", "", "Text file containing secret key, used for providers like ec2")
 	inletsOperator.Flags().Bool("update-repo", true, "Update the helm repo")
 
@@ -114,22 +115,30 @@ func MakeInstallInletsOperator() *cobra.Command {
 		}
 
 		tokenFileName, _ := command.Flags().GetString("token-file")
+		tokenString, _ := command.Flags().GetString("token")
 
-		if len(tokenFileName) == 0 {
-			return fmt.Errorf(`--token-file is a required field for your cloud API token or service account JSON file`)
+		var accessKeyFrom, accessKeyValue string
+		if len(tokenFileName) > 0 {
+			accessKeyFrom = "--from-file"
+			accessKeyValue = tokenFileName
+		} else if len(tokenString) > 0 {
+			accessKeyFrom = "--from-literal"
+			accessKeyValue = tokenString
+		} else {
+			return fmt.Errorf(`--token-file or --access-key is a required field for your cloud API token or service account JSON`)
 		}
 
 		res, err := k8s.KubectlTask("create", "secret", "generic",
 			"inlets-access-key",
 			"--namespace="+namespace,
-			"--from-file", "inlets-access-key="+tokenFileName)
+			accessKeyFrom, "inlets-access-key="+accessKeyValue)
 
-		if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
+		if err != nil {
+			return err
+		} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
 			fmt.Println("[Warning] secret inlets-access-key already exists and will be used.")
 		} else if len(res.Stderr) > 0 {
 			return fmt.Errorf("error from kubectl\n%q", res.Stderr)
-		} else if err != nil {
-			return err
 		}
 
 		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
@@ -218,7 +227,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	}
 
 	providers := []string{
-		"digitalocean", "packet", "ec2", "scaleway", "gce",
+		"digitalocean", "packet", "ec2", "scaleway", "gce", "linode",
 	}
 	found := false
 	for _, p := range providers {
