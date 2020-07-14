@@ -14,6 +14,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -68,10 +69,13 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		overrides["nfs.server"] = nfsServer
 		overrides["nfs.path"] = nfsPath
 
-		switch clientArch {
-		case "arm", "armhf", "arm64", "aarch64":
-			overrides["image.repository"] = "quay.io/external_storage/nfs-client-provisioner-arm"
+		arch := k8s.GetNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
+		if suffix := getValuesSuffix(arch); suffix == "-armhf" || suffix == "-arm64" {
+			overrides["image.repository"] = "quay.io/external_storage/nfs-client-provisioner-arm:latest"
 		}
+
 		customFlags, _ := command.Flags().GetStringArray("set")
 
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
