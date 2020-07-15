@@ -65,6 +65,17 @@ func MakeInstallRedis() *cobra.Command {
 			"rbac.create":           "true",
 		}
 
+		// create the namespace
+		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
+		if nsErr != nil {
+			return nsErr
+		}
+
+		// ignore errors
+		if nsRes.ExitCode != 0 {
+			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
+		}
+
 		customFlags, _ := command.Flags().GetStringArray("set")
 
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
