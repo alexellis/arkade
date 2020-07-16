@@ -248,13 +248,65 @@ func Test_DownloadKubeseal(t *testing.T) {
 			version: "v0.12.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/kubeseal-darwin-amd64"},
 		{os: "linux",
-			arch:    "arm",
+			arch:    "armv7l",
 			version: "v0.12.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/kubeseal-arm"},
 		{os: "linux",
 			arch:    "arm64",
 			version: "v0.12.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/kubeseal-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadKind(t *testing.T) {
+	tools := MakeTools()
+	name := "kind"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.8.1",
+			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-windows-amd64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.8.1",
+			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.8.1",
+			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-darwin-amd64"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "v0.8.1",
+			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-arm"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v0.8.1",
+			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.8.1/kind-linux-arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
