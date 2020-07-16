@@ -31,6 +31,7 @@ func MakeGet() *cobra.Command {
 releases or downloads page. The tool is usually downloaded in binary format 
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get kubectl
+  arkade get kind
   arkade get kubectx
   arkade get faas-cli
   arkade get helm`,
@@ -147,8 +148,9 @@ sudo install -m 755 %s /usr/local/bin/%s
 const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
 
   - kubectl
-  - faas-cli
+  - kind
   - kubectx
-  - helm
   - kubeseal
+  - faas-cli
+  - helm
   `

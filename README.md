@@ -49,8 +49,10 @@ arkade will determine the correct URL to download a CLI tool of your choice taki
 
 ```bash
 arkade get kubectl
-arkade get faas-cli
 arkade get kubectx
+arkade get kubeseal
+arkade get kind
+arkade get faas-cli
 arkade get helm
 ```
 
