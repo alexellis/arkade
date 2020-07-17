@@ -1,6 +1,6 @@
-# arkade - Kubernetes apps for developers
+# arkade - From zero to Kubernetes hero
 
-arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command. You can get yourself from a new cluster to feeling like a hero in just a few commands.
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
@@ -48,10 +48,10 @@ Here's a few examples of apps you can install, for a complete list run: `arkade 
 arkade will determine the correct URL to download a CLI tool of your choice taking into account for your Operating System and CPU architecture - whether Intel or ARM.
 
 ```bash
+arkade get kind
 arkade get kubectl
 arkade get kubectx
 arkade get kubeseal
-arkade get kind
 arkade get faas-cli
 arkade get helm
 ```
@@ -60,6 +60,17 @@ arkade get helm
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
 
+### Create a Kubernetes cluster
+
+If you have Docker installed, then you can install Kubernetes using KinD in a matter of moments:
+
+```bash
+arkade get kubectl
+arkade get kind
+
+kind create cluster
+```
+
 ### Install an app
 
 No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
@@ -67,6 +78,16 @@ No need to worry about whether you're installing to Intel or ARM architecture, t
 ```bash
 arkade install openfaas --gateways 2 --load-balancer false
 ```
+
+Remember how awkward it was last time you installed the Kubernetes dashboard? And how you could never remember the command to get the token to log in?
+
+```
+arkade install kubernetes-dashboard
+```
+
+Forgot your token? `arkade info kubernetes-dashboard`
+
+Prefer Portainer? Just run: `arkade install portainer`
 
 #### Reduce the repetition
 
@@ -154,7 +175,7 @@ arkade install openfaas-ingress \
 
 #### Get a public IP for a private cluster and your IngressController
 
-And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets-pro](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
+And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets PRO](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
 
 ```bash
 arkade install inlets-operator \
