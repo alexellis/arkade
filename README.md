@@ -70,6 +70,15 @@ arkade get kind
 kind create cluster
 ```
 
+or similar with k3d ([k3s](https://github.com/rancher/k3s) in docker):
+
+```bash
+arkade get kubectl
+arkade get k3d
+
+k3d cluster create
+```
+
 ### Install an app
 
 No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
