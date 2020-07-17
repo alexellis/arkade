@@ -318,3 +318,55 @@ func Test_DownloadKind(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadK3d(t *testing.T) {
+	tools := MakeTools()
+	name := "k3d"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v3.0.0",
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-windows-amd64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v3.0.0",
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-linux-amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v3.0.0",
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-darwin-amd64"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "v3.0.0",
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-linux-arm"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v3.0.0",
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-linux-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

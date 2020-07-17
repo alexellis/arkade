@@ -114,6 +114,24 @@ https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/ku
 {{.Name}}-linux-amd64
 {{- end -}}`,
 		},
+		{
+			Owner: "rancher",
+			Repo:  "k3d",
+			Name:  "k3d",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-darwin-amd64
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-linux-arm
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-linux-arm64
+{{- else -}}
+{{.Name}}-linux-amd64
+{{- end -}}`,
+		},
 	}
 	return tools
 }
