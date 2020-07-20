@@ -34,6 +34,7 @@ func MakeInstallCertManager() *cobra.Command {
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
 		const certManagerVersion = "v0.12.0"
+		const certManagerCRDVersion = "0.12"
 		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -93,7 +94,7 @@ func MakeInstallCertManager() *cobra.Command {
 		}
 
 		log.Printf("Applying CRD\n")
-		crdsURL := "https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml"
+		crdsURL := fmt.Sprintf("https://raw.githubusercontent.com/jetstack/cert-manager/release-%s/deploy/manifests/00-crds.yaml", certManagerCRDVersion)
 		res, err := k8s.KubectlTask("apply", "--validate=false", "-f",
 			crdsURL)
 		if err != nil {
@@ -110,7 +111,7 @@ func MakeInstallCertManager() *cobra.Command {
 		if helm3 {
 			err := helm.Helm3Upgrade("jetstack/cert-manager", namespace,
 				"values.yaml",
-				"v0.12.0",
+				certManagerVersion,
 				overrides,
 				wait)
 
