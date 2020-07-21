@@ -1,6 +1,6 @@
-# arkade - From zero to Kubernetes hero
+# arkade - the one-stop CLI for Kubernetes practitioners
 
-arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command. You can get yourself from a new cluster to feeling like a hero in just a few commands.
+arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command.
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
@@ -47,12 +47,13 @@ Here's a few examples of apps you can install, for a complete list run: `arkade 
 arkade will determine the correct URL to download a CLI tool of your choice taking into account for your Operating System and CPU architecture - whether Intel or ARM.
 
 ```bash
+arkade get faas-cli
+arkade get helm
+arkade get k3d
 arkade get kind
 arkade get kubectl
 arkade get kubectx
 arkade get kubeseal
-arkade get faas-cli
-arkade get helm
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
@@ -70,14 +71,7 @@ arkade get kind
 kind create cluster
 ```
 
-or similar with k3d ([k3s](https://github.com/rancher/k3s) in docker):
-
-```bash
-arkade get kubectl
-arkade get k3d
-
-k3d cluster create
-```
+You can also download k3d [k3s](https://github.com/rancher/k3s) in the same way with `arkade get k3d`.
 
 ### Install an app
 
@@ -87,15 +81,15 @@ No need to worry about whether you're installing to Intel or ARM architecture, t
 arkade install openfaas --gateways 2 --load-balancer false
 ```
 
-Remember how awkward it was last time you installed the Kubernetes dashboard? And how you could never remember the command to get the token to log in?
+Remember how awkward it was last time you installed the [Kubernetes dashboard](https://github.com/kubernetes/dashboard)? And how you could never remember the command to get the token to log in?
 
-```
+```bash
 arkade install kubernetes-dashboard
 ```
 
 Forgot your token? `arkade info kubernetes-dashboard`
 
-Prefer Portainer? Just run: `arkade install portainer`
+Prefer [Portainer](https://www.portainer.io)? Just run: `arkade install portainer`
 
 #### Reduce the repetition
 
@@ -194,38 +188,58 @@ arkade install inlets-operator \
 
 ### Tutorials & community blog posts
 
+Featured:
+
 * [arkade by example — Kubernetes apps, the easy way 😎](https://medium.com/@alexellisuk/kubernetes-apps-the-easy-way-f06d9e5cad3c) - Alex Ellis
+* [Walk-through — install Kubernetes to your Raspberry Pi in 15 minutes](https://medium.com/@alexellisuk/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a)
 * [Get a TLS-enabled Docker registry in 5 minutes](https://blog.alexellis.io/get-a-tls-enabled-docker-registry-in-5-minutes/) - Alex Ellis
 * [Get TLS for OpenFaaS the easy way with arkade](https://blog.alexellis.io/tls-the-easy-way-with-openfaas-and-k3sup/) - Alex Ellis
-* [Walk-through — install Kubernetes to your Raspberry Pi in 15 minutes](https://medium.com/@alexellisuk/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a)
+
+Community posts:
+
 * [A bit of Istio before tea-time](https://blog.alexellis.io/a-bit-of-istio-before-tea-time/) - Alex Ellis
 * [Introducing Arkade - The Kubernetes app installer](https://blog.heyal.co.uk/introducing-arkade/) - Alistair Hey
+* [Portainer for kubernetes in less than 60 seconds!!](https://www.portainer.io/2020/04/portainer-for-kubernetes-in-less-than-60-seconds/) - by Saiyam Pathak
+* [Video walk-through with DJ Adams - Pi & Kubernetes with k3s, k3sup, arkade and OpenFaaS](https://www.youtube.com/watch?v=ZiR3QEfBivk)
 
 #### Explore the apps
 
+You can view the various apps available with `arkade install / --help`, more are available when you run the command yourself.
+
 ```bash
 arkade install --help
-ark --help
 
-cert-manager            Install cert-manager
-chart                   Install the specified helm chart
-cron-connector          Install cron-connector for OpenFaaS
-crossplane              Install Crossplane
-docker-registry         Install a Docker registry
-docker-registry-ingress Install registry ingress with TLS
-info                    Find info about a Kubernetes app
-inlets-operator         Install inlets-operator
-istio                   Install istio
-kafka-connector         Install kafka-connector for OpenFaaS
-kubernetes-dashboard    Install kubernetes-dashboard
-linkerd                 Install linkerd
-metrics-server          Install metrics-server
-minio                   Install minio
-mongodb                 Install mongodb
-ingress-nginx           Install ingress-nginx
-openfaas                Install openfaas
-openfaas-ingress        Install openfaas ingress with TLS
-postgresql              Install postgresql
+  argocd                  Install argocd
+  cert-manager            Install cert-manager
+  chart                   Install the specified helm chart
+  cron-connector          Install cron-connector for OpenFaaS
+  crossplane              Install Crossplane
+  docker-registry         Install a Docker registry
+  docker-registry-ingress Install registry ingress with TLS
+  grafana                 Install grafana
+  info                    Find info about a Kubernetes app
+  ingress-nginx           Install ingress-nginx
+  inlets-operator         Install inlets-operator
+  istio                   Install istio
+  jenkins                 Install jenkins
+  kafka-connector         Install kafka-connector for OpenFaaS
+  kube-state-metrics      Install kube-state-metrics
+  kubernetes-dashboard    Install kubernetes-dashboard
+  linkerd                 Install linkerd
+  loki                    Install Loki for monitoring and tracing
+  metrics-server          Install metrics-server
+  minio                   Install minio
+  mongodb                 Install mongodb
+  nats-connector          Install OpenFaaS connector for NATS
+  nfs-client-provisioner  Install nfs client provisioner
+  openfaas                Install openfaas
+  openfaas-ingress        Install openfaas ingress with TLS
+  openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
+  portainer               Install portainer to visualise and manage containers
+  postgresql              Install postgresql
+  redis                   Install redis
+  tekton                  Install Tekton pipelines and dashboard
+  traefik2                Install traefik2
 ```
 
 ## Community & contributing
@@ -236,7 +250,7 @@ To suggest a new app, please check past issues and [raise an issue for it](https
 
 ### Sponsored apps
 
-As of May 2020, you can propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
+You can now propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
 
 When your sponsorship expires your app can be renewed at that time, or it will disappear automatically based upon the end-date.
 
