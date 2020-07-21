@@ -1,6 +1,8 @@
-# arkade - the one-stop CLI for Kubernetes practitioners
+# arkade - Your one-stop CLI for Kubernetes
 
 arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+
+You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster than you can type "apt-get/brew update".
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
