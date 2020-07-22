@@ -193,6 +193,10 @@ arkade install inlets-operator \
 
 ### Tutorials & community blog posts
 
+Video review from Rancher Labs:
+
+* [Tool of the Day with Adrian from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
+
 Featured:
 
 * [arkade by example — Kubernetes apps, the easy way 😎](https://medium.com/@alexellisuk/kubernetes-apps-the-easy-way-f06d9e5cad3c) - Alex Ellis
