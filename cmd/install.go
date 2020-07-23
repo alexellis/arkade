@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/spf13/cobra"
@@ -33,8 +32,15 @@ command.`,
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		if len(args) == 0 {
-			fmt.Printf("You can install: %s\n%s\n\n", strings.TrimRight("\n - "+strings.Join(getApps(), "\n - "), "\n - "),
-				`Run arkade install NAME --help to see configuration options.`)
+			fmt.Printf(
+				`To see a complete list of apps run:
+
+  arkade install --help
+
+And to see options for a specific app before installing, run:
+
+  arkade install APP --help
+`)
 			return nil
 		}
 
@@ -75,36 +81,4 @@ command.`,
 	command.AddCommand(MakeInfo())
 
 	return command
-}
-
-func getApps() []string {
-	return []string{"openfaas",
-		"nginx-ingress",
-		"cert-manager",
-		"openfaas-ingress",
-		"inlets-operator",
-		"metrics-server",
-		"chart",
-		"linkerd",
-		"cron-connector",
-		"kafka-connector",
-		"minio",
-		"postgresql",
-		"kubernetes-dashboard",
-		"kube-state-metrics",
-		"istio",
-		"crossplane",
-		"mongodb",
-		"docker-registry",
-		"docker-registry-ingress",
-		"traefik2",
-		"grafana",
-		"tekton",
-		"jenkins",
-		"loki",
-		"nats-connector",
-		"nfs-client-provisioner",
-		"redis",
-		"openfaas-loki",
-	}
 }
