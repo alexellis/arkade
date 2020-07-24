@@ -55,6 +55,7 @@ arkade get faas-cli
 arkade get helm
 arkade get inletsctl
 arkade get k3d
+arkade get k3sup
 arkade get kind
 arkade get kubectl
 arkade get kubectx
