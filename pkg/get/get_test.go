@@ -371,6 +371,58 @@ func Test_DownloadK3d(t *testing.T) {
 	}
 }
 
+func Test_DownloadK3sup(t *testing.T) {
+	tools := MakeTools()
+	name := "k3sup"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.9.2",
+			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.9.2",
+			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.9.2",
+			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-darwin"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "0.9.2",
+			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-armhf"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "0.9.2",
+			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadInletsctl(t *testing.T) {
 	tools := MakeTools()
 	name := "inletsctl"

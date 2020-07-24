@@ -158,6 +158,7 @@ const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
 - helm
 - inletsctl
 - k3d
+- k3sup
 - kind
 - kubectl
 - kubectx

@@ -120,6 +120,26 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner: "alexellis",
+			Repo:  "k3sup",
+			Name:  "k3sup",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}.exe
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}-darwin
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-arm64
+	{{- else -}}
+	{{.Name}}
+	{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:   "bitnami-labs",
 			Repo:    "sealed-secrets",
 			Name:    "kubeseal",
