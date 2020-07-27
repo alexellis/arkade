@@ -13,6 +13,7 @@ import (
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
+	var validToolOptions []string = []string{"faas-cli", "helm", "inletsctl", "k3d", "k3sup", "kind", "kubectl", "kubectx", "kubeseal"}
 	tools := get.MakeTools()
 
 	var command = &cobra.Command{
@@ -25,6 +26,7 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get linkerd2 --stash=false
   arkade get --help`,
 		SilenceUsage: true,
+		ValidArgs:    validToolOptions,
 	}
 
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
