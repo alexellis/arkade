@@ -17,6 +17,7 @@ import (
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
+	var validToolOptions []string = []string{"faas-cli", "helm", "inletsctl", "k3d", "k3sup", "kind", "kubectl", "kubectx", "kubeseal"}
 	tools := get.MakeTools()
 
 	var command = &cobra.Command{
@@ -33,6 +34,7 @@ and provides a fast and easy alternative to a package manager.`,
   # Get a complete list of CLIs to download:
   arkade get --help`,
 		SilenceUsage: true,
+		ValidArgs:    validToolOptions,
 	}
 
 	command.Flags().Bool("progress", true, "Display a progress bar")
