@@ -33,9 +33,11 @@ func MakeInstallGitLab() *cobra.Command {
 	gitlabApp.Flags().StringP("domain", "d", "", "Domain name that will be used for all publicly exposed services (required)")
 	gitlabApp.Flags().StringP("external-ip", "i", "", "Static IP to assign to NGINX Ingress Controller (required)")
 
+	// EE is the default type to install. If it is,
 	gitlabApp.Flags().Bool("ce", false, "Install the Community Edition of GitLab")
 
-	// Extras.
+	// The following dependencies are optional, as external instances of those can be used.
+	// This does though require that some values are changed in the helm values via the `--set` flag.
 	gitlabApp.Flags().Bool("no-pgsql", false, "Do not install PostgreSQL alongside GitLab")
 	gitlabApp.Flags().Bool("no-redis", false, "Do not install Redis alongside GitLab")
 	gitlabApp.Flags().Bool("no-minio", false, "Do not install MinIO alongside GitLab")
@@ -70,15 +72,15 @@ func MakeInstallGitLab() *cobra.Command {
 			overrides["global.edition"] = "ce"
 		}
 
-		if !noInstallPgsql {
+		if noInstallPgsql {
 			overrides["global.postgresql.install"] = "false"
 		}
 
-		if !noInstallRedis {
+		if noInstallRedis {
 			overrides["global.redis.install"] = "false"
 		}
 
-		if !noInstallMinio {
+		if noInstallMinio {
 			overrides["global.minio.enabled"] = "false"
 		}
 
