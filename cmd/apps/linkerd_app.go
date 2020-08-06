@@ -5,16 +5,14 @@ package apps
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
 	"path"
-	"strings"
 
+	"github.com/alexellis/arkade/pkg/get"
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -25,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linkerdVersion = "stable-2.6.1"
+var linkerdVersion = "stable-2.8.1"
 
 func MakeInstallLinkerd() *cobra.Command {
 	var linkerd = &cobra.Command{
@@ -55,17 +53,17 @@ func MakeInstallLinkerd() *cobra.Command {
 			return err
 		}
 
-		_, clientOS := env.GetClientArch()
+		arch, clientOS := env.GetClientArch()
 
 		fmt.Printf("Client: %q\n", clientOS)
 
 		log.Printf("User dir established as: %s\n", userPath)
 
-		err = downloadLinkerd(userPath, clientOS)
+		err = downloadLinkerd(userPath, arch, clientOS)
 		if err != nil {
 			return err
 		}
-		fmt.Println("Running linkerd check, this may take a few moments.")
+		fmt.Println("Running linkerd2 check, this may take a few moments.")
 
 		_, err = linkerdCli("check", "--pre")
 		if err != nil {
@@ -104,16 +102,13 @@ func MakeInstallLinkerd() *cobra.Command {
 = Linkerd has been installed.                                        =
 =======================================================================
 
-# Get the linkerd-cli
-curl -sL https://run.linkerd.io/install | sh
-
 # Find out more at:
 # https://linkerd.io
 
-# To use the Linkerd CLI set this path:
+# To use the linkerd2 CLI set this path:
 
 export PATH=$PATH:` + path.Join(userPath, "bin/") + `
-linkerd --help
+linkerd2 --help
 
 ` + pkg.ThanksForUsing)
 		return nil
@@ -122,47 +117,43 @@ linkerd --help
 	return linkerd
 }
 
-func getLinkerdURL(os, version string) string {
-	osSuffix := strings.ToLower(os)
-	return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-%s", version, version, osSuffix)
-}
+// func getLinkerdURL(os, version string) string {
+// 	osSuffix := strings.ToLower(os)
+// 	return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-%s", version, version, osSuffix)
+// }
 
-func downloadLinkerd(userPath, clientOS string) error {
-	filePath := path.Join(path.Join(userPath, "bin"), "linkerd")
-	if _, statErr := os.Stat(filePath); statErr != nil {
-		linkerdURL := getLinkerdURL(clientOS, linkerdVersion)
-		fmt.Println(linkerdURL)
-		parsedURL, _ := url.Parse(linkerdURL)
+func downloadLinkerd(userPath, arch, clientOS string) error {
 
-		res, err := http.DefaultClient.Get(parsedURL.String())
-		if err != nil {
-			return err
-		}
-
-		defer res.Body.Close()
-		out, err := os.Create(filePath)
-		if err != nil {
-			return err
-		}
-		defer out.Close()
-
-		// Write the body to file
-		_, err = io.Copy(out, res.Body)
-		if err != nil {
-			return err
-		}
-
-		err = os.Chmod(filePath, 0755)
-		if err != nil {
-			return err
+	tools := get.MakeTools()
+	var tool *get.Tool
+	for _, t := range tools {
+		if t.Name == "linkerd2" {
+			tool = &t
+			break
 		}
 	}
+	if tool == nil {
+		return fmt.Errorf("unable to find tool definition")
+	}
+
+	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
+
+		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Downloaded to: ", outPath, finalName)
+	} else {
+		fmt.Printf("%s already exists, skipping download.\n", tool.Name)
+	}
+
 	return nil
 }
 
 func linkerdCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("linkerd", "")),
+		Command:     fmt.Sprintf("%s", env.LocalBinary("linkerd2", "")),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,
@@ -191,16 +182,13 @@ func getExportPath() string {
 	return path.Join(userPath, "bin/")
 }
 
-var LinkerdInfoMsg = `# Get the linkerd-cli
-curl -sL https://run.linkerd.io/install | sh
-
-# Find out more at:
+var LinkerdInfoMsg = `# Find out more at:
 # https://linkerd.io
 
-# To use the Linkerd CLI set this path:
+# To use the linkerd2 CLI set this path:
 
 export PATH=$PATH:` + getExportPath() + `
-linkerd --help`
+linkerd2 --help`
 
 var linkerdInstallMsg = `=======================================================================
 = Linkerd has been installed.                                         =

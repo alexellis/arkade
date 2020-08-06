@@ -201,6 +201,38 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 {{- else if eq .Arch "aarch64" -}}
 {{.Name}}-arm64
 {{- end -}}`,
+		},
+		Tool{
+			Name:    "osm",
+			Repo:    "osm",
+			Owner:   "openservicemesh",
+			Version: "v0.1.0",
+			URLTemplate: `
+	{{$osStr := ""}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows"}}
+	{{- else if eq .OS "linux" -}}
+	{{$osStr = "linux"}}
+	{{- else if eq .OS "darwin" -}}
+	{{$osStr = "darwin"}}
+	{{- end -}}
+	https://github.com/openservicemesh/osm/releases/download/{{.Version}}/osm-{{.Version}}-{{$osStr}}-amd64.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "linkerd",
+			Repo:    "linkerd",
+			Name:    "linkerd2",
+			Version: "stable-2.8.1",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-cli-{{.Version}}-windows.exe
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-cli-{{.Version}}-darwin
+{{- else if eq .OS "linux" -}}
+{{.Name}}-cli-{{.Version}}-linux
+{{- end -}}
+`,
 		})
 
 	return tools

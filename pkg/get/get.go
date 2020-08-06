@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -36,7 +37,7 @@ func (tool Tool) IsArchive() bool {
 	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip") || strings.HasSuffix(downloadURL, "tgz")
 }
 
-func GetBinaryName(tool *Tool, os, arch string) (string, error) {
+func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 	if len(tool.BinaryTemplate) > 0 {
 		var err error
 		t := template.New(tool.Name + "_binaryname")
@@ -48,9 +49,10 @@ func GetBinaryName(tool *Tool, os, arch string) (string, error) {
 
 		var buf bytes.Buffer
 		err = t.Execute(&buf, map[string]string{
-			"OS":   os,
-			"Arch": arch,
-			"Name": tool.Name,
+			"OS":      os,
+			"Arch":    arch,
+			"Name":    tool.Name,
+			"Version": version,
 		})
 		if err != nil {
 			return "", err
@@ -110,9 +112,10 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 
 	var buf bytes.Buffer
 	pref := map[string]string{
-		"OS":   os,
-		"Arch": arch,
-		"Name": tool.Name,
+		"OS":      os,
+		"Arch":    arch,
+		"Name":    tool.Name,
+		"Version": version,
 	}
 
 	err = t.Execute(&buf, pref)
@@ -175,8 +178,9 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		"Arch":    arch,
 		"Version": version,
 	}
+	log.Println(inputs)
 	err = t.Execute(&buf, inputs)
-	fmt.Println(inputs)
+
 	if err != nil {
 		return "", err
 	}
