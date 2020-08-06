@@ -170,11 +170,13 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 	}
 
 	var buf bytes.Buffer
-	err = t.Execute(&buf, map[string]string{
+	inputs := map[string]string{
 		"OS":      os,
 		"Arch":    arch,
 		"Version": version,
-	})
+	}
+	err = t.Execute(&buf, inputs)
+	fmt.Println(inputs)
 	if err != nil {
 		return "", err
 	}
