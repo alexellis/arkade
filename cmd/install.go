@@ -77,6 +77,7 @@ And to see options for a specific app before installing, run:
 	command.AddCommand(apps.MakeInstallOpenFaaSLoki())
 	command.AddCommand(apps.MakeInstallNfsProvisioner())
 	command.AddCommand(apps.MakeInstallRedis())
+	command.AddCommand(apps.MakeInstallOSM())
 
 	command.AddCommand(MakeInfo())
 
