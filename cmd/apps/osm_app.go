@@ -4,10 +4,10 @@
 package apps
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -22,12 +22,16 @@ import (
 
 func MakeInstallOSM() *cobra.Command {
 	var osm = &cobra.Command{
-		Use:          "osm",
-		Short:        "Install osm",
-		Long:         `Install Open Service Mesh (OSM) - a lightweight, extensible, cloud native service mesh`,
+		Use:   "osm",
+		Short: "Install osm",
+		Long: `Install Open Service Mesh (OSM) - a lightweight, extensible, cloud native 
+service mesh created by Microsoft Azure.`,
 		Example:      `  arkade install osm`,
 		SilenceUsage: true,
 	}
+
+	osm.Flags().String("mesh", "osm", "Give a specific mesh name override")
+	osm.Flags().StringP("namespace", "n", "osm-system", "Give a specific mesh namespace override")
 
 	osm.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
@@ -59,13 +63,15 @@ func MakeInstallOSM() *cobra.Command {
 			return err
 		}
 		fmt.Println("Running osm check, this may take a few moments.")
+		ns, _ := osm.Flags().GetString("namespace")
+		meshName, _ := osm.Flags().GetString("mesh")
 
-		_, err = osmCli("check", "--pre-flight")
+		_, err = osmCli("check", "--pre-install", "--namespace="+ns)
 		if err != nil {
 			return err
 		}
 
-		res, err := osmCli("install")
+		res, err := osmCli("install", "--mesh-name="+meshName)
 		if err != nil {
 			return err
 		}
@@ -73,27 +79,11 @@ func MakeInstallOSM() *cobra.Command {
 			return fmt.Errorf("exit code %d, error: %s", res.ExitCode, res.Stderr)
 		}
 
-		_, err = osmCli("check")
-		if err != nil {
-			return err
-		}
-
 		fmt.Println(`=======================================================================
-= OSM has been installed.                                        =
+= OSM has been installed.                                             =
 =======================================================================
-
-# Get the osm-cli
-curl -sL https://run.osm.io/install | sh
-
-# Find out more at:
-# https://osm.io
-
-# To use the OSM CLI set this path:
-
-export PATH=$PATH:` + path.Join(userPath, "bin/") + `
-osm --help
-
-` + pkg.ThanksForUsing)
+` +
+			OSMInfoMsg + pkg.ThanksForUsing)
 		return nil
 	}
 
@@ -101,30 +91,30 @@ osm --help
 }
 
 func downloadOSM(userPath, arch, clientOS string) error {
-	t := &get.Tool{
-		Name:    "osm",
-		Repo:    "osm",
-		Owner:   "openservicemesh",
-		Version: "v0.1.0",
-		URLTemplate: `
-{{$osStr := ""}}
-{{ if HasPrefix .OS "ming" -}}
-{{$osStr = "windows"}}
-{{- else if eq .OS "Linux" -}}
-{{$osStr = "linux"}}
-{{- else if eq .OS "Darwin" -}}
-{{$osStr = "darwin"}}
-{{- end -}}
-https://github.com/openservicemesh/osm/releases/download/{{.Version}}/osm-{{.Version}}-{{$osStr}}-amd64.tar.gz`,
+
+	tools := get.MakeTools()
+	var tool *get.Tool
+	for _, t := range tools {
+		if t.Name == "osm" {
+			tool = &t
+			break
+		}
+	}
+	if tool == nil {
+		return fmt.Errorf("unable to find tool definition")
 	}
 
-	u, err := get.GetDownloadURL(t, clientOS, arch, t.Version)
-	if err != nil {
-		return err
+	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
+
+		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir)
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("Downloaded to: ", outPath, finalName)
+	} else {
+		fmt.Printf("%s already exists, skipping download.\n", tool.Name)
 	}
-
-	fmt.Printf("Download URL: %s\n", u)
-
 	return nil
 }
 
@@ -150,15 +140,22 @@ func osmCli(parts ...string) (execute.ExecResult, error) {
 }
 
 var OSMInfoMsg = `# The osm CLI is installed at:
-# $HOME/.bin/arkade
+# $HOME/.bin/arkade/osm
 
 # Find out more at:
 # https://github.com/openservicemesh/osm
 
+# Docs are live at:
+# https://openservicemesh.io
+
+# Walk-through a demo at:
+# https://github.com/openservicemesh/osm/blob/main/docs/example/README.md
+
 # To use the OSM CLI set this path:
 
 export PATH=$PATH:` + getExportPath() + `
-osm --help`
+osm --help
+`
 
 var osmInstallMsg = `=======================================================================
 = Open Service Mesh (OSM) has been installed.                                         =
