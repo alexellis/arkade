@@ -18,6 +18,8 @@ func MakeTools() []Tool {
 {{.Name}}-armhf
 {{- else if eq .Arch "aarch64" -}}
 {{.Name}}-arm64
+{{- else -}}
+{{.Name}}
 {{- end -}}`,
 		})
 
