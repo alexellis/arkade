@@ -36,8 +36,8 @@ arkade info --help`,
 		}
 
 		var (
-			msg     string
 			appName = args[0]
+			msg     string
 		)
 
 		switch appName {
