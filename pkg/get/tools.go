@@ -55,7 +55,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 			Version: "v1.18.0",
 			URLTemplate: `{{$arch := "arm"}}
 
-			{{- if eq .Arch "x86_64" -}}
+{{- if eq .Arch "x86_64" -}}
 {{$arch = "amd64"}}
 {{- end -}}
 

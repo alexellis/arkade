@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
-	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -178,7 +177,7 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		"Arch":    arch,
 		"Version": version,
 	}
-	log.Println(inputs)
+
 	err = t.Execute(&buf, inputs)
 
 	if err != nil {

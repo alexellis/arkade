@@ -21,16 +21,23 @@ func MakeGet() *cobra.Command {
 		Long: `The get command downloads a CLI or application from the specific tool's 
 releases or downloads page. The tool is usually downloaded in binary format 
 and provides a fast and easy alternative to a package manager.`,
-		Example: `  arkade get faas-cli
-  arkade get helm
-  arkade get kind
-  arkade get kubectx`,
+		Example: `  arkade get helm
+  arkade get linkerd2 --stash
+  arkade get --help`,
 		SilenceUsage: true,
 	}
 
+	command.Flags().Bool("stash", false, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
+
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			fmt.Println(arkadeGet)
+			const arkadeGet = `Use "arkade get TOOL" to download a tool or application:`
+
+			buf := ""
+			for _, t := range tools {
+				buf = buf + t.Name + "\n"
+			}
+			fmt.Println(arkadeGet + "\n" + buf)
 			return nil
 		}
 		var tool *get.Tool
@@ -52,35 +59,35 @@ and provides a fast and easy alternative to a package manager.`,
 		arch, operatingSystem := env.GetClientArch()
 		version := ""
 
-		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, get.DownloadTempDir)
+		stash, _ := command.Flags().GetBool("stash")
+		dlMode := get.DownloadTempDir
+		if stash {
+			dlMode = get.DownloadArkadeDir
+		}
+
+		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode)
 
 		if err != nil {
 			return err
 		}
 
-		fmt.Printf(`Tool written to: %s
+		fmt.Printf("Tool written to: %s\n\n", outFilePath)
 
-Run the following to copy to install the tool:
+		if dlMode == get.DownloadTempDir {
+			fmt.Printf(`Run the following to copy to install the tool:
 
 chmod +x %s
 sudo install -m 755 %s /usr/local/bin/%s
-`, outFilePath, outFilePath, outFilePath, finalName)
+`, outFilePath, outFilePath, finalName)
+		} else {
+			fmt.Printf(`Run the following to add the (%s) binary to your PATH variable
 
+export PATH=$PATH:$HOME/.arkade/bin/
+`, finalName)
+
+		}
 		return err
 	}
 
 	return command
 }
-
-const arkadeGet = `Use "arkade get TOOL" to download a tool or application:
-
-- faas-cli
-- helm
-- inletsctl
-- k3d
-- k3sup
-- kind
-- kubectl
-- kubectx
-- kubeseal
-  `
