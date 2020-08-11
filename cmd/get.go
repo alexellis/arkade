@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"sort"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/alexellis/arkade/pkg/env"
@@ -118,11 +119,18 @@ and provides a fast and easy alternative to a package manager.`,
 		fmt.Printf("Tool written to: %s\n\n", outFilePath)
 
 		if dlMode == get.DownloadTempDir {
-			fmt.Printf(`Run the following to copy to install the tool:
+			if strings.Contains(strings.ToLower(operatingSystem), "mingw") {
+				fmt.Printf(`To install the tool copy the binary located at 
+%s
+to any folder on the PATH within your Git Bash installation (by default: C:\Users\name\AppData\Local\Programs\Git\mingw64) 
+`, outFilePath)
+			} else {
+				fmt.Printf(`Run the following to copy to install the tool:
 
 chmod +x %s
 sudo install -m 755 %s /usr/local/bin/%s
 `, outFilePath, outFilePath, finalName)
+			}
 		} else {
 			fmt.Printf(`# Add (%s) to your PATH variable
 export PATH=$PATH:$HOME/.arkade/bin/
