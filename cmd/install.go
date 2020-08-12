@@ -14,11 +14,11 @@ func MakeInstall() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "install",
 		Short: "Install Kubernetes apps from helm charts or YAML files",
-		Long: `Install Kubernetes apps from helm charts or YAML files using the "install" 
+		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
 command. Helm 3 is used by default unless you pass --helm3=false, then helm 2
 will be used to generate YAML files which are applied without tiller.
 
-You can also find the post-install message for each app with the "info" 
+You can also find the post-install message for each app with the "info"
 command.`,
 		Example: `  arkade install
   arkade install openfaas --helm3 --gateways=2
@@ -47,37 +47,9 @@ And to see options for a specific app before installing, run:
 		return nil
 	}
 
-	command.AddCommand(apps.MakeInstallOpenFaaS())
-	command.AddCommand(apps.MakeInstallMetricsServer())
-	command.AddCommand(apps.MakeInstallInletsOperator())
-	command.AddCommand(apps.MakeInstallCertManager())
-	command.AddCommand(apps.MakeInstallOpenFaaSIngress())
-	command.AddCommand(apps.MakeInstallNginx())
-	command.AddCommand(apps.MakeInstallChart())
-	command.AddCommand(apps.MakeInstallLinkerd())
-	command.AddCommand(apps.MakeInstallCronConnector())
-	command.AddCommand(apps.MakeInstallKafkaConnector())
-	command.AddCommand(apps.MakeInstallKubeStateMetrics())
-	command.AddCommand(apps.MakeInstallMinio())
-	command.AddCommand(apps.MakeInstallPostgresql())
-	command.AddCommand(apps.MakeInstallKubernetesDashboard())
-	command.AddCommand(apps.MakeInstallIstio())
-	command.AddCommand(apps.MakeInstallCrossplane())
-	command.AddCommand(apps.MakeInstallMongoDB())
-	command.AddCommand(apps.MakeInstallRegistry())
-	command.AddCommand(apps.MakeInstallRegistryIngress())
-	command.AddCommand(apps.MakeInstallTraefik2())
-	command.AddCommand(apps.MakeInstallGrafana())
-	command.AddCommand(apps.MakeInstallArgoCD())
-	command.AddCommand(apps.MakeInstallPortainer())
-	command.AddCommand(apps.MakeInstallTekton())
-	command.AddCommand(apps.MakeInstallJenkins())
-	command.AddCommand(apps.MakeInstallLoki())
-	command.AddCommand(apps.MakeInstallNATSConnector())
-	command.AddCommand(apps.MakeInstallOpenFaaSLoki())
-	command.AddCommand(apps.MakeInstallNfsProvisioner())
-	command.AddCommand(apps.MakeInstallRedis())
-	command.AddCommand(apps.MakeInstallOSM())
+	for _, app := range apps.Apps {
+		command.AddCommand(app.MakeInstall)
+	}
 
 	command.AddCommand(MakeInfo())
 
