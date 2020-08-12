@@ -17,6 +17,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "loki",
+		MakeInstall: MakeInstallLoki(),
+		Info:        LokiInfoMsg,
+	})
+}
+
 func MakeInstallLoki() *cobra.Command {
 	var lokiApp = &cobra.Command{
 		Use:          "loki",
@@ -116,7 +124,7 @@ kubectl logs svc/loki-stack-headless
 # If you installed with Grafana you can access the dashboard with the username "admin" and password shown below
  # To get password
  kubectl get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
- 
+
  # Forward traffic to your localhost
  kubectl port-forward service/loki-stack-grafana 3000:80
 

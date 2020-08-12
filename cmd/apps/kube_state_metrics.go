@@ -19,6 +19,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "kube-state-metrics",
+		MakeInstall: MakeInstallKubeStateMetrics(),
+		Info:        KubeStateMetricsInfoMsg,
+	})
+}
+
 func MakeInstallKubeStateMetrics() *cobra.Command {
 	var kubeStateMetrics = &cobra.Command{
 		Use:          "kube-state-metrics",

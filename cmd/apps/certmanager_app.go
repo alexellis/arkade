@@ -5,11 +5,12 @@ package apps
 
 import (
 	"fmt"
-	"golang.org/x/mod/semver"
 	"log"
 	"os"
 	"path"
 	"strings"
+
+	"golang.org/x/mod/semver"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -19,6 +20,14 @@ import (
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
+
+func init() {
+	registerApp(&App{
+		Name:        "cert-manager",
+		MakeInstall: MakeInstallCertManager(),
+		Info:        CertManagerInfoMsg,
+	})
+}
 
 func MakeInstallCertManager() *cobra.Command {
 	var certManager = &cobra.Command{

@@ -19,6 +19,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "chart",
+		MakeInstall: MakeInstallChart(),
+	})
+}
+
 const defaultVersion = "" // If we don't set version then we get latest
 
 func MakeInstallChart() *cobra.Command {
@@ -146,7 +153,7 @@ before using the generic helm chart installer command.`,
 			`=======================================================================
 chart ` + chartRepoName + ` installed.
 =======================================================================
-		
+
 ` + pkg.ThanksForUsing)
 
 		return nil

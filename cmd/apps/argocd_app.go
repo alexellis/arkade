@@ -15,6 +15,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "argocd",
+		MakeInstall: MakeInstallArgoCD(),
+		Info:        ArgoCDInfoMsg,
+	})
+}
+
 func MakeInstallArgoCD() *cobra.Command {
 	var command = &cobra.Command{
 		Use:          "argocd",

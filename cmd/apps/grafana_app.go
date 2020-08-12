@@ -18,6 +18,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "grafana",
+		MakeInstall: MakeInstallGrafana(),
+		Info:        GrafanaInfoMsg,
+	})
+}
+
 func MakeInstallGrafana() *cobra.Command {
 	var grafana = &cobra.Command{
 		Use:          "grafana",

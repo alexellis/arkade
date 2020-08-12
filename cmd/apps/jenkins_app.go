@@ -20,6 +20,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "jenkins",
+		MakeInstall: MakeInstallJenkins(),
+		Info:        JenkinsInfoMsg,
+	})
+}
+
 func MakeInstallJenkins() *cobra.Command {
 	var jenkins = &cobra.Command{
 		Use:          "jenkins",

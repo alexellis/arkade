@@ -19,6 +19,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "crossplane",
+		MakeInstall: MakeInstallCrossplane(),
+		Info:        CrossplanInfoMsg,
+	})
+}
+
 func MakeInstallCrossplane() *cobra.Command {
 	var crossplane = &cobra.Command{
 		Use:   "crossplane",

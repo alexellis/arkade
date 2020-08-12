@@ -14,6 +14,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "kubernetes-dashboard",
+		MakeInstall: MakeInstallKubernetesDashboard(),
+		Info:        KubernetesDashboardInfoMsg,
+	})
+}
+
 func MakeInstallKubernetesDashboard() *cobra.Command {
 	var kubeDashboard = &cobra.Command{
 		Use:          "kubernetes-dashboard",
@@ -75,7 +83,7 @@ subjects:
 ---
 EOF
 
-#To forward the dashboard to your local machine 
+#To forward the dashboard to your local machine
 kubectl proxy
 
 #To get your Token for logging in

@@ -15,6 +15,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "cron-connector",
+		MakeInstall: MakeInstallCronConnector(),
+		Info:        CronConnectorInfoMsg,
+	})
+}
+
 func MakeInstallCronConnector() *cobra.Command {
 	var command = &cobra.Command{
 		Use:          "cron-connector",

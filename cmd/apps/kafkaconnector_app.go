@@ -18,6 +18,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "kafka-connector",
+		MakeInstall: MakeInstallKafkaConnector(),
+		Info:        KafkaConnectorInfoMsg,
+	})
+}
+
 func MakeInstallKafkaConnector() *cobra.Command {
 	var command = &cobra.Command{
 		Use:          "kafka-connector",

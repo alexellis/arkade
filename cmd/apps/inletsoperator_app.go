@@ -20,6 +20,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "inlets-operator",
+		MakeInstall: MakeInstallInletsOperator(),
+		Info:        InletsOperatorInfoMsg,
+	})
+}
+
 func MakeInstallInletsOperator() *cobra.Command {
 	var inletsOperator = &cobra.Command{
 		Use:          "inlets-operator",
@@ -294,7 +302,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 }
 
 const InletsOperatorInfoMsg = `# The default configuration is for DigitalOcean and your secret is
-# stored as "inlets-access-key" in the "default" namespace or the namespace 
+# stored as "inlets-access-key" in the "default" namespace or the namespace
 # you gave if installing with helm3
 
 # To get your first Public IP run the following:
@@ -311,7 +319,7 @@ kubectl apply -f \
 
 kubectl expose deployment nginx-1 --port=80 --type=LoadBalancer
 
-# Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to 
+# Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to
 # change to an IP
 
 kubectl get svc -w

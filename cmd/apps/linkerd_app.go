@@ -23,6 +23,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func init() {
+	registerApp(&App{
+		Name:        "linkerd",
+		MakeInstall: MakeInstallLinkerd(),
+		Info:        LinkerdInfoMsg,
+	})
+}
+
 var linkerdVersion = "stable-2.8.1"
 
 func MakeInstallLinkerd() *cobra.Command {
