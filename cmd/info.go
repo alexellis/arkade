@@ -95,6 +95,8 @@ arkade info --help`,
 			msg = apps.LokiOFInfoMsg
 		case "redis":
 			msg = apps.RedisInfoMsg
+		case "kube-image-prefetch":
+			msg = apps.KubeImagePrefetchInfoMsg
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
