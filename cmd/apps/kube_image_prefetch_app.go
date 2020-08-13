@@ -47,8 +47,8 @@ func MakeInstallKubeImagePrefetch() *cobra.Command {
 		}
 
 		fmt.Println(`=======================================================================
-		= kube-image-prefetch has been installed.                                   =
-		=======================================================================` +
+= kube-image-prefetch has been installed.                             =
+=======================================================================` +
 			"\n\n" + KubeImagePrefetchInfoMsg + "\n\n" + pkg.ThanksForUsing)
 
 		return nil
