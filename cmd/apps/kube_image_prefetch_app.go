@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -33,15 +32,8 @@ func MakeInstallKubeImagePrefetch() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		_, err := k8s.KubectlTask("create", "ns", "kube-image-prefetch")
-		if err != nil {
-			if !strings.Contains(err.Error(), "exists") {
-				return err
-			}
-		}
-
-		_, err = k8s.KubectlTask("apply", "-n", "kube-image-prefetch",
-			"-f", "https://raw.githubusercontent.com/AverageMarcus/kube-image-prefetch/master/manifest.yaml")
+		_, err := k8s.KubectlTask("apply", "-f",
+			"https://raw.githubusercontent.com/AverageMarcus/kube-image-prefetch/master/manifest.yaml")
 		if err != nil {
 			return err
 		}
