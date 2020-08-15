@@ -5,9 +5,13 @@ package apps
 
 import (
 	"fmt"
+	"golang.org/x/mod/semver"
 	"log"
 	"os"
 	"path"
+	"strings"
+
+	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -20,19 +24,19 @@ func MakeInstallCertManager() *cobra.Command {
 	var certManager = &cobra.Command{
 		Use:          "cert-manager",
 		Short:        "Install cert-manager",
-		Long:         "Install cert-manager for obtaining TLS certificates from LetsEncrypt",
+		Long:         "Install cert-manager for TLS certificates management",
 		Example:      "arkade install cert-manager",
 		SilenceUsage: true,
 	}
 
 	certManager.Flags().StringP("namespace", "n", "cert-manager", "The namespace to install cert-manager")
+	certManager.Flags().StringP("version", "v", "v0.15.2", "The version of cert-manager to install, has to be >=0.15.0")
 	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
 	certManager.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		const certManagerVersion = "v0.12.0"
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -45,9 +49,10 @@ func MakeInstallCertManager() *cobra.Command {
 			fmt.Println("Using helm3")
 		}
 		namespace, _ := command.Flags().GetString("namespace")
+		version, _ := command.Flags().GetString("version")
 
-		if namespace != "cert-manager" {
-			return fmt.Errorf(`To override the "cert-manager" namespace, install cert-manager via helm manually`)
+		if !semver.IsValid(version) {
+			return fmt.Errorf("%q is not a valid semver version", version)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -68,21 +73,13 @@ func MakeInstallCertManager() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("jetstack", "https://charts.jetstack.io", helm3)
+		updateRepo, _ := certManager.Flags().GetBool("update-repo")
+		err = helm.AddHelmRepo("jetstack", "https://charts.jetstack.io", updateRepo, helm3)
 		if err != nil {
 			return err
 		}
 
-		updateRepo, _ := certManager.Flags().GetBool("update-repo")
-
-		if updateRepo {
-			err = updateHelmRepos(helm3)
-			if err != nil {
-				return err
-			}
-		}
-
-		nsRes, nsErr := kubectlTask("create", "namespace", namespace)
+		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
 		if nsErr != nil {
 			return nsErr
 		}
@@ -93,32 +90,35 @@ func MakeInstallCertManager() *cobra.Command {
 
 		chartPath := path.Join(os.TempDir(), "charts")
 
-		err = fetchChart(chartPath, "jetstack/cert-manager", certManagerVersion, helm3)
+		err = helm.FetchChart("jetstack/cert-manager", version, helm3)
 		if err != nil {
 			return err
 		}
 
-		log.Printf("Applying CRD\n")
-		crdsURL := "https://raw.githubusercontent.com/jetstack/cert-manager/release-0.12/deploy/manifests/00-crds.yaml"
-		res, err := kubectlTask("apply", "--validate=false", "-f",
-			crdsURL)
-		if err != nil {
-			return err
-		}
+		overrides := map[string]string{}
 
-		if res.ExitCode > 0 {
-			return fmt.Errorf("error applying CRD from: %s, error: %s", crdsURL, res.Stderr)
+		// if <0.15 install CRDs using kubectl else use Helm
+		if semver.Compare(version, "v0.15.0") < 0 {
+			log.Printf("Applying CRD\n")
+			crdsURL := fmt.Sprintf("https://raw.githubusercontent.com/jetstack/cert-manager/release-%s/deploy/manifests/00-crds.yaml", strings.Replace(semver.MajorMinor(version), "v", "", -1))
+			res, err := k8s.KubectlTask("apply", "--validate=false", "-f",
+				crdsURL)
+			if err != nil {
+				return err
+			}
+
+			if res.ExitCode > 0 {
+				return fmt.Errorf("error applying CRD from: %s, error: %s", crdsURL, res.Stderr)
+			}
+		} else {
+			overrides["installCRDs"] = "true"
 		}
 
 		outputPath := path.Join(chartPath, "cert-manager/rendered")
-		overrides := map[string]string{}
-
 		if helm3 {
-			outputPath := path.Join(chartPath, "cert-manager")
-
-			err := helm3Upgrade(outputPath, "jetstack/cert-manager", namespace,
+			err := helm.Helm3Upgrade("jetstack/cert-manager", namespace,
 				"values.yaml",
-				"v0.12.0",
+				version,
 				overrides,
 				wait)
 
@@ -126,12 +126,12 @@ func MakeInstallCertManager() *cobra.Command {
 				return err
 			}
 		} else {
-			err = templateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
+			err = helm.TemplateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
 			if err != nil {
 				return err
 			}
 
-			applyRes, applyErr := kubectlTask("apply", "-R", "-f", outputPath)
+			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
 			if applyErr != nil {
 				return applyErr
 			}
@@ -150,11 +150,7 @@ func MakeInstallCertManager() *cobra.Command {
 }
 
 const CertManagerInfoMsg = `# Get started with cert-manager here:
-# https://docs.cert-manager.io/en/latest/tutorials/acme/http-validation.html
-
-# Check cert-manager's logs with:
-
-kubectl logs -n cert-manager deploy/cert-manager -f`
+# https://docs.cert-manager.io/en/latest/tutorials/acme/http-validation.html`
 
 const certManagerInstallMsg = `=======================================================================
 = cert-manager  has been installed.                                   =

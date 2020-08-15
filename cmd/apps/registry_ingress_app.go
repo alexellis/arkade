@@ -9,6 +9,9 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"text/template"
 
 	"github.com/alexellis/arkade/pkg"
@@ -57,7 +60,7 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 			return errors.New("--ingress-class must be set")
 		}
 
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -77,7 +80,7 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 			return tempFileErr
 		}
 
-		res, err := kubectlTask("apply", "-f", tempFile)
+		res, err := k8s.KubectlTask("apply", "-f", tempFile)
 
 		if err != nil {
 			log.Print(err)

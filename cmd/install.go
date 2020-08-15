@@ -5,7 +5,6 @@ package cmd
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/spf13/cobra"
@@ -33,8 +32,15 @@ command.`,
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		if len(args) == 0 {
-			fmt.Printf("You can install: %s\n%s\n\n", strings.TrimRight("\n - "+strings.Join(getApps(), "\n - "), "\n - "),
-				`Run arkade install NAME --help to see configuration options.`)
+			fmt.Printf(
+				`To see a complete list of apps run:
+
+  arkade install --help
+
+And to see options for a specific app before installing, run:
+
+  arkade install APP --help
+`)
 			return nil
 		}
 
@@ -51,6 +57,7 @@ command.`,
 	command.AddCommand(apps.MakeInstallLinkerd())
 	command.AddCommand(apps.MakeInstallCronConnector())
 	command.AddCommand(apps.MakeInstallKafkaConnector())
+	command.AddCommand(apps.MakeInstallKubeStateMetrics())
 	command.AddCommand(apps.MakeInstallMinio())
 	command.AddCommand(apps.MakeInstallPostgresql())
 	command.AddCommand(apps.MakeInstallKubernetesDashboard())
@@ -61,32 +68,18 @@ command.`,
 	command.AddCommand(apps.MakeInstallRegistryIngress())
 	command.AddCommand(apps.MakeInstallTraefik2())
 	command.AddCommand(apps.MakeInstallGrafana())
+	command.AddCommand(apps.MakeInstallArgoCD())
+	command.AddCommand(apps.MakeInstallPortainer())
+	command.AddCommand(apps.MakeInstallTekton())
+	command.AddCommand(apps.MakeInstallJenkins())
+	command.AddCommand(apps.MakeInstallLoki())
+	command.AddCommand(apps.MakeInstallNATSConnector())
+	command.AddCommand(apps.MakeInstallOpenFaaSLoki())
+	command.AddCommand(apps.MakeInstallNfsProvisioner())
+	command.AddCommand(apps.MakeInstallRedis())
+	command.AddCommand(apps.MakeInstallOSM())
 
 	command.AddCommand(MakeInfo())
 
 	return command
-}
-
-func getApps() []string {
-	return []string{"openfaas",
-		"nginx-ingress",
-		"cert-manager",
-		"openfaas-ingress",
-		"inlets-operator",
-		"metrics-server",
-		"chart",
-		"linkerd",
-		"cron-connector",
-		"kafka-connector",
-		"minio",
-		"postgresql",
-		"kubernetes-dashboard",
-		"istio",
-		"crossplane",
-		"mongodb",
-		"docker-registry",
-		"docker-registry-ingress",
-		"traefik2",
-		"grafana",
-	}
 }

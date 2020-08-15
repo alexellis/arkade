@@ -35,66 +35,72 @@ arkade info --help`,
 			return fmt.Errorf("you can only get info about exactly one installed app")
 		}
 
-		appName := args[0]
+		var (
+			appName = args[0]
+			msg     string
+		)
 
 		switch appName {
 		case "openfaas":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.OpenFaaSInfoMsg)
+			msg = apps.OpenFaaSInfoMsg
 		case "nginx-ingress":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.NginxIngressInfoMsg)
+			msg = apps.NginxIngressInfoMsg
 		case "cert-manager":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.CertManagerInfoMsg)
+			msg = apps.CertManagerInfoMsg
 		case "openfaas-ingress":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.OpenfaasIngressInfoMsg)
+			msg = apps.OpenfaasIngressInfoMsg
 		case "inlets-operator":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.InletsOperatorInfoMsg)
+			msg = apps.InletsOperatorInfoMsg
 		case "mongodb":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.MongoDBInfoMsg)
+			msg = apps.MongoDBInfoMsg
 		case "metrics-server":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.MetricsInfoMsg)
+			msg = apps.MetricsInfoMsg
 		case "linkerd":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.LinkerdInfoMsg)
+			msg = apps.LinkerdInfoMsg
 		case "cron-connector":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.CronConnectorInfoMsg)
+			msg = apps.CronConnectorInfoMsg
 		case "kafka-connector":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.KafkaConnectorInfoMsg)
+			msg = apps.KafkaConnectorInfoMsg
+		case "kube-state-metrics":
+			msg = apps.KubeStateMetricsInfoMsg
 		case "minio":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.MinioInfoMsg)
+			msg = apps.MinioInfoMsg
 		case "postgresql":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.PostgresqlInfoMsg)
+			msg = apps.PostgresqlInfoMsg
 		case "kubernetes-dashboard":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.KubernetesDashboardInfoMsg)
+			msg = apps.KubernetesDashboardInfoMsg
 		case "istio":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.IstioInfoMsg)
+			msg = apps.IstioInfoMsg
 		case "crossplane":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.CrossplanInfoMsg)
+			msg = apps.CrossplanInfoMsg
 		case "docker-registry-ingress":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.RegistryIngressInfoMsg)
+			msg = apps.RegistryIngressInfoMsg
 		case "traefik2":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.Traefik2InfoMsg)
+			msg = apps.Traefik2InfoMsg
+		case "tekton":
+			msg = apps.TektonInfoMsg
 		case "grafana":
-			fmt.Printf("Info for app: %s\n", appName)
-			fmt.Println(apps.GrafanaInfoMsg)
+			msg = apps.GrafanaInfoMsg
+		case "argocd":
+			msg = apps.ArgoCDInfoMsg
+		case "portainer":
+			msg = apps.PortainerInfoMsg
+		case "jenkins":
+			msg = apps.JenkinsInfoMsg
+		case "loki":
+			msg = apps.LokiInfoMsg
+		case "nats-connector":
+			msg = apps.NATSConnectorInfoMsg
+		case "openfaas-loki":
+			msg = apps.LokiOFInfoMsg
+		case "redis":
+			msg = apps.RedisInfoMsg
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
+
+		fmt.Printf("Info for app: %s\n", appName)
+		fmt.Println(msg)
 
 		return nil
 	}

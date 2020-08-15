@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -18,19 +19,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func MakeInstallMetricsServer() *cobra.Command {
-	var metricsServer = &cobra.Command{
-		Use:          "metrics-server",
-		Short:        "Install metrics-server",
-		Long:         `Install metrics-server to provide metrics on nodes and Pods in your cluster.`,
-		Example:      `  arkade install metrics-server --namespace kube-system --helm3`,
+func MakeInstallKubeStateMetrics() *cobra.Command {
+	var kubeStateMetrics = &cobra.Command{
+		Use:          "kube-state-metrics",
+		Short:        "Install kube-state-metrics",
+		Long:         `Install kube-state-metrics to generate and expose cluster-level metrics.`,
+		Example:      `  arkade install kube-state-metrics --namespace default --helm3 --set replicas=2`,
 		SilenceUsage: true,
 	}
 
-	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-	metricsServer.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	kubeStateMetrics.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
+	kubeStateMetrics.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	kubeStateMetrics.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
 
-	metricsServer.RunE = func(command *cobra.Command, args []string) error {
+	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
 		kubeConfigPath := config.GetDefaultKubeconfig()
 
@@ -46,12 +48,12 @@ func MakeInstallMetricsServer() *cobra.Command {
 		}
 		namespace, _ := command.Flags().GetString("namespace")
 
-		if namespace != "kube-system" {
-			return fmt.Errorf(`to override the "kube-system", install via tiller`)
-		}
-
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
+
+		if arch != IntelArch {
+			return fmt.Errorf(OnlyIntelArch)
+		}
 
 		helm3, _ := command.Flags().GetBool("helm3")
 
@@ -75,30 +77,33 @@ func MakeInstallMetricsServer() *cobra.Command {
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/metrics-server", defaultVersion, helm3)
+		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion, helm3)
 
 		if err != nil {
 			return err
 		}
 
-		overrides := map[string]string{}
-		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
-		switch arch {
-		case "arm":
-			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm`
-			break
-		case "arm64", "aarch64":
-			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm64`
-			break
+		setMap := map[string]string{}
+		setVals, _ := kubeStateMetrics.Flags().GetStringArray("set")
+
+		for _, setV := range setVals {
+			var k string
+			var v string
+
+			if index := strings.Index(setV, "="); index > -1 {
+				k = setV[:index]
+				v = setV[index+1:]
+				setMap[k] = v
+			}
 		}
 
 		fmt.Println("Chart path: ", chartPath)
 
 		if helm3 {
-			err := helm.Helm3Upgrade("stable/metrics-server", namespace,
+			err := helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
 				"values.yaml",
 				defaultVersion,
-				overrides,
+				setMap,
 				wait)
 
 			if err != nil {
@@ -106,14 +111,14 @@ func MakeInstallMetricsServer() *cobra.Command {
 			}
 
 		} else {
-			outputPath := path.Join(chartPath, "metrics-server/rendered")
+			outputPath := path.Join(chartPath, "kube-state-metrics/rendered")
 
 			err = helm.TemplateChart(chartPath,
-				"metrics-server",
+				"kube-state-metrics",
 				namespace,
 				outputPath,
 				"values.yaml",
-				overrides)
+				setMap)
 
 			if err != nil {
 				return err
@@ -130,31 +135,24 @@ func MakeInstallMetricsServer() *cobra.Command {
 		}
 
 		fmt.Println(`=======================================================================
-= metrics-server has been installed.                                  =
+=             kube-state-metrics has been installed.                  =
 =======================================================================
 
-# It can take a few minutes for the metrics-server to collect data
-# from the cluster. Try these commands and wait a few moments if
-# no data is showing.
+# Port-forward
+kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 
-` + MetricsInfoMsg + `
-
+# Then access via:
+http://localhost:9000/metrics
+` + KubeStateMetricsInfoMsg + `
 ` + pkg.ThanksForUsing)
 
 		return nil
 	}
 
-	return metricsServer
+	return kubeStateMetrics
 }
 
-const MetricsInfoMsg = `# Check pod usage
-
-kubectl top pod
-
-# Check node usage
-
-kubectl top node
-
-
+const KubeStateMetricsInfoMsg = `
 # Find out more at:
-# https://github.com/helm/charts/tree/master/stable/metrics-server`
+# https://github.com/kubernetes/kube-state-metrics
+`

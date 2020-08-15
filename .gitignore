@@ -5,3 +5,4 @@ kubeconfig
 .idea/
 mc
 /arkade-*
+/faas-cli*

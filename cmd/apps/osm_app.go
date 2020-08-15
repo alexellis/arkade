@@ -4,13 +4,10 @@
 package apps
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -23,18 +20,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linkerdVersion = "stable-2.8.1"
-
-func MakeInstallLinkerd() *cobra.Command {
-	var linkerd = &cobra.Command{
-		Use:          "linkerd",
-		Short:        "Install linkerd",
-		Long:         `Install linkerd`,
-		Example:      `  arkade install linkerd`,
+func MakeInstallOSM() *cobra.Command {
+	var osm = &cobra.Command{
+		Use:   "osm",
+		Short: "Install osm",
+		Long: `Install Open Service Mesh (OSM) - a lightweight, extensible, cloud native 
+service mesh created by Microsoft Azure.`,
+		Example:      `  arkade install osm`,
 		SilenceUsage: true,
 	}
 
-	linkerd.RunE = func(command *cobra.Command, args []string) error {
+	osm.Flags().String("mesh", "osm", "Give a specific mesh name override")
+	osm.Flags().StringP("namespace", "n", "osm-system", "Give a specific mesh namespace override")
+
+	osm.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
@@ -59,75 +58,44 @@ func MakeInstallLinkerd() *cobra.Command {
 
 		log.Printf("User dir established as: %s\n", userPath)
 
-		err = downloadLinkerd(userPath, arch, clientOS)
+		err = downloadOSM(userPath, arch, clientOS)
 		if err != nil {
 			return err
 		}
-		fmt.Println("Running linkerd2 check, this may take a few moments.")
+		fmt.Println("Running osm check, this may take a few moments.")
+		ns, _ := osm.Flags().GetString("namespace")
+		meshName, _ := osm.Flags().GetString("mesh")
 
-		_, err = linkerdCli("check", "--pre")
-		if err != nil {
-			return err
-		}
-
-		res, err := linkerdCli("install")
-		if err != nil {
-			return err
-		}
-		file, err := ioutil.TempFile("", "linkerd")
+		_, err = osmCli("check", "--pre-install", "--namespace="+ns)
 		if err != nil {
 			return err
 		}
 
-		w := bufio.NewWriter(file)
-		_, err = w.WriteString(res.Stdout)
+		res, err := osmCli("install", "--mesh-name="+meshName)
 		if err != nil {
 			return err
 		}
-		w.Flush()
-
-		err = k8s.Kubectl("apply", "-R", "-f", file.Name())
-		if err != nil {
-			return err
-		}
-
-		defer os.Remove(file.Name())
-
-		_, err = linkerdCli("check")
-		if err != nil {
-			return err
+		if res.ExitCode != 0 {
+			return fmt.Errorf("exit code %d, error: %s", res.ExitCode, res.Stderr)
 		}
 
 		fmt.Println(`=======================================================================
-= Linkerd has been installed.                                        =
+= OSM has been installed.                                             =
 =======================================================================
-
-# Find out more at:
-# https://linkerd.io
-
-# To use the linkerd2 CLI set this path:
-
-export PATH=$PATH:` + path.Join(userPath, "bin/") + `
-linkerd2 --help
-
-` + pkg.ThanksForUsing)
+` +
+			OSMInfoMsg + pkg.ThanksForUsing)
 		return nil
 	}
 
-	return linkerd
+	return osm
 }
 
-// func getLinkerdURL(os, version string) string {
-// 	osSuffix := strings.ToLower(os)
-// 	return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-%s", version, version, osSuffix)
-// }
-
-func downloadLinkerd(userPath, arch, clientOS string) error {
+func downloadOSM(userPath, arch, clientOS string) error {
 
 	tools := get.MakeTools()
 	var tool *get.Tool
 	for _, t := range tools {
-		if t.Name == "linkerd2" {
+		if t.Name == "osm" {
 			tool = &t
 			break
 		}
@@ -147,13 +115,12 @@ func downloadLinkerd(userPath, arch, clientOS string) error {
 	} else {
 		fmt.Printf("%s already exists, skipping download.\n", tool.Name)
 	}
-
 	return nil
 }
 
-func linkerdCli(parts ...string) (execute.ExecResult, error) {
+func osmCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("linkerd2", "")),
+		Command:     fmt.Sprintf("%s", env.LocalBinary("osm", "")),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,
@@ -172,25 +139,25 @@ func linkerdCli(parts ...string) (execute.ExecResult, error) {
 	return res, nil
 }
 
-func getUserPath() (string, error) {
-	userPath, err := config.InitUserDir()
-	return userPath, err
-}
+var OSMInfoMsg = `# The osm CLI is installed at:
+# $HOME/.bin/arkade/osm
 
-func getExportPath() string {
-	userPath := config.GetUserDir()
-	return path.Join(userPath, "bin/")
-}
+# Find out more at:
+# https://github.com/openservicemesh/osm
 
-var LinkerdInfoMsg = `# Find out more at:
-# https://linkerd.io
+# Docs are live at:
+# https://openservicemesh.io
 
-# To use the linkerd2 CLI set this path:
+# Walk-through a demo at:
+# https://github.com/openservicemesh/osm/blob/main/docs/example/README.md
+
+# To use the OSM CLI set this path:
 
 export PATH=$PATH:` + getExportPath() + `
-linkerd2 --help`
+osm --help
+`
 
-var linkerdInstallMsg = `=======================================================================
-= Linkerd has been installed.                                         =
+var osmInstallMsg = `=======================================================================
+= Open Service Mesh (OSM) has been installed.                                         =
 =======================================================================` +
-	"\n\n" + LinkerdInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + OSMInfoMsg + "\n\n" + pkg.ThanksForUsing

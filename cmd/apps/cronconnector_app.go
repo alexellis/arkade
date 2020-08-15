@@ -6,6 +6,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -29,7 +31,7 @@ func MakeInstallCronConnector() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -62,20 +64,13 @@ func MakeInstallCronConnector() *cobra.Command {
 			return err
 		}
 
-		err = addHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", false)
+		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo, false)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(false)
-			if err != nil {
-				return err
-			}
-		}
-
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "openfaas/cron-connector", defaultVersion, false)
+		err = helm.FetchChart("openfaas/cron-connector", defaultVersion, false)
 
 		if err != nil {
 			return err
@@ -92,7 +87,7 @@ func MakeInstallCronConnector() *cobra.Command {
 			return err
 		}
 
-		arch := getNodeArchitecture()
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		fmt.Println("Chart path: ", chartPath)
@@ -100,7 +95,7 @@ func MakeInstallCronConnector() *cobra.Command {
 		outputPath := path.Join(chartPath, "cron-connector/rendered")
 
 		ns := namespace
-		err = templateChart(chartPath,
+		err = helm.TemplateChart(chartPath,
 			"cron-connector",
 			ns,
 			outputPath,
@@ -111,7 +106,7 @@ func MakeInstallCronConnector() *cobra.Command {
 			return err
 		}
 
-		err = kubectl("apply", "-R", "-f", outputPath)
+		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
 
 		if err != nil {
 			return err

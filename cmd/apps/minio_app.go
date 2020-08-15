@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -33,12 +35,14 @@ func MakeInstallMinio() *cobra.Command {
 	minio.Flags().String("secret-key", "", "Provide a secret key to override the pre-generated value")
 	minio.Flags().Bool("distributed", false, "Deploy Minio in Distributed Mode")
 	minio.Flags().String("namespace", "default", "Kubernetes namespace for the application")
+	minio.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	minio.Flags().Bool("persistence", false, "Enable persistence")
 	minio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	minio.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := getDefaultKubeconfig()
+		kubeConfigPath := config.GetDefaultKubeconfig()
+		wait, _ := command.Flags().GetBool("wait")
 
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
@@ -46,12 +50,17 @@ func MakeInstallMinio() *cobra.Command {
 		updateRepo, _ := minio.Flags().GetBool("update-repo")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+		helm3, _ := command.Flags().GetBool("helm3")
 
-		arch := getNodeArchitecture()
+		if helm3 {
+			fmt.Println("Using helm3")
+		}
+
+		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(`only Intel, i.e. PC architecture is supported for this app`)
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -72,20 +81,18 @@ func MakeInstallMinio() *cobra.Command {
 			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
 		}
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, false)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
 		if err != nil {
 			return err
 		}
 
-		if updateRepo {
-			err = updateHelmRepos(false)
-			if err != nil {
-				return err
-			}
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, helm3)
+		if err != nil {
+			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = fetchChart(chartPath, "stable/minio", defaultVersion, false)
+		err = helm.FetchChart("stable/minio", defaultVersion, helm3)
 
 		if err != nil {
 			return err
@@ -97,13 +104,20 @@ func MakeInstallMinio() *cobra.Command {
 		accessKey, _ := minio.Flags().GetString("access-key")
 		secretKey, _ := minio.Flags().GetString("secret-key")
 
+		gen, err := password.NewGenerator(&password.GeneratorInput{
+			Symbols: "+/",
+		})
+		if err != nil {
+			return err
+		}
+
 		if len(accessKey) == 0 {
 			fmt.Printf("Access Key not provided, one will be generated for you\n")
-			accessKey, err = password.Generate(20, 10, 0, false, true)
+			accessKey, err = gen.Generate(20, 10, 0, false, true)
 		}
 		if len(secretKey) == 0 {
 			fmt.Printf("Secret Key not provided, one will be generated for you\n")
-			secretKey, err = password.Generate(40, 10, 5, false, true)
+			secretKey, err = gen.Generate(40, 10, 5, false, true)
 		}
 
 		if err != nil {
@@ -128,23 +142,36 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		outputPath := path.Join(chartPath, "minio/rendered")
+		if helm3 {
+			err := helm.Helm3Upgrade("stable/minio", ns,
+				"values.yaml",
+				defaultVersion,
+				overrides,
+				wait)
 
-		err = templateChart(chartPath,
-			"minio",
-			ns,
-			outputPath,
-			"values.yaml",
-			overrides)
+			if err != nil {
+				return err
+			}
 
-		if err != nil {
-			return err
-		}
+		} else {
+			outputPath := path.Join(chartPath, "minio/rendered")
 
-		err = kubectl("apply", "-R", "-f", outputPath)
+			err = helm.TemplateChart(chartPath,
+				"minio",
+				ns,
+				outputPath,
+				"values.yaml",
+				overrides)
 
-		if err != nil {
-			return err
+			if err != nil {
+				return err
+			}
+
+			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
+
+			if err != nil {
+				return err
+			}
 		}
 
 		fmt.Println(minioInstallMsg)
