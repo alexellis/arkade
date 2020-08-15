@@ -1,9 +1,13 @@
 package get
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 const faasCLIVersion = "0.12.8"
 const arch64bit = "x86_64"
+const arm = "armv7l"
 
 func Test_DownloadDarwin(t *testing.T) {
 	tools := MakeTools()
@@ -471,6 +475,59 @@ func Test_DownloadInletsctl(t *testing.T) {
 		}
 		if got != tc.url {
 			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadDoctl(t *testing.T) {
+	tools := MakeTools()
+	name := "doctl"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	const toolVersion = "1.46.0"
+	const urlTemplate = "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-%s-%s.%s"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "windows", "amd64", "zip")},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "linux", "amd64", "tar.gz")},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz")},
+		// this asserts that we can build a URL for ARM processors, but no asset exists and will yield a 404
+		{os: "linux",
+			arch:    arm,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "linux", "", "tar.gz")},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
 }

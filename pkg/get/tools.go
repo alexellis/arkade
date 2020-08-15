@@ -237,5 +237,36 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 `,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "digitalocean",
+			Repo:    "doctl",
+			Name:    "doctl",
+			Version: "1.46.0",
+			URLTemplate: `
+		{{$osStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$osStr = "windows"}}
+		{{- else if eq .OS "linux" -}}
+		{{$osStr = "linux"}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "darwin"}}
+		{{- end -}}
+			
+		{{$archStr := ""}}		
+		{{- if eq .Arch "x86_64" -}}
+		{{$archStr = "amd64"}}						
+		{{- end -}}		
+
+		{{$archiveStr := ""}}		
+		{{ if HasPrefix .OS "ming" -}}
+		{{$archiveStr = "zip"}}		
+		{{- else -}}
+		{{$archiveStr = "tar.gz"}}		
+		{{- end -}}
+
+		https://github.com/digitalocean/doctl/releases/download/v{{.Version}}/doctl-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
+		})
+
 	return tools
 }
