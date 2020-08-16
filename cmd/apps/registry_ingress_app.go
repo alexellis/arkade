@@ -25,6 +25,8 @@ type RegInputData struct {
 	IngressClass     string
 	Namespace        string
 	NginxMaxBuffer   string
+	IssuerType       string
+	IssuerAPI        string
 }
 
 func MakeInstallRegistryIngress() *cobra.Command {
@@ -43,6 +45,7 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 	registryIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
 	registryIngress.Flags().String("max-size", "200m", "the max size for the ingress proxy, default to 200m")
 	registryIngress.Flags().StringP("namespace", "n", "default", "The namespace where the registry is installed")
+	registryIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 
 	registryIngress.RunE = func(command *cobra.Command, args []string) error {
 
@@ -68,7 +71,8 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		yamlBytes, templateErr := buildRegistryYAML(domain, email, ingressClass, namespace, maxSize)
+		staging, _ := registryIngress.Flags().GetBool("staging")
+		yamlBytes, templateErr := buildRegistryYAML(domain, email, ingressClass, namespace, maxSize, staging)
 		if templateErr != nil {
 			log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 			return templateErr
@@ -101,7 +105,7 @@ Have you got the Registry running and cert-manager 0.11.0 or higher installed? %
 	return registryIngress
 }
 
-func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string) ([]byte, error) {
+func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string, staging bool) ([]byte, error) {
 	tmpl, err := template.New("yaml").Parse(registryIngressYamlTemplate)
 
 	if err != nil {
@@ -113,7 +117,14 @@ func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string) (
 		CertmanagerEmail: email,
 		IngressClass:     ingressClass,
 		Namespace:        namespace,
+		IssuerType:       "letsencrypt-prod-issuer",
+		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
 		NginxMaxBuffer:   "",
+	}
+
+	if staging {
+		inputData.IssuerType = "letsencrypt-staging-issuer"
+		inputData.IssuerAPI = "https://acme-staging-v02.api.letsencrypt.org/directory"
 	}
 
 	if ingressClass == "nginx" {
@@ -144,9 +155,9 @@ kubectl get -n <installed-namespace> ingress docker-registry
 # Check the cert-manager logs with:
 kubectl logs -n cert-manager deploy/cert-manager
 
-# A cert-manager ClusterIssuer has been installed into the provided
+# A cert-manager Issuer has been installed into the provided
 # namespace - to see the resource run
-kubectl describe -n <installed-namespace> ClusterIssuer letsencrypt-prod-registry
+kubectl describe -n <installed-namespace> Issuer letsencrypt-prod-registry
 
 # To check the status of your certificate you can run
 kubectl describe -n <installed-namespace> Certificate docker-registry
@@ -155,7 +166,7 @@ kubectl describe -n <installed-namespace> Certificate docker-registry
 # self-signed cert will be installed`
 
 const RegistryIngressInstallMsg = `=======================================================================
-= Docker Registry Ingress and cert-manager ClusterIssuer have been installed =
+= Docker Registry Ingress and cert-manager Issuer have been installed =
 =======================================================================` +
 	"\n\n" + RegistryIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
 
@@ -166,7 +177,7 @@ metadata:
   name: docker-registry
   namespace: {{.Namespace}}
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod-registry
+    cert-manager.io/issuer: {{.IssuerType}}
     kubernetes.io/ingress.class: {{.IngressClass}}
 {{.NginxMaxBuffer}}
 spec:
@@ -184,16 +195,16 @@ spec:
     secretName: docker-registry
 ---
 apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
+kind: Issuer
 metadata:
-  name: letsencrypt-prod-registry
+  name: {{.IssuerType}}
   namespace: {{.Namespace}}
 spec:
   acme:
     email: {{.CertmanagerEmail}}
-    server: https://acme-v02.api.letsencrypt.org/directory
+    server: {{.IssuerAPI}}
     privateKeySecretRef:
-      name: letsencrypt-prod-registry
+      name: {{.IssuerType}}
     solvers:
     - http01:
         ingress:
