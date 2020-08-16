@@ -28,6 +28,7 @@ type inputData struct {
 	IngressClass     string
 	IssuerType       string
 	IssuerAPI        string
+	ClusterIssuer    bool
 }
 
 //MakeInstallOpenFaaSIngess will install a clusterissuer and request a cert from certmanager for the domain you specify
@@ -44,6 +45,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 	openfaasIngress.Flags().StringP("email", "e", "", "Letsencrypt Email")
 	openfaasIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
 	openfaasIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
+	openfaasIngress.Flags().Bool("cluster-issuer", false, "set to true to create a clusterissuer rather than a namespaces issuer (default: false)")
 
 	openfaasIngress.RunE = func(command *cobra.Command, args []string) error {
 
@@ -68,8 +70,9 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		staging, _ := command.Flags().GetBool("staging")
+		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")
 
-		yamlBytes, templateErr := buildYAML(domain, email, ingressClass, staging)
+		yamlBytes, templateErr := buildYAML(domain, email, ingressClass, staging, clusterIssuer)
 		if templateErr != nil {
 			log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 			return templateErr
@@ -131,7 +134,7 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 	return filename, nil
 }
 
-func buildYAML(domain, email, ingressClass string, staging bool) ([]byte, error) {
+func buildYAML(domain, email, ingressClass string, staging, clusterIssuer bool) ([]byte, error) {
 	tmpl, err := template.New("yaml").Parse(ingressYamlTemplate)
 
 	if err != nil {
@@ -144,6 +147,7 @@ func buildYAML(domain, email, ingressClass string, staging bool) ([]byte, error)
 		IngressClass:     ingressClass,
 		IssuerType:       "letsencrypt-prod",
 		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
+		ClusterIssuer:    clusterIssuer,
 	}
 
 	if staging {
@@ -197,7 +201,11 @@ metadata:
   name: openfaas-gateway
   namespace: openfaas
   annotations:
+{{- if .ClusterIssuer }}
     cert-manager.io/cluster-issuer: {{.IssuerType}}
+{{- else }}
+    cert-manager.io/issuer: {{.IssuerType}}
+{{- end }}
     kubernetes.io/ingress.class: {{.IngressClass}}
 spec:
   rules:
@@ -214,9 +222,16 @@ spec:
     secretName: openfaas-gateway
 ---
 apiVersion: cert-manager.io/v1alpha2
+{{- if .ClusterIssuer }}
 kind: ClusterIssuer
+{{- else }}
+kind: Issuer
+{{- end }}
 metadata:
   name: {{.IssuerType}}
+{{- if not .ClusterIssuer }}
+  namespace: openfaas
+{{- end }}
 spec:
   acme:
     email: {{.CertmanagerEmail}}

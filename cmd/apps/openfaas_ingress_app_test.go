@@ -11,7 +11,101 @@ import (
 )
 
 func Test_buildYAML_SubsitutesDomainEmailAndIngress(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", false)
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", false, false)
+	var want = `
+apiVersion: extensions/v1beta1 
+kind: Ingress
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+  annotations:
+    cert-manager.io/issuer: letsencrypt-prod
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: openfaas.subdomain.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: gateway
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+    - openfaas.subdomain.example.com
+    secretName: openfaas-gateway
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: openfaas
+spec:
+  acme:
+    email: openfaas@subdomain.example.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: example-issuer-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: traefik`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("suffix, want: %q, got: %q", want, got)
+	}
+}
+
+func Test_buildYAMLStaging(t *testing.T) {
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", true, false)
+	var want = `
+apiVersion: extensions/v1beta1 
+kind: Ingress
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+  annotations:
+    cert-manager.io/issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: openfaas.subdomain.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: gateway
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+    - openfaas.subdomain.example.com
+    secretName: openfaas-gateway
+---
+apiVersion: cert-manager.io/v1alpha2
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: openfaas
+spec:
+  acme:
+    email: openfaas@subdomain.example.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: example-issuer-account-key
+    solvers:
+    - http01:
+        ingress:
+          class: traefik`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("suffix, want: %q, got: %q", want, got)
+	}
+}
+
+func Test_buildYAMLClusterIssuer(t *testing.T) {
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", false, true)
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
@@ -43,52 +137,6 @@ spec:
   acme:
     email: openfaas@subdomain.example.com
     server: https://acme-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: example-issuer-account-key
-    solvers:
-    - http01:
-        ingress:
-          class: traefik`
-
-	got := string(templBytes)
-	if want != got {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
-	}
-}
-
-func Test_buildYAMLStaging(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", true)
-	var want = `
-apiVersion: extensions/v1beta1 
-kind: Ingress
-metadata:
-  name: openfaas-gateway
-  namespace: openfaas
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-  - host: openfaas.subdomain.example.com
-    http:
-      paths:
-      - backend:
-          serviceName: gateway
-          servicePort: 8080
-        path: /
-  tls:
-  - hosts:
-    - openfaas.subdomain.example.com
-    secretName: openfaas-gateway
----
-apiVersion: cert-manager.io/v1alpha2
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    email: openfaas@subdomain.example.com
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
