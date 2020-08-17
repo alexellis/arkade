@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright OpenFaaS Author(s) 2019
 #########################
