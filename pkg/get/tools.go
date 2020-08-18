@@ -237,5 +237,24 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 `,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "kubernetes-sigs",
+			Repo:    "kubebuilder",
+			Name:    "kubebuilder",
+			Version: "2.3.1",
+			URLTemplate: `{{$arch := "arm64"}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{- if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.Version}}/kubebuilder_{{.Version}}_{{$osStr}}_{{$arch}}.tar.gz`,
+		})
 	return tools
 }
