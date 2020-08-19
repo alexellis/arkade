@@ -582,3 +582,45 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadK9s(t *testing.T) {
+	tools := MakeTools()
+	name := "k9s"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.21.7"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Windows_x86_64.tar.gz`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_x86_64.tar.gz`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Darwin_x86_64.tar.gz`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_arm.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
