@@ -97,6 +97,8 @@ arkade info --help`,
 			msg = apps.RedisInfoMsg
 		case "kube-image-prefetch":
 			msg = apps.KubeImagePrefetchInfoMsg
+		case "registry-creds":
+			msg = apps.RegistryCredsOperatorInfoMsg
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
