@@ -32,6 +32,7 @@ and ARM64 clusters.`,
 	command.Flags().String("password", "", "Password for your registry or the Docker Hub")
 	command.Flags().String("email", "", "Email address for your registry or the Docker Hub (optional)")
 	command.Flags().String("server", "", "Server for your registry or the Docker Hub, default: is blank, for the Docker Hub")
+	command.Flags().Bool("from-env", false, "Read flags from the environment instead of flags, prefixed with DOCKER_, i.e. DOCKER_EMAIL")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
@@ -46,6 +47,7 @@ and ARM64 clusters.`,
 			password string
 			email    string
 			server   string
+			fromEnv  bool
 		)
 
 		fmt.Printf("Applying controller's manifests.\n")
@@ -73,7 +75,19 @@ and ARM64 clusters.`,
 			if err != nil {
 				return err
 			}
+		}
+		if fromEnv {
+			username = os.Getenv("DOCKER_USERNAME")
+			password = os.Getenv("DOCKER_PASSWORD")
+			email = os.Getenv("DOCKER_EMAIL")
+			server = os.Getenv("DOCKER_SERVER")
+		}
 
+		if len(username) > 0 && len(password) == 0 {
+			return fmt.Errorf("both a username, and password are required when a username is given")
+		}
+
+		if len(username) > 0 {
 			fmt.Printf("Attempting to create secret for user: %s\n", username)
 			serverStr := ""
 			if len(server) > 0 {
