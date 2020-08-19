@@ -256,5 +256,24 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- end -}}
 			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.Version}}/kubebuilder_{{.Version}}_{{$osStr}}_{{$arch}}.tar.gz`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "kubernetes-sigs",
+			Repo:    "kustomize",
+			Name:    "kustomize",
+			Version: "kustomize/v3.8.1",
+			URLTemplate: `
+	{{$osStr := ""}}
+	{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+	{{$osStr = "linux_amd64"}}
+	{{- end -}}
+	{{- else if eq .OS "darwin" -}}
+	{{$osStr = "darwin_amd64"}}
+	{{- end -}}
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_v3.8.1_{{$osStr}}.tar.gz`,
+		})
+
 	return tools
 }
