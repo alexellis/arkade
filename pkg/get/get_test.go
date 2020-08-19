@@ -508,6 +508,57 @@ func Test_DownloadKubebuilder(t *testing.T) {
 			version: "2.3.1",
 			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.1/kubebuilder_2.3.1_linux_arm64.tar.gz"},
 	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadKustomize(t *testing.T) {
+	tools := MakeTools()
+	name := "kustomize"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	type test struct {
+		os      string
+		arch    string
+		version string
+		url     string
+	}
+
+	ver := "kustomize/v3.8.1"
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: ver,
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_linux_amd64.tar.gz",
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: ver,
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_darwin_amd64.tar.gz",
+		},
+		{os: "linux",
+			arch:    "arm64",
+			version: ver,
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_.tar.gz",
+		},
+	}
+
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
 		if err != nil {
