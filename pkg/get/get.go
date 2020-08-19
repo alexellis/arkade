@@ -176,6 +176,9 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		"OS":      os,
 		"Arch":    arch,
 		"Version": version,
+		"Repo":    tool.Repo,
+		"Owner":   tool.Owner,
+		"Name":    tool.Name,
 	}
 
 	err = t.Execute(&buf, inputs)

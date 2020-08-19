@@ -22,12 +22,12 @@ func MakeGet() *cobra.Command {
 releases or downloads page. The tool is usually downloaded in binary format 
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
-  arkade get linkerd2 --stash
+  arkade get linkerd2 --stash=false
   arkade get --help`,
 		SilenceUsage: true,
 	}
 
-	command.Flags().Bool("stash", false, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
+	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -83,7 +83,10 @@ sudo install -m 755 %s /usr/local/bin/%s
 			fmt.Printf(`Run the following to add the (%s) binary to your PATH variable
 
 export PATH=$PATH:$HOME/.arkade/bin/
-`, finalName)
+
+%s
+
+`, finalName, outFilePath)
 
 		}
 		return err
