@@ -1,9 +1,31 @@
 package get
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 const faasCLIVersion = "0.12.8"
 const arch64bit = "x86_64"
+const archARM7 = "armv7l"
+
+type test struct {
+	os      string
+	arch    string
+	version string
+	url     string
+}
+
+func getTool(name string, tools []Tool) *Tool {
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+	return tool
+}
 
 func Test_DownloadDarwin(t *testing.T) {
 	tools := MakeTools()
@@ -227,13 +249,6 @@ func Test_DownloadKubeseal(t *testing.T) {
 		}
 	}
 
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
-	}
-
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
@@ -277,13 +292,6 @@ func Test_DownloadKind(t *testing.T) {
 			tool = &target
 			break
 		}
-	}
-
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
 	}
 
 	tests := []test{
@@ -331,13 +339,6 @@ func Test_DownloadK3d(t *testing.T) {
 		}
 	}
 
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
-	}
-
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
@@ -381,13 +382,6 @@ func Test_DownloadK3sup(t *testing.T) {
 			tool = &target
 			break
 		}
-	}
-
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
 	}
 
 	tests := []test{
@@ -435,13 +429,6 @@ func Test_DownloadInletsctl(t *testing.T) {
 		}
 	}
 
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
-	}
-
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
@@ -487,13 +474,6 @@ func Test_DownloadKubebuilder(t *testing.T) {
 		}
 	}
 
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
-	}
-
 	tests := []test{
 		{os: "darwin",
 			arch:    arch64bit,
@@ -532,13 +512,6 @@ func Test_DownloadKustomize(t *testing.T) {
 		}
 	}
 
-	type test struct {
-		os      string
-		arch    string
-		version string
-		url     string
-	}
-
 	ver := "kustomize/v3.8.1"
 
 	tests := []test{
@@ -565,7 +538,47 @@ func Test_DownloadKustomize(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Fatalf("want: %s, got: %s", tc.url, got)
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadDigitalOcean(t *testing.T) {
+	tools := MakeTools()
+	name := "doctl"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.46.0"
+	const urlTemplate = "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-%s-%s.%s"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "windows", "amd64", "zip")},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "linux", "amd64", "tar.gz")},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz")},
+		// this asserts that we can build a URL for ARM processors, but no asset exists and will yield a 404
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     fmt.Sprintf(urlTemplate, "linux", "", "tar.gz")},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
 }
