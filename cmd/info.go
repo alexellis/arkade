@@ -99,6 +99,8 @@ arkade info --help`,
 			msg = apps.KubeImagePrefetchInfoMsg
 		case "registry-creds":
 			msg = apps.RegistryCredsOperatorInfoMsg
+		case "gitlab":
+			msg = apps.GitlabInfoMsg
 		default:
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
