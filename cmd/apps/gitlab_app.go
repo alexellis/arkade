@@ -28,14 +28,11 @@ func MakeInstallGitLab() *cobra.Command {
 	gitlabApp.Flags().StringP("namespace", "n", "default", "The namespace to install GitLab")
 	gitlabApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set global.hosts.domain)")
 	gitlabApp.Flags().Bool("update-repo", true, "Update the helm repo")
-
-	// Change those to arguments as they are required?
+	// Maybe these should be arguments as they are required?
 	gitlabApp.Flags().StringP("domain", "d", "", "Domain name that will be used for all publicly exposed services (required)")
 	gitlabApp.Flags().StringP("external-ip", "i", "", "Static IP to assign to NGINX Ingress Controller (required)")
-
-	// EE is the default type to install. If it is,
+	// EE is the default type to install.
 	gitlabApp.Flags().Bool("ce", false, "Install the Community Edition of GitLab")
-
 	// The following dependencies are optional, as external instances of those can be used.
 	// This does though require that some values are changed in the helm values via the `--set` flag.
 	gitlabApp.Flags().Bool("no-pgsql", false, "Do not install PostgreSQL alongside GitLab")
@@ -121,9 +118,17 @@ func MakeInstallGitLab() *cobra.Command {
 	return gitlabApp
 }
 
-const gitlabInfoMessage = ``
+const GitlabInfoMsg = `# For full configuration information, make sure to check out
+# https://docs.gitlab.com/charts/charts/globals.html
+
+# To access your GitLab installation, visit the external URI after all the pods are running.
+# You can get the initial root administration password with the following command:
+
+kubectl get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.password}' | base64 --decode ; echo
+
+`
 
 const gitlabInstallMsg = `=======================================================================
 = GitLab has been installed.                                          =
 =======================================================================` +
-	"\n\n" + gitlabInfoMessage + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + GitlabInfoMsg + "\n\n" + pkg.ThanksForUsing
