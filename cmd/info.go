@@ -46,4 +46,5 @@ arkade info --help`,
 	}
 
 	return info
+
 }
