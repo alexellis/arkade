@@ -313,19 +313,19 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:    "k9s",
 			Version: "v0.21.7",
 			URLTemplate: `
-			{{$osStr := ""}}
-			{{ if HasPrefix .OS "ming" -}}
-			{{$osStr = "Windows"}}
-			{{- else if eq .OS "linux" -}}
-			{{$osStr = "Linux"}}
-			{{- else if eq .OS "darwin" -}}
-			{{$osStr = "Darwin"}}
-			{{- end -}}
+		{{$osStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$osStr = "Windows"}}
+		{{- else if eq .OS "linux" -}}
+		{{$osStr = "Linux"}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "Darwin"}}
+		{{- end -}}
 
-			{{$archStr := .Arch}}
-			{{- if eq .Arch "armv7l" -}}
-			{{$archStr = "arm"}}
-			{{- end -}}		
+		{{$archStr := .Arch}}
+		{{- if eq .Arch "armv7l" -}}
+		{{$archStr = "arm"}}
+		{{- end -}}		
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
