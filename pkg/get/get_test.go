@@ -624,3 +624,45 @@ func Test_DownloadK9s(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadCivo(t *testing.T) {
+	tools := MakeTools()
+	name := "civo"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.6.27"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v0.6.27/civo-0.6.27-windows-amd64.zip`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v0.6.27/civo-0.6.27-linux-amd64.tar.gz`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v0.6.27/civo-0.6.27-darwin-amd64.tar.gz`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v0.6.27/civo-0.6.27-linux-arm.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
