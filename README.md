@@ -97,6 +97,10 @@ Forgot your token? `arkade info kubernetes-dashboard`
 
 Prefer [Portainer](https://www.portainer.io)? Just run: `arkade install portainer`
 
+### Uninstall an app
+
+Run `arkade uninstall` or `arkade delete` for more information on how to remove applications from a Kubernetes cluster.
+
 #### Reduce the repetition
 
 [Normally up to a dozen commands](https://cert-manager.io/docs/installation/kubernetes/) (including finding and downloading helm), now just one. No searching for the correct CRD to apply, no trying to install helm, no trying to find the correct helm repo to add:
