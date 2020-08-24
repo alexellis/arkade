@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-const faasCLIVersion = "0.12.8"
+const faasCLIVersion = "0.12.9"
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
 
