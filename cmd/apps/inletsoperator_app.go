@@ -32,7 +32,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'gce' or 'ec2'")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce' or 'ec2'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (Used by GCE")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Packet)")
 	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Packet and Scaleway")
@@ -227,8 +227,9 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	}
 
 	providers := []string{
-		"digitalocean", "packet", "ec2", "scaleway", "gce", "linode",
+		"digitalocean", "packet", "ec2", "scaleway", "civo", "gce", "linode",
 	}
+
 	found := false
 	for _, p := range providers {
 		if p == provider {
