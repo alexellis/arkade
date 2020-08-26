@@ -17,8 +17,11 @@ import (
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
-	var validToolOptions []string = []string{"faas-cli", "helm", "inletsctl", "k3d", "k3sup", "kind", "kubectl", "kubectx", "kubeseal"}
 	tools := get.MakeTools()
+	var validToolOptions []string = make([]string, len(tools))
+	for _, t := range tools {
+		validToolOptions = append(validToolOptions, t.Name)
+	}
 
 	var command = &cobra.Command{
 		Use:   "get",
