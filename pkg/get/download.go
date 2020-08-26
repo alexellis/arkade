@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/archive"
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 )
 
@@ -100,9 +101,15 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	if downloadMode == DownloadArkadeDir {
+
+		_, err := config.InitUserDir()
+		if err != nil {
+			return "", "", err
+		}
+
 		localPath := env.LocalBinary(finalName, "")
 
-		_, err := copyFile(path.Join(outFilePath), localPath)
+		_, err = copyFile(path.Join(outFilePath), localPath)
 		if err != nil {
 			return "", "", err
 		}
