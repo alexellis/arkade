@@ -5,6 +5,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/user"
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
@@ -27,7 +29,7 @@ and provides a fast and easy alternative to a package manager.`,
 		SilenceUsage: true,
 	}
 
-	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
+	command.Flags().Bool("stash", true, "When set to true, stash binary in $HOME/.arkade/bin/, otherwise store in /tmp/")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -64,6 +66,14 @@ and provides a fast and easy alternative to a package manager.`,
 		if stash {
 			dlMode = get.DownloadArkadeDir
 		}
+
+		currentUser, err := user.Current()
+		if err != nil {
+			return err
+		}
+
+		defaultArkPath := fmt.Sprintf("%s/.arkade/bin", currentUser.HomeDir)
+		_ = os.MkdirAll(defaultArkPath, 0744)
 
 		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode)
 
