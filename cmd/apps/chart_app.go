@@ -10,12 +10,11 @@ import (
 	"path"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg/k8s"
-
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/spf13/cobra"
 )
 
@@ -46,11 +45,6 @@ before using the generic helm chart installer command.`,
 	chartCmd.RunE = func(command *cobra.Command, args []string) error {
 		chartRepoName, _ := command.Flags().GetString("repo-name")
 		chartRepoURL, _ := command.Flags().GetString("repo-url")
-
-		chartName := chartRepoName
-		if index := strings.Index(chartRepoName, "/"); index > -1 {
-			chartName = chartRepoName[index+1:]
-		}
 
 		chartPrefix := chartRepoName
 		if index := strings.Index(chartRepoName, "/"); index > -1 {
@@ -109,14 +103,10 @@ before using the generic helm chart installer command.`,
 			}
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
-
 		err = helm.FetchChart(chartRepoName, defaultVersion, false)
 		if err != nil {
 			return err
 		}
-
-		outputPath := path.Join(chartPath, "chart/rendered")
 
 		setMap := map[string]string{}
 		setVals, _ := chartCmd.Flags().GetStringArray("set")
@@ -132,22 +122,22 @@ before using the generic helm chart installer command.`,
 			}
 		}
 
-		err = helm.TemplateChart(chartPath, chartName, namespace, outputPath, "values.yaml", setMap)
-		if err != nil {
-			return err
-		}
+		err = helm.Helm3Upgrade(chartRepoName, namespace,
+			"values.yaml",
+			defaultVersion,
+			setMap,
+			false)
 
-		err = k8s.Kubectl("apply", "--namespace", namespace, "-R", "-f", outputPath)
 		if err != nil {
 			return err
 		}
 
 		fmt.Println(
 			`=======================================================================
-chart ` + chartRepoName + ` installed.
-=======================================================================
-		
-` + pkg.ThanksForUsing)
+		chart ` + chartRepoName + ` installed.
+		=======================================================================
+
+		` + pkg.ThanksForUsing)
 
 		return nil
 	}

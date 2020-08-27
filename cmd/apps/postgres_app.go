@@ -11,7 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -72,25 +74,6 @@ func MakeInstallPostgresql() *cobra.Command {
 			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
 		}
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, false)
-		if err != nil {
-			return err
-		}
-
-		if updateRepo {
-			err = helm.UpdateHelmRepos(false)
-			if err != nil {
-				return err
-			}
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/postgresql", defaultVersion, false)
-
-		if err != nil {
-			return err
-		}
-
 		persistence, _ := postgresql.Flags().GetBool("persistence")
 
 		overrides := map[string]string{}
@@ -110,21 +93,20 @@ func MakeInstallPostgresql() *cobra.Command {
 			return err
 		}
 
-		outputPath := path.Join(chartPath, "postgresql/rendered")
+		postgresqlAppOptions := types.DefaultInstallOptions().
+			WithNamespace(ns).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("bitnami/postgresql").
+			WithHelmURL("https://charts.bitnami.com/bitnami").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo)
 
-		err = helm.TemplateChart(chartPath,
-			"postgresql",
-			ns,
-			outputPath,
-			"values.yaml",
-			overrides)
-
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
 		if err != nil {
 			return err
 		}
 
-		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
+		_, err = apps.MakeInstallChart(postgresqlAppOptions)
 		if err != nil {
 			return err
 		}
