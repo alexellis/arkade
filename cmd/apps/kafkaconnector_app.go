@@ -9,7 +9,9 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -63,23 +65,6 @@ func MakeInstallKafkaConnector() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, false)
-		if err != nil {
-			return err
-		}
-
-		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo, false)
-		if err != nil {
-			return err
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("openfaas/kafka-connector", defaultVersion, false)
-
-		if err != nil {
-			return err
-		}
-
 		topicsVal, err := command.Flags().GetString("topics")
 		if err != nil {
 			return err
@@ -110,24 +95,20 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		fmt.Println("Chart path: ", chartPath)
+		kafkaConnectorAppOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("openfaas/kafka-connector").
+			WithHelmURL("https://openfaas.github.io/faas-netes/").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo)
 
-		outputPath := path.Join(chartPath, "kafka-connector/rendered")
-
-		ns := namespace
-		err = helm.TemplateChart(chartPath,
-			"kafka-connector",
-			ns,
-			outputPath,
-			"values.yaml",
-			overrides)
-
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
 		if err != nil {
 			return err
 		}
 
-		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
+		_, err = apps.MakeInstallChart(kafkaConnectorAppOptions)
 		if err != nil {
 			return err
 		}
