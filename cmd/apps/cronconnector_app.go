@@ -6,7 +6,9 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -59,23 +61,6 @@ func MakeInstallCronConnector() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, false)
-		if err != nil {
-			return err
-		}
-
-		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo, false)
-		if err != nil {
-			return err
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("openfaas/cron-connector", defaultVersion, false)
-
-		if err != nil {
-			return err
-		}
-
 		overrides := map[string]string{}
 
 		customFlags, err := command.Flags().GetStringArray("set")
@@ -90,24 +75,20 @@ func MakeInstallCronConnector() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		fmt.Println("Chart path: ", chartPath)
+		cronConnectorAppOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("openfaas/cron-connector").
+			WithHelmURL("https://openfaas.github.io/faas-netes/").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo)
 
-		outputPath := path.Join(chartPath, "cron-connector/rendered")
-
-		ns := namespace
-		err = helm.TemplateChart(chartPath,
-			"cron-connector",
-			ns,
-			outputPath,
-			"values.yaml",
-			overrides)
-
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
 		if err != nil {
 			return err
 		}
 
-		err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
+		_, err = apps.MakeInstallChart(cronConnectorAppOptions)
 		if err != nil {
 			return err
 		}
