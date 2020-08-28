@@ -31,7 +31,6 @@ func MakeInstallIstio() *cobra.Command {
 	istio.Flags().Bool("update-repo", true, "Update the helm repo")
 	istio.Flags().String("namespace", "istio-system", "Namespace for the app")
 	istio.Flags().Bool("init", true, "Run the Istio init to add CRDs etc")
-	istio.Flags().Bool("helm3", true, "Use Helm 3")
 
 	istio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set=prometheus.enabled=false)")
@@ -72,9 +71,7 @@ func MakeInstallIstio() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
@@ -87,7 +84,6 @@ func MakeInstallIstio() *cobra.Command {
 			"istio",
 			fmt.Sprintf("https://storage.googleapis.com/istio-release/releases/%s/charts", istioVer),
 			updateRepo,
-			helm3,
 		)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
@@ -99,7 +95,7 @@ func MakeInstallIstio() *cobra.Command {
 			return fmt.Errorf("unable to create namespace %s", err)
 		}
 
-		err = helm.FetchChart("istio/istio", defaultVersion, helm3)
+		err = helm.FetchChart("istio/istio", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)

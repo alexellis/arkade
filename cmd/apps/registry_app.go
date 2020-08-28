@@ -32,7 +32,6 @@ func MakeInstallRegistry() *cobra.Command {
 
 	registry.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	registry.Flags().Bool("update-repo", true, "Update the helm repo")
-	registry.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	registry.Flags().StringP("username", "u", "admin", "Username for the registry")
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
 
@@ -47,7 +46,6 @@ func MakeInstallRegistry() *cobra.Command {
 		updateRepo, _ := registry.Flags().GetBool("update-repo")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		helm3, _ := command.Flags().GetBool("helm3")
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -65,7 +63,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
@@ -90,13 +88,13 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/docker-registry", defaultVersion, helm3)
+		err = helm.FetchChart("stable/docker-registry", defaultVersion)
 
 		if err != nil {
 			return err
@@ -114,35 +112,14 @@ func MakeInstallRegistry() *cobra.Command {
 
 		ns := "default"
 
-		if helm3 {
-			err := helm.Helm3Upgrade("stable/docker-registry", ns,
-				"values.yaml",
-				defaultVersion,
-				overrides,
-				wait)
+		err = helm.Helm3Upgrade("stable/docker-registry", ns,
+			"values.yaml",
+			defaultVersion,
+			overrides,
+			wait)
 
-			if err != nil {
-				return err
-			}
-		} else {
-			outputPath := path.Join(chartPath, "docker-registry/rendered")
-
-			err = helm.TemplateChart(chartPath,
-				"docker-registry",
-				ns,
-				outputPath,
-				"values.yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(registryInstallMsg)

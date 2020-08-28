@@ -5,11 +5,12 @@ package apps
 
 import (
 	"fmt"
-	"golang.org/x/mod/semver"
 	"log"
 	"os"
 	"path"
 	"strings"
+
+	"golang.org/x/mod/semver"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -32,7 +33,6 @@ func MakeInstallCertManager() *cobra.Command {
 	certManager.Flags().StringP("namespace", "n", "cert-manager", "The namespace to install cert-manager")
 	certManager.Flags().StringP("version", "v", "v0.15.2", "The version of cert-manager to install, has to be >=0.15.0")
 	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
-	certManager.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
@@ -41,13 +41,8 @@ func MakeInstallCertManager() *cobra.Command {
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
-
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		helm3, _ := command.Flags().GetBool("helm3")
 
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
 		namespace, _ := command.Flags().GetString("namespace")
 		version, _ := command.Flags().GetString("version")
 
@@ -68,13 +63,13 @@ func MakeInstallCertManager() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
 		updateRepo, _ := certManager.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("jetstack", "https://charts.jetstack.io", updateRepo, helm3)
+		err = helm.AddHelmRepo("jetstack", "https://charts.jetstack.io", updateRepo)
 		if err != nil {
 			return err
 		}
@@ -88,9 +83,7 @@ func MakeInstallCertManager() *cobra.Command {
 			fmt.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
-
-		err = helm.FetchChart("jetstack/cert-manager", version, helm3)
+		err = helm.FetchChart("jetstack/cert-manager", version)
 		if err != nil {
 			return err
 		}
@@ -114,31 +107,14 @@ func MakeInstallCertManager() *cobra.Command {
 			overrides["installCRDs"] = "true"
 		}
 
-		outputPath := path.Join(chartPath, "cert-manager/rendered")
-		if helm3 {
-			err := helm.Helm3Upgrade("jetstack/cert-manager", namespace,
-				"values.yaml",
-				version,
-				overrides,
-				wait)
+		err = helm.Helm3Upgrade("jetstack/cert-manager", namespace,
+			"values.yaml",
+			version,
+			overrides,
+			wait)
 
-			if err != nil {
-				return err
-			}
-		} else {
-			err = helm.TemplateChart(chartPath, "cert-manager", namespace, outputPath, "values.yaml", nil)
-			if err != nil {
-				return err
-			}
-
-			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
-			if applyErr != nil {
-				return applyErr
-			}
-
-			if applyRes.ExitCode > 0 {
-				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
-			}
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(certManagerInstallMsg)

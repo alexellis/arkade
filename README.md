@@ -138,7 +138,6 @@ Examples:
   arkade install ingress-nginx --namespace default
 
 Flags:
-      --helm3              Use helm3, if set to false uses helm2 (default true)
   -h, --help               help for ingress-nginx
       --host-mode          If we should install ingress-nginx in host mode.
   -n, --namespace string   The namespace used for installation (default "default")
