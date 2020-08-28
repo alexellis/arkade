@@ -9,8 +9,6 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/arkade/pkg/k8s"
-
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -33,7 +31,6 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
-	nginx.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
@@ -47,11 +44,6 @@ flag and the ingress-nginx docs for more info`,
 		updateRepo, _ := nginx.Flags().GetBool("update-repo")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -70,18 +62,18 @@ flag and the ingress-nginx docs for more info`,
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.AddHelmRepo("ingress-nginx", "https://kubernetes.github.io/ingress-nginx", updateRepo, helm3)
+		err = helm.AddHelmRepo("ingress-nginx", "https://kubernetes.github.io/ingress-nginx", updateRepo)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("ingress-nginx/ingress-nginx", defaultVersion, helm3)
+		err = helm.FetchChart("ingress-nginx/ingress-nginx", defaultVersion)
 
 		if err != nil {
 			return err
@@ -110,36 +102,14 @@ flag and the ingress-nginx docs for more info`,
 		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
+		err = helm.Helm3Upgrade("ingress-nginx/ingress-nginx", ns,
+			"values.yaml",
+			defaultVersion,
+			overrides,
+			wait)
 
-		if helm3 {
-			err := helm.Helm3Upgrade("ingress-nginx/ingress-nginx", ns,
-				"values.yaml",
-				defaultVersion,
-				overrides,
-				wait)
-
-			if err != nil {
-				return err
-			}
-		} else {
-			outputPath := path.Join(chartPath, "ingress-nginx/rendered")
-
-			err = helm.TemplateChart(chartPath,
-				"ingress-nginx",
-				ns,
-				outputPath,
-				"values.yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(nginxIngressInstallMsg)

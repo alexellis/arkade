@@ -51,7 +51,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.Flags().Bool("ingress-operator", false, "Get custom domains and Ingress records via the ingress-operator component")
 
-	openfaas.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	openfaas.Flags().String("log-provider-url", "", "Set a log provider url for OpenFaaS")
 
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
@@ -65,11 +64,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
 		namespace, _ := command.Flags().GetString("namespace")
 
 		if namespace != "openfaas" {
@@ -91,13 +85,13 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		log.Printf("User dir established as: %s\n", userPath)
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
 		updateRepo, _ := openfaas.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo, helm3)
+		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo)
 		if err != nil {
 			return err
 		}
@@ -136,9 +130,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
-
-		err = helm.FetchChart("openfaas/openfaas", defaultVersion, helm3)
+		err = helm.FetchChart("openfaas/openfaas", defaultVersion)
 		if err != nil {
 			return err
 		}
@@ -212,38 +204,16 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		if helm3 {
-			err := helm.Helm3Upgrade("openfaas/openfaas", namespace,
-				"values"+valuesSuffix+".yaml",
-				"",
-				overrides,
-				wait)
+		err = helm.Helm3Upgrade("openfaas/openfaas", namespace,
+			"values"+valuesSuffix+".yaml",
+			"",
+			overrides,
+			wait)
 
-			if err != nil {
-				return err
-			}
-
-		} else {
-			outputPath := path.Join(chartPath, "openfaas/rendered")
-			err = helm.TemplateChart(chartPath, "openfaas",
-				namespace,
-				outputPath,
-				"values"+valuesSuffix+".yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			applyRes, applyErr := k8s.KubectlTask("apply", "-R", "-f", outputPath)
-			if applyErr != nil {
-				return applyErr
-			}
-
-			if applyRes.ExitCode > 0 {
-				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
-			}
+		if err != nil {
+			return err
 		}
+
 		fmt.Println(openfaasPostInstallMsg)
 		return nil
 	}

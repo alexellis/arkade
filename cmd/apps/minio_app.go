@@ -35,7 +35,6 @@ func MakeInstallMinio() *cobra.Command {
 	minio.Flags().String("secret-key", "", "Provide a secret key to override the pre-generated value")
 	minio.Flags().Bool("distributed", false, "Deploy Minio in Distributed Mode")
 	minio.Flags().String("namespace", "default", "Kubernetes namespace for the application")
-	minio.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	minio.Flags().Bool("persistence", false, "Enable persistence")
 	minio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
@@ -50,11 +49,6 @@ func MakeInstallMinio() *cobra.Command {
 		updateRepo, _ := minio.Flags().GetBool("update-repo")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
@@ -81,18 +75,17 @@ func MakeInstallMinio() *cobra.Command {
 			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
 		}
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
 		if err != nil {
 			return err
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/minio", defaultVersion, helm3)
+		err = helm.FetchChart("stable/minio", defaultVersion)
 
 		if err != nil {
 			return err
@@ -142,36 +135,14 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		if helm3 {
-			err := helm.Helm3Upgrade("stable/minio", ns,
-				"values.yaml",
-				defaultVersion,
-				overrides,
-				wait)
+		err = helm.Helm3Upgrade("stable/minio", ns,
+			"values.yaml",
+			defaultVersion,
+			overrides,
+			wait)
 
-			if err != nil {
-				return err
-			}
-
-		} else {
-			outputPath := path.Join(chartPath, "minio/rendered")
-
-			err = helm.TemplateChart(chartPath,
-				"minio",
-				ns,
-				outputPath,
-				"values.yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			err = k8s.Kubectl("apply", "-R", "-f", outputPath)
-
-			if err != nil {
-				return err
-			}
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(minioInstallMsg)

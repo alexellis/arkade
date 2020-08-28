@@ -53,13 +53,13 @@ func MakeInstallGrafana() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
 		updateRepo, _ := grafana.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo, true)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
 		if err != nil {
 			return err
 		}
@@ -76,7 +76,7 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 
 		// download the chart
-		err = helm.FetchChart("stable/grafana", chartVersion, true)
+		err = helm.FetchChart("stable/grafana", chartVersion)
 		if err != nil {
 			return err
 		}

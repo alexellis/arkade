@@ -31,7 +31,6 @@ func MakeInstallNATSConnector() *cobra.Command {
 	natsConnectorApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set topics=nats-test,)")
 
 	natsConnectorApp.RunE = func(command *cobra.Command, args []string) error {
-		helm3 := true
 
 		namespace, _ := natsConnectorApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -71,7 +70,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}

@@ -18,29 +18,18 @@ import (
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
-const helmVersion = "v2.16.0"
-const helm3Version = "v3.1.2"
+const helmVersion = "v3.1.2"
 
-func TryDownloadHelm(userPath, clientArch, clientOS string, helm3 bool) (string, error) {
+func TryDownloadHelm(userPath, clientArch, clientOS string) (string, error) {
 	helmVal := "helm"
 	subdir := ""
-	if helm3 {
-		helmVal = "helm3"
-		subdir = "helm3"
-	}
 
 	helmBinaryPath := path.Join(path.Join(userPath, "bin"), helmVal)
 	if _, statErr := os.Stat(helmBinaryPath); statErr != nil {
-		if err := DownloadHelm(userPath, clientArch, clientOS, subdir, helm3); err != nil {
+		if err := DownloadHelm(userPath, clientArch, clientOS, subdir); err != nil {
 			return "", err
 		}
 
-		if !helm3 {
-			err := HelmInit()
-			if err != nil {
-				return "", err
-			}
-		}
 	}
 	return helmBinaryPath, nil
 }
@@ -61,14 +50,8 @@ func GetHelmURL(arch, os, version string) string {
 	return fmt.Sprintf("https://get.helm.sh/helm-%s-%s-%s.tar.gz", version, osSuffix, archSuffix)
 }
 
-func DownloadHelm(userPath, clientArch, clientOS, subdir string, helm3 bool) error {
-
-	useHelmVersion := helmVersion
-	if helm3 {
-		useHelmVersion = helm3Version
-	}
-
-	helmURL := GetHelmURL(clientArch, clientOS, useHelmVersion)
+func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
+	helmURL := GetHelmURL(clientArch, clientOS, helmVersion)
 	fmt.Println(helmURL)
 	parsedURL, _ := url.Parse(helmURL)
 
@@ -120,11 +103,29 @@ func HelmInit() error {
 	return nil
 }
 
-func AddHelmRepo(name, url string, update, helm3 bool) error {
+func UpdateHelmRepos(helm3 bool) error {
 	subdir := ""
-	if helm3 {
-		subdir = "helm3"
+
+	task := execute.ExecTask{
+		Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
+		Env:         os.Environ(),
+		StreamStdio: true,
 	}
+
+	res, err := task.Execute()
+
+	if err != nil {
+		return err
+	}
+
+	if res.ExitCode != 0 {
+		return fmt.Errorf("exit code %d", res.ExitCode)
+	}
+	return nil
+}
+
+func AddHelmRepo(name, url string, update bool) error {
+	subdir := ""
 
 	if index := strings.Index(name, "/"); index > -1 {
 		name = name[:index]
@@ -146,37 +147,10 @@ func AddHelmRepo(name, url string, update, helm3 bool) error {
 		return fmt.Errorf("exit code %d", res.ExitCode)
 	}
 
-	if update {
-		return UpdateHelmRepos(helm3)
-	}
-
 	return nil
 }
 
-func UpdateHelmRepos(helm3 bool) error {
-	subdir := ""
-	if helm3 {
-		subdir = "helm3"
-	}
-	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
-		Env:         os.Environ(),
-		StreamStdio: true,
-	}
-
-	res, err := task.Execute()
-
-	if err != nil {
-		return err
-	}
-
-	if res.ExitCode != 0 {
-		return fmt.Errorf("exit code %d", res.ExitCode)
-	}
-	return nil
-}
-
-func FetchChart(chart, version string, helm3 bool) error {
+func FetchChart(chart, version string) error {
 	chartsPath := path.Join(os.TempDir(), "charts")
 	versionStr := ""
 
@@ -186,9 +160,6 @@ func FetchChart(chart, version string, helm3 bool) error {
 		versionStr = " --version " + version
 	}
 	subdir := ""
-	if helm3 {
-		subdir = "helm3"
-	}
 
 	// First remove any existing folder
 	os.RemoveAll(chartsPath)
@@ -249,7 +220,7 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 	}
 
 	task := execute.ExecTask{
-		Command:     env.LocalBinary("helm", "helm3"),
+		Command:     env.LocalBinary("helm", ""),
 		Args:        args,
 		Env:         os.Environ(),
 		Cwd:         basePath,
@@ -257,56 +228,6 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 	}
 
 	fmt.Printf("Command: %s %s\n", task.Command, task.Args)
-	res, err := task.Execute()
-
-	if err != nil {
-		return err
-	}
-
-	if res.ExitCode != 0 {
-		return fmt.Errorf("exit code %d, stderr: %s", res.ExitCode, res.Stderr)
-	}
-
-	if len(res.Stderr) > 0 {
-		log.Printf("stderr: %s\n", res.Stderr)
-	}
-
-	return nil
-}
-
-func TemplateChart(basePath, chart, namespace, outputPath, values string, overrides map[string]string) error {
-
-	rmErr := os.RemoveAll(outputPath)
-
-	if rmErr != nil {
-		log.Printf("Error cleaning up: %s, %s\n", outputPath, rmErr.Error())
-	}
-
-	mkErr := os.MkdirAll(outputPath, 0700)
-	if mkErr != nil {
-		return mkErr
-	}
-
-	overridesStr := ""
-	for k, v := range overrides {
-		overridesStr += fmt.Sprintf(" --set %s=%s", k, v)
-	}
-
-	chartRoot := path.Join(basePath, chart)
-
-	valuesStr := ""
-	if len(values) > 0 {
-		valuesStr = "--values " + path.Join(chartRoot, values)
-	}
-
-	task := execute.ExecTask{
-		Command: fmt.Sprintf("%s template %s --name %s --namespace %s --output-dir %s %s %s",
-			env.LocalBinary("helm", ""), chart, chart, namespace, outputPath, valuesStr, overridesStr),
-		Env:         os.Environ(),
-		Cwd:         basePath,
-		StreamStdio: true,
-	}
-
 	res, err := task.Execute()
 
 	if err != nil {

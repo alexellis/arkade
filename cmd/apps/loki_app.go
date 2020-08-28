@@ -33,7 +33,6 @@ func MakeInstallLoki() *cobra.Command {
 	lokiApp.Flags().Bool("grafana", false, "Install Grafana alongside Loki (default: false)")
 
 	lokiApp.RunE = func(command *cobra.Command, args []string) error {
-		helm3 := true
 
 		namespace, _ := lokiApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -83,7 +82,7 @@ func MakeInstallLoki() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
