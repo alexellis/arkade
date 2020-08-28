@@ -361,5 +361,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$extStr}}`,
 		})
 
+	// https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip
+	tools = append(tools,
+		Tool{
+			Owner:   "hashicorp",
+			Repo:    "terraform",
+			Name:    "terraform",
+			Version: "0.13.1",
+			URLTemplate: `{{$arch := .Arch}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
+{{- end -}}
+
+{{$os := .OS}}
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+
+https://releases.hashicorp.com/terraform/{{.Version}}/terraform_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+
 	return tools
 }
