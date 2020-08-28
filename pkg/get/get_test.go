@@ -666,3 +666,45 @@ func Test_DownloadCivo(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadTerraform(t *testing.T) {
+	tools := MakeTools()
+	name := "terraform"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.13.1"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_windows_amd64.zip`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_darwin_amd64.zip`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_arm.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

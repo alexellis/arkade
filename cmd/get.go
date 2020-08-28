@@ -28,6 +28,7 @@ and provides a fast and easy alternative to a package manager.`,
 	}
 
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
+	command.Flags().StringP("version", "v", "", "Download a specific version")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -40,6 +41,7 @@ and provides a fast and easy alternative to a package manager.`,
 			fmt.Println(arkadeGet + "\n" + buf)
 			return nil
 		}
+
 		var tool *get.Tool
 
 		if len(args) == 1 {
@@ -58,6 +60,10 @@ and provides a fast and easy alternative to a package manager.`,
 
 		arch, operatingSystem := env.GetClientArch()
 		version := ""
+
+		if command.Flags().Changed("version") {
+			version, _ = command.Flags().GetString("version")
+		}
 
 		stash, _ := command.Flags().GetBool("stash")
 		dlMode := get.DownloadTempDir
