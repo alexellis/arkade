@@ -83,7 +83,7 @@ func MakeInstallCronConnector() *cobra.Command {
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo)
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}

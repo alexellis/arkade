@@ -91,7 +91,7 @@ func MakeInstallRedis() *cobra.Command {
 			WithWait(wait).
 			WithHelmUpdateRepo(updateRepo)
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, true)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}

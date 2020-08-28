@@ -35,7 +35,6 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 	nfsProvisionerApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set =true)")
 
 	nfsProvisionerApp.RunE = func(command *cobra.Command, args []string) error {
-		helm3 := true
 
 		namespace, _ := nfsProvisionerApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -96,7 +95,7 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}

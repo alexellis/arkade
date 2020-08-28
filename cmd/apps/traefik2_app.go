@@ -50,19 +50,18 @@ func MakeInstallTraefik2() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q\n", clientOS)
-		helm3 := true
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.AddHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", updateRepo, helm3)
+		err = helm.AddHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", updateRepo)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("traefik/traefik", "", helm3)
+		err = helm.FetchChart("traefik/traefik", "")
 		if err != nil {
 			return fmt.Errorf("Unable fetch chart: %s", err)
 		}

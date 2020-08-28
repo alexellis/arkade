@@ -23,12 +23,11 @@ func MakeInstallMetricsServer() *cobra.Command {
 		Use:          "metrics-server",
 		Short:        "Install metrics-server",
 		Long:         `Install metrics-server to provide metrics on nodes and Pods in your cluster.`,
-		Example:      `  arkade install metrics-server --namespace kube-system --helm3`,
+		Example:      `  arkade install metrics-server --namespace kube-system`,
 		SilenceUsage: true,
 	}
 
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-	metricsServer.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
@@ -53,29 +52,23 @@ func MakeInstallMetricsServer() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
-
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
 		log.Printf("User dir established as: %s\n", userPath)
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.UpdateHelmRepos(helm3)
+		err = helm.UpdateHelmRepos(true)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/metrics-server", defaultVersion, helm3)
+		err = helm.FetchChart("stable/metrics-server", defaultVersion)
 
 		if err != nil {
 			return err
@@ -94,39 +87,14 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 		fmt.Println("Chart path: ", chartPath)
 
-		if helm3 {
-			err := helm.Helm3Upgrade("stable/metrics-server", namespace,
-				"values.yaml",
-				defaultVersion,
-				overrides,
-				wait)
+		err = helm.Helm3Upgrade("stable/metrics-server", namespace,
+			"values.yaml",
+			defaultVersion,
+			overrides,
+			wait)
 
-			if err != nil {
-				return err
-			}
-
-		} else {
-			outputPath := path.Join(chartPath, "metrics-server/rendered")
-
-			err = helm.TemplateChart(chartPath,
-				"metrics-server",
-				namespace,
-				outputPath,
-				"values.yaml",
-				overrides)
-
-			if err != nil {
-				return err
-			}
-
-			applyRes, applyErr := k8s.KubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
-			if applyErr != nil {
-				return applyErr
-			}
-			if applyRes.ExitCode > 0 {
-				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
-			}
-
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(`=======================================================================

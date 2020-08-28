@@ -7,12 +7,12 @@ import (
 
 func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, error) {
 	result := &types.InstallerOutput{}
-	err := helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo, options.Helm.Helm3)
+	err := helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
 	if err != nil {
 		return result, err
 	}
 
-	if err := helm.FetchChart(options.Helm.Repo.Name, options.Helm.Repo.Version, options.Helm.Helm3); err != nil {
+	if err := helm.FetchChart(options.Helm.Repo.Name, options.Helm.Repo.Version); err != nil {
 		return result, err
 	}
 

@@ -24,12 +24,11 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		Use:          "kube-state-metrics",
 		Short:        "Install kube-state-metrics",
 		Long:         `Install kube-state-metrics to generate and expose cluster-level metrics.`,
-		Example:      `  arkade install kube-state-metrics --namespace default --helm3 --set replicas=2`,
+		Example:      `  arkade install kube-state-metrics --namespace default  --set replicas=2`,
 		SilenceUsage: true,
 	}
 
 	kubeStateMetrics.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-	kubeStateMetrics.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
 	kubeStateMetrics.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
 
 	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
@@ -55,29 +54,23 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		helm3, _ := command.Flags().GetBool("helm3")
-
-		if helm3 {
-			fmt.Println("Using helm3")
-		}
-
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
 		log.Printf("User dir established as: %s\n", userPath)
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.UpdateHelmRepos(helm3)
+		err = helm.UpdateHelmRepos(true)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion, helm3)
+		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion)
 
 		if err != nil {
 			return err
@@ -99,39 +92,14 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 
 		fmt.Println("Chart path: ", chartPath)
 
-		if helm3 {
-			err := helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
-				"values.yaml",
-				defaultVersion,
-				setMap,
-				wait)
+		err = helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
+			"values.yaml",
+			defaultVersion,
+			setMap,
+			wait)
 
-			if err != nil {
-				return err
-			}
-
-		} else {
-			outputPath := path.Join(chartPath, "kube-state-metrics/rendered")
-
-			err = helm.TemplateChart(chartPath,
-				"kube-state-metrics",
-				namespace,
-				outputPath,
-				"values.yaml",
-				setMap)
-
-			if err != nil {
-				return err
-			}
-
-			applyRes, applyErr := k8s.KubectlTask("apply", "-n", namespace, "-R", "-f", outputPath)
-			if applyErr != nil {
-				return applyErr
-			}
-			if applyRes.ExitCode > 0 {
-				return fmt.Errorf("error applying templated YAML files, error: %s", applyRes.Stderr)
-			}
-
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(`=======================================================================

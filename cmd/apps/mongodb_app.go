@@ -66,22 +66,20 @@ func MakeInstallMongoDB() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		helm3 := true
-
 		persistence, _ := command.Flags().GetBool("persistence")
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", updateRepo, helm3)
+		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", updateRepo)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("stable/mongodb", defaultVersion, helm3)
+		err = helm.FetchChart("stable/mongodb", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)

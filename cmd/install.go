@@ -15,13 +15,12 @@ func MakeInstall() *cobra.Command {
 		Use:   "install",
 		Short: "Install Kubernetes apps from helm charts or YAML files",
 		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
-command. Helm 3 is used by default unless you pass --helm3=false, then helm 2
-will be used to generate YAML files which are applied without tiller.
+command. 
 
 You can also find the post-install message for each app with the "info"
 command.`,
 		Example: `  arkade install
-  arkade install openfaas --helm3 --gateways=2
+  arkade install openfaas  --gateways=2
   arkade install inlets-operator --token-file $HOME/do-token`,
 		SilenceUsage: false,
 	}
