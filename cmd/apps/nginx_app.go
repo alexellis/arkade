@@ -34,6 +34,7 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
 	nginx.Flags().Bool("helm3", true, "Use helm3, if set to false uses helm2")
+	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
@@ -103,6 +104,12 @@ flag and the ingress-nginx docs for more info`,
 		fmt.Println("Chart path: ", chartPath)
 
 		ns := "default"
+
+		customFlags, _ := command.Flags().GetStringArray("set")
+
+		if err := mergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
 
 		if helm3 {
 			err := helm.Helm3Upgrade("ingress-nginx/ingress-nginx", ns,
