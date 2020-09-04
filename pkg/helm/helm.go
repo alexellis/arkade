@@ -4,17 +4,15 @@
 package helm
 
 import (
+	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
-	"net/url"
 	"os"
 	"path"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/get"
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
@@ -51,30 +49,28 @@ func GetHelmURL(arch, os, version string) string {
 }
 
 func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
-	helmURL := GetHelmURL(clientArch, clientOS, helmVersion)
-	fmt.Println(helmURL)
-	parsedURL, _ := url.Parse(helmURL)
-
-	res, err := http.DefaultClient.Get(parsedURL.String())
-	if err != nil {
-		return err
+	tools := get.MakeTools()
+	var tool *get.Tool
+	for _, t := range tools {
+		if t.Name == "helm" {
+			tool = &t
+			break
+		}
+	}
+	if tool == nil {
+		return fmt.Errorf("unable to find tool definition")
 	}
 
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("download of %s gave status: %d", parsedURL.String(), res.StatusCode)
-	}
+	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-	dest := path.Join(path.Join(userPath, "bin"), subdir)
-	mkErr := os.MkdirAll(dest, 0700)
-	if mkErr != nil {
-		return mkErr
-	}
+		outPath, finalName, err := get.Download(tool, clientArch, clientOS, tool.Version, get.DownloadArkadeDir)
+		if err != nil {
+			return err
+		}
 
-	defer res.Body.Close()
-	r := ioutil.NopCloser(res.Body)
-	untarErr := archive.Untar(r, dest)
-	if untarErr != nil {
-		return untarErr
+		fmt.Println("Downloaded to: ", outPath, finalName)
+	} else {
+		fmt.Printf("%s already exists, skipping download.\n", tool.Name)
 	}
 
 	return nil
