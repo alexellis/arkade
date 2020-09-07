@@ -40,10 +40,6 @@ func MakeInstallPortainer() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch && arch != "arm" {
-			return fmt.Errorf(`only Intel and "arm" is supported for this app`)
-		}
-
 		_, err := k8s.KubectlTask("create", "ns",
 			"portainer")
 		if err != nil {
@@ -53,7 +49,7 @@ func MakeInstallPortainer() *cobra.Command {
 		}
 
 		req, err := http.NewRequest(http.MethodGet,
-			"https://raw.githubusercontent.com/portainer/portainer-k8s/master/portainer-nodeport.yaml",
+			"https://raw.githubusercontent.com/portainer/k8s/master/deploy/manifests/portainer/portainer.yaml",
 			nil)
 
 		if err != nil {
@@ -69,9 +65,6 @@ func MakeInstallPortainer() *cobra.Command {
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
 		manifest := string(body)
-		if arch == "arm" {
-			manifest = strings.Replace(manifest, "linux-amd64", "linux-arm", -1)
-		}
 
 		tmp := os.TempDir()
 		joined := path.Join(tmp, "portainer.yaml")
