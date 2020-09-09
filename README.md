@@ -51,15 +51,24 @@ arkade downloads the correct version of a CLI for your OS and CPU.
 With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
-arkade get faas-cli
-arkade get helm
-arkade get inletsctl
-arkade get k3d
-arkade get k3sup
-arkade get kind
-arkade get kubectl
-arkade get kubectx
-arkade get kubeseal
+arkade get
+          faas-cli
+          helm
+          kubectl
+          kubectx
+          kind
+          k3d
+          k3sup
+          kubeseal
+          inletsctl
+          osm
+          linkerd2
+          kubebuilder
+          kustomize
+          doctl
+          k9s
+          civo
+          terraform
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
@@ -228,7 +237,14 @@ You can view the various apps available with `arkade install / --help`, more are
 
 ```bash
 arkade install --help
+ark --help
 
+Examples:
+  arkade install
+  arkade install openfaas --helm3 --gateways=2
+  arkade install inlets-operator --token-file $HOME/do-token
+
+Available Commands:
   argocd                  Install argocd
   cert-manager            Install cert-manager
   chart                   Install the specified helm chart
@@ -243,6 +259,7 @@ arkade install --help
   istio                   Install istio
   jenkins                 Install jenkins
   kafka-connector         Install kafka-connector for OpenFaaS
+  kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
   linkerd                 Install linkerd
@@ -255,9 +272,11 @@ arkade install --help
   openfaas                Install openfaas
   openfaas-ingress        Install openfaas ingress with TLS
   openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
+  osm                     Install osm
   portainer               Install portainer to visualise and manage containers
   postgresql              Install postgresql
   redis                   Install redis
+  registry-creds          Install registry-creds
   tekton                  Install Tekton pipelines and dashboard
   traefik2                Install traefik2
 ```
