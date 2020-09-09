@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -34,6 +35,7 @@ func MakeInstallRegistry() *cobra.Command {
 	registry.Flags().Bool("update-repo", true, "Update the helm repo")
 	registry.Flags().StringP("username", "u", "admin", "Username for the registry")
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
+	registry.Flags().StringP("write-file", "w", "", "Write generated password to this file")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
@@ -55,6 +57,8 @@ func MakeInstallRegistry() *cobra.Command {
 		if namespace != "default" {
 			return fmt.Errorf(`to override the "default", install via tiller`)
 		}
+
+		outputFile, _ := command.Flags().GetString("write-file")
 
 		clientArch, clientOS := env.GetClientArch()
 
@@ -123,7 +127,17 @@ func MakeInstallRegistry() *cobra.Command {
 		}
 
 		fmt.Println(registryInstallMsg)
-		fmt.Printf("Registry credentials: %s %s\nexport PASSWORD=%s\n", username, pass, pass)
+
+		if len(outputFile) > 0 {
+			err := ioutil.WriteFile(outputFile, []byte(pass), 0600)
+			if err != nil {
+				return err
+			}
+
+			fmt.Printf("See %s for credentials\n", outputFile)
+		} else {
+			fmt.Printf(fmt.Sprintf("Registry credentials: %s %s\nexport PASSWORD=%s\n", username, pass, pass))
+		}
 
 		return nil
 	}
