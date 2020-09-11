@@ -252,6 +252,7 @@ Available Commands:
   crossplane              Install Crossplane
   docker-registry         Install a Docker registry
   docker-registry-ingress Install registry ingress with TLS
+  gitea                   Install gitea
   grafana                 Install grafana
   info                    Find info about a Kubernetes app
   ingress-nginx           Install ingress-nginx
