@@ -79,6 +79,7 @@ And to see options for a specific app before installing, run:
 	command.AddCommand(apps.MakeInstallOSM())
 	command.AddCommand(apps.MakeInstallKubeImagePrefetch())
 	command.AddCommand(apps.MakeInstallRegistryCredsOperator())
+	command.AddCommand(apps.MakeInstallGitea())
 
 	command.AddCommand(MakeInfo())
 
