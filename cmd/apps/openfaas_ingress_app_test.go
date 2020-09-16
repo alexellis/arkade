@@ -11,7 +11,7 @@ import (
 )
 
 func Test_buildYAML_SubsitutesDomainEmailAndIngress(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", false, false)
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false)
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
@@ -58,7 +58,7 @@ spec:
 }
 
 func Test_buildYAMLStaging(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", true, false)
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false)
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
@@ -105,7 +105,7 @@ spec:
 }
 
 func Test_buildYAMLClusterIssuer(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", false, true)
+	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, true)
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
