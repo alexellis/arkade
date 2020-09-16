@@ -28,7 +28,9 @@ type inputData struct {
 	IngressClass     string
 	IssuerType       string
 	IssuerAPI        string
+	IngressName      string
 	ClusterIssuer    bool
+	IngressService   string
 }
 
 //MakeInstallOpenFaaSIngess will install a clusterissuer and request a cert from certmanager for the domain you specify
@@ -46,6 +48,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 	openfaasIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
 	openfaasIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 	openfaasIngress.Flags().Bool("cluster-issuer", false, "set to true to create a clusterissuer rather than a namespaces issuer (default: false)")
+	openfaasIngress.Flags().String("oauth2-plugin-domain", "", "Set to the auth domain for openfaas OIDC installations")
 
 	openfaasIngress.RunE = func(command *cobra.Command, args []string) error {
 
@@ -72,29 +75,16 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		staging, _ := command.Flags().GetBool("staging")
 		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")
 
-		yamlBytes, templateErr := buildYAML(domain, email, ingressClass, staging, clusterIssuer)
-		if templateErr != nil {
-			log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
-			return templateErr
-		}
-
-		tempFile, tempFileErr := writeTempFile(yamlBytes, "temp_openfaas_ingress.yaml")
-		if tempFileErr != nil {
-			log.Print("Unable to save generated yaml file into the temporary directory")
-			return tempFileErr
-		}
-
-		res, err := k8s.KubectlTask("apply", "-f", tempFile)
-
-		if err != nil {
-			log.Print(err)
+		if err := createIngress(domain, email, ingressClass, "openfaas-gateway", staging, clusterIssuer); err != nil {
 			return err
 		}
 
-		if res.ExitCode != 0 {
-			return fmt.Errorf(`Unable to apply YAML files.
-Have you got OpenFaaS running in the openfaas namespace and cert-manager 0.11.0 or higher installed in cert-manager namespace? %s`,
-				res.Stderr)
+		oidcDomain, _ := command.Flags().GetString("oauth2-plugin-domain")
+
+		if len(oidcDomain) > 0 {
+			if err := createIngress(oidcDomain, email, ingressClass, "oauth2-plugin", staging, clusterIssuer); err != nil {
+				return err
+			}
 		}
 
 		fmt.Println(openfaasIngressInstallMsg)
@@ -103,6 +93,34 @@ Have you got OpenFaaS running in the openfaas namespace and cert-manager 0.11.0 
 	}
 
 	return openfaasIngress
+}
+
+func createIngress(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool) error {
+	yamlBytes, templateErr := buildYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer)
+	if templateErr != nil {
+		log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
+		return templateErr
+	}
+
+	tempFile, tempFileErr := writeTempFile(yamlBytes, fmt.Sprintf("%s.yaml", ingressName))
+	if tempFileErr != nil {
+		log.Print("Unable to save generated yaml file into the temporary directory")
+		return tempFileErr
+	}
+
+	res, err := k8s.KubectlTask("apply", "-f", tempFile)
+
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	if res.ExitCode != 0 {
+		return fmt.Errorf(`Unable to apply YAML files.
+Have you got OpenFaaS running in the openfaas namespace and cert-manager 0.11.0 or higher installed in cert-manager namespace? %s`,
+			res.Stderr)
+	}
+	return nil
 }
 
 func createTempDirectory(directory string) (string, error) {
@@ -134,11 +152,16 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 	return filename, nil
 }
 
-func buildYAML(domain, email, ingressClass string, staging, clusterIssuer bool) ([]byte, error) {
+func buildYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool) ([]byte, error) {
 	tmpl, err := template.New("yaml").Parse(ingressYamlTemplate)
 
 	if err != nil {
 		return nil, err
+	}
+	ingressService := "gateway"
+
+	if ingressName == "oauth2-plugin" {
+		ingressService = ingressName
 	}
 
 	inputData := inputData{
@@ -147,6 +170,8 @@ func buildYAML(domain, email, ingressClass string, staging, clusterIssuer bool) 
 		IngressClass:     ingressClass,
 		IssuerType:       "letsencrypt-prod",
 		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
+		IngressName:      ingressName,
+		IngressService:   ingressService,
 		ClusterIssuer:    clusterIssuer,
 	}
 
@@ -198,7 +223,7 @@ var ingressYamlTemplate = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
 metadata:
-  name: openfaas-gateway
+  name: {{.IngressName}}
   namespace: openfaas
   annotations:
 {{- if .ClusterIssuer }}
@@ -213,13 +238,13 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: gateway
+          serviceName: {{.IngressService}}
           servicePort: 8080
         path: /
   tls:
   - hosts:
     - {{.IngressDomain}}
-    secretName: openfaas-gateway
+    secretName: {{.IngressName}}
 ---
 apiVersion: cert-manager.io/v1alpha2
 {{- if .ClusterIssuer }}
