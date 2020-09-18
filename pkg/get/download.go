@@ -1,10 +1,8 @@
 package get
 
 import (
-	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path"
@@ -14,6 +12,7 @@ import (
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
+	"github.com/cheggaaa/pb/v3"
 )
 
 const (
@@ -21,7 +20,7 @@ const (
 	DownloadArkadeDir = iota
 )
 
-func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int) (string, string, error) {
+func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress bool) (string, string, error) {
 
 	downloadURL, err := GetDownloadURL(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
 	if err != nil {
@@ -29,29 +28,20 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	fmt.Println(downloadURL)
-
-	res, err := http.DefaultClient.Get(downloadURL)
+	outFilePath, err := downloadFile(downloadURL, displayProgress)
 	if err != nil {
 		return "", "", err
 	}
 
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return "", "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
-	}
-
-	_, fileName := path.Split(downloadURL)
-	tmp := os.TempDir()
-
-	outFilePath := path.Join(tmp, fileName)
-
 	if tool.IsArchive() {
+		archiveFile, err := os.Open(outFilePath)
+		if err != nil {
+			return "", "", err
+		}
+
 		outFilePathDir := filepath.Dir(outFilePath)
 		if len(tool.BinaryTemplate) > 0 {
-			fileName, err = GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+			fileName, err := GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
 			if err != nil {
 				return "", "", err
 			}
@@ -59,39 +49,28 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 		} else {
 			outFilePath = path.Join(outFilePathDir, tool.Name)
 		}
+
 		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
 			outFilePath += ".exe"
 		}
-		r := ioutil.NopCloser(res.Body)
+
 		if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-			untarErr := archive.Untar(r, outFilePathDir)
+			untarErr := archive.Untar(archiveFile, outFilePathDir)
 			if untarErr != nil {
 				return "", "", untarErr
 			}
 		} else if strings.HasSuffix(downloadURL, "zip") {
-			buff := bytes.NewBuffer([]byte{})
-			size, err := io.Copy(buff, res.Body)
+			fInfo, err := archiveFile.Stat()
 			if err != nil {
 				return "", "", err
 			}
 
-			reader := bytes.NewReader(buff.Bytes())
+			fmt.Println("name", fInfo.Name(), "size: ", fInfo.Size())
 
-			unzipErr := archive.Unzip(reader, size, outFilePathDir)
+			unzipErr := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir)
 			if unzipErr != nil {
 				return "", "", unzipErr
 			}
-		}
-
-	} else {
-		out, err := os.Create(outFilePath)
-		if err != nil {
-			return "", "", err
-		}
-		defer out.Close()
-
-		if _, err = io.Copy(out, res.Body); err != nil {
-			return "", "", err
 		}
 	}
 
@@ -119,6 +98,39 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	return outFilePath, finalName, nil
 }
 
+func downloadFile(downloadURL string, displayProgress bool) (string, error) {
+	res, err := http.DefaultClient.Get(downloadURL)
+	if err != nil {
+		return "", err
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
+	}
+
+	_, fileName := path.Split(downloadURL)
+	tmp := os.TempDir()
+	outFilePath := path.Join(tmp, fileName)
+	wrappedReader := withProgressBar(res.Body, int(res.ContentLength), displayProgress)
+	out, err := os.Create(outFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	defer out.Close()
+	defer wrappedReader.Close()
+
+	if _, err := io.Copy(out, wrappedReader); err != nil {
+		return "", err
+	}
+
+	return outFilePath, nil
+}
+
 func copyFile(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
@@ -143,4 +155,13 @@ func copyFile(src, dst string) (int64, error) {
 	defer destination.Close()
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+func withProgressBar(r io.ReadCloser, length int, displayProgress bool) io.ReadCloser {
+	if !displayProgress {
+		return r
+	}
+
+	bar := pb.Simple.New(length).Start()
+	return bar.NewProxyReader(r)
 }

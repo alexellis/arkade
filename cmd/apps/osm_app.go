@@ -106,7 +106,7 @@ func downloadOSM(userPath, arch, clientOS string) error {
 
 	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, false)
 		if err != nil {
 			return err
 		}

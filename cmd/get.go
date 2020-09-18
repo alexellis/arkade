@@ -5,6 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"os/signal"
+	"strconv"
+	"syscall"
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
@@ -27,6 +31,7 @@ and provides a fast and easy alternative to a package manager.`,
 		SilenceUsage: true,
 	}
 
+	command.Flags().Bool("progress", true, "Display a progress bar")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 
@@ -66,12 +71,32 @@ and provides a fast and easy alternative to a package manager.`,
 		}
 
 		stash, _ := command.Flags().GetBool("stash")
+		progress, _ := command.Flags().GetBool("progress")
+		if p, ok := os.LookupEnv("ARKADE_PROGRESS"); ok {
+			b, err := strconv.ParseBool(p)
+			if err != nil {
+				return fmt.Errorf("ARKADE_PROGRESS is not a valid boolean")
+			}
+
+			progress = b
+		}
+
 		dlMode := get.DownloadTempDir
 		if stash {
 			dlMode = get.DownloadArkadeDir
 		}
 
-		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode)
+		signalChan := make(chan os.Signal, 1)
+		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+
+		go func() {
+			select {
+			case <-signalChan:
+				os.Exit(2)
+			}
+		}()
+
+		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode, progress)
 
 		if err != nil {
 			return err
