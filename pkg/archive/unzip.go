@@ -19,7 +19,7 @@ import (
 func Unzip(reader io.ReaderAt, size int64, dir string) error {
 	zipReader, err := zip.NewReader(reader, size)
 	if err != nil {
-		return fmt.Errorf("error creating zip reader")
+		return fmt.Errorf("error creating zip reader: %s", err)
 	}
 
 	return unzip(*zipReader, dir)
