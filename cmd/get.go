@@ -27,6 +27,10 @@ releases or downloads page. The tool is usually downloaded in binary format
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
   arkade get linkerd2 --stash=false
+  arkade get terraform --version=0.12.0
+  arkade get kubectl --progress=false
+
+  # Get a complete list of CLIs to download:
   arkade get --help`,
 		SilenceUsage: true,
 	}
