@@ -334,7 +334,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:          "civo",
 			Repo:           "cli",
 			Name:           "civo",
-			Version:        "0.6.27",
+			Version:        "0.6.35",
 			BinaryTemplate: `civo`,
 			URLTemplate: `
 
