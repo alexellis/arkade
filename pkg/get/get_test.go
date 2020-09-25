@@ -8,6 +8,7 @@ import (
 const faasCLIVersion = "0.12.13"
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
+const archARM64 = "aarch64"
 
 type test struct {
 	os      string
@@ -695,6 +696,48 @@ func Test_DownloadTerraform(t *testing.T) {
 			arch:    archARM7,
 			version: toolVersion,
 			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_arm.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadGH(t *testing.T) {
+	tools := MakeTools()
+	name := "gh"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.0.0"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_windows_amd64.zip`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_linux_amd64.tar.gz`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_macOS_amd64.tar.gz`,
+		},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_linux_arm64.tar.gz`,
 		},
 	}
 
