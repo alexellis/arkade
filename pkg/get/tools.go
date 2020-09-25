@@ -383,5 +383,37 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 
 https://releases.hashicorp.com/terraform/{{.Version}}/terraform_{{.Version}}_{{$os}}_{{$arch}}.zip`})
 
+	tools = append(tools,
+		Tool{
+			Owner:          "cli",
+			Repo:           "cli",
+			Name:           "gh",
+			Version:        "1.0.0",
+			BinaryTemplate: `gh`,
+			URLTemplate: `
+
+	{{$extStr := "tar.gz"}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$extStr = "zip"}}
+	{{- end -}}
+
+	{{$osStr := ""}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows"}}
+	{{- else if eq .OS "linux" -}}
+	{{$osStr = "linux"}}
+	{{- else if eq .OS "darwin" -}}
+	{{$osStr = "macOS"}}
+	{{- end -}}
+
+	{{$archStr := .Arch}}
+	{{- if eq .Arch "aarch64" -}}
+	{{$archStr = "arm64"}}
+	{{- else if eq .Arch "x86_64" -}}
+	{{$archStr = "amd64"}}
+	{{- end -}}		
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Version}}_{{$osStr}}_{{$archStr}}.{{$extStr}}`,
+		})
+
 	return tools
 }
