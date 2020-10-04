@@ -43,8 +43,6 @@ func MakeInstallGitLab() *cobra.Command {
 	_ = gitlabApp.MarkFlagRequired("external-ip")
 
 	gitlabApp.RunE = func(cmd *cobra.Command, args []string) error {
-		helm3 := true
-
 		namespace, _ := cmd.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
 
@@ -101,7 +99,7 @@ func MakeInstallGitLab() *cobra.Command {
 
 		_ = os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS, helm3)
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
