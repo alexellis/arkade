@@ -29,7 +29,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		Use:          "openfaas",
 		Short:        "Install openfaas",
 		Long:         `Install openfaas`,
-		Example:      `  arkade install openfaas --loadbalancer`,
+		Example:      `  arkade install openfaas --load-balancer`,
 		SilenceUsage: true,
 	}
 
