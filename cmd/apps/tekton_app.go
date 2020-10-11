@@ -48,7 +48,7 @@ func MakeInstallTekton() *cobra.Command {
 
 		fmt.Println("Installing Tekton dashboard...")
 		_, err = k8s.KubectlTask("apply", "-f",
-			"https://github.com/tektoncd/dashboard/releases/download/v0.5.1/tekton-dashboard-release.yaml")
+			"https://storage.googleapis.com/tekton-releases/dashboard/latest/tekton-dashboard-release.yaml")
 		if err != nil {
 			return err
 		}
@@ -61,11 +61,12 @@ func MakeInstallTekton() *cobra.Command {
 	return tekton
 }
 
-const TektonInfoMsg = `For more information on accessing the
-Tekton dashboard: https://github.com/tektoncd/dashboard
+const TektonInfoMsg = `Want to launch a Tekton pipeline and see it in action?
+Get one here: https://github.com/tektoncd/pipeline/tree/master/examples
 
-Want to launch a Tekton pipeline and see it in action?
-Get one here: https://github.com/tektoncd/pipeline/tree/master/examples`
+For more information...
+  https://github.com/tektoncd/pipeline
+  https://github.com/tektoncd/dashboard`
 
 const TektonInstallMsg = `=======================================================================
 = Tekton pipelines and dashboard have been installed. =
