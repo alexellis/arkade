@@ -249,6 +249,7 @@ Available Commands:
   argocd                  Install argocd
   cert-manager            Install cert-manager
   chart                   Install the specified helm chart
+  consul-connect          Install Consul Service Mesh
   cron-connector          Install cron-connector for OpenFaaS
   crossplane              Install Crossplane
   docker-registry         Install a Docker registry
