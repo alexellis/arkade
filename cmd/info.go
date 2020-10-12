@@ -6,7 +6,6 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/spf13/cobra"
 )
 
@@ -35,78 +34,15 @@ arkade info --help`,
 			return fmt.Errorf("you can only get info about exactly one installed app")
 		}
 
-		var (
-			appName = args[0]
-			msg     string
-		)
-
-		switch appName {
-		case "openfaas":
-			msg = apps.OpenFaaSInfoMsg
-		case "nginx-ingress":
-			msg = apps.NginxIngressInfoMsg
-		case "cert-manager":
-			msg = apps.CertManagerInfoMsg
-		case "openfaas-ingress":
-			msg = apps.OpenfaasIngressInfoMsg
-		case "inlets-operator":
-			msg = apps.InletsOperatorInfoMsg
-		case "mongodb":
-			msg = apps.MongoDBInfoMsg
-		case "metrics-server":
-			msg = apps.MetricsInfoMsg
-		case "linkerd":
-			msg = apps.LinkerdInfoMsg
-		case "cron-connector":
-			msg = apps.CronConnectorInfoMsg
-		case "kafka-connector":
-			msg = apps.KafkaConnectorInfoMsg
-		case "kube-state-metrics":
-			msg = apps.KubeStateMetricsInfoMsg
-		case "minio":
-			msg = apps.MinioInfoMsg
-		case "postgresql":
-			msg = apps.PostgresqlInfoMsg
-		case "kubernetes-dashboard":
-			msg = apps.KubernetesDashboardInfoMsg
-		case "istio":
-			msg = apps.IstioInfoMsg
-		case "crossplane":
-			msg = apps.CrossplanInfoMsg
-		case "docker-registry-ingress":
-			msg = apps.RegistryIngressInfoMsg
-		case "traefik2":
-			msg = apps.Traefik2InfoMsg
-		case "tekton":
-			msg = apps.TektonInfoMsg
-		case "grafana":
-			msg = apps.GrafanaInfoMsg
-		case "argocd":
-			msg = apps.ArgoCDInfoMsg
-		case "portainer":
-			msg = apps.PortainerInfoMsg
-		case "jenkins":
-			msg = apps.JenkinsInfoMsg
-		case "loki":
-			msg = apps.LokiInfoMsg
-		case "nats-connector":
-			msg = apps.NATSConnectorInfoMsg
-		case "openfaas-loki":
-			msg = apps.LokiOFInfoMsg
-		case "redis":
-			msg = apps.RedisInfoMsg
-		case "kube-image-prefetch":
-			msg = apps.KubeImagePrefetchInfoMsg
-		case "registry-creds":
-			msg = apps.RegistryCredsOperatorInfoMsg
-		default:
+		appList := GetApps()
+		appName := args[0]
+		if _, ok := appList[appName]; !ok {
 			return fmt.Errorf("no info available for app: %s", appName)
 		}
-
 		fmt.Printf("Info for app: %s\n", appName)
-		fmt.Println(msg)
-
+		fmt.Println(appList[appName].InfoMessage)
 		return nil
+
 	}
 
 	return info

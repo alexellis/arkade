@@ -145,7 +145,7 @@ func MakeInstallRegistry() *cobra.Command {
 	return registry
 }
 
-const registryInfoMsg = `# Your docker-registry has been configured
+const RegistryInfoMsg = `# Your docker-registry has been configured
 
 kubectl logs deploy/docker-registry
 
@@ -163,4 +163,4 @@ docker push $IP:5000/alpine:3.11
 const registryInstallMsg = `=======================================================================
 = docker-registry has been installed.                                 =
 =======================================================================` +
-	"\n\n" + registryInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + RegistryInfoMsg + "\n\n" + pkg.ThanksForUsing
