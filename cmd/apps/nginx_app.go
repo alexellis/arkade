@@ -10,9 +10,11 @@ import (
 	"path"
 
 	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
 
@@ -34,26 +36,15 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-		wait, _ := command.Flags().GetBool("wait")
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-
-		updateRepo, _ := nginx.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
 		}
-		namespace, _ := command.Flags().GetString("namespace")
 
-		if namespace != "default" {
-			return fmt.Errorf(`to override the "default", install via tiller`)
-		}
+		wait, _ := command.Flags().GetBool("wait")
+
+		namespace, _ := command.Flags().GetString("namespace")
 
 		clientArch, clientOS := env.GetClientArch()
 
@@ -61,23 +52,6 @@ flag and the ingress-nginx docs for more info`,
 		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		err = helm.AddHelmRepo("ingress-nginx", "https://kubernetes.github.io/ingress-nginx", updateRepo)
-		if err != nil {
-			return err
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("ingress-nginx/ingress-nginx", defaultVersion)
-
-		if err != nil {
-			return err
-		}
 
 		overrides := map[string]string{}
 
@@ -93,20 +67,31 @@ flag and the ingress-nginx docs for more info`,
 			overrides["dnsPolicy"] = "ClusterFirstWithHostNet"
 			overrides["controller.kind"] = "DaemonSet"
 		}
-		fmt.Println("Chart path: ", chartPath)
-
-		ns := "default"
 
 		customFlags, _ := command.Flags().GetStringArray("set")
 
 		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
-		err = helm.Helm3Upgrade("ingress-nginx/ingress-nginx", ns,
-			"values.yaml",
-			defaultVersion,
-			overrides,
-			wait)
+
+		nginxOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("ingress-nginx/ingress-nginx").
+			WithHelmURL("https://kubernetes.github.io/ingress-nginx").
+			WithOverrides(overrides).
+			WithWait(wait)
+
+		if command.Flags().Changed("kubeconfig") {
+			kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+			nginxOptions.WithKubeconfigPath(kubeConfigPath)
+		}
+
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		if err != nil {
+			return err
+		}
+		_, err = apps.MakeInstallChart(nginxOptions)
 
 		if err != nil {
 			return err
