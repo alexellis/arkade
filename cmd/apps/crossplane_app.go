@@ -101,7 +101,7 @@ schedule workloads to any Kubernetes cluster`,
 	return crossplane
 }
 
-const CrossplanInfoMsg = `# Get started by installing a stack for your favorite provider:
+const CrossplaneInfoMsg = `# Get started by installing a stack for your favorite provider:
 * provider-gcp: https://crossplane.io/docs/master/install-crossplane.html#gcp-provider
 * provider-aws: https://crossplane.io/docs/master/install-crossplane.html#aws-provider
 * provider-azure: https://crossplane.io/docs/master/install-crossplane.html#azure-provider
@@ -111,4 +111,4 @@ Learn more about Crossplane: https://crossplaneio.github.io/docs/`
 const crossplaneInstallMsg = `=======================================================================
 = Crossplane has been installed.                                      =
 =======================================================================` +
-	"\n\n" + CrossplanInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + CrossplaneInfoMsg + "\n\n" + pkg.ThanksForUsing

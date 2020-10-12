@@ -10,6 +10,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type ArkadeApp struct {
+	Name        string
+	Installer   func() *cobra.Command
+	InfoMessage string
+}
+
 func MakeInstall() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "install",
@@ -45,43 +51,61 @@ And to see options for a specific app before installing, run:
 
 		return nil
 	}
+	appList := GetApps()
 
-	command.AddCommand(apps.MakeInstallOpenFaaS())
-	command.AddCommand(apps.MakeInstallMetricsServer())
-	command.AddCommand(apps.MakeInstallInletsOperator())
-	command.AddCommand(apps.MakeInstallCertManager())
-	command.AddCommand(apps.MakeInstallOpenFaaSIngress())
-	command.AddCommand(apps.MakeInstallNginx())
-	command.AddCommand(apps.MakeInstallChart())
-	command.AddCommand(apps.MakeInstallLinkerd())
-	command.AddCommand(apps.MakeInstallCronConnector())
-	command.AddCommand(apps.MakeInstallKafkaConnector())
-	command.AddCommand(apps.MakeInstallKubeStateMetrics())
-	command.AddCommand(apps.MakeInstallMinio())
-	command.AddCommand(apps.MakeInstallPostgresql())
-	command.AddCommand(apps.MakeInstallKubernetesDashboard())
-	command.AddCommand(apps.MakeInstallIstio())
-	command.AddCommand(apps.MakeInstallCrossplane())
-	command.AddCommand(apps.MakeInstallMongoDB())
-	command.AddCommand(apps.MakeInstallRegistry())
-	command.AddCommand(apps.MakeInstallRegistryIngress())
-	command.AddCommand(apps.MakeInstallTraefik2())
-	command.AddCommand(apps.MakeInstallGrafana())
-	command.AddCommand(apps.MakeInstallArgoCD())
-	command.AddCommand(apps.MakeInstallPortainer())
-	command.AddCommand(apps.MakeInstallTekton())
-	command.AddCommand(apps.MakeInstallJenkins())
-	command.AddCommand(apps.MakeInstallLoki())
-	command.AddCommand(apps.MakeInstallNATSConnector())
-	command.AddCommand(apps.MakeInstallOpenFaaSLoki())
-	command.AddCommand(apps.MakeInstallNfsProvisioner())
-	command.AddCommand(apps.MakeInstallRedis())
-	command.AddCommand(apps.MakeInstallOSM())
-	command.AddCommand(apps.MakeInstallKubeImagePrefetch())
-	command.AddCommand(apps.MakeInstallRegistryCredsOperator())
-	command.AddCommand(apps.MakeInstallGitea())
+	for _, app := range appList {
+		command.AddCommand(app.Installer())
+	}
 
 	command.AddCommand(MakeInfo())
 
 	return command
+}
+
+func GetApps() map[string]ArkadeApp {
+	arkadeApps := map[string]ArkadeApp{}
+	arkadeApps["mongodb"] = NewArkadeApp(apps.MakeInstallMongoDB, apps.MongoDBInfoMsg)
+	arkadeApps["metrics-server"] = NewArkadeApp(apps.MakeInstallMetricsServer, apps.MetricsInfoMsg)
+	arkadeApps["linkerd"] = NewArkadeApp(apps.MakeInstallLinkerd, apps.LinkerdInfoMsg)
+	arkadeApps["cron-connector"] = NewArkadeApp(apps.MakeInstallCronConnector, apps.CronConnectorInfoMsg)
+	arkadeApps["kafka-connector"] = NewArkadeApp(apps.MakeInstallKafkaConnector, apps.KafkaConnectorInfoMsg)
+	arkadeApps["kube-state-metrics"] = NewArkadeApp(apps.MakeInstallKubeStateMetrics, apps.KubeStateMetricsInfoMsg)
+	arkadeApps["kubernetes-dashboard"] = NewArkadeApp(apps.MakeInstallKubernetesDashboard, apps.KubernetesDashboardInfoMsg)
+	arkadeApps["istio"] = NewArkadeApp(apps.MakeInstallIstio, apps.IstioInfoMsg)
+	arkadeApps["crossplane"] = NewArkadeApp(apps.MakeInstallCrossplane, apps.CrossplaneInfoMsg)
+	arkadeApps["docker-registry-ingress"] = NewArkadeApp(apps.MakeInstallRegistryIngress, apps.RegistryIngressInfoMsg)
+	arkadeApps["postgresql"] = NewArkadeApp(apps.MakeInstallPostgresql, apps.PostgresqlInfoMsg)
+	arkadeApps["minio"] = NewArkadeApp(apps.MakeInstallMinio, apps.MinioInfoMsg)
+	arkadeApps["openfaas"] = NewArkadeApp(apps.MakeInstallOpenFaaS, apps.OpenFaaSInfoMsg)
+	arkadeApps["ingress-nginx"] = NewArkadeApp(apps.MakeInstallNginx, apps.NginxIngressInfoMsg)
+	arkadeApps["nginx-ingress"] = NewArkadeApp(apps.MakeInstallNginx, apps.NginxIngressInfoMsg) // backward compatability
+	arkadeApps["cert-manager"] = NewArkadeApp(apps.MakeInstallCertManager, apps.CertManagerInfoMsg)
+	arkadeApps["openfaas-ingress"] = NewArkadeApp(apps.MakeInstallOpenFaaSIngress, apps.OpenfaasIngressInfoMsg)
+	arkadeApps["openfaas-loki"] = NewArkadeApp(apps.MakeInstallOpenFaaSLoki, apps.LokiOFInfoMsg)
+	arkadeApps["loki"] = NewArkadeApp(apps.MakeInstallLoki, apps.LokiInfoMsg)
+	arkadeApps["redis"] = NewArkadeApp(apps.MakeInstallRedis, apps.RedisInfoMsg)
+	arkadeApps["nats-connector"] = NewArkadeApp(apps.MakeInstallNATSConnector, apps.NATSConnectorInfoMsg)
+	arkadeApps["jenkins"] = NewArkadeApp(apps.MakeInstallJenkins, apps.JenkinsInfoMsg)
+	arkadeApps["portainer"] = NewArkadeApp(apps.MakeInstallPortainer, apps.PortainerInfoMsg)
+	arkadeApps["argocd"] = NewArkadeApp(apps.MakeInstallArgoCD, apps.ArgoCDInfoMsg)
+	arkadeApps["grafana"] = NewArkadeApp(apps.MakeInstallGrafana, apps.GrafanaInfoMsg)
+	arkadeApps["tekton"] = NewArkadeApp(apps.MakeInstallTekton, apps.TektonInfoMsg)
+	arkadeApps["traefik2"] = NewArkadeApp(apps.MakeInstallTraefik2, apps.Traefik2InfoMsg)
+	arkadeApps["inlets-operator"] = NewArkadeApp(apps.MakeInstallInletsOperator, apps.InletsOperatorInfoMsg)
+	arkadeApps["nfs-provisioner"] = NewArkadeApp(apps.MakeInstallNfsProvisioner, apps.NfsClientProvisioneriInfoMsg)
+	arkadeApps["docker-registry"] = NewArkadeApp(apps.MakeInstallRegistry, apps.RegistryInfoMsg)
+	arkadeApps["OSM"] = NewArkadeApp(apps.MakeInstallOSM, apps.OSMInfoMsg)
+	arkadeApps["kube-image-prefetch"] = NewArkadeApp(apps.MakeInstallKubeImagePrefetch, apps.KubeImagePrefetchInfoMsg)
+	arkadeApps["registry-creds"] = NewArkadeApp(apps.MakeInstallRegistryCredsOperator, apps.RegistryCredsOperatorInfoMsg)
+	arkadeApps["gitea"] = NewArkadeApp(apps.MakeInstallGitea, apps.GiteaInfoMsg)
+	// Special "chart" app - let a user deploy any helm chart
+	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
+	return arkadeApps
+}
+
+func NewArkadeApp(cmd func() *cobra.Command, msg string) ArkadeApp {
+	return ArkadeApp{
+		Installer:   cmd,
+		InfoMessage: msg,
+	}
 }

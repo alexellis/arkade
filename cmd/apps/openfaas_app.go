@@ -22,8 +22,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const latestVersion = ""
-
 func MakeInstallOpenFaaS() *cobra.Command {
 	var openfaas = &cobra.Command{
 		Use:          "openfaas",
