@@ -57,7 +57,10 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath := config.GetDefaultKubeconfig()
-		wait, _ := command.Flags().GetBool("wait")
+		wait, err := command.Flags().GetBool("wait")
+		if err != nil {
+			return err
+		}
 		if command.Flags().Changed("kubeconfig") {
 			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
 		}
@@ -68,6 +71,11 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		if namespace != "openfaas" {
 			return fmt.Errorf(`to override the "openfaas", install OpenFaaS via helm manually`)
+		}
+
+		basicAuthEnabled, err := command.Flags().GetBool("basic-auth")
+		if err != nil {
+			return err
 		}
 
 		arch := k8s.GetNodeArchitecture()
@@ -90,12 +98,11 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		updateRepo, _ := openfaas.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo)
+		updateRepo, err := openfaas.Flags().GetBool("update-repo")
 		if err != nil {
 			return err
 		}
-
+		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo)
 		if err != nil {
 			return err
 		}
@@ -107,27 +114,28 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		pass, _ := command.Flags().GetString("basic-auth-password")
+		if basicAuthEnabled {
+			pass, _ := command.Flags().GetString("basic-auth-password")
 
-		if len(pass) == 0 {
-			var err error
-			pass, err = password.Generate(25, 10, 0, false, true)
-			if err != nil {
-				return err
+			if len(pass) == 0 {
+				var err error
+				pass, err = password.Generate(25, 10, 0, false, true)
+				if err != nil {
+					return err
+				}
 			}
-		}
 
-		res, secretErr := k8s.KubectlTask("-n", namespace, "create", "secret", "generic",
-			"basic-auth",
-			"--from-literal=basic-auth-user=admin",
-			`--from-literal=basic-auth-password=`+pass)
+			res, secretErr := k8s.KubectlTask("-n", namespace, "create", "secret", "generic",
+				"basic-auth",
+				"--from-literal=basic-auth-user=admin",
+				`--from-literal=basic-auth-password=`+pass)
 
-		if secretErr != nil {
-			return secretErr
-		}
-
-		if res.ExitCode != 0 {
-			fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
+			if secretErr != nil {
+				return secretErr
+			}
+			if res.ExitCode != 0 {
+				fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
+			}
 		}
 
 		err = helm.FetchChart("openfaas/openfaas", defaultVersion)
@@ -153,33 +161,31 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			overrides["gateway.logsProviderURL"] = logUrl
 		}
 
-		createOperator, _ := command.Flags().GetBool("operator")
-		createOperatorVal := "false"
-		if createOperator {
-			createOperatorVal = "true"
+		createOperator, err := command.Flags().GetBool("operator")
+		if err != nil {
+			return err
+		}
+		clusterRole, err := command.Flags().GetBool("clusterrole")
+		if err != nil {
+			return err
+		}
+		directFunctions, err := command.Flags().GetBool("direct-functions")
+		if err != nil {
+			return err
 		}
 
-		clusterRole, _ := command.Flags().GetBool("clusterrole")
-
-		clusterRoleVal := "false"
-		if clusterRole {
-			clusterRoleVal = "true"
-		}
-
-		directFunctions, _ := command.Flags().GetBool("direct-functions")
-		directFunctionsVal := "true"
-		if !directFunctions {
-			directFunctionsVal = "false"
-		}
 		gateways, _ := command.Flags().GetInt("gateways")
 		maxInflight, _ := command.Flags().GetInt("max-inflight")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 
-		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
+		ingressOperator, err := command.Flags().GetBool("ingress-operator")
+		if err != nil {
+			return err
+		}
 
-		overrides["clusterRole"] = clusterRoleVal
-		overrides["gateway.directFunctions"] = directFunctionsVal
-		overrides["operator.create"] = createOperatorVal
+		overrides["clusterRole"] = strconv.FormatBool(clusterRole)
+		overrides["gateway.directFunctions"] = strconv.FormatBool(directFunctions)
+		overrides["operator.create"] = strconv.FormatBool(createOperator)
 		overrides["openfaasImagePullPolicy"] = pullPolicy
 		overrides["faasnetes.imagePullPolicy"] = functionPullPolicy
 		overrides["basicAuthPlugin.replicas"] = "1"
@@ -188,13 +194,14 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
 		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
 
-		basicAuth, _ := command.Flags().GetBool("basic-auth")
-
 		// the value in the template is "basic_auth" not the more usual basicAuth
-		overrides["basic_auth"] = strings.ToLower(strconv.FormatBool(basicAuth))
+		overrides["basic_auth"] = strconv.FormatBool(basicAuthEnabled)
 
 		overrides["serviceType"] = "NodePort"
-		lb, _ := command.Flags().GetBool("load-balancer")
+		lb, err := command.Flags().GetBool("load-balancer")
+		if err != nil {
+			return err
+		}
 		if lb {
 			overrides["serviceType"] = "LoadBalancer"
 		}
