@@ -5,20 +5,19 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
+	"github.com/spf13/cobra"
+	"golang.org/x/mod/semver"
 	"log"
 	"os"
 	"path"
 	"strings"
-
-	"golang.org/x/mod/semver"
-
-	"github.com/alexellis/arkade/pkg/k8s"
-
-	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
-	"github.com/spf13/cobra"
 )
 
 func MakeInstallCertManager() *cobra.Command {
@@ -36,12 +35,6 @@ func MakeInstallCertManager() *cobra.Command {
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		namespace, _ := command.Flags().GetString("namespace")
 		version, _ := command.Flags().GetString("version")
@@ -69,10 +62,6 @@ func MakeInstallCertManager() *cobra.Command {
 		}
 
 		updateRepo, _ := certManager.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("jetstack", "https://charts.jetstack.io", updateRepo)
-		if err != nil {
-			return err
-		}
 
 		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
 		if nsErr != nil {
@@ -81,11 +70,6 @@ func MakeInstallCertManager() *cobra.Command {
 
 		if nsRes.ExitCode != 0 {
 			fmt.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
-		}
-
-		err = helm.FetchChart("jetstack/cert-manager", version)
-		if err != nil {
-			return err
 		}
 
 		overrides := map[string]string{}
@@ -107,12 +91,26 @@ func MakeInstallCertManager() *cobra.Command {
 			overrides["installCRDs"] = "true"
 		}
 
-		err = helm.Helm3Upgrade("jetstack/cert-manager", namespace,
-			"values.yaml",
-			version,
-			overrides,
-			wait)
+		certmanagerOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("jetstack/cert-manager").
+			WithHelmURL("https://charts.jetstack.io").
+			WithOverrides(overrides).
+			WithWait(wait).
+			WithHelmUpdateRepo(updateRepo)
 
+		if command.Flags().Changed("kubeconfig") {
+			kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+			certmanagerOptions.WithKubeconfigPath(kubeConfigPath)
+		}
+
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		if err != nil {
+			return err
+		}
+
+		_, err = apps.MakeInstallChart(certmanagerOptions)
 		if err != nil {
 			return err
 		}
