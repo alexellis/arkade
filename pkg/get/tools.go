@@ -415,5 +415,30 @@ https://releases.hashicorp.com/terraform/{{.Version}}/terraform_{{.Version}}_{{$
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Version}}_{{$osStr}}_{{$archStr}}.{{$extStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "buildpacks",
+			Repo:    "pack",
+			Name:    "pack",
+			Version: "0.14.2",
+			URLTemplate: `
+
+	{{$osStr := ""}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows"}}
+	{{- else if eq .OS "linux" -}}
+	{{$osStr = "linux"}}
+	{{- else if eq .OS "darwin" -}}
+	{{$osStr = "macOS"}}
+	{{- end -}}
+
+	{{$extStr := "tgz"}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$extStr = "zip"}}
+	{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{.Version}}-{{$osStr}}.{{$extStr}}`,
+		})
+
 	return tools
 }
