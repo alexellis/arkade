@@ -51,15 +51,24 @@ arkade downloads the correct version of a CLI for your OS and CPU.
 With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
-arkade get faas-cli
-arkade get helm
-arkade get inletsctl
-arkade get k3d
-arkade get k3sup
-arkade get kind
-arkade get kubectl
-arkade get kubectx
-arkade get kubeseal
+arkade get
+          faas-cli
+          helm
+          kubectl
+          kubectx
+          kind
+          k3d
+          k3sup
+          kubeseal
+          inletsctl
+          osm
+          linkerd2
+          kubebuilder
+          kustomize
+          doctl
+          k9s
+          civo
+          terraform
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
@@ -228,7 +237,14 @@ You can view the various apps available with `arkade install / --help`, more are
 
 ```bash
 arkade install --help
+ark --help
 
+Examples:
+  arkade install
+  arkade install openfaas --helm3 --gateways=2
+  arkade install inlets-operator --token-file $HOME/do-token
+
+Available Commands:
   argocd                  Install argocd
   cert-manager            Install cert-manager
   chart                   Install the specified helm chart
@@ -236,6 +252,7 @@ arkade install --help
   crossplane              Install Crossplane
   docker-registry         Install a Docker registry
   docker-registry-ingress Install registry ingress with TLS
+  gitea                   Install gitea
   grafana                 Install grafana
   info                    Find info about a Kubernetes app
   ingress-nginx           Install ingress-nginx
@@ -243,6 +260,7 @@ arkade install --help
   istio                   Install istio
   jenkins                 Install jenkins
   kafka-connector         Install kafka-connector for OpenFaaS
+  kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
   linkerd                 Install linkerd
@@ -255,9 +273,11 @@ arkade install --help
   openfaas                Install openfaas
   openfaas-ingress        Install openfaas ingress with TLS
   openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
+  osm                     Install osm
   portainer               Install portainer to visualise and manage containers
   postgresql              Install postgresql
   redis                   Install redis
+  registry-creds          Install registry-creds
   tekton                  Install Tekton pipelines and dashboard
   traefik2                Install traefik2
 ```
@@ -270,9 +290,16 @@ To suggest a new app, please check past issues and [raise an issue for it](https
 
 ### Sponsored apps
 
-You can now propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development and support of the app for arkade.
+You can now propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development of the Sponsored App, with ongoing support via GitHub for the Sponsored App for the duration only. Ongoing support will be limited to a set amount of hours per month.
 
-When your sponsorship expires your app can be renewed at that time, or it will disappear automatically based upon the end-date.
+When your sponsorship expires the Sponsored App will be removed from arkade, and the ongoing support will cease. A Sponsored App can be renewed 60 days prior to expiration subject to a separate agreement and payment.
+
+Example:
+
+```bash
+arkade VENDOR install PRODUCT
+arkade acmeco install dashboard
+```
 
 Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
 
