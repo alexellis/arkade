@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -68,10 +67,6 @@ before using the generic helm chart installer command.`,
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

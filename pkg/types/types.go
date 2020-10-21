@@ -2,12 +2,16 @@ package types
 
 import "github.com/alexellis/arkade/pkg/config"
 
+type Command func() error
+
 type InstallerOptions struct {
-	Namespace      string
-	KubeconfigPath string
-	NodeArch       string
-	Helm           *HelmConfig
-	Verbose        bool
+	Namespace         string
+	KubeconfigPath    string
+	NodeArch          string
+	Helm              *HelmConfig
+	Verbose           bool
+	PreChartCommands  []Command
+	PostChartCommands []Command
 }
 
 type HelmConfig struct {
@@ -27,6 +31,7 @@ type HelmRepo struct {
 }
 
 type InstallerOutput struct {
+	Errors []error
 }
 
 func (o *InstallerOptions) WithKubeconfigPath(path string) *InstallerOptions {

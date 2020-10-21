@@ -6,11 +6,8 @@ package apps
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
-
-	"github.com/alexellis/arkade/pkg/k8s"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -61,9 +58,6 @@ func MakeInstallRegistry() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
@@ -107,9 +101,6 @@ func MakeInstallRegistry() *cobra.Command {
 
 		overrides["persistence.enabled"] = "false"
 		overrides["secrets.htpasswd"] = string(htPasswd)
-
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		fmt.Println("Chart path: ", chartPath)
 

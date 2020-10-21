@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strconv"
@@ -77,7 +76,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		valuesSuffix := getValuesSuffix(arch)
 
@@ -87,8 +85,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
+
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)

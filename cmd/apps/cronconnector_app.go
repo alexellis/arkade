@@ -2,12 +2,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
 	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
@@ -47,13 +45,10 @@ func MakeInstallCronConnector() *cobra.Command {
 		namespace, _ := command.Flags().GetString("namespace")
 
 		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas", install via tiller`)
+			return fmt.Errorf(`to override the "openfaas" namespace, install via helm`)
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
@@ -67,9 +62,6 @@ func MakeInstallCronConnector() *cobra.Command {
 		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
-
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		cronConnectorAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
@@ -85,7 +77,7 @@ func MakeInstallCronConnector() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(cronConnectorAppOptions)
+		err = apps.MakeInstallChart(cronConnectorAppOptions)
 		if err != nil {
 			return err
 		}

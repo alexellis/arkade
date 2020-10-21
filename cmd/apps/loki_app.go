@@ -4,7 +4,6 @@
 package apps
 
 import (
-	"log"
 	"os"
 	"path"
 
@@ -43,10 +42,6 @@ func MakeInstallLoki() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
 		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
 			return err
 		}
@@ -84,7 +79,7 @@ func MakeInstallLoki() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(lokiOptions)
+		err = apps.MakeInstallChart(lokiOptions)
 		if err != nil {
 			return err
 		}

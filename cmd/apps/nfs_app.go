@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -45,10 +44,6 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
 		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
 			return err
 		}
@@ -70,7 +65,6 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		overrides["nfs.path"] = nfsPath
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		if suffix := getValuesSuffix(arch); suffix == "-armhf" || suffix == "-arm64" {
 			overrides["image.repository"] = "quay.io/external_storage/nfs-client-provisioner-arm:latest"
@@ -97,7 +91,7 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(nfsProvisionerOptions)
+		err = apps.MakeInstallChart(nfsProvisionerOptions)
 		if err != nil {
 			return err
 		}

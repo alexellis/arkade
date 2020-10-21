@@ -4,6 +4,7 @@
 package env
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"path"
@@ -30,6 +31,7 @@ func GetClientArch() (arch string, os string) {
 
 	osResult := strings.TrimSpace(resOS.Stdout)
 
+	fmt.Printf("Client: %s, %s\n", archResult, osResult)
 	return archResult, osResult
 }
 

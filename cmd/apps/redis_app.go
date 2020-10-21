@@ -45,12 +45,8 @@ func MakeInstallRedis() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		// exit on arm
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
@@ -97,7 +93,7 @@ func MakeInstallRedis() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(redisAppOptions)
+		err = apps.MakeInstallChart(redisAppOptions)
 		if err != nil {
 			return err
 		}

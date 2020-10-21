@@ -6,7 +6,6 @@ package apps
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/alexellis/arkade/pkg/get"
@@ -41,7 +40,6 @@ service mesh created by Microsoft Azure.`,
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
@@ -52,10 +50,6 @@ service mesh created by Microsoft Azure.`,
 		}
 
 		arch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %q\n", clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
 
 		err = downloadOSM(userPath, arch, clientOS)
 		if err != nil {

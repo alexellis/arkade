@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -48,14 +47,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 
 		namespace, _ := command.Flags().GetString("namespace")
 
-		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas", install via tiller`)
-		}
-
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
@@ -84,7 +76,6 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		}
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
@@ -103,7 +94,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(kafkaConnectorAppOptions)
+		err = apps.MakeInstallChart(kafkaConnectorAppOptions)
 		if err != nil {
 			return err
 		}

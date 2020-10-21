@@ -8,7 +8,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 
@@ -41,7 +40,6 @@ func MakeInstallLinkerd() *cobra.Command {
 		}
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
@@ -53,11 +51,7 @@ func MakeInstallLinkerd() *cobra.Command {
 
 		arch, clientOS := env.GetClientArch()
 
-		fmt.Printf("Client: %q\n", clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
-		err = downloadLinkerd(userPath, arch, clientOS)
+		err = downloadLinkerd(arch, clientOS)
 		if err != nil {
 			return err
 		}
@@ -115,12 +109,7 @@ linkerd2 --help
 	return linkerd
 }
 
-// func getLinkerdURL(os, version string) string {
-// 	osSuffix := strings.ToLower(os)
-// 	return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-%s", version, version, osSuffix)
-// }
-
-func downloadLinkerd(userPath, arch, clientOS string) error {
+func downloadLinkerd(arch, clientOS string) error {
 
 	tools := get.MakeTools()
 	var tool *get.Tool

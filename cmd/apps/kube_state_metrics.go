@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -45,15 +44,12 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		namespace, _ := command.Flags().GetString("namespace")
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)

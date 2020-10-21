@@ -4,7 +4,6 @@
 package apps
 
 import (
-	"log"
 	"os"
 	"path"
 
@@ -41,10 +40,6 @@ func MakeInstallNATSConnector() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
 		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
 			return err
 		}
@@ -72,7 +67,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(natsConnectorOptions)
+		err = apps.MakeInstallChart(natsConnectorOptions)
 		if err != nil {
 			return err
 		}

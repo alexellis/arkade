@@ -53,27 +53,9 @@ func MakeInstallCertManager() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
 		updateRepo, _ := certManager.Flags().GetBool("update-repo")
-
-		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil {
-			return nsErr
-		}
-
-		if nsRes.ExitCode != 0 {
-			fmt.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
-		}
 
 		overrides := map[string]string{}
 
@@ -104,7 +86,7 @@ func MakeInstallCertManager() *cobra.Command {
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
 
-		_, err = apps.MakeInstallChart(certmanagerOptions)
+		err = apps.MakeInstallChart(certmanagerOptions)
 		if err != nil {
 			return err
 		}

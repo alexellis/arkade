@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strconv"
@@ -46,7 +45,6 @@ func MakeInstallGitea() *cobra.Command {
 		updateRepo, _ := gitea.Flags().GetBool("update-repo")
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -54,9 +52,6 @@ func MakeInstallGitea() *cobra.Command {
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
@@ -117,7 +112,7 @@ func MakeInstallGitea() *cobra.Command {
 			return fmt.Errorf("if installing on ARM platform you'll need to use an external database")
 		}
 
-		_, err = apps.MakeInstallChart(giteaAppOptions)
+		err = apps.MakeInstallChart(giteaAppOptions)
 		if err != nil {
 			return err
 		}

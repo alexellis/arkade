@@ -5,6 +5,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"strings"
@@ -36,6 +37,7 @@ func InitUserDir() (string, error) {
 		return helmPath, helmErr
 	}
 
+	log.Printf("User dir established as: %s\n", root)
 	return root, nil
 }
 

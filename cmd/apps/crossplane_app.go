@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -49,7 +48,6 @@ schedule workloads to any Kubernetes cluster`,
 		if !strings.Contains(arch, "64") {
 			return fmt.Errorf(`crossplane is currently only supported on 64-bit architectures`)
 		}
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -57,10 +55,6 @@ schedule workloads to any Kubernetes cluster`,
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

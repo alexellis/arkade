@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"strconv"
@@ -47,7 +46,6 @@ func MakeInstallJenkins() *cobra.Command {
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
@@ -59,9 +57,6 @@ func MakeInstallJenkins() *cobra.Command {
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

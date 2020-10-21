@@ -6,7 +6,6 @@ package apps
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -56,19 +55,12 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		namespace, _ := command.Flags().GetString("namespace")
 
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
-
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

@@ -52,9 +52,6 @@ func MakeInstallGrafana() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)

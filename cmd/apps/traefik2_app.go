@@ -47,7 +47,6 @@ func MakeInstallTraefik2() *cobra.Command {
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q\n", clientOS)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

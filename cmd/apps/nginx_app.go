@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -51,9 +50,6 @@ flag and the ingress-nginx docs for more info`,
 
 		clientArch, clientOS := env.GetClientArch()
 
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		overrides := map[string]string{}
@@ -90,7 +86,7 @@ flag and the ingress-nginx docs for more info`,
 		if err != nil {
 			return err
 		}
-		_, err = apps.MakeInstallChart(nginxOptions)
+		err = apps.MakeInstallChart(nginxOptions)
 
 		if err != nil {
 			return err

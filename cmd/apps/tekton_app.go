@@ -31,7 +31,6 @@ func MakeInstallTekton() *cobra.Command {
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
 			return fmt.Errorf(`only Intel and AMD (i.e. PC) architecture is supported for this app`)

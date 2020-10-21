@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -46,10 +45,6 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
 		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
 			return err
 		}
@@ -81,7 +76,7 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(lokiOptions)
+		err = apps.MakeInstallChart(lokiOptions)
 		if err != nil {
 			return err
 		}

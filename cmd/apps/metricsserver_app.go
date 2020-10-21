@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -47,11 +46,8 @@ func MakeInstallMetricsServer() *cobra.Command {
 		}
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
