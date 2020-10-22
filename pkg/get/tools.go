@@ -429,7 +429,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Ve
 	{{- else if eq .OS "linux" -}}
 	{{$osStr = "linux"}}
 	{{- else if eq .OS "darwin" -}}
-	{{$osStr = "macOS"}}
+	{{$osStr = "macos"}}
 	{{- end -}}
 
 	{{$extStr := "tgz"}}
