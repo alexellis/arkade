@@ -32,11 +32,12 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce' or 'ec2'")
-	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (Used by GCE")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
+	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Packet)")
-	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Packet and Scaleway")
-	inletsOperator.Flags().String("organization-id", "", "The organization id (Scaleway")
+	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Packet and Scaleway)")
+	inletsOperator.Flags().String("organization-id", "", "The organization id (Scaleway)")
+	inletsOperator.Flags().String("subscription-id", "", "The subscription id (Azure)")
 	inletsOperator.Flags().StringP("token-file", "t", "", "Text file containing token or a service account JSON file")
 	inletsOperator.Flags().StringP("token", "k", "", "The API access token")
 	inletsOperator.Flags().StringP("secret-key-file", "s", "", "Text file containing secret key, used for providers like ec2")
@@ -194,7 +195,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	}
 
 	providers := []string{
-		"digitalocean", "packet", "ec2", "scaleway", "civo", "gce", "linode",
+		"digitalocean", "packet", "ec2", "scaleway", "civo", "gce", "linode", "azure",
 	}
 
 	found := false
@@ -252,6 +253,15 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 		if len(orgID) == 0 {
 			return overrides, fmt.Errorf("organization-id is required for provider %s", provider)
 		}
+	} else if provider == "azure" {
+		subscriptionID, err := command.Flags().GetString("subscription-id")
+		if err != nil {
+			return overrides, err
+		}
+		if len(subscriptionID) == 0 {
+			return overrides, fmt.Errorf("subscription-id is required for provider %s", provider)
+		}
+		overrides["subscriptionID"] = subscriptionID
 	} else if provider == "ec2" {
 		if len(secretKeyFile) == 0 {
 			return overrides, fmt.Errorf("secret-key-file is required for provider %s", provider)
