@@ -751,3 +751,37 @@ func Test_DownloadGH(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadPack(t *testing.T) {
+	tools := MakeTools()
+	name := "pack"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.14.2"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			version: toolVersion,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-windows.zip`,
+		},
+		{os: "darwin",
+			version: toolVersion,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-macos.tgz`,
+		},
+		{os: "linux",
+			version: toolVersion,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-linux.tgz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, "", tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
