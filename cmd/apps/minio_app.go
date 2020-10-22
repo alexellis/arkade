@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -29,18 +31,15 @@ func MakeInstallMinio() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	minio.Flags().Bool("update-repo", true, "Update the helm repo")
 	minio.Flags().String("access-key", "", "Provide an access key to override the pre-generated value")
 	minio.Flags().String("secret-key", "", "Provide a secret key to override the pre-generated value")
 	minio.Flags().Bool("distributed", false, "Deploy Minio in Distributed Mode")
-	minio.Flags().String("namespace", "default", "Kubernetes namespace for the application")
 	minio.Flags().Bool("persistence", false, "Enable persistence")
 	minio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	minio.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
@@ -63,10 +62,12 @@ func MakeInstallMinio() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := minio.Flags().GetString("namespace")
-
-		if ns != "default" {
-			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
@@ -129,7 +130,7 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/minio", ns,
+		err = helm.Helm3Upgrade("stable/minio", namespace,
 			"values.yaml",
 			defaultVersion,
 			overrides,

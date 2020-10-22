@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
@@ -31,8 +33,6 @@ func MakeInstallGitea() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	gitea.Flags().Bool("update-repo", true, "Update the helm repo")
-	gitea.Flags().String("namespace", "default", "Kubernetes namespace for the application")
 	gitea.Flags().Bool("persistence", false, "Enable persistence")
 	gitea.Flags().StringP("user", "u", "gitea_admin", "Username of admin user")
 	gitea.Flags().StringP("password", "p", "", "Overide the default random admin-password if this is set")
@@ -55,7 +55,10 @@ func MakeInstallGitea() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := gitea.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
 
 		persistence, _ := gitea.Flags().GetBool("persistence")
 		overrides := map[string]string{}
@@ -95,7 +98,7 @@ func MakeInstallGitea() *cobra.Command {
 		}
 
 		giteaAppOptions := types.DefaultInstallOptions().
-			WithNamespace(ns).
+			WithNamespace(namespace).
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("gitea-charts/gitea").
 			WithHelmURL("https://dl.gitea.io/charts").

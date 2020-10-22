@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -33,8 +35,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().BoolP("basic-auth", "a", true, "Enable authentication")
 	openfaas.Flags().String("basic-auth-password", "", "Overide the default random basic-auth-password if this is set")
 	openfaas.Flags().BoolP("load-balancer", "l", false, "Add a loadbalancer")
-	openfaas.Flags().StringP("namespace", "n", "openfaas", "The namespace for the core services")
-	openfaas.Flags().Bool("update-repo", true, "Update the helm repo")
 	openfaas.Flags().String("pull-policy", "IfNotPresent", "Pull policy for OpenFaaS core services")
 	openfaas.Flags().String("function-pull-policy", "Always", "Pull policy for functions")
 
@@ -62,14 +62,14 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		os.Setenv("KUBECONFIG", kubeConfigPath)
-		namespace, _ := command.Flags().GetString("namespace")
 
-		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas", install OpenFaaS via helm manually`)
+		namespace, err := commands.GetNamespace(command.Flags(), "openfaas")
+		if err != nil {
+			return err
 		}
-
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 		basicAuthEnabled, err := command.Flags().GetBool("basic-auth")
 		if err != nil {
 			return err

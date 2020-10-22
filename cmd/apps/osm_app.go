@@ -8,6 +8,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -30,36 +32,34 @@ service mesh created by Microsoft Azure.`,
 	}
 
 	osm.Flags().String("mesh", "osm", "Give a specific mesh name override")
-	osm.Flags().StringP("namespace", "n", "osm-system", "Give a specific mesh namespace override")
 
 	osm.RunE = func(command *cobra.Command, args []string) error {
+		namespace, err := commands.GetNamespace(command.Flags(), "osm-system")
+		if err != nil {
+			return err
+		}
+
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		userPath, err := getUserPath()
-		if err != nil {
-			return err
-		}
-
 		arch, clientOS := env.GetClientArch()
 
-		err = downloadOSM(userPath, arch, clientOS)
+		err = downloadOSM(arch, clientOS)
 		if err != nil {
 			return err
 		}
 		fmt.Println("Running osm check, this may take a few moments.")
-		ns, _ := osm.Flags().GetString("namespace")
+
 		meshName, _ := osm.Flags().GetString("mesh")
 
-		_, err = osmCli("check", "--pre-install", "--namespace="+ns)
+		_, err = osmCli("check", "--pre-install", fmt.Sprintf("--namespace=%s", namespace))
 		if err != nil {
 			return err
 		}
@@ -83,7 +83,7 @@ service mesh created by Microsoft Azure.`,
 	return osm
 }
 
-func downloadOSM(userPath, arch, clientOS string) error {
+func downloadOSM(arch, clientOS string) error {
 
 	tools := get.MakeTools()
 	var tool *get.Tool

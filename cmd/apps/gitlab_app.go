@@ -26,9 +26,7 @@ func MakeInstallGitLab() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	gitlabApp.Flags().StringP("namespace", "n", "default", "The namespace to install GitLab")
 	gitlabApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set global.hosts.domain)")
-	gitlabApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	// Maybe these should be arguments as they are required?
 	gitlabApp.Flags().StringP("domain", "d", "", "Domain name that will be used for all publicly exposed services (required)")
 	gitlabApp.Flags().StringP("external-ip", "i", "", "Static IP to assign to NGINX Ingress Controller (required)")
@@ -102,7 +100,7 @@ func MakeInstallGitLab() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(options)
+		err = apps.MakeInstallChart(options)
 		if err != nil {
 			return err
 		}

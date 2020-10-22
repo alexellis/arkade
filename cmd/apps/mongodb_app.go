@@ -9,6 +9,8 @@ import (
 	"path"
 	"strconv"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -26,21 +28,24 @@ func MakeInstallMongoDB() *cobra.Command {
 		Example:      `  arkade install mongodb`,
 		SilenceUsage: true,
 	}
-	command.Flags().String("namespace", "default", "Namespace for the app")
-
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set=mongodbUsername=admin)")
 	command.Flags().Bool("persistence", false, "Create and bind a persistent volume, not recommended for development")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
 		wait, _ := command.Flags().GetBool("wait")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 
 		arch := k8s.GetNodeArchitecture()
 

@@ -10,6 +10,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -28,7 +30,6 @@ func MakeInstallInletsOperator() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
 	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
@@ -40,7 +41,6 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("token-file", "t", "", "Text file containing token or a service account JSON file")
 	inletsOperator.Flags().StringP("token", "k", "", "The API access token")
 	inletsOperator.Flags().StringP("secret-key-file", "s", "", "Text file containing secret key, used for providers like ec2")
-	inletsOperator.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
@@ -53,8 +53,14 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		wait, _ := command.Flags().GetBool("wait")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
 
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err

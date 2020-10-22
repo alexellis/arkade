@@ -9,6 +9,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -27,7 +29,6 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	kubeStateMetrics.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	kubeStateMetrics.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
 
 	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
@@ -41,7 +42,14 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		namespace, _ := command.Flags().GetString("namespace")
+
+		namespace, err := commands.GetNamespace(command.Flags(), "kube-system")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 
 		arch := k8s.GetNodeArchitecture()
 

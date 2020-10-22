@@ -12,6 +12,7 @@ type InstallerOptions struct {
 	Verbose           bool
 	PreChartCommands  []Command
 	PostChartCommands []Command
+	CreateNamespace   bool
 }
 
 type HelmConfig struct {
@@ -87,6 +88,7 @@ func DefaultInstallOptions() *InstallerOptions {
 			Helm3:      true,
 			Wait:       false,
 		},
-		Verbose: false,
+		Verbose:         false,
+		CreateNamespace: true,
 	}
 }

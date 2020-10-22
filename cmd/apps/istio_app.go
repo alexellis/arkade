@@ -10,6 +10,8 @@ import (
 	"path"
 	"time"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -27,8 +29,6 @@ func MakeInstallIstio() *cobra.Command {
 		Example:      `  arkade install istio --loadbalancer`,
 		SilenceUsage: true,
 	}
-	istio.Flags().Bool("update-repo", true, "Update the helm repo")
-	istio.Flags().String("namespace", "istio-system", "Namespace for the app")
 	istio.Flags().Bool("init", true, "Run the Istio init to add CRDs etc")
 
 	istio.Flags().StringArray("set", []string{},
@@ -41,10 +41,13 @@ func MakeInstallIstio() *cobra.Command {
 		}
 		wait, _ := command.Flags().GetBool("wait")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "istio-system")
+		if err != nil {
+			return err
+		}
 
-		if namespace != "istio-system" {
-			return fmt.Errorf(`to override the "istio-system" namespace, install Istio via helm manually`)
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		arch := k8s.GetNodeArchitecture()
@@ -78,12 +81,6 @@ func MakeInstallIstio() *cobra.Command {
 		)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
-		}
-
-		_, err = k8s.KubectlTask("create", "ns", "istio-system")
-
-		if err != nil {
-			return fmt.Errorf("unable to create namespace %s", err)
 		}
 
 		err = helm.FetchChart("istio/istio", defaultVersion)

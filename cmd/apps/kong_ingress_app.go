@@ -26,7 +26,6 @@ func MakeInstallKongIngress() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	command.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	command.Flags().StringArray("set", []string{},
@@ -36,8 +35,6 @@ func MakeInstallKongIngress() *cobra.Command {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -83,7 +80,7 @@ func MakeInstallKongIngress() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(kongIngressAppOptions)
+		err = apps.MakeInstallChart(kongIngressAppOptions)
 		if err != nil {
 			return err
 		}

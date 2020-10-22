@@ -10,11 +10,11 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
@@ -30,16 +30,18 @@ func MakeInstallCertManager() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	certManager.Flags().StringP("namespace", "n", "cert-manager", "The namespace to install cert-manager")
 	certManager.Flags().StringP("version", "v", "v1.0.4", "The version of cert-manager to install, has to be >=0.15.0")
-	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		wait, _ := command.Flags().GetBool("wait")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(certManager.Flags(), "cert-manager")
+		if err != nil {
+			return err
+		}
+
 		version, _ := command.Flags().GetString("version")
 
 		if !semver.IsValid(version) {
@@ -50,8 +52,6 @@ func MakeInstallCertManager() *cobra.Command {
 		if err != nil {
 			return err
 		}
-
-		clientArch, clientOS := env.GetClientArch()
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

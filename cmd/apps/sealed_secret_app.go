@@ -36,7 +36,6 @@ func MakeInstallSealedSecrets() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		wait, _ := command.Flags().GetBool("wait")
 

@@ -5,6 +5,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/types"
 
@@ -24,9 +26,6 @@ func MakeInstallCronConnector() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP("namespace", "n", "openfaas", "The namespace used for installation")
-	command.Flags().Bool("update-repo", true, "Update the helm repo")
-
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
@@ -35,18 +34,12 @@ func MakeInstallCronConnector() *cobra.Command {
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
 		}
 
-		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas" namespace, install via helm`)
-		}
+		namespace, err := commands.GetNamespace(command.Flags(), "openfaas")
 
 		clientArch, clientOS := env.GetClientArch()
 

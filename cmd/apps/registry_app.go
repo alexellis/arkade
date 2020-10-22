@@ -9,6 +9,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"golang.org/x/crypto/bcrypt"
 
 	"github.com/alexellis/arkade/pkg"
@@ -28,15 +30,12 @@ func MakeInstallRegistry() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	registry.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	registry.Flags().Bool("update-repo", true, "Update the helm repo")
 	registry.Flags().StringP("username", "u", "admin", "Username for the registry")
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
 	registry.Flags().StringP("write-file", "w", "", "Write generated password to this file")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
@@ -49,9 +48,13 @@ func MakeInstallRegistry() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		namespace, _ := command.Flags().GetString("namespace")
-		if namespace != "default" {
-			return fmt.Errorf(`to override the "default", install via tiller`)
+
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		outputFile, _ := command.Flags().GetString("write-file")
@@ -90,7 +93,6 @@ func MakeInstallRegistry() *cobra.Command {
 			return err
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
 		err = helm.FetchChart("stable/docker-registry", defaultVersion)
 
 		if err != nil {
@@ -102,11 +104,7 @@ func MakeInstallRegistry() *cobra.Command {
 		overrides["persistence.enabled"] = "false"
 		overrides["secrets.htpasswd"] = string(htPasswd)
 
-		fmt.Println("Chart path: ", chartPath)
-
-		ns := "default"
-
-		err = helm.Helm3Upgrade("stable/docker-registry", ns,
+		err = helm.Helm3Upgrade("stable/docker-registry", namespace,
 			"values.yaml",
 			defaultVersion,
 			overrides,

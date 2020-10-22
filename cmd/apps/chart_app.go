@@ -9,11 +9,12 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/spf13/cobra"
 )
 
@@ -33,7 +34,6 @@ before using the generic helm chart installer command.`,
 		SilenceUsage: true,
 	}
 
-	chartCmd.Flags().StringP("namespace", "n", "default", "The namespace to install the chart")
 	chartCmd.Flags().String("repo", "", "The chart repo to install from")
 	chartCmd.Flags().String("values-file", "", "Give the values.yaml file to use from the upstream chart repo")
 	chartCmd.Flags().String("repo-name", "", "Chart name")
@@ -59,7 +59,10 @@ before using the generic helm chart installer command.`,
 			return err
 		}
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(chartCmd.Flags(), "default")
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -77,19 +80,6 @@ before using the generic helm chart installer command.`,
 
 		if len(chartRepoURL) > 0 {
 			err = helm.AddHelmRepo(chartPrefix, chartRepoURL, true)
-			if err != nil {
-				return err
-			}
-		}
-
-		res, kcErr := k8s.KubectlTask("get", "namespace", namespace)
-
-		if kcErr != nil {
-			return err
-		}
-
-		if res.ExitCode != 0 {
-			err = k8s.Kubectl("create", "namespace", namespace)
 			if err != nil {
 				return err
 			}

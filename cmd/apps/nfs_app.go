@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -27,16 +29,18 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	nfsProvisionerApp.Flags().StringP("namespace", "n", "default", "The namespace to install nfs-client (default: default")
 	nfsProvisionerApp.Flags().String("nfs-server", "", "IP or hostname of the NFS server ")
 	nfsProvisionerApp.Flags().String("nfs-path", "", "Basepath of the mount point to be used")
-	nfsProvisionerApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	nfsProvisionerApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set =true)")
 
 	nfsProvisionerApp.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		namespace, _ := nfsProvisionerApp.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err

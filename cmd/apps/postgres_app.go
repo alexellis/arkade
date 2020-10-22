@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
@@ -30,17 +32,12 @@ func MakeInstallPostgresql() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	postgresql.Flags().Bool("update-repo", true, "Update the helm repo")
-	postgresql.Flags().String("namespace", "default", "Kubernetes namespace for the application")
-
 	postgresql.Flags().Bool("persistence", false, "Enable persistence")
-
 	postgresql.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	postgresql.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		updateRepo, _ := postgresql.Flags().GetBool("update-repo")
 
@@ -59,19 +56,14 @@ func MakeInstallPostgresql() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := postgresql.Flags().GetString("namespace")
-
-		if ns != "default" {
-			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
 		}
 
 		persistence, _ := postgresql.Flags().GetBool("persistence")
 
 		overrides := map[string]string{}
-
-		if err != nil {
-			return err
-		}
 
 		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
 
@@ -85,7 +77,7 @@ func MakeInstallPostgresql() *cobra.Command {
 		}
 
 		postgresqlAppOptions := types.DefaultInstallOptions().
-			WithNamespace(ns).
+			WithNamespace(namespace).
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("bitnami/postgresql").
 			WithHelmURL("https://charts.bitnami.com/bitnami").

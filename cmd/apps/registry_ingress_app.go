@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -44,7 +46,6 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 	registryIngress.Flags().StringP("email", "e", "", "Letsencrypt Email")
 	registryIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
 	registryIngress.Flags().String("max-size", "200m", "the max size for the ingress proxy, default to 200m")
-	registryIngress.Flags().StringP("namespace", "n", "default", "The namespace where the registry is installed")
 	registryIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 
 	registryIngress.RunE = func(command *cobra.Command, args []string) error {
@@ -52,12 +53,10 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		email, _ := command.Flags().GetString("email")
 		domain, _ := command.Flags().GetString("domain")
 		ingressClass, _ := command.Flags().GetString("ingress-class")
-		namespace, _ := command.Flags().GetString("namespace")
 		maxSize, _ := command.Flags().GetString("max-size")
 
 		if email == "" || domain == "" {
@@ -66,6 +65,14 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 
 		if ingressClass == "" {
 			return errors.New("--ingress-class must be set")
+		}
+
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		staging, _ := registryIngress.Flags().GetBool("staging")

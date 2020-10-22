@@ -5,9 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
+
+	"github.com/alexellis/arkade/pkg/commands"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
@@ -28,13 +29,13 @@ func MakeInstallRedis() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	redis.Flags().StringP("namespace", "n", "redis", "The namespace to install redis")
-	redis.Flags().Bool("update-repo", true, "Update the helm repo")
-
 	redis.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "redis")
+		if err != nil {
+			return err
+		}
 		wait, _ := command.Flags().GetBool("wait")
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
@@ -59,17 +60,6 @@ func MakeInstallRedis() *cobra.Command {
 		overrides := map[string]string{
 			"serviceAccount.create": "true",
 			"rbac.create":           "true",
-		}
-
-		// create the namespace
-		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil {
-			return nsErr
-		}
-
-		// ignore errors
-		if nsRes.ExitCode != 0 {
-			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")

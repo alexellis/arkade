@@ -5,11 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
-	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/commands"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -27,8 +26,6 @@ func MakeInstallGrafana() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	grafana.Flags().StringP("namespace", "n", "grafana", "The namespace to install grafana")
-	grafana.Flags().Bool("update-repo", true, "Update the helm repo")
 	grafana.Flags().Bool("persistence", false, "Make grafana persistent")
 
 	grafana.RunE = func(command *cobra.Command, args []string) error {
@@ -42,7 +39,14 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 		wait, _ := command.Flags().GetBool("wait")
 		persistence, _ := command.Flags().GetBool("persistence")
-		namespace, _ := command.Flags().GetString("namespace")
+
+		namespace, err := commands.GetNamespace(command.Flags(), "grafana")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 
 		// initialize client env
 		userPath, err := config.InitUserDir()
@@ -66,15 +70,6 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 
 		// create the namespace
-		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil {
-			return nsErr
-		}
-
-		// ignore errors
-		if nsRes.ExitCode != 0 {
-			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
-		}
 
 		// download the chart
 		err = helm.FetchChart("stable/grafana", chartVersion)

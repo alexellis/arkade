@@ -34,8 +34,6 @@ func MakeInstallConsul() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	consul.Flags().StringP("namespace", "n", "consul-system", "The namespace used for installation")
-	consul.Flags().Bool("update-repo", true, "Update the helm repo")
 	consul.Flags().StringP("datacenter", "d", "dc1", "The name of the datacenter that the agents should register as")
 	consul.Flags().Bool("enable-connect-injector", true, "If true, all the resources necessary for the Connect injector process to run will be installed")
 	consul.Flags().Bool("enable-tls-encryption", true, "If true, TLS encryption across the cluster to verify authenticity of the Consul servers and clients is enabled")
@@ -137,7 +135,7 @@ func MakeInstallConsul() *cobra.Command {
 			return err
 		}
 
-		_, err = apps.MakeInstallChart(consulOptions)
+		err = apps.MakeInstallChart(consulOptions)
 		if err != nil {
 			return err
 		}

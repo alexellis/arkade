@@ -6,6 +6,8 @@ package apps
 import (
 	"fmt"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -22,8 +24,6 @@ func MakeInstallTraefik2() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	traefik2.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-	traefik2.Flags().Bool("update-repo", true, "Update the helm repo")
 	traefik2.Flags().Bool("load-balancer", true, "Use a load-balancer for the IngressController")
 	traefik2.Flags().Bool("dashboard", false, "Expose dashboard if you want access to dashboard from the browser")
 	traefik2.Flags().StringArray("set", []string{},
@@ -37,10 +37,15 @@ func MakeInstallTraefik2() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		updateRepo, _ := traefik2.Flags().GetBool("update-repo")
-		namespace, _ := traefik2.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "kube-system")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
@@ -120,10 +125,9 @@ arkade install traefik2 --dashboard
 
 # Find your LoadBalancer IP:
 
-kubectl get svc -n kube-system traefik
-`
+kubectl get svc -n kube-system traefik`
 
 const traefikInstallMsg = `=======================================================================
 =                  traefik2 has been installed                        =
 =======================================================================
- ` + pkg.ThanksForUsing + Traefik2InfoMsg
+` + pkg.ThanksForUsing + Traefik2InfoMsg

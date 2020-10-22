@@ -9,6 +9,8 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -28,9 +30,6 @@ schedule workloads to any Kubernetes cluster`,
 		SilenceUsage: true,
 	}
 
-	crossplane.Flags().StringP("namespace", "n", "crossplane-system", "The namespace used for installation")
-	crossplane.Flags().Bool("update-repo", true, "Update the helm repo")
-
 	crossplane.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -38,10 +37,12 @@ schedule workloads to any Kubernetes cluster`,
 			return err
 		}
 
-		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "crossplane-system" {
-			return fmt.Errorf(`to override the namespace, install crossplane via helm manually`)
+		namespace, err := commands.GetNamespace(command.Flags(), "crosplane-system")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		arch := k8s.GetNodeArchitecture()
@@ -72,11 +73,6 @@ schedule workloads to any Kubernetes cluster`,
 		err = helm.FetchChart("crossplane-alpha/crossplane", defaultVersion)
 		if err != nil {
 			return err
-		}
-
-		_, nsErr := k8s.KubectlTask("create", "namespace", "crossplane-system")
-		if nsErr != nil && !strings.Contains(nsErr.Error(), "AlreadyExists") {
-			return nsErr
 		}
 
 		err = helm.Helm3Upgrade("crossplane-alpha/crossplane",

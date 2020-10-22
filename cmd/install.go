@@ -33,7 +33,8 @@ command.`,
 
 	command.PersistentFlags().String("kubeconfig", "", "Local path for your kubeconfig file")
 	command.PersistentFlags().Bool("wait", false, "If we should wait for the resource to be ready before returning (helm3 only, default false)")
-
+	command.PersistentFlags().Bool("update-repo", true, "Update the helm repo (default true)")
+	command.PersistentFlags().StringP("namespace", "n", "", "set to a value to override the default app namespace")
 	command.RunE = func(command *cobra.Command, args []string) error {
 
 		if len(args) == 0 {

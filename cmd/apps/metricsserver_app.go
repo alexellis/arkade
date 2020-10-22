@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -26,8 +28,6 @@ func MakeInstallMetricsServer() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
-
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -39,10 +39,12 @@ func MakeInstallMetricsServer() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "kube-system" {
-			return fmt.Errorf(`to override the "kube-system", install via tiller`)
+		namespace, err := commands.GetNamespace(command.Flags(), "kube-system")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
 		}
 
 		arch := k8s.GetNodeArchitecture()

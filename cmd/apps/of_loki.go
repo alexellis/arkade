@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -28,8 +30,6 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	OpenFaaSlokiApp.Flags().StringP("namespace", "n", "default", "The namespace to install loki (default: default")
-	OpenFaaSlokiApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	OpenFaaSlokiApp.Flags().String("openfaas-namespace", "openfaas", "set the namespace that OpenFaaS is installed into")
 	OpenFaaSlokiApp.Flags().String("loki-url", "http://loki-stack.default:3100", "set the loki url (default http://loki-stack.default:3100)")
 	OpenFaaSlokiApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set grafana.enabled=true)")
@@ -37,7 +37,11 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 	OpenFaaSlokiApp.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		namespace, _ := OpenFaaSlokiApp.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err

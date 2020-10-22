@@ -9,7 +9,8 @@ import (
 	"net/http"
 	"os"
 	"path"
-	"strings"
+
+	"github.com/alexellis/arkade/pkg/commands"
 
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -34,16 +35,8 @@ func MakeInstallPortainer() *cobra.Command {
 			return err
 		}
 
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
-		arch := k8s.GetNodeArchitecture()
-
-		_, err := k8s.KubectlTask("create", "ns",
-			"portainer")
-		if err != nil {
-			if !strings.Contains(err.Error(), "exists") {
-				return err
-			}
+		if err := commands.CreateNamespace("portainer"); err != nil {
+			return err
 		}
 
 		req, err := http.NewRequest(http.MethodGet,

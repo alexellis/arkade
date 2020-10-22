@@ -4,8 +4,11 @@
 package apps
 
 import (
+	"fmt"
 	"os"
 	"path"
+
+	"github.com/alexellis/arkade/pkg/commands"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
@@ -25,16 +28,17 @@ func MakeInstallLoki() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	lokiApp.Flags().StringP("namespace", "n", "default", "The namespace to install loki (default: default")
-	lokiApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	lokiApp.Flags().Bool("persistence", false, "Use a 10Gi Persistent Volume to store data")
 	lokiApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set grafana.enabled=true)")
 	lokiApp.Flags().Bool("grafana", false, "Install Grafana alongside Loki (default: false)")
 
 	lokiApp.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		log.Println(kubeConfigPath)
-		namespace, _ := lokiApp.Flags().GetString("namespace")
+		fmt.Println(kubeConfigPath)
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err

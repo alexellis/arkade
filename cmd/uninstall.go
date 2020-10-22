@@ -19,10 +19,7 @@ func MakeUninstall() *cobra.Command {
 		SilenceUsage: false,
 	}
 
-	command.PersistentFlags().String("kubeconfig", "kubeconfig", "Local path for your kubeconfig file")
-	command.PersistentFlags().Bool("wait", false, "If we should wait for the resource to be ready before returning (helm3 only, default false)")
-
-	command.RunE = func(command *cobra.Command, args []string) error {
+	command.Run = func(command *cobra.Command, args []string) {
 
 		if len(args) == 0 {
 			fmt.Printf(
@@ -64,10 +61,8 @@ You can seek out technical support from the OpenFaaS community
 at https://slack.openfaas.io/
 
 `)
-			return nil
 		}
 
-		return nil
 	}
 
 	return command

@@ -7,6 +7,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -25,14 +27,16 @@ func MakeInstallNATSConnector() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	natsConnectorApp.Flags().StringP("namespace", "n", "openfaas", "The namespace to install NATS connector (default: openfaas")
-	natsConnectorApp.Flags().Bool("update-repo", true, "Update the helm repo")
 	natsConnectorApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set topics=nats-test,)")
 
 	natsConnectorApp.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		namespace, _ := natsConnectorApp.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(natsConnectorApp.Flags(), "openfaas")
+		if err != nil {
+			return err
+		}
+
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err

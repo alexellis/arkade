@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -29,8 +31,6 @@ flag and the ingress-nginx docs for more info`,
 		SilenceUsage: true,
 	}
 
-	nginx.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
 	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
@@ -46,7 +46,10 @@ flag and the ingress-nginx docs for more info`,
 
 		wait, _ := command.Flags().GetBool("wait")
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
 
 		clientArch, clientOS := env.GetClientArch()
 

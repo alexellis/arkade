@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -28,22 +30,18 @@ func MakeInstallJenkins() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	jenkins.Flags().Bool("update-repo", true, "Update the helm repo")
-	jenkins.Flags().String("namespace", "default", "Kubernetes namespace for the application")
 	jenkins.Flags().Bool("persistence", false, "Enable persistence")
 	jenkins.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	jenkins.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, _ := command.Flags().GetBool("wait")
 
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
 		updateRepo, _ := jenkins.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
 
@@ -60,7 +58,13 @@ func MakeInstallJenkins() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := jenkins.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "default")
+		if err != nil {
+			return err
+		}
+		if err := commands.CreateNamespace(namespace); err != nil {
+			return err
+		}
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
@@ -92,7 +96,7 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/jenkins", ns,
+		err = helm.Helm3Upgrade("stable/jenkins", namespace,
 			"values.yaml",
 			defaultVersion,
 			overrides,

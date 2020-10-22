@@ -68,7 +68,6 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		staging, _ := command.Flags().GetBool("staging")
 		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")

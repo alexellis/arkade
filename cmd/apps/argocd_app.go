@@ -5,8 +5,8 @@ package apps
 
 import (
 	"fmt"
-	"strings"
 
+	"github.com/alexellis/arkade/pkg/commands"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -30,22 +30,24 @@ func MakeInstallArgoCD() *cobra.Command {
 			return err
 		}
 
+		namespace, err := commands.GetNamespace(command.Flags(), "argocd")
+		if err != nil {
+			return err
+		}
+
 		arch := k8s.GetNodeArchitecture()
 
 		if arch != IntelArch {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		_, err := k8s.KubectlTask("create", "ns",
-			"argocd")
+		err = commands.CreateNamespace(namespace)
 		if err != nil {
-			if !strings.Contains(err.Error(), "exists") {
-				return err
-			}
+			return nil
 		}
 
 		_, err = k8s.KubectlTask("apply", "-f",
-			"https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml", "-n", "argocd")
+			"https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml", "-n", namespace)
 		if err != nil {
 			return err
 		}

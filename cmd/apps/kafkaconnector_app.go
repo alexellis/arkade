@@ -8,6 +8,8 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/commands"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
@@ -28,8 +30,6 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP("namespace", "n", "openfaas", "The namespace used for installation")
-	command.Flags().Bool("update-repo", true, "Update the helm repo")
 	command.Flags().StringP("topics", "t", "faas-request", "The topics for the connector to bind to")
 	command.Flags().String("broker-host", "kafka", "The host for the Kafka broker")
 	command.Flags().StringArray("set", []string{},
@@ -45,7 +45,10 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		namespace, _ := command.Flags().GetString("namespace")
+		namespace, err := commands.GetNamespace(command.Flags(), "openfaas")
+		if err != nil {
+			return err
+		}
 
 		clientArch, clientOS := env.GetClientArch()
 
