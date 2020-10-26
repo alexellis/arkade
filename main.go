@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/alexellis/arkade/cmd"
+	"github.com/alexellis/arkade/cmd/venafi"
 	"github.com/spf13/cobra"
 )
 
@@ -33,6 +34,8 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeGet())
 	rootCmd.AddCommand(cmd.MakeUninstall())
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
+
+	rootCmd.AddCommand(venafi.MakeVenafi())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
