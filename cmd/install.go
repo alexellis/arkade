@@ -99,6 +99,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["registry-creds"] = NewArkadeApp(apps.MakeInstallRegistryCredsOperator, apps.RegistryCredsOperatorInfoMsg)
 	arkadeApps["gitea"] = NewArkadeApp(apps.MakeInstallGitea, apps.GiteaInfoMsg)
 	arkadeApps["kong-ingress"] = NewArkadeApp(apps.MakeInstallKongIngress, apps.KongIngressInfoMsg)
+	arkadeApps["sealed-secret"] = NewArkadeApp(apps.MakeInstallSealedSecrets, apps.SealedSecretsInfoMsg)
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
 	return arkadeApps
