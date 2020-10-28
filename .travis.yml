@@ -1,4 +1,6 @@
 sudo: required
+services:
+- docker
 language: go
 go:
 - 1.13.x
