@@ -106,7 +106,28 @@ func Test_DownloadKubectx(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.0/kubectx"
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
+
+func Test_DownloadKubens(t *testing.T) {
+	tools := MakeTools()
+	name := "kubens"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("linux", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
