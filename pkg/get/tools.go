@@ -74,9 +74,18 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:       "ahmetb",
 			Repo:        "kubectx",
 			Name:        "kubectx",
-			Version:     "v0.9.0",
+			Version:     "v0.9.1",
 			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
-			// Author recommends to keep using Bash version in this release https://github.com/ahmetb/kubectx/releases/tag/v0.9.0
+			NoExtension: true,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "ahmetb",
+			Repo:        "kubectx",
+			Name:        "kubens",
+			Version:     "v0.9.1",
+			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubens`,
 			NoExtension: true,
 		})
 
