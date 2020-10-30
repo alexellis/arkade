@@ -848,3 +848,40 @@ func Test_DownloadBuildx(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadHelmfile(t *testing.T) {
+	tools := MakeTools()
+	name := "helmfile"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.132.1"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/roboll/helmfile/releases/download/v0.132.1/helmfile_windows_amd64.exe`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/roboll/helmfile/releases/download/v0.132.1/helmfile_linux_amd64`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/roboll/helmfile/releases/download/v0.132.1/helmfile_darwin_amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
