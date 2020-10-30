@@ -449,5 +449,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Ve
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{.Version}}-{{$osStr}}.{{$extStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:          "docker",
+			Repo:           "buildx",
+			Name:           "buildx",
+			Version:        "0.4.2",
+			BinaryTemplate: `buildx`,
+			URLTemplate: `
+		
+				{{$extStr := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$extStr = ".exe"}}
+				{{- end -}}
+		
+				{{$osStr := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osStr = "darwin"}}
+				{{- end -}}
+		
+				{{$archStr := .Arch}}
+				{{- if eq .Arch "armv6l" -}}
+				{{$archStr = "arm-v6"}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{$archStr = "arm-v7"}}
+				{{- else if eq .Arch "x86_64" -}}
+				{{$archStr = "amd64"}}
+				{{- end -}}		
+		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-v{{.Version}}.{{$osStr}}-{{$archStr}}{{$extStr}}`,
+		})
+
 	return tools
 }
