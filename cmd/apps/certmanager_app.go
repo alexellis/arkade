@@ -101,8 +101,12 @@ func MakeInstallCertManager() *cobra.Command {
 			WithHelmURL("https://charts.jetstack.io").
 			WithOverrides(overrides).
 			WithWait(wait).
-			WithHelmUpdateRepo(updateRepo).
-			WithKubeconfigPath(kubeConfigPath)
+			WithHelmUpdateRepo(updateRepo)
+
+		if command.Flags().Changed("kubeconfig") {
+			kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+			certmanagerOptions.WithKubeconfigPath(kubeConfigPath)
+		}
 
 		_, err = apps.MakeInstallChart(certmanagerOptions)
 		if err != nil {
