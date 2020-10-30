@@ -28,7 +28,7 @@ func getTool(name string, tools []Tool) *Tool {
 	return tool
 }
 
-func Test_DownloadDarwin(t *testing.T) {
+func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
 	var tool *Tool
