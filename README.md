@@ -70,6 +70,7 @@ arkade get
           civo
           terraform
           buildx
+          helmfile
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
