@@ -5,6 +5,11 @@ package apps
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"path"
+	"strings"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -14,10 +19,6 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 	"golang.org/x/mod/semver"
-	"log"
-	"os"
-	"path"
-	"strings"
 )
 
 func MakeInstallCertManager() *cobra.Command {
@@ -30,7 +31,7 @@ func MakeInstallCertManager() *cobra.Command {
 	}
 
 	certManager.Flags().StringP("namespace", "n", "cert-manager", "The namespace to install cert-manager")
-	certManager.Flags().StringP("version", "v", "v0.15.2", "The version of cert-manager to install, has to be >=0.15.0")
+	certManager.Flags().StringP("version", "v", "v1.0.4", "The version of cert-manager to install, has to be >=0.15.0")
 	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
