@@ -806,3 +806,45 @@ func Test_DownloadPack(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadBuildx(t *testing.T) {
+	tools := MakeTools()
+	name := "buildx"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.4.2"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.windows-amd64.exe`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.darwin-amd64`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-arm-v7`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

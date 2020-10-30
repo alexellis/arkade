@@ -69,6 +69,7 @@ arkade get
           k9s
           civo
           terraform
+          buildx
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
