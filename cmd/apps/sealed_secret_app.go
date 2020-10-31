@@ -9,7 +9,9 @@ import (
 	"os"
 	"path"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -33,10 +35,6 @@ func MakeInstallSealedSecrets() *cobra.Command {
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		wait, _ := command.Flags().GetBool("wait")
 
@@ -62,22 +60,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", updateRepo)
-		if err != nil {
-			return fmt.Errorf("unable to add repo %s", err)
-		}
-
-		err = helm.FetchChart("stable/sealed-secrets", defaultVersion)
-
-		if err != nil {
-			return fmt.Errorf("unable fetch chart %s", err)
-		}
 
 		overrides := map[string]string{}
 
@@ -90,11 +73,26 @@ func MakeInstallSealedSecrets() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/sealed-secrets",
-			namespace, "values.yaml", defaultVersion, overrides, wait)
+		sealedSecretAppOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("stable/sealed-secrets").
+			WithHelmURL("https://kubernetes-charts.storage.googleapis.com").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo).
+			WithWait(wait).
+			WithKubeconfigPath(kubeConfigPath)
+
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
-			return fmt.Errorf("unable to sealed secret chart with helm %s", err)
+			return err
 		}
+
+		_, err = apps.MakeInstallChart(sealedSecretAppOptions)
+		if err != nil {
+			return err
+		}
+
 		fmt.Println(SealedSecretsPostInstallMsg)
 		return nil
 	}
