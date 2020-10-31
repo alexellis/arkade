@@ -40,14 +40,10 @@ func MakeInstallPostgresql() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	postgresql.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-		updateRepo, _ := postgresql.Flags().GetBool("update-repo")
-
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+
+		updateRepo, _ := postgresql.Flags().GetBool("update-repo")
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
@@ -99,7 +95,8 @@ func MakeInstallPostgresql() *cobra.Command {
 			WithHelmRepo("bitnami/postgresql").
 			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
-			WithHelmUpdateRepo(updateRepo)
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

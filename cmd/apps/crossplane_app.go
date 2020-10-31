@@ -34,13 +34,10 @@ schedule workloads to any Kubernetes cluster`,
 
 	crossplane.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		namespace, _ := command.Flags().GetString("namespace")
 

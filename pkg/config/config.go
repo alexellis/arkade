@@ -59,3 +59,18 @@ func MergeFlags(existingMap map[string]string, setOverrides []string) error {
 	}
 	return nil
 }
+
+func SetKubeconfig(kubeconfigPath string) error {
+	// Favour explicitly set kubeconfig
+	if len(kubeconfigPath) > 0 {
+		err := os.Setenv("KUBECONFIG", kubeconfigPath)
+		if err != nil {
+			return err
+		}
+	}
+
+	kubeconfig := GetDefaultKubeconfig()
+
+	fmt.Printf("Using Kubeconfig: %s\n", kubeconfig)
+	return nil
+}

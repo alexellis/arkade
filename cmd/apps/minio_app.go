@@ -40,15 +40,14 @@ func MakeInstallMinio() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	minio.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
 		wait, _ := command.Flags().GetBool("wait")
 
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
 		updateRepo, _ := minio.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)

@@ -1,12 +1,18 @@
 package apps
 
 import (
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 )
 
 func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, error) {
 	result := &types.InstallerOutput{}
+
+	if err := config.SetKubeconfig(options.KubeconfigPath); err != nil {
+		return nil, err
+	}
+
 	err := helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
 	if err != nil {
 		return result, err

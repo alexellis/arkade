@@ -36,7 +36,10 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
-
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
 		userPath, err := config.InitUserDir()
 		if err != nil {
 			return err
@@ -80,12 +83,8 @@ flag and the ingress-nginx docs for more info`,
 			WithHelmRepo("ingress-nginx/ingress-nginx").
 			WithHelmURL("https://kubernetes.github.io/ingress-nginx").
 			WithOverrides(overrides).
-			WithWait(wait)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-			nginxOptions.WithKubeconfigPath(kubeConfigPath)
-		}
+			WithWait(wait).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

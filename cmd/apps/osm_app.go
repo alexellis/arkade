@@ -34,10 +34,9 @@ service mesh created by Microsoft Azure.`,
 	osm.Flags().StringP("namespace", "n", "osm-system", "Give a specific mesh namespace override")
 
 	osm.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 

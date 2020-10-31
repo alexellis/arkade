@@ -33,11 +33,7 @@ func MakeInstallCronConnector() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
@@ -81,7 +77,8 @@ func MakeInstallCronConnector() *cobra.Command {
 			WithHelmRepo("openfaas/cron-connector").
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithOverrides(overrides).
-			WithHelmUpdateRepo(updateRepo)
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

@@ -35,10 +35,9 @@ and ARM64 clusters.`,
 	command.Flags().Bool("from-env", false, "Read flags from the environment instead of flags, prefixed with DOCKER_, i.e. DOCKER_EMAIL")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 

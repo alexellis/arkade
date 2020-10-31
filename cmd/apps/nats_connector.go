@@ -31,6 +31,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 	natsConnectorApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set topics=nats-test,)")
 
 	natsConnectorApp.RunE = func(command *cobra.Command, args []string) error {
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		namespace, _ := natsConnectorApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -61,12 +62,8 @@ func MakeInstallNATSConnector() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("openfaas/nats-connector").
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
-			WithOverrides(overrides)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := command.Flags().GetString("kubeconfig")
-			natsConnectorOptions.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

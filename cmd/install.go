@@ -31,7 +31,7 @@ command.`,
 		SilenceUsage: false,
 	}
 
-	command.PersistentFlags().String("kubeconfig", "kubeconfig", "Local path for your kubeconfig file")
+	command.PersistentFlags().String("kubeconfig", "", "Local path for your kubeconfig file")
 	command.PersistentFlags().Bool("wait", false, "If we should wait for the resource to be ready before returning (helm3 only, default false)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
