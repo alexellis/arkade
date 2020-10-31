@@ -68,7 +68,6 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		staging, _ := command.Flags().GetBool("staging")
 		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")
@@ -244,7 +243,7 @@ spec:
     - {{.IngressDomain}}
     secretName: {{.IngressName}}
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 {{- if .ClusterIssuer }}
 kind: ClusterIssuer
 {{- else }}
@@ -262,6 +261,7 @@ spec:
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
-    - http01:
+    - selector: {}
+      http01:
         ingress:
           class: {{.IngressClass}}`
