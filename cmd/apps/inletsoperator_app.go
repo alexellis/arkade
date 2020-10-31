@@ -47,14 +47,12 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		wait, _ := command.Flags().GetBool("wait")
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
 
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+		wait, _ := command.Flags().GetBool("wait")
 
 		namespace, _ := command.Flags().GetString("namespace")
 

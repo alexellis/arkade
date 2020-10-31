@@ -24,12 +24,10 @@ func MakeInstallTekton() *cobra.Command {
 	}
 
 	tekton.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
-
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()

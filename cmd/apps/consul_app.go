@@ -7,13 +7,14 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/types"
 	"log"
 	"os"
 	"path"
 	"strconv"
 	"strings"
+
+	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -118,18 +119,16 @@ func MakeInstallConsul() *cobra.Command {
 			return err
 		}
 
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+
 		consulOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("hashicorp/consul").
 			WithHelmURL("https://helm.releases.hashicorp.com").
 			WithOverrides(overrides).
-			WithHelmUpdateRepo(updateRepo)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := command.Flags().GetString("kubeconfig")
-			consulOptions.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

@@ -48,6 +48,11 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 	registryIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 
 	registryIngress.RunE = func(command *cobra.Command, args []string) error {
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
+		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		email, _ := command.Flags().GetString("email")
 		domain, _ := command.Flags().GetString("domain")
@@ -62,14 +67,6 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 		if ingressClass == "" {
 			return errors.New("--ingress-class must be set")
 		}
-
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		staging, _ := registryIngress.Flags().GetBool("staging")
 		yamlBytes, templateErr := buildRegistryYAML(domain, email, ingressClass, namespace, maxSize, staging)

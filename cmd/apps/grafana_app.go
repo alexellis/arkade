@@ -36,6 +36,10 @@ func MakeInstallGrafana() *cobra.Command {
 		const chartVersion = "5.0.4"
 
 		// Get all flags
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
 		wait, _ := command.Flags().GetBool("wait")
 		persistence, _ := command.Flags().GetBool("persistence")
 		namespace, _ := command.Flags().GetString("namespace")

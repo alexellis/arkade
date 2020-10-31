@@ -33,7 +33,8 @@ func MakeInstallLoki() *cobra.Command {
 	lokiApp.Flags().Bool("grafana", false, "Install Grafana alongside Loki (default: false)")
 
 	lokiApp.RunE = func(command *cobra.Command, args []string) error {
-
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		log.Println(kubeConfigPath)
 		namespace, _ := lokiApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -73,12 +74,8 @@ func MakeInstallLoki() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("loki/loki-stack").
 			WithHelmURL("https://grafana.github.io/loki/charts").
-			WithOverrides(overrides)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := command.Flags().GetString("kubeconfig")
-			lokiOptions.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
