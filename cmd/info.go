@@ -22,6 +22,14 @@ arkade info mongodb
 arkade info
 arkade info --help`,
 		SilenceUsage: true,
+		ValidArgsFunction: func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			apps := GetApps()
+			keys := make([]string, 0, len(apps))
+			for k := range apps {
+				keys = append(keys, k)
+			}
+			return keys, cobra.ShellCompDirectiveDefault
+		},
 	}
 
 	info.RunE = func(cmd *cobra.Command, args []string) error {
@@ -44,7 +52,6 @@ arkade info --help`,
 		return nil
 
 	}
-
 	return info
 
 }

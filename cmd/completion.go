@@ -44,7 +44,7 @@ Additionally, you may want to output the completion to a file and source in your
 
 	completion.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			fmt.Println(completionCmd)
+			fmt.Print(completionCmd)
 			return nil
 		}
 
@@ -52,15 +52,17 @@ Additionally, you may want to output the completion to a file and source in your
 			return fmt.Errorf(completionCmd)
 		}
 
-		shellName := args[0]
-
-		switch shellName {
+		switch args[0] {
 		case "bash":
-			rootCmd(cmd).GenBashCompletion(os.Stdout)
+			cmd.Root().GenBashCompletion(os.Stdout)
 		case "zsh":
 			runCompletionZsh(cmd, os.Stdout)
+		case "fish":
+			cmd.Root().GenFishCompletion(os.Stdout, true)
+		case "powershell":
+			cmd.Root().GenPowerShellCompletion(os.Stdout)
 		default:
-			return fmt.Errorf("shell completion not supported for shell: %s", shellName)
+			return fmt.Errorf("shell completion not supported for shell: %s", args[0])
 		}
 
 		return nil
