@@ -4,6 +4,10 @@
 package apps
 
 import (
+	"log"
+	"os"
+	"path"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -11,9 +15,6 @@ import (
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
-	"log"
-	"os"
-	"path"
 )
 
 func MakeInstallGitLab() *cobra.Command {
@@ -45,6 +46,7 @@ func MakeInstallGitLab() *cobra.Command {
 	gitlabApp.RunE = func(cmd *cobra.Command, args []string) error {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
+		kubeConfigPath, _ := cmd.Flags().GetString("kubeconfig")
 
 		if err != nil {
 			return err
@@ -90,12 +92,8 @@ func MakeInstallGitLab() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("gitlab/gitlab").
 			WithHelmURL("https://charts.gitlab.io").
-			WithOverrides(overrides)
-
-		if cmd.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := cmd.Flags().GetString("kubeconfig")
-			options.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_ = os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

@@ -54,17 +54,17 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
 		wait, err := command.Flags().GetBool("wait")
 		if err != nil {
 			return err
 		}
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
-
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
+		os.Setenv("KUBECONFIG", kubeConfigPath)
 		namespace, _ := command.Flags().GetString("namespace")
 
 		if namespace != "openfaas" {

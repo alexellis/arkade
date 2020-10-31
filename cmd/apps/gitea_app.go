@@ -41,14 +41,9 @@ func MakeInstallGitea() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	gitea.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
 		updateRepo, _ := gitea.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
@@ -110,7 +105,8 @@ func MakeInstallGitea() *cobra.Command {
 			WithHelmRepo("gitea-charts/gitea").
 			WithHelmURL("https://dl.gitea.io/charts").
 			WithOverrides(overrides).
-			WithHelmUpdateRepo(updateRepo)
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
@@ -118,7 +114,7 @@ func MakeInstallGitea() *cobra.Command {
 		}
 
 		if _, found := overrides["gitea.config.database.HOST"]; !found && arch != IntelArch {
-			return fmt.Errorf("If installing on ARM platform you'll need to use an external database")
+			return fmt.Errorf("if installing on ARM platform you'll need to use an external database")
 		}
 
 		_, err = apps.MakeInstallChart(giteaAppOptions)

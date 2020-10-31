@@ -37,15 +37,9 @@ func MakeInstallKafkaConnector() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -101,7 +95,8 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			WithHelmRepo("openfaas/kafka-connector").
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithOverrides(overrides).
-			WithHelmUpdateRepo(updateRepo)
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

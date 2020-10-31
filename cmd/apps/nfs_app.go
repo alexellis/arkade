@@ -35,6 +35,7 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 	nfsProvisionerApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set =true)")
 
 	nfsProvisionerApp.RunE = func(command *cobra.Command, args []string) error {
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		namespace, _ := nfsProvisionerApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -86,12 +87,8 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("stable/nfs-client-provisioner").
 			WithHelmURL("https://kubernetes-charts.storage.googleapis.com").
-			WithOverrides(overrides)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := command.Flags().GetString("kubeconfig")
-			nfsProvisionerOptions.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

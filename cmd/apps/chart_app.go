@@ -55,13 +55,10 @@ before using the generic helm chart installer command.`,
 			return fmt.Errorf("--repo-name required")
 		}
 
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		namespace, _ := command.Flags().GetString("namespace")
 

@@ -32,8 +32,8 @@ func MakeInstallRedis() *cobra.Command {
 	redis.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	redis.RunE = func(command *cobra.Command, args []string) error {
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
-		const chartVersion = "10.5.7"
 		namespace, _ := command.Flags().GetString("namespace")
 		wait, _ := command.Flags().GetBool("wait")
 		updateRepo, _ := command.Flags().GetBool("update-repo")
@@ -89,7 +89,8 @@ func MakeInstallRedis() *cobra.Command {
 			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
 			WithWait(wait).
-			WithHelmUpdateRepo(updateRepo)
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {

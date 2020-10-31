@@ -36,6 +36,7 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 	OpenFaaSlokiApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set grafana.enabled=true)")
 
 	OpenFaaSlokiApp.RunE = func(command *cobra.Command, args []string) error {
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		namespace, _ := OpenFaaSlokiApp.Flags().GetString("namespace")
 		userPath, err := config.InitUserDir()
@@ -70,12 +71,8 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("lucas/openfaas-loki").
 			WithHelmURL("https://lucasroesler.com/openfaas-loki").
-			WithOverrides(overrides)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeconfigPath, _ := command.Flags().GetString("kubeconfig")
-			lokiOptions.WithKubeconfigPath(kubeconfigPath)
-		}
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 

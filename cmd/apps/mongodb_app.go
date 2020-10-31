@@ -34,15 +34,12 @@ func MakeInstallMongoDB() *cobra.Command {
 	command.Flags().Bool("persistence", false, "Create and bind a persistent volume, not recommended for development")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
-
-		wait, _ := command.Flags().GetBool("wait")
-		kubeConfigPath := config.GetDefaultKubeconfig()
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
-		}
-
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
+		wait, _ := command.Flags().GetBool("wait")
 
 		namespace, _ := command.Flags().GetString("namespace")
 

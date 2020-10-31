@@ -10,8 +10,6 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
-	execute "github.com/alexellis/go-execute/pkg/v1"
-
 	"github.com/spf13/cobra"
 )
 
@@ -35,9 +33,9 @@ func MakeInstallTraefik2() *cobra.Command {
 
 	traefik2.RunE = func(command *cobra.Command, args []string) error {
 
-		kubeConfigPath := config.GetDefaultKubeconfig()
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
 		}
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
@@ -113,23 +111,6 @@ func MakeInstallTraefik2() *cobra.Command {
 	}
 
 	return traefik2
-}
-
-func installTraefik2(parts ...string) (execute.ExecResult, error) {
-
-	task := execute.ExecTask{
-		Command:     "helm",
-		Args:        parts,
-		StreamStdio: true,
-	}
-	res, err := task.Execute()
-	if err != nil {
-		return res, err
-	}
-	if res.ExitCode != 0 {
-		return res, fmt.Errorf("exit code %d, stderr: %s", res.ExitCode, res.Stderr)
-	}
-	return res, nil
 }
 
 const Traefik2InfoMsg = `# Get started at: https://docs.traefik.io/v2.0/
