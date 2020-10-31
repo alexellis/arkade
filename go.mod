@@ -8,8 +8,7 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/morikuni/aec v1.0.0
 	github.com/sethvargo/go-password v0.1.2
-	github.com/spf13/cobra v0.0.5
-	github.com/spf13/pflag v1.0.5 // indirect
+	github.com/spf13/cobra v1.1.1
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
 	golang.org/x/mod v0.3.0
 )
