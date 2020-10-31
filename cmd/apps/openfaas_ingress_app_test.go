@@ -35,7 +35,7 @@ spec:
     - openfaas.subdomain.example.com
     secretName: openfaas-gateway
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: letsencrypt-prod
@@ -47,7 +47,8 @@ spec:
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
-    - http01:
+    - selector: {}
+      http01:
         ingress:
           class: traefik`
 
@@ -82,7 +83,7 @@ spec:
     - openfaas.subdomain.example.com
     secretName: openfaas-gateway
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: letsencrypt-staging
@@ -94,7 +95,8 @@ spec:
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
-    - http01:
+    - selector: {}
+      http01:
         ingress:
           class: traefik`
 
@@ -129,7 +131,7 @@ spec:
     - openfaas.subdomain.example.com
     secretName: openfaas-gateway
 ---
-apiVersion: cert-manager.io/v1alpha2
+apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
   name: letsencrypt-prod
@@ -140,7 +142,8 @@ spec:
     privateKeySecretRef:
       name: example-issuer-account-key
     solvers:
-    - http01:
+    - selector: {}
+      http01:
         ingress:
           class: traefik`
 
