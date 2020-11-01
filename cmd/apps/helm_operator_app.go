@@ -35,11 +35,11 @@ func MakeInstallHelmOperator() *cobra.Command {
 
 	helmOperator.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
-
 		namespace, _ := command.Flags().GetString("namespace")
 		version, _ := command.Flags().GetString("version")
 		helm3, _ := command.Flags().GetBool("helm3")
 		updateRepo, _ := helmOperator.Flags().GetBool("update-repo")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		if !semver.IsValid(version) {
 			return fmt.Errorf("%q is not a valid semver version", version)
@@ -92,12 +92,8 @@ func MakeInstallHelmOperator() *cobra.Command {
 			WithHelmURL("https://charts.fluxcd.io").
 			WithOverrides(overrides).
 			WithWait(wait).
-			WithHelmUpdateRepo(updateRepo)
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-			installOptions.WithKubeconfigPath(kubeConfigPath)
-		}
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err = apps.MakeInstallChart(installOptions)
 		if err != nil {
