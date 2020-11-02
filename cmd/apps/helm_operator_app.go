@@ -37,7 +37,6 @@ func MakeInstallHelmOperator() *cobra.Command {
 		wait, _ := command.Flags().GetBool("wait")
 		namespace, _ := command.Flags().GetString("namespace")
 		version, _ := command.Flags().GetString("version")
-		helm3, _ := command.Flags().GetBool("helm3")
 		updateRepo, _ := helmOperator.Flags().GetBool("update-repo")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
@@ -68,9 +67,6 @@ func MakeInstallHelmOperator() *cobra.Command {
 		}
 
 		helmRepo := "fluxcd/helm-operator"
-		if !helm3 {
-			helmRepo = "helm-operator/rendered"
-		}
 
 		err = helm.FetchChart(helmRepo, defaultVersion)
 		if err != nil {
