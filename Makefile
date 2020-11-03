@@ -5,6 +5,7 @@ PLATFORM := $(shell ./hack/platform-tag.sh)
 SOURCE_DIRS = cmd pkg main.go
 
 .PHONY: all
+all: fmt build test dist
 
 .PHONY: build
 build:
