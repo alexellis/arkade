@@ -6,11 +6,7 @@ SOURCE_DIRS = cmd pkg main.go
 export GO111MODULE=on
 
 .PHONY: all
-<<<<<<< HEAD
-all: fmt build test dist
-=======
 all: gofmt test build dist hash
->>>>>>> Create hashes with releases
 
 .PHONY: build
 build:
@@ -36,4 +32,3 @@ dist:
 .PHONY: hash
 hash:
 	rm -rf bin/*.sha256 && ./hack/hashgen.sh
-
