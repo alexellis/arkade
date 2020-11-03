@@ -340,7 +340,7 @@ All commits must be signed-off as part of the [Developer Certificate of Origin (
 
 ### Join us on Slack
 
-Join `#contributors` at [https://slack.openfaas.io](https://slack.openfaas.io)
+Join `#contributors` at [slack.openfaas.io](https://slack.openfaas.io)
 
 ### License
 
