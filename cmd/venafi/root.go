@@ -4,8 +4,6 @@
 package venafi
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 )
 
@@ -13,22 +11,26 @@ func MakeVenafi() *cobra.Command {
 
 	command := &cobra.Command{
 		Use:   "venafi",
-		Short: "Sponsored Apps - Venafi",
-		Long: `Sponsored apps by Venafi.com. Venafi specialises in Machine Identity and is 
-the custodian of cert-manager`,
+		Short: "Sponsored Apps for Venafi",
+		Long: `Sponsored apps for Venafi.com. Venafi specialises in Machine Identity and 
+support for cert-manager.`,
 		Example: `  arkade venafi install [APP]
-  arkade venafi info [APP]
-  arkade venafi --help
-  arkade venafi install --help`,
+  arkade venafi info [APP]`,
 		SilenceUsage: true,
 	}
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
-		fmt.Println("No apps available yet")
+		return cmd.Usage()
 
-		return nil
+		// return nil
 
 	}
+
+	install := MakeInstall()
+	install.AddCommand(MakeCloudIssuer())
+	install.AddCommand(MakeTPPIssuer())
+	command.AddCommand(install)
+	command.AddCommand(MakeInfo())
 
 	return command
 }
