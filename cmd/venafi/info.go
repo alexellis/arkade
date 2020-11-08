@@ -20,7 +20,13 @@ func MakeInfo() *cobra.Command {
 		if len(args) == 0 {
 			return fmt.Errorf("give an app as an argument")
 		}
-		fmt.Printf("Info for your app: %s\n", args[0])
+
+		info := "None found."
+		if args[0] == "cloud-issuer" {
+			info = CloudIssuerInfo
+		}
+
+		fmt.Printf("Info for your app: %s\n\n%s\n\n", args[0], info)
 
 		return nil
 	}

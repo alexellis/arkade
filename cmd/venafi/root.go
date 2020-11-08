@@ -14,6 +14,7 @@ func MakeVenafi() *cobra.Command {
 		Short: "Sponsored Apps for Venafi",
 		Long: `Sponsored apps for Venafi.com. Venafi specialises in Machine Identity and 
 support for cert-manager.`,
+		Aliases: []string{"v"},
 		Example: `  arkade venafi install [APP]
   arkade venafi info [APP]`,
 		SilenceUsage: true,
@@ -21,9 +22,6 @@ support for cert-manager.`,
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		return cmd.Usage()
-
-		// return nil
-
 	}
 
 	install := MakeInstall()
