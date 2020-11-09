@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/types"
+
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
@@ -49,4 +51,32 @@ func Kubectl(parts ...string) error {
 			res.Stderr)
 	}
 	return nil
+}
+
+func CreateSecret(secret types.K8sSecret) error {
+	secretData := flattenSecretData(secret.KeyValues)
+
+	args := []string{"-n", secret.Namespace, "create", "secret", secret.Type, secret.Name}
+	args = append(args, secretData...)
+
+	res, secretErr := KubectlTask(args...)
+
+	if secretErr != nil {
+		return secretErr
+	}
+	if res.ExitCode != 0 {
+		fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
+	}
+
+	return nil
+}
+
+func flattenSecretData(data map[string]string) []string {
+	var output []string
+
+	for key, value := range data {
+		output = append(output, fmt.Sprintf("--from-literal=%s=%s", key, value))
+	}
+
+	return output
 }
