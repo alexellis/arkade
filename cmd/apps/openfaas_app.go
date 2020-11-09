@@ -11,6 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/types"
+
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
@@ -54,6 +57,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
+		openFaaSOptions := types.DefaultInstallOptions()
+
 		wait, err := command.Flags().GetBool("wait")
 		if err != nil {
 			return err
@@ -100,10 +105,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		err = helm.AddHelmRepo("openfaas", "https://openfaas.github.io/faas-netes/", updateRepo)
-		if err != nil {
-			return err
-		}
+		openFaaSOptions.WithHelmUpdateRepo(updateRepo)
 
 		_, err = k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml")
@@ -122,23 +124,13 @@ func MakeInstallOpenFaaS() *cobra.Command {
 					return err
 				}
 			}
-
-			res, secretErr := k8s.KubectlTask("-n", namespace, "create", "secret", "generic",
-				"basic-auth",
-				"--from-literal=basic-auth-user=admin",
-				`--from-literal=basic-auth-password=`+pass)
-
-			if secretErr != nil {
-				return secretErr
+			secretData := map[string]string{
+				"basic-auth-user":     "admin",
+				"basic-auth-password": pass,
 			}
-			if res.ExitCode != 0 {
-				fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
-			}
-		}
 
-		err = helm.FetchChart("openfaas/openfaas", defaultVersion)
-		if err != nil {
-			return err
+			basicAuthSecret := types.NewGenericSecret("basic-auth", namespace, secretData)
+			openFaaSOptions.WithSecret(basicAuthSecret)
 		}
 
 		overrides := map[string]string{}
@@ -209,13 +201,17 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("openfaas/openfaas", namespace,
-			"values"+valuesSuffix+".yaml",
-			"",
-			overrides,
-			wait)
+		openFaaSOptions.
+			WithKubeconfigPath(kubeConfigPath).
+			WithOverrides(overrides).
+			WithValuesFile(fmt.Sprintf("values%s.yaml", valuesSuffix)).
+			WithHelmURL("https://openfaas.github.io/faas-netes/").
+			WithHelmRepo("openfaas/openfaas").
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithWait(wait)
 
-		if err != nil {
+		if _, err := apps.MakeInstallChart(openFaaSOptions); err != nil {
 			return err
 		}
 
