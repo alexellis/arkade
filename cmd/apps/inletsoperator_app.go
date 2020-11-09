@@ -44,7 +44,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
-	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
+	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")

@@ -30,7 +30,7 @@ func MakeInstallMongoDB() *cobra.Command {
 	command.Flags().String("namespace", "default", "Namespace for the app")
 
 	command.Flags().StringArray("set", []string{},
-		"Use custom flags or override existing flags \n(example --set=mongodbUsername=admin)")
+		"Use custom flags or override existing flags \n(example --set mongodbUsername=admin)")
 	command.Flags().Bool("persistence", false, "Create and bind a persistent volume, not recommended for development")
 
 	command.RunE = func(command *cobra.Command, args []string) error {

@@ -33,7 +33,7 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
-	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
+	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")

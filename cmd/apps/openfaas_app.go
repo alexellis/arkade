@@ -54,7 +54,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.Flags().String("log-provider-url", "", "Set a log provider url for OpenFaaS")
 
-	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
+	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
