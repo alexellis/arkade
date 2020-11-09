@@ -1,0 +1,36 @@
+package venafi
+
+import (
+	"bytes"
+	"html/template"
+	"io/ioutil"
+	"os"
+	"path"
+)
+
+func writeFile(name string, data []byte) (string, error) {
+	d := os.TempDir()
+	p := path.Join(d, "issuer.yaml")
+
+	err := ioutil.WriteFile(p, data, os.ModePerm)
+
+	return p, err
+}
+
+func templateManifest(templateSt string, data interface{}) ([]byte, error) {
+	tmpl, err := template.New("yaml").Parse(templateSt)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var tpl bytes.Buffer
+
+	err = tmpl.Execute(&tpl, data)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return tpl.Bytes(), err
+}
