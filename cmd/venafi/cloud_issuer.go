@@ -1,13 +1,8 @@
 package venafi
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
-	"os"
-	"path"
 	"strings"
-	"text/template"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/spf13/cobra"
@@ -29,6 +24,7 @@ https://www.venafi.com/venaficloud/devopsaccelerate`,
 		SilenceUsage: true,
 	}
 
+	command.Flags().Bool("cluster-issuer", false, "Use a ClusterIssue instead of an Issuer")
 	command.Flags().String("secret", "", "Your Venafi cloud secret")
 	command.Flags().StringP("secret-file", "f", "", "Your Venafi cloud secret from a file")
 	command.Flags().String("namespace", "default", "Namespace for the issuer")
@@ -37,6 +33,10 @@ https://www.venafi.com/venaficloud/devopsaccelerate`,
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		name, err := command.Flags().GetString("name")
+		if err != nil {
+			return err
+		}
+		clusterIssuer, err := command.Flags().GetBool("cluster-issuer")
 		if err != nil {
 			return err
 		}
@@ -53,11 +53,10 @@ https://www.venafi.com/venaficloud/devopsaccelerate`,
 		if len(zone) == 0 {
 			return fmt.Errorf("a zone is required")
 		}
-
-		// 	kubectl create secret generic \
-		//    cloud-secret \
-		//    --namespace='NAMESPACE OF YOUR ISSUER RESOURCE' \
-		//    --from-literal=apikey='YOUR_CLOUD_API_KEY_HERE'
+		kind := "Issuer"
+		if clusterIssuer {
+			kind = "ClusterIssuer"
+		}
 
 		tokenFileName, _ := command.Flags().GetString("secret-file")
 		tokenString, _ := command.Flags().GetString("secret")
@@ -79,6 +78,7 @@ Namespace: %s
 Zone: %s
 
 `, name, namespace, zone)
+
 		clusterSecretName := name + "-secret"
 		res, err := k8s.KubectlTask("create", "secret", "generic",
 			clusterSecretName,
@@ -93,35 +93,23 @@ Zone: %s
 			return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 		}
 
-		tmpl, err := template.New("yaml").Parse(issuerTemplate)
-
-		if err != nil {
-			return err
-		}
-
-		var tpl bytes.Buffer
-
-		err = tmpl.Execute(&tpl, struct {
+		manifest, err := templateManifest(cloudIssuerTemplate, struct {
 			Name      string
 			Namespace string
 			Zone      string
+			Kind      string
 		}{
 			Name:      name,
 			Namespace: namespace,
 			Zone:      zone,
+			Kind:      kind,
 		})
 
 		if err != nil {
 			return err
 		}
 
-		d := os.TempDir()
-		p := path.Join(d, "issuer.yaml")
-
-		err = ioutil.WriteFile(p, tpl.Bytes(), os.ModePerm)
-		if err != nil {
-			return err
-		}
+		p, err := writeFile("issuer.yaml", manifest)
 
 		res, err = k8s.KubectlTask("apply", "-f", p)
 
@@ -156,11 +144,13 @@ kubectl get issuer name -n namespace -o wide
 # Find out how to issue a certificate with cert-manager:
 # https://cert-manager.io/docs/usage/certificate/`
 
-const issuerTemplate = `apiVersion: cert-manager.io/v1
-kind: Issuer
+const cloudIssuerTemplate = `apiVersion: cert-manager.io/v1
+kind: {{.Kind}}
 metadata:
   name: {{.Name}}
+{{- if eq .Kind "Issuer" }}
   namespace: {{.Namespace}}
+{{- end }}
 spec:
   venafi:
     zone: "{{.Zone}}"
