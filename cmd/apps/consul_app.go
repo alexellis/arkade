@@ -42,7 +42,7 @@ func MakeInstallConsul() *cobra.Command {
 	consul.Flags().Bool("enable-gossip-encryption", true, "If true, Consul's gossip encryption is enabled")
 	consul.Flags().String("gossip-encryption-key", "", "The gossip encryption key; when empty, a new, random key is generated")
 	consul.Flags().Bool("manage-system-acls", true, "If true, the ACL tokens and policies for all Consul and consul-k8s components will automatically be managed")
-	consul.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=image=org/repo:tag)")
+	consul.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	consul.RunE = func(command *cobra.Command, args []string) error {
 		updateRepo, _ := consul.Flags().GetBool("update-repo")

@@ -33,7 +33,7 @@ func MakeInstallIstio() *cobra.Command {
 	istio.Flags().Bool("init", true, "Run the Istio init to add CRDs etc")
 
 	istio.Flags().StringArray("set", []string{},
-		"Use custom flags or override existing flags \n(example --set=prometheus.enabled=false)")
+		"Use custom flags or override existing flags \n(example --set prometheus.enabled=false)")
 
 	istio.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")

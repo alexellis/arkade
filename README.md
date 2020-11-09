@@ -160,7 +160,7 @@ Flags:
 You can also set helm overrides, for apps which use helm via `--set`
 
 ```bash
-ark install openfaas --set=faasIdler.dryRun=false
+ark install openfaas --set faasIdler.dryRun=false
 ```
 
 After installation, an info message will be printed with help for usage, you can get back to this at any time via:

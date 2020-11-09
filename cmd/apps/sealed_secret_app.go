@@ -29,7 +29,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 	command.Flags().String("namespace", "default", "Namespace for the app")
 
 	command.Flags().StringArray("set", []string{},
-		"Use custom flags or override existing flags \n(example --set=secretName=secret-data)")
+		"Use custom flags or override existing flags \n(example --set secretName=secret-data)")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
