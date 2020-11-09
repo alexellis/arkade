@@ -8,6 +8,14 @@ type InstallerOptions struct {
 	NodeArch       string
 	Helm           *HelmConfig
 	Verbose        bool
+	Secrets        []K8sSecret
+}
+
+type K8sSecret struct {
+	Type      string
+	Name      string
+	KeyValues map[string]string
+	Namespace string
 }
 
 type HelmConfig struct {
@@ -69,6 +77,16 @@ func (o *InstallerOptions) WithOverrides(overrides map[string]string) *Installer
 	return o
 }
 
+func (o *InstallerOptions) WithValuesFile(filename string) *InstallerOptions {
+	o.Helm.ValuesFile = filename
+	return o
+}
+
+func (o *InstallerOptions) WithSecret(secret K8sSecret) *InstallerOptions {
+	o.Secrets = append(o.Secrets, secret)
+	return o
+}
+
 func DefaultInstallOptions() *InstallerOptions {
 	return &InstallerOptions{
 		Namespace:      "default",
@@ -85,3 +103,14 @@ func DefaultInstallOptions() *InstallerOptions {
 		Verbose: false,
 	}
 }
+
+func NewGenericSecret(name, namespace string, secretData map[string]string) K8sSecret {
+	return K8sSecret{
+		Type:      KubernetesGenericSecret,
+		Name:      name,
+		Namespace: namespace,
+		KeyValues: secretData,
+	}
+}
+
+const KubernetesGenericSecret = "generic"
