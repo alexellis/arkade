@@ -12,10 +12,16 @@ type InstallerOptions struct {
 }
 
 type K8sSecret struct {
-	Type      string
-	Name      string
-	KeyValues map[string]string
-	Namespace string
+	Type       string
+	Name       string
+	SecretData []SecretsData
+	Namespace  string
+}
+
+type SecretsData struct {
+	Type  string // file or literal
+	Key   string
+	Value string
 }
 
 type HelmConfig struct {
@@ -104,13 +110,15 @@ func DefaultInstallOptions() *InstallerOptions {
 	}
 }
 
-func NewGenericSecret(name, namespace string, secretData map[string]string) K8sSecret {
+func NewGenericSecret(name, namespace string, secretData []SecretsData) K8sSecret {
 	return K8sSecret{
-		Type:      KubernetesGenericSecret,
-		Name:      name,
-		Namespace: namespace,
-		KeyValues: secretData,
+		Type:       KubernetesGenericSecret,
+		Name:       name,
+		Namespace:  namespace,
+		SecretData: secretData,
 	}
 }
 
 const KubernetesGenericSecret = "generic"
+const StringLiteralSecret = "string-literal"
+const FromFileSecret = "from-file"

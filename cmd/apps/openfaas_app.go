@@ -57,7 +57,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set=gateway.replicas=2)")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
-		openFaaSOptions := types.DefaultInstallOptions()
+		appOpts := types.DefaultInstallOptions()
 
 		wait, err := command.Flags().GetBool("wait")
 		if err != nil {
@@ -105,7 +105,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		openFaaSOptions.WithHelmUpdateRepo(updateRepo)
+		appOpts.WithHelmUpdateRepo(updateRepo)
 
 		_, err = k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml")
@@ -124,13 +124,13 @@ func MakeInstallOpenFaaS() *cobra.Command {
 					return err
 				}
 			}
-			secretData := map[string]string{
-				"basic-auth-user":     "admin",
-				"basic-auth-password": pass,
+			secretData := []types.SecretsData{
+				{Type: types.StringLiteralSecret, Key: "basic-auth-user", Value: "admin"},
+				{Type: types.StringLiteralSecret, Key: "basic-auth-password", Value: pass},
 			}
 
 			basicAuthSecret := types.NewGenericSecret("basic-auth", namespace, secretData)
-			openFaaSOptions.WithSecret(basicAuthSecret)
+			appOpts.WithSecret(basicAuthSecret)
 		}
 
 		overrides := map[string]string{}
@@ -201,7 +201,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 
-		openFaaSOptions.
+		appOpts.
 			WithKubeconfigPath(kubeConfigPath).
 			WithOverrides(overrides).
 			WithValuesFile(fmt.Sprintf("values%s.yaml", valuesSuffix)).
@@ -211,7 +211,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithWait(wait)
 
-		if _, err := apps.MakeInstallChart(openFaaSOptions); err != nil {
+		if _, err := apps.MakeInstallChart(appOpts); err != nil {
 			return err
 		}
 

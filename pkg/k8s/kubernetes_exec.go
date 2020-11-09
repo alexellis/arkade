@@ -54,7 +54,10 @@ func Kubectl(parts ...string) error {
 }
 
 func CreateSecret(secret types.K8sSecret) error {
-	secretData := flattenSecretData(secret.KeyValues)
+	secretData, err := flattenSecretData(secret.SecretData)
+	if err != nil {
+		return err
+	}
 
 	args := []string{"-n", secret.Namespace, "create", "secret", secret.Type, secret.Name}
 	args = append(args, secretData...)
@@ -65,18 +68,28 @@ func CreateSecret(secret types.K8sSecret) error {
 		return secretErr
 	}
 	if res.ExitCode != 0 {
-		fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", "basic-auth", res.Stderr)
+		fmt.Printf("[Warning] unable to create secret %s, may already exist: %s", secret.Name, res.Stderr)
 	}
 
 	return nil
 }
 
-func flattenSecretData(data map[string]string) []string {
+func flattenSecretData(data []types.SecretsData) ([]string, error) {
 	var output []string
 
-	for key, value := range data {
-		output = append(output, fmt.Sprintf("--from-literal=%s=%s", key, value))
+	for _, value := range data {
+		switch value.Type {
+		case types.StringLiteralSecret:
+			output = append(output, fmt.Sprintf("--from-literal=%s=%s", value.Key, value.Value))
+
+		case types.FromFileSecret:
+			output = append(output, fmt.Sprintf("--from-file=%s=%s", value.Key, value.Value))
+		default:
+
+			return nil, fmt.Errorf("could not create secret value of type %s. Please use one of [%s, %s]", value.Type, types.StringLiteralSecret, types.FromFileSecret)
+
+		}
 	}
 
-	return output
+	return output, nil
 }
