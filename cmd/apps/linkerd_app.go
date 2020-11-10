@@ -42,6 +42,14 @@ func MakeInstallLinkerd() *cobra.Command {
 			return err
 		}
 
+		version, err := command.Flags().GetString("version")
+		if err != nil {
+			return err
+		}
+		if command.Flags().Changed("version") {
+			linkerdVersion = version
+		}
+
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 		if arch != IntelArch {
