@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linkerdVersion = "stable-2.8.1"
+var linkerdVersion = "stable-2.9.0"
 
 func MakeInstallLinkerd() *cobra.Command {
 	var linkerd = &cobra.Command{
@@ -33,6 +33,8 @@ func MakeInstallLinkerd() *cobra.Command {
 		Example:      `  arkade install linkerd`,
 		SilenceUsage: true,
 	}
+
+	linkerd.Flags().StringP("version", "v", linkerdVersion, "Specify a version of Linkerd such as "+linkerdVersion)
 
 	linkerd.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -54,10 +56,9 @@ func MakeInstallLinkerd() *cobra.Command {
 		arch, clientOS := env.GetClientArch()
 
 		fmt.Printf("Client: %q\n", clientOS)
-
 		log.Printf("User dir established as: %s\n", userPath)
 
-		err = downloadLinkerd(userPath, arch, clientOS)
+		err = downloadLinkerd(userPath, arch, clientOS, linkerdVersion)
 		if err != nil {
 			return err
 		}
@@ -120,7 +121,7 @@ linkerd2 --help
 // 	return fmt.Sprintf("https://github.com/linkerd/linkerd2/releases/download/%s/linkerd2-cli-%s-%s", version, version, osSuffix)
 // }
 
-func downloadLinkerd(userPath, arch, clientOS string) error {
+func downloadLinkerd(userPath, arch, clientOS, version string) error {
 
 	tools := get.MakeTools()
 	var tool *get.Tool
@@ -130,13 +131,14 @@ func downloadLinkerd(userPath, arch, clientOS string) error {
 			break
 		}
 	}
+
 	if tool == nil {
 		return fmt.Errorf("unable to find tool definition")
 	}
 
 	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, false)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false)
 		if err != nil {
 			return err
 		}
