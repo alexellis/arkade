@@ -32,30 +32,37 @@ https://www.venafi.com/venaficloud/devopsaccelerate`,
 	command.Flags().StringP("secret-file", "f", "", "Your Venafi cloud secret from a file")
 	command.Flags().String("namespace", "default", "Namespace for the issuer")
 	command.Flags().String("name", "cloud-venafi-issuer", "Name for the issuer")
-	command.Flags().StringP("zone", "z", "", "The zone for Venafi cloud")
-
-	command.RunE = func(cmd *cobra.Command, args []string) error {
-		name, err := command.Flags().GetString("name")
-		if err != nil {
-			return err
-		}
-		clusterIssuer, err := command.Flags().GetBool("cluster-issuer")
-		if err != nil {
-			return err
-		}
-		namespace, err := command.Flags().GetString("namespace")
-		if err != nil {
-			return err
-		}
-
+	command.Flags().StringP("zone", "z", "", "The zone for the issuer")
+	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 		zone, err := command.Flags().GetString("zone")
 		if err != nil {
 			return err
 		}
-
 		if len(zone) == 0 {
 			return fmt.Errorf("a zone is required")
 		}
+		_, err = command.Flags().GetString("name")
+		if err != nil {
+			return err
+		}
+		_, err = command.Flags().GetBool("cluster-issuer")
+		if err != nil {
+			return err
+		}
+		_, err = command.Flags().GetString("namespace")
+		if err != nil {
+			return err
+		}
+		return nil
+	}
+
+	command.RunE = func(cmd *cobra.Command, args []string) error {
+		name, _ := command.Flags().GetString("name")
+		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")
+		namespace, _ := command.Flags().GetString("namespace")
+
+		zone, _ := command.Flags().GetString("zone")
+
 		kind := "Issuer"
 		if clusterIssuer {
 			kind = "ClusterIssuer"
@@ -123,6 +130,7 @@ Zone: %s
 		if res.ExitCode != 0 {
 			return fmt.Errorf(`unable to apply %s, error: %s`, p, res.Stderr)
 		}
+
 		fmt.Println(res.Stdout)
 
 		// Check for error, mention to install cert-manager
