@@ -4,10 +4,19 @@
 package venafi
 
 import (
+	"encoding/base64"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 
+	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
+
+// ./arkade venafi install tpp-issuer --url https://tpp.venafidemo.com/vedsdk/
+// --ca-bundle ~/Downloads/Trust\ Bundle.pem --zone arkade --custom-field cost-center=venafi.com --custom-field org=DE
 
 // MakeTPPIssuer makes the app for the TPP issuer
 func MakeTPPIssuer() *cobra.Command {
@@ -26,11 +35,18 @@ instances.`,
 	command.Flags().String("name", "tpp-venafi-issuer", "The name for the Issuer")
 	command.Flags().String("namespace", "default", "The Kubernetes namespace for the Issuer")
 	command.Flags().Bool("cluster-issuer", false, "Use a ClusterIssuer instead of an Issuer for the given namespace")
-	command.Flags().String("url", "", "The URL for your TPP server")
+	command.Flags().String("url", "", "The URL for your TPP server including the \"/vedsdk\" suffix")
 	command.Flags().StringP("username", "u", "", "Your TPP username")
+	command.Flags().StringP("zone", "z", "", "The zone for the issuer")
 	command.Flags().StringP("password", "p", "", "Your TPP password")
+	command.Flags().String("ca-bundle", "", "The path to a ca-bundle file")
+	command.Flags().StringArray("custom-fields", []string{""}, "A number of custom fields for the TPP issuer and its policy")
 
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
+		_, err := cmd.Flags().GetString("namespace")
+		if err != nil {
+			return err
+		}
 		username, err := cmd.Flags().GetString("username")
 		if err != nil {
 			return err
@@ -56,6 +72,22 @@ instances.`,
 		if err != nil {
 			return err
 		}
+		bundlePath, err := cmd.Flags().GetString("ca-bundle")
+		if err != nil {
+			return err
+		}
+		if len(bundlePath) > 0 {
+			if _, err = os.Stat(bundlePath); err != nil {
+				return errors.Wrapf(err, "ca-bundle %q not found", bundlePath)
+			}
+		}
+		zone, err := command.Flags().GetString("zone")
+		if err != nil {
+			return err
+		}
+		if len(zone) == 0 {
+			return fmt.Errorf("a zone is required")
+		}
 		return nil
 	}
 
@@ -65,9 +97,79 @@ instances.`,
 		password, _ := cmd.Flags().GetString("password")
 		url, _ := cmd.Flags().GetString("url")
 		name, _ := cmd.Flags().GetString("name")
-		clusterIssuer, _ := cmd.Flags().GetBool("cluster-issuer")
+		zone, _ := cmd.Flags().GetString("zone")
+		namespace, _ := cmd.Flags().GetString("namespace")
+		caBundlePath, _ := cmd.Flags().GetString("ca-bundle")
 
+		clusterIssuer, _ := command.Flags().GetBool("cluster-issuer")
+
+		kind := "Issuer"
+		if clusterIssuer {
+			kind = "ClusterIssuer"
+		}
+		encodedBundle := ""
+		if len(caBundlePath) > 0 {
+			data, err := ioutil.ReadFile(caBundlePath)
+			if err != nil {
+				return err
+			}
+			encodedBundle = base64.StdEncoding.EncodeToString(data)
+		}
+
+		clusterSecretName := name + "-secret"
+		res, err := k8s.KubectlTask("create", "secret", "generic",
+			clusterSecretName,
+			"--namespace="+namespace,
+			"--from-literal",
+			"username="+username,
+			"--from-literal",
+			"password="+password)
+
+		if err != nil {
+			return err
+		} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
+			fmt.Printf("[Warning] secret %s already exists and will be used\n", clusterSecretName)
+		} else if len(res.Stderr) > 0 {
+			return fmt.Errorf("error from kubectl\n%q", res.Stderr)
+		}
+
+		// fmt.Println(encodedBundle)
 		fmt.Println(url, username, password, name, clusterIssuer)
+
+		manifest, err := templateManifest(tppIssuerTemplate, struct {
+			Name      string
+			Namespace string
+			Zone      string
+			Kind      string
+			URL       string
+			CABundle  string
+		}{
+			Name:      name,
+			Namespace: namespace,
+			Zone:      zone,
+			Kind:      kind,
+			URL:       url,
+			CABundle:  encodedBundle,
+		})
+
+		if err != nil {
+			return err
+		}
+
+		p, err := writeFile("issuer.yaml", manifest)
+
+		res, err = k8s.KubectlTask("apply", "-f", p)
+
+		if err != nil {
+			return err
+		}
+
+		if res.ExitCode != 0 {
+			return fmt.Errorf(`unable to apply %s, error: %s`, p, res.Stderr)
+		}
+
+		fmt.Println(res.Stdout)
+
 		return nil
 	}
 
@@ -86,7 +188,9 @@ spec:
     zone: "{{.Zone}}"
     tpp:
       url: {{.URL}}
-      caBundle: {{.CABundle}}
+{{- if ne .CABundle "" }}
+      caBundle: "{{.CABundle}}"
+{{- end }}
       credentialsRef:
         name: {{.Name}}-secret
 `
