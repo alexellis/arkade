@@ -37,6 +37,7 @@ and provides a fast and easy alternative to a package manager.`,
   # Get a complete list of CLIs to download:
   arkade get --help`,
 		SilenceUsage: true,
+		Aliases:      []string{"g"},
 		ValidArgs:    validToolOptions,
 	}
 
@@ -120,13 +121,16 @@ chmod +x %s
 sudo install -m 755 %s /usr/local/bin/%s
 `, outFilePath, outFilePath, finalName)
 		} else {
-			fmt.Printf(`Run the following to add the (%s) binary to your PATH variable
-
+			fmt.Printf(`# Add (%s) to your PATH variable
 export PATH=$PATH:$HOME/.arkade/bin/
 
+# Test the binary:
 %s
 
-`, finalName, outFilePath)
+# Or install with:
+sudo mv %s /usr/local/bin/
+
+`, finalName, outFilePath, outFilePath)
 
 		}
 		return err
