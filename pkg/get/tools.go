@@ -257,7 +257,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "linkerd",
 			Repo:    "linkerd",
 			Name:    "linkerd2",
-			Version: "stable-2.8.1",
+			Version: "stable-2.9.0",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}-cli-{{.Version}}-windows.exe
 {{- else if eq .OS "darwin" -}}
