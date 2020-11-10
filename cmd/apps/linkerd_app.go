@@ -29,12 +29,12 @@ func MakeInstallLinkerd() *cobra.Command {
 	var linkerd = &cobra.Command{
 		Use:          "linkerd",
 		Short:        "Install linkerd",
-		Long:         `Install linkerd`,
+		Long:         `Install linkerd the light-weight service mesh for Kubernetes.`,
 		Example:      `  arkade install linkerd`,
 		SilenceUsage: true,
 	}
 
-	linkerd.Flags().StringP("version", "v", linkerdVersion, "Specify a version of Linkerd such as "+linkerdVersion)
+	linkerd.Flags().StringP("version", "v", linkerdVersion, "Specify a version of linkerd")
 
 	linkerd.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
