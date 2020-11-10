@@ -119,7 +119,7 @@ Zone: %s
 			return err
 		}
 
-		p, err := writeFile("issuer.yaml", manifest)
+		p, err := writeFile("cloud-issuer.yaml", manifest)
 
 		res, err = k8s.KubectlTask("apply", "-f", p)
 

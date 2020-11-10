@@ -156,7 +156,7 @@ instances.`,
 			return err
 		}
 
-		p, err := writeFile("issuer.yaml", manifest)
+		p, err := writeFile("tpp-issuer.yaml", manifest)
 
 		res, err = k8s.KubectlTask("apply", "-f", p)
 
@@ -170,11 +170,24 @@ instances.`,
 
 		fmt.Println(res.Stdout)
 
+		fmt.Println(`# Query the status of the issuer:
+kubectl get issuer ` + name + ` -n ` + namespace + ` -o wide
+
+# Find out how to issue a certificate with cert-manager:
+# https://cert-manager.io/docs/usage/certificate/
+		`)
+
 		return nil
 	}
 
 	return command
 }
+
+const TPPIssuerInfo = `# Check the status of the issuer:
+kubectl get issuer name -n namespace -o wide
+
+# Find out how to issue a certificate with cert-manager:
+# https://cert-manager.io/docs/usage/certificate/`
 
 const tppIssuerTemplate = `apiVersion: cert-manager.io/v1
 kind: {{.Kind}}

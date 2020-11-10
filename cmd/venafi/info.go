@@ -27,6 +27,8 @@ func MakeInfo() *cobra.Command {
 		info := "None found."
 		if args[0] == "cloud-issuer" {
 			info = CloudIssuerInfo
+		} else if args[0] == "tpp-issuer" {
+			info = TPPIssuerInfo
 		}
 
 		fmt.Printf("Info for your app: %s\n\n%s\n\n", args[0], info)
