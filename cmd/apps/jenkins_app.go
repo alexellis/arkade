@@ -20,6 +20,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// StableChartRepo https://helm.sh/docs/faq/#i-am-getting-a-warning-about-unable-to-get-an-update-from-the-stable-chart-repository
+const StableChartRepo = "https://repo.chartcenter.io"
+
 func MakeInstallJenkins() *cobra.Command {
 	var jenkins = &cobra.Command{
 		Use:          "jenkins",
@@ -72,12 +75,12 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
+		err = helm.AddHelmRepo("center", StableChartRepo, updateRepo)
 		if err != nil {
 			return err
 		}
 
-		err = helm.FetchChart("stable/jenkins", defaultVersion)
+		err = helm.FetchChart("center/stable/jenkins", defaultVersion)
 
 		if err != nil {
 			return err
@@ -97,7 +100,7 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/jenkins", ns,
+		err = helm.Helm3Upgrade("center/stable/jenkins", ns,
 			"values.yaml",
 			defaultVersion,
 			overrides,

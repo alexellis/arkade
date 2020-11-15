@@ -67,7 +67,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion)
+		err = helm.FetchChart("center/stable/kube-state-metrics", defaultVersion)
 
 		if err != nil {
 			return err
@@ -89,7 +89,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 
 		fmt.Println("Chart path: ", chartPath)
 
-		err = helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
+		err = helm.Helm3Upgrade("center/stable/kube-state-metrics", namespace,
 			"values.yaml",
 			defaultVersion,
 			setMap,

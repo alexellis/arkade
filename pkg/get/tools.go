@@ -28,7 +28,7 @@ func MakeTools() []Tool {
 			Owner:   "helm",
 			Repo:    "helm",
 			Name:    "helm",
-			Version: "v3.2.4",
+			Version: "v3.4.1",
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}

@@ -85,8 +85,8 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		nfsProvisionerOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
 			WithHelmPath(path.Join(userPath, ".helm")).
-			WithHelmRepo("stable/nfs-client-provisioner").
-			WithHelmURL("https://kubernetes-charts.storage.googleapis.com").
+			WithHelmRepo("center/stable/nfs-client-provisioner").
+			WithHelmURL(StableChartRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

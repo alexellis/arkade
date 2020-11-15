@@ -73,7 +73,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("stable/sealed-secrets", defaultVersion)
+		err = helm.FetchChart("center/stable/sealed-secrets", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -90,7 +90,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/sealed-secrets",
+		err = helm.Helm3Upgrade("center/stable/sealed-secrets",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to sealed secret chart with helm %s", err)

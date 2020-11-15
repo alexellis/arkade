@@ -65,7 +65,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/metrics-server", defaultVersion)
+		err = helm.FetchChart("center/stable/metrics-server", defaultVersion)
 
 		if err != nil {
 			return err
@@ -84,7 +84,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 		fmt.Println("Chart path: ", chartPath)
 
-		err = helm.Helm3Upgrade("stable/metrics-server", namespace,
+		err = helm.Helm3Upgrade("center/stable/metrics-server", namespace,
 			"values.yaml",
 			defaultVersion,
 			overrides,

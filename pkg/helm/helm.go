@@ -185,7 +185,7 @@ func FetchChart(chart, version string) error {
 func Helm3Upgrade(chart, namespace, values, version string, overrides map[string]string, wait bool) error {
 
 	chartName := chart
-	if index := strings.Index(chartName, "/"); index > -1 {
+	if index := strings.LastIndex(chartName, "/"); index > -1 {
 		chartName = chartName[index+1:]
 	}
 

@@ -91,13 +91,13 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
+		err = helm.AddHelmRepo("center", StableChartRepo, updateRepo)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/docker-registry", defaultVersion)
+		err = helm.FetchChart("center/stable/docker-registry", defaultVersion)
 
 		if err != nil {
 			return err
@@ -115,7 +115,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 		ns := "default"
 
-		err = helm.Helm3Upgrade("stable/docker-registry", ns,
+		err = helm.Helm3Upgrade("center/stable/docker-registry", ns,
 			"values.yaml",
 			defaultVersion,
 			overrides,

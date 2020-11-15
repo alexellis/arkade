@@ -211,7 +211,7 @@ func Test_DownloadHelmDarwin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-darwin-amd64.tar.gz"
+	want := "https://get.helm.sh/helm-v3.4.1-darwin-amd64.tar.gz"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -232,7 +232,7 @@ func Test_DownloadHelmLinux(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-linux-amd64.tar.gz"
+	want := "https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -253,7 +253,7 @@ func Test_DownloadHelmWindows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-windows-amd64.zip"
+	want := "https://get.helm.sh/helm-v3.4.1-windows-amd64.zip"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}

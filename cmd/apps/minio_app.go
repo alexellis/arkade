@@ -79,12 +79,12 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
+		err = helm.AddHelmRepo("center", StableChartRepo, updateRepo)
 		if err != nil {
 			return err
 		}
 
-		err = helm.FetchChart("stable/minio", defaultVersion)
+		err = helm.FetchChart("center/stable/minio", defaultVersion)
 
 		if err != nil {
 			return err
@@ -134,7 +134,7 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/minio", ns,
+		err = helm.Helm3Upgrade("center/stable/minio", ns,
 			"values.yaml",
 			defaultVersion,
 			overrides,

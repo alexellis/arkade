@@ -76,7 +76,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("stable/mongodb", defaultVersion)
+		err = helm.FetchChart("center/stable/mongodb", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -95,7 +95,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/mongodb",
+		err = helm.Helm3Upgrade("center/stable/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
