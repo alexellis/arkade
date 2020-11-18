@@ -21,7 +21,7 @@ func MakeInstall() *cobra.Command {
 		Use:   "install",
 		Short: "Install Kubernetes apps from helm charts or YAML files",
 		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
-command. 
+command.
 
 You can also find the post-install message for each app with the "info"
 command.`,
@@ -103,6 +103,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["consul-connect"] = NewArkadeApp(apps.MakeInstallConsul, apps.ConsulInfoMsg)
 	arkadeApps["sealed-secret"] = NewArkadeApp(apps.MakeInstallSealedSecrets, apps.SealedSecretsInfoMsg)
 	arkadeApps["gitlab"] = NewArkadeApp(apps.MakeInstallGitLab, apps.GitlabInfoMsg)
+	arkadeApps["rancher"] = NewArkadeApp(apps.MakeInstallRancher, apps.RancherInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
