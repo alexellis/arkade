@@ -77,7 +77,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("stable/sealed-secrets").
-			WithHelmURL("https://kubernetes-charts.storage.googleapis.com").
+			WithHelmURL("https://charts.helm.sh/stable").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithWait(wait).
