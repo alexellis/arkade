@@ -932,6 +932,40 @@ func Test_DownloadHelmfile(t *testing.T) {
 	}
 }
 
+func Test_DownloadOpa(t *testing.T) {
+	tools := MakeTools()
+	name := "opa"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.24.0"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			version: toolVersion,
+			url:     `https://github.com/open-policy-agent/opa/releases/download/v0.24.0/opa_windows_amd64.exe`,
+		},
+		{os: "linux",
+			version: toolVersion,
+			url:     `https://github.com/open-policy-agent/opa/releases/download/v0.24.0/opa_linux_amd64`,
+		},
+		{os: "darwin",
+			version: toolVersion,
+			url:     `https://github.com/open-policy-agent/opa/releases/download/v0.24.0/opa_darwin_amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, "", tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_getBinaryURL_SlashInDownloadPath(t *testing.T) {
 	got := getBinaryURL("roboll", "helmfile", "0.134.0", "v0.134.0/helmfile_0.134.0_darwin_amd64")
 	want := "https://github.com/roboll/helmfile/releases/download/v0.134.0/helmfile_0.134.0_darwin_amd64"
