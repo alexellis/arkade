@@ -81,6 +81,7 @@ Use "arkade get TOOL" to download a tool or application:
   kustomize
   linkerd2
   minikube
+  opa
   osm
   pack
   packer
