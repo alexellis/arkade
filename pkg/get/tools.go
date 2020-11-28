@@ -771,5 +771,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}-{{$archStr}}.tar.gz`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "docker",
+			Repo:    "compose",
+			Name:    "docker-compose",
+			Version: "1.27.4",
+			URLTemplate: `
+{{$osStr := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$osStr = "Windows"}}
+{{- else if eq .OS "linux" -}}
+{{$osStr = "Linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$osStr = "Darwin"}}
+{{- end -}}
+{{$ext := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = "exe"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}-{{.Arch}}{{$ext}}`,
+		})
+
 	return tools
 }
