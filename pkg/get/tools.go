@@ -572,5 +572,25 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 	`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner: "kubernetes",
+			Repo:  "minikube",
+			Name:  "minikube",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}-windows-amd64.exe
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}-darwin-amd64
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}-linux-arm
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}-linux-arm
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-linux-arm64
+	{{- else -}}
+	{{.Name}}-linux-amd64
+	{{- end -}}`,
+		})
+
 	return tools
 }
