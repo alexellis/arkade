@@ -66,11 +66,18 @@ Use "arkade get TOOL" to download a tool or application:
   kustomize
   doctl
   k9s
+  popeye
   civo
   terraform
+  packer
   gh
   pack
   buildx
+  kops
+  krew
+  minikube
+  stern
+  kail
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.

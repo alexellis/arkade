@@ -356,8 +356,35 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{$archStr := .Arch}}
 		{{- if eq .Arch "armv7l" -}}
 		{{$archStr = "arm"}}
-		{{- end -}}		
+		{{- else if eq .Arch "aarch64" -}}
+		{{$archStr = "arm64"}}
+		{{- end -}}	
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "derailed",
+			Repo:    "popeye",
+			Name:    "popeye",
+			Version: "v0.9.0",
+			URLTemplate: `
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "Windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "Darwin"}}
+			{{- end -}}
+	
+			{{$archStr := .Arch}}
+			{{- if eq .Arch "armv7l" -}}
+			{{$archStr = "arm"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$archStr = "arm64"}}
+			{{- end -}}
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -412,7 +439,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 {{$os = "windows"}}
 {{- end -}}
 
-https://releases.hashicorp.com/terraform/{{.Version}}/terraform_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "hashicorp",
+			Repo:    "packer",
+			Name:    "packer",
+			Version: "1.6.5",
+			URLTemplate: `{{$arch := .Arch}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
+{{- end -}}
+
+{{$os := .OS}}
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+
+https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
 
 	tools = append(tools,
 		Tool{
@@ -590,6 +638,51 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 	{{- else -}}
 	{{.Name}}-linux-amd64
 	{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "stern",
+			Repo:    "stern",
+			Name:    "stern",
+			Version: "1.13.0",
+			URLTemplate: `{{$arch := "arm"}}
+
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- else if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- end -}}
+
+{{$os := .OS}}
+{{$ext := "tar.gz"}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "boz",
+			Repo:    "kail",
+			Name:    "kail",
+			Version: "0.15.0",
+			URLTemplate: `{{$arch := "arm"}}
+	
+	{{- if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+	{{- else if eq .Arch "x86_64" -}}
+	{{$arch = "amd64"}}
+	{{- end -}}
+	
+	{{$os := .OS}}
+	{{$ext := "tar.gz"}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$os = "windows"}}
+	{{- end -}}
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	return tools
