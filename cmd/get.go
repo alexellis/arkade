@@ -12,6 +12,7 @@ import (
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -109,7 +110,7 @@ and provides a fast and easy alternative to a package manager.`,
 		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode, progress)
 
 		if err != nil {
-			return err
+			return errors.Wrap(err, "check with the vendor whether this tool is available for your system")
 		}
 
 		fmt.Printf("Tool written to: %s\n\n", outFilePath)

@@ -121,8 +121,8 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 	if err != nil {
 		return "", err
 	}
-	res := strings.TrimSpace(buf.String())
 
+	res := strings.TrimSpace(buf.String())
 	return fmt.Sprintf(
 		"https://github.com/%s/%s/releases/download/%s/%s",
 		tool.Owner, tool.Name, version, res), nil
