@@ -51,7 +51,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 			Owner:   "roboll",
 			Repo:    "helmfile",
 			Name:    "helmfile",
-			Version: "0.132.1",
+			Version: "0.135.0",
 			URLTemplate: `{{$arch := "386"}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$arch = "amd64"}}
@@ -503,6 +503,48 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 				{{$archStr = "amd64"}}
 				{{- end -}}		
 		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-v{{.Version}}.{{$osStr}}-{{$archStr}}{{$extStr}}`,
+		})
+
+	// See issue: https://github.com/rakyll/hey/issues/229
+	// 	tools = append(tools,
+	// 		Tool{
+	// 			Owner:   "rakyll",
+	// 			Repo:    "hey",
+	// 			Name:    "hey",
+	// 			Version: "v0.1.2",
+	// 			URLTemplate: `{{$arch := "amd64"}}
+	// {{$ext := ""}}
+	// {{$os := .OS}}
+
+	// {{ if HasPrefix .OS "ming" -}}
+	// {{$os = "windows"}}
+	// {{$ext = ".exe"}}
+	// {{$ext := ""}}
+	// {{- end -}}
+
+	// 	https://storage.googleapis.com/jblabs/dist/hey_{{$os}}_{{$.Version}}{{$ext}}`})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "kubernetes",
+			Repo:    "kops",
+			Name:    "kops",
+			Version: "v1.18.2",
+			URLTemplate: `
+	{{$osStr := ""}}
+	{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+	{{$osStr = "linux-amd64"}}
+	{{- else if eq .Arch "aarch64" -}}
+	{{$osStr = "linux-arm64"}}
+	{{- end -}}
+	{{- else if eq .OS "darwin" -}}
+	{{$osStr = "darwin-amd64"}}
+	{{ else if HasPrefix .OS "ming" -}}
+	{{$osStr ="windows-amd64"}}
+	{{- end -}}
+
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}`,
 		})
 
 	return tools
