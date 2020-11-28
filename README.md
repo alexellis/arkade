@@ -31,10 +31,6 @@ curl -sLS https://dl.get-arkade.dev | sh
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
-<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-ea71d220_1024x1024@2x.jpg?v=1589366177" width="250">
-
-[You can buy an arkade t-shirt in the OpenFaaS Ltd store](https://store.openfaas.com/products/arkade-t-shirt)
-
 ## Usage
 
 Here's a few examples of apps you can install, for a complete list run: `arkade install --help`.
@@ -286,6 +282,12 @@ Available Commands:
 ```
 
 ## Community & contributing
+
+### SWAG
+
+<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-91022b03_1024x1024@2x.jpg?v=1605359612" width="250">
+
+[You can buy an arkade t-shirt in the OpenFaaS Ltd store](https://store.openfaas.com/products/arkade-t-shirt)
 
 ### Suggesting a new app
 
