@@ -1,6 +1,6 @@
-# arkade - Your one-stop CLI for Kubernetes
+# arkade - Portable DevOps Marketplace
 
-arkade provides a simple Golang CLI with strongly-typed flags to install charts and apps to your cluster in one command.
+arkade provides a portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.
 
 You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster than you can type "apt-get/brew update".
 
