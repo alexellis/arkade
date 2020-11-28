@@ -12,7 +12,7 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-Gone are the days of contending with dozens of README files just to get the right version of [helm](https://helm.sh) and to install a chart with sane defaults.
+With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
 
 ## Get arkade
 
@@ -47,31 +47,37 @@ arkade downloads the correct version of a CLI for your OS and CPU.
 With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
-arkade get
-          faas-cli
-          helm
-          kubectl
-          kubectx
-          kind
-          k3d
-          k3sup
-          kubeseal
-          inletsctl
-          osm
-          linkerd2
-          kubebuilder
-          kustomize
-          doctl
-          k9s
-          civo
-          terraform
-          buildx
-          helmfile
+arkade get APP
+Use "arkade get TOOL" to download a tool or application:
+  faas-cli
+  helm
+  helmfile
+  kubectl
+  kubectx
+  kubens
+  kind
+  k3d
+  k3sup
+  kubeseal
+  inletsctl
+  osm
+  linkerd2
+  kubebuilder
+  kustomize
+  doctl
+  k9s
+  civo
+  terraform
+  gh
+  pack
+  buildx
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
+
+Adding a new tool for download is as simple as editing [tools.go](https://github.com/alexellis/arkade/blob/master/pkg/get/tools.go).
 
 ### Create a Kubernetes cluster
 
