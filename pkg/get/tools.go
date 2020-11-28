@@ -547,5 +547,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "kubernetes-sigs",
+			Repo:    "krew",
+			Name:    "krew",
+			Version: "v0.4.0",
+			URLTemplate: `
+		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}.tar.gz`,
+			BinaryTemplate: `
+		{{$osStr := ""}}
+		{{- if eq .OS "linux" -}}
+		{{- if eq .Arch "x86_64" -}}
+		{{$osStr = "linux_amd64"}}
+		{{- else if eq .Arch "armv7l" -}}
+		{{$osStr = "linux_arm"}}
+		{{- end -}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "darwin_amd64"}}
+		{{ else if HasPrefix .OS "ming" -}}
+		{{$osStr ="windows_amd64.exe"}}
+		{{- end -}}
+		{{.Name}}-{{$osStr}}
+	`,
+		})
+
 	return tools
 }
