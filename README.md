@@ -49,39 +49,40 @@ With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 ```bash
 arkade get APP
 Use "arkade get TOOL" to download a tool or application:
+  buildx
+  civo
+  docker-compose
+  doctl
   faas-cli
+  gh
   helm
   helmfile
+  hugo
+  inletsctl
+  k3d
+  k3sup
+  k9s
+  kail
+  kind
+  kops
+  krew
+  kube-bench
+  kubebuilder
   kubectl
   kubectx
   kubens
-  kind
-  k3d
-  k3sup
   kubeseal
-  inletsctl
-  osm
-  linkerd2
-  kubebuilder
   kustomize
-  doctl
-  k9s
+  linkerd2
+  minikube
+  osm
+  pack
+  packer
   popeye
-  civo
+  stern
   terraform
   vagrant
-  packer
-  gh
-  pack
-  buildx
-  kops
-  krew
-  minikube
-  stern
-  kail
   yq
-  kube-bench
-  hugo
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
