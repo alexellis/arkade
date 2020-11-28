@@ -444,6 +444,27 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 	tools = append(tools,
 		Tool{
 			Owner:   "hashicorp",
+			Repo:    "vagrant",
+			Name:    "vagrant",
+			Version: "2.2.14",
+			URLTemplate: `{{$arch := .Arch}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
+{{- end -}}
+
+{{$os := .OS}}
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+
+https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "hashicorp",
 			Repo:    "packer",
 			Name:    "packer",
 			Version: "1.6.5",
@@ -683,6 +704,71 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	{{$os = "windows"}}
 	{{- end -}}
 	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner: "mikefarah",
+			Repo:  "yq",
+			Name:  "yq",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}_windows_amd64.exe
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}_darwin_amd64
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}_arm
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}_arm
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}_arm64
+	{{- else -}}
+	{{.Name}}
+	{{- end -}}`,
+		})
+	tools = append(tools,
+		Tool{
+			Owner:   "aquasecurity",
+			Repo:    "kube-bench",
+			Name:    "kube-bench",
+			Version: "0.4.0",
+			URLTemplate: `
+{{$arch := "arm"}}
+{{$os := .OS}}
+
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- else if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "gohugoio",
+			Repo:    "hugo",
+			Name:    "hugo",
+			Version: "0.79.0",
+			URLTemplate: `
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "Windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "macOS"}}
+			{{- end -}}
+	
+			{{$archStr := "64bit"}}
+			{{- if eq .Arch "armv7l" -}}
+			{{$archStr = "ARM"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$archStr = "ARM64"}}
+			{{- end -}}	
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}-{{$archStr}}.tar.gz`,
 		})
 
 	return tools
