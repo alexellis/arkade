@@ -69,6 +69,7 @@ Use "arkade get TOOL" to download a tool or application:
   popeye
   civo
   terraform
+  vagrant
   packer
   gh
   pack
@@ -78,6 +79,9 @@ Use "arkade get TOOL" to download a tool or application:
   minikube
   stern
   kail
+  yq
+  kube-bench
+  hugo
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
