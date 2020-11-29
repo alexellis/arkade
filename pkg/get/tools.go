@@ -1,6 +1,25 @@
 package get
 
-func MakeTools() []Tool {
+import "strings"
+
+func (t Tools) Len() int { return len(t) }
+
+func (t Tools) Swap(i, j int) { t[i], t[j] = t[j], t[i] }
+
+func (t Tools) Less(i, j int) bool {
+	var ti = t[i]
+	var tj = t[j]
+	var tiNameLower = strings.ToLower(ti.Name)
+	var tjNameLower = strings.ToLower(tj.Name)
+	if tiNameLower == tjNameLower {
+		return ti.Name < tj.Name
+	}
+	return tiNameLower < tjNameLower
+}
+
+type Tools []Tool
+
+func MakeTools() Tools {
 	tools := []Tool{}
 
 	tools = append(tools,
