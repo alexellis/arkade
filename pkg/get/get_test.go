@@ -2,6 +2,8 @@ package get
 
 import (
 	"fmt"
+	"reflect"
+	"sort"
 	"testing"
 )
 
@@ -26,6 +28,50 @@ func getTool(name string, tools []Tool) *Tool {
 		}
 	}
 	return tool
+}
+
+func Test_MakeSureToolsAreSorted(t *testing.T) {
+	got := Tools{
+		{
+			Owner: "roboll",
+			Repo:  "helmfile",
+			Name:  "helmfile",
+		},
+		{
+			Owner: "kubernetes",
+			Repo:  "kubernetes",
+			Name:  "kubectl",
+		},
+		{
+			Owner: "digitalocean",
+			Repo:  "doctl",
+			Name:  "doctl",
+		},
+	}
+
+	sort.Sort(got)
+
+	want := Tools{
+		{
+			Owner: "digitalocean",
+			Repo:  "doctl",
+			Name:  "doctl",
+		},
+		{
+			Owner: "roboll",
+			Repo:  "helmfile",
+			Name:  "helmfile",
+		},
+		{
+			Owner: "kubernetes",
+			Repo:  "kubernetes",
+			Name:  "kubectl",
+		},
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Fatalf("want: %+v, got: %+v", want, got)
+	}
 }
 
 func Test_DownloadFaaSCLIDarwin(t *testing.T) {
