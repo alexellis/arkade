@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sort"
 	"strconv"
 	"syscall"
 
@@ -19,6 +20,7 @@ import (
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
 	tools := get.MakeTools()
+	sort.Sort(tools)
 	var validToolOptions []string = make([]string, len(tools))
 	for _, t := range tools {
 		validToolOptions = append(validToolOptions, t.Name)
