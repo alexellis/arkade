@@ -901,7 +901,7 @@ func Test_DownloadHelmfile(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.132.1"
+	const toolVersion = "v0.132.1"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -929,5 +929,21 @@ func Test_DownloadHelmfile(t *testing.T) {
 		if got != tc.url {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
+	}
+}
+
+func Test_getBinaryURL_SlashInDownloadPath(t *testing.T) {
+	got := getBinaryURL("roboll", "helmfile", "0.134.0", "v0.134.0/helmfile_0.134.0_darwin_amd64")
+	want := "https://github.com/roboll/helmfile/releases/download/v0.134.0/helmfile_0.134.0_darwin_amd64"
+	if got != want {
+		t.Fatalf("want %s, but got: %s", want, got)
+	}
+}
+
+func Test_getBinaryURL_NoSlashInDownloadPath(t *testing.T) {
+	got := getBinaryURL("openfaas", "faas-cli", "0.19.0", "faas-cli_darwin")
+	want := "https://github.com/openfaas/faas-cli/releases/download/0.19.0/faas-cli_darwin"
+	if got != want {
+		t.Fatalf("want %s, but got: %s", want, got)
 	}
 }

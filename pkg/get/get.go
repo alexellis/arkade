@@ -113,9 +113,8 @@ func (tool Tool) GetURL(os, arch, version string) (string, error) {
 
 func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error) {
 	if len(version) == 0 {
-		releases := fmt.Sprintf("https://github.com/%s/%s/releases/latest", tool.Owner, tool.Name)
 		var err error
-		version, err = findGitHubRelease(releases)
+		version, err = findGitHubRelease(tool.Owner, tool.Repo)
 		if err != nil {
 			return "", err
 		}
@@ -142,13 +141,26 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 		return "", err
 	}
 
-	res := strings.TrimSpace(buf.String())
-	return fmt.Sprintf(
-		"https://github.com/%s/%s/releases/download/%s/%s",
-		tool.Owner, tool.Name, version, res), nil
+	downloadName := strings.TrimSpace(buf.String())
+
+	return getBinaryURL(tool.Owner, tool.Repo, version, downloadName), nil
 }
 
-func findGitHubRelease(url string) (string, error) {
+func getBinaryURL(owner, repo, version, downloadName string) string {
+	if in := strings.Index(downloadName, "/"); in > -1 {
+		return fmt.Sprintf(
+			"https://github.com/%s/%s/releases/download/%s",
+			owner, repo, downloadName)
+	}
+	return fmt.Sprintf(
+		"https://github.com/%s/%s/releases/download/%s/%s",
+		owner, repo, version, downloadName)
+}
+
+func findGitHubRelease(owner, repo string) (string, error) {
+
+	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
+
 	timeout := time.Second * 5
 	client := makeHTTPClient(&timeout, false)
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {

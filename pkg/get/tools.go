@@ -67,11 +67,10 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 
 	tools = append(tools,
 		Tool{
-			Owner:   "roboll",
-			Repo:    "helmfile",
-			Name:    "helmfile",
-			Version: "0.135.0",
-			URLTemplate: `{{$arch := "386"}}
+			Owner: "roboll",
+			Repo:  "helmfile",
+			Name:  "helmfile",
+			BinaryTemplate: `{{$arch := "386"}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$arch = "amd64"}}
 	{{- end -}}
@@ -84,7 +83,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 	{{$ext = ".exe"}}
 	{{- end -}}
 	
-	https://github.com/roboll/helmfile/releases/download/v{{.Version}}/helmfile_{{$os}}_{{$arch}}{{$ext}}`,
+helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 		})
 
 	// https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
