@@ -488,7 +488,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:          "cli",
 			Repo:           "cli",
 			Name:           "gh",
-			Version:        "1.0.0",
+			Version:        "1.3.0",
 			BinaryTemplate: `gh`,
 			URLTemplate: `
 
