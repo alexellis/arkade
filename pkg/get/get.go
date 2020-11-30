@@ -14,14 +14,38 @@ import (
 	"github.com/alexellis/arkade/pkg/env"
 )
 
+// Tool describes how to download a CLI tool from a binary
+// release - whether a single binary, or an archive.
 type Tool struct {
-	Name           string
-	Repo           string
-	Owner          string
-	Version        string
-	URLTemplate    string
+	// The name of the tool for download
+	Name string
+
+	// Repo is a GitHub repo, when no repo exists, use the same
+	// as the name.
+	Repo string
+
+	// Owner is the name of the GitHub account, when no account
+	// exists, use the vendor name lowercase.
+	Owner string
+
+	// Version pinned or left empty to pull the latest release
+	// if any only if only BinaryTemplate is specified.
+	Version string
+
+	// URLTemplate specifies a Go template for the download URL
+	// override the OS, architecture and extension
+	// All whitespace will be trimmed/
+	URLTemplate string
+
+	// The binary template can be used when downloading GitHub
+	// It assumes that the only part of the URL needing to be
+	// templated is the binary name on a standard GitHub download
+	// URL.
 	BinaryTemplate string
-	NoExtension    bool
+
+	// NoExtension is required for tooling such as kubectx
+	// which at time of writing is a bash script.
+	NoExtension bool
 }
 
 var templateFuncs = map[string]interface{}{
