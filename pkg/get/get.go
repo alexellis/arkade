@@ -63,7 +63,7 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 	return "", errors.New("BinaryTemplate is not set")
 }
 
-// Download fetches the download URL for a release of a tool
+// GetDownloadURL fetches the download URL for a release of a tool
 // for a given os,  architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
 	ver := tool.Version
@@ -85,10 +85,6 @@ func (tool Tool) GetURL(os, arch, version string) (string, error) {
 	}
 
 	return getByDownloadTemplate(tool, os, arch, version)
-}
-
-func (t Tool) Latest() bool {
-	return len(t.Version) == 0
 }
 
 func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error) {
