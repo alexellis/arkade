@@ -26,7 +26,7 @@ type inputData struct {
 	IngressDomain    string
 	CertmanagerEmail string
 	IngressClass     string
-	IssuerType       string
+	IssuerName       string
 	IssuerAPI        string
 	IngressName      string
 	ClusterIssuer    bool
@@ -45,8 +45,9 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 
 	openfaasIngress.Flags().StringP("domain", "d", "", "Custom Ingress Domain")
 	openfaasIngress.Flags().StringP("email", "e", "", "Letsencrypt Email")
-	openfaasIngress.Flags().String("ingress-class", "nginx", "Ingress class to be used such as nginx or traefik")
+	openfaasIngress.Flags().String("ingress-class", "nginx", `Ingress class to be used such as "nginx" or "traefik"`)
 	openfaasIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
+	openfaasIngress.Flags().String("issuer", "", "provide the name of a pre-existing issuer, rather than creating one for LetsEncrypt")
 	openfaasIngress.Flags().Bool("cluster-issuer", false, "set to true to create a clusterissuer rather than a namespaces issuer (default: false)")
 	openfaasIngress.Flags().String("oauth2-plugin-domain", "", "Set to the auth domain for openfaas OIDC installations")
 
@@ -54,6 +55,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 
 		email, _ := command.Flags().GetString("email")
 		domain, _ := command.Flags().GetString("domain")
+		issuer, _ := command.Flags().GetString("issuer")
 		ingressClass, _ := command.Flags().GetString("ingress-class")
 
 		if email == "" || domain == "" {
@@ -92,14 +94,19 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 	return openfaasIngress
 }
 
-func createIngress(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool) error {
-	yamlBytes, templateErr := buildYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer)
+func createIssuer(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool, issuerName string) error {
+	if len(issuerName) > 0 {
+		fmt.Printf("Using existing issuer: %s\n", issuerName)
+		return nil
+	}
+
+	yamlBytes, templateErr := buildIssuerYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer)
 	if templateErr != nil {
 		log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 		return templateErr
 	}
 
-	tempFile, tempFileErr := writeTempFile(yamlBytes, fmt.Sprintf("%s.yaml", ingressName))
+	tempFile, tempFileErr := writeTempFile(yamlBytes, fmt.Sprintf("%s-issuer.yaml", ingressName))
 	if tempFileErr != nil {
 		log.Print("Unable to save generated yaml file into the temporary directory")
 		return tempFileErr
@@ -114,7 +121,35 @@ func createIngress(domain, email, ingressClass, ingressName string, staging bool
 
 	if res.ExitCode != 0 {
 		return fmt.Errorf(`Unable to apply YAML files.
-Have you got OpenFaaS running in the openfaas namespace and cert-manager 0.11.0 or higher installed in cert-manager namespace? %s`,
+Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 or higher installed in cert-manager namespace? %s`,
+			res.Stderr)
+	}
+	return nil
+}
+
+func createIngress(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool, issuerName string) error {
+	yamlBytes, templateErr := buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer, issuerName)
+	if templateErr != nil {
+		log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
+		return templateErr
+	}
+
+	tempFile, tempFileErr := writeTempFile(yamlBytes, fmt.Sprintf("%s-ingress.yaml", ingressName))
+	if tempFileErr != nil {
+		log.Print("Unable to save generated yaml file into the temporary directory")
+		return tempFileErr
+	}
+
+	res, err := k8s.KubectlTask("apply", "-f", tempFile)
+
+	if err != nil {
+		log.Print(err)
+		return err
+	}
+
+	if res.ExitCode != 0 {
+		return fmt.Errorf(`Unable to apply YAML files.
+Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 or higher installed in cert-manager namespace? %s`,
 			res.Stderr)
 	}
 	return nil
@@ -149,39 +184,62 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 	return filename, nil
 }
 
-func buildYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool) ([]byte, error) {
-	tmpl, err := template.New("yaml").Parse(ingressYamlTemplate)
+func buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool, issuerName string) ([]byte, error) {
+	templ, err := template.New("yaml").Parse(openfaasIngressTemplate)
 
 	if err != nil {
 		return nil, err
 	}
-	ingressService := "gateway"
 
+	ingressService := "gateway"
 	if ingressName == "oauth2-plugin" {
 		ingressService = ingressName
 	}
 
 	inputData := inputData{
-		IngressDomain:    domain,
-		CertmanagerEmail: email,
-		IngressClass:     ingressClass,
-		IssuerType:       "letsencrypt-prod",
-		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
-		IngressName:      ingressName,
-		IngressService:   ingressService,
-		ClusterIssuer:    clusterIssuer,
+		IngressDomain:  domain,
+		IngressClass:   ingressClass,
+		IngressName:    ingressName,
+		IngressService: ingressService,
+		ClusterIssuer:  clusterIssuer,
 	}
 
-	if staging {
-		inputData.IssuerType = "letsencrypt-staging"
-		inputData.IssuerAPI = "https://acme-staging-v02.api.letsencrypt.org/directory"
+	if len(issuerName) > 0 {
+		inputData.IssuerName = issuerName
+	} else if staging {
+		inputData.IssuerName = "letsencrypt-staging"
+	} else {
+		inputData.IssuerName = "letsencrypt-prod"
 	}
 
 	var tpl bytes.Buffer
 
-	err = tmpl.Execute(&tpl, inputData)
+	if err = templ.Execute(&tpl, inputData); err != nil {
+		return nil, err
+	}
+}
+
+func buildIssuerYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool) ([]byte, error) {
+	templ, err := template.New("issuer-yaml").Parse(openfaasIngressTemplate)
 
 	if err != nil {
+		return nil, err
+	}
+
+	inputData := inputData{
+		CertmanagerEmail: email,
+		IssuerName:       "letsencrypt-prod",
+		IssuerAPI:        "https://acme-v02.api.letsencrypt.org/directory",
+		ClusterIssuer:    clusterIssuer,
+	}
+
+	if staging {
+		inputData.IssuerName = "letsencrypt-staging"
+		inputData.IssuerAPI = "https://acme-staging-v02.api.letsencrypt.org/directory"
+	}
+
+	var tpl bytes.Buffer
+	if err = templ.Execute(&tpl, inputData); err != nil {
 		return nil, err
 	}
 
@@ -216,7 +274,7 @@ const openfaasIngressInstallMsg = `=============================================
 =======================================================================` +
 	"\n\n" + OpenfaasIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
 
-var ingressYamlTemplate = `
+var openfaasIngressTemplate = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
 metadata:
@@ -224,9 +282,9 @@ metadata:
   namespace: openfaas
   annotations:
 {{- if .ClusterIssuer }}
-    cert-manager.io/cluster-issuer: {{.IssuerType}}
+    cert-manager.io/cluster-issuer: {{.IssuerName}}
 {{- else }}
-    cert-manager.io/issuer: {{.IssuerType}}
+    cert-manager.io/issuer: {{.IssuerName}}
 {{- end }}
     kubernetes.io/ingress.class: {{.IngressClass}}
 spec:
@@ -242,7 +300,8 @@ spec:
   - hosts:
     - {{.IngressDomain}}
     secretName: {{.IngressName}}
----
+`
+var http01IssuerTemplate = `
 apiVersion: cert-manager.io/v1
 {{- if .ClusterIssuer }}
 kind: ClusterIssuer
@@ -250,7 +309,7 @@ kind: ClusterIssuer
 kind: Issuer
 {{- end }}
 metadata:
-  name: {{.IssuerType}}
+  name: {{.IssuerName}}
 {{- if not .ClusterIssuer }}
   namespace: openfaas
 {{- end }}
