@@ -99,6 +99,7 @@ metadata:
   annotations:
     cert-manager.io/issuer: letsencrypt-staging
     kubernetes.io/ingress.class: traefik
+    cert-manager.io/common-name: openfaas.subdomain.example.com
 spec:
   rules:
   - host: openfaas.subdomain.example.com
@@ -121,7 +122,7 @@ spec:
 }
 
 func Test_buildIngress_WithCustomIssuername(t *testing.T) {
-	templBytes, _ := buildOpenfaasIngressYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "venafi-tpp", "openfaas")
+	templBytes, _ := buildOpenfaasIngressYAML("openfaas.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "venafi-tpp", "openfaas")
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
@@ -131,9 +132,10 @@ metadata:
   annotations:
     cert-manager.io/issuer: venafi-tpp
     kubernetes.io/ingress.class: traefik
+    cert-manager.io/common-name: openfaas.example.com
 spec:
   rules:
-  - host: openfaas.subdomain.example.com
+  - host: openfaas.example.com
     http:
       paths:
       - backend:
@@ -142,7 +144,7 @@ spec:
         path: /
   tls:
   - hosts:
-    - openfaas.subdomain.example.com
+    - openfaas.example.com
     secretName: openfaas-gateway
 `
 
