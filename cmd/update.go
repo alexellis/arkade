@@ -14,6 +14,7 @@ func MakeUpdate() *cobra.Command {
 		Use:          "update",
 		Short:        "Print update instructions",
 		Example:      `  arkade update`,
+		Aliases:      []string{"u"},
 		SilenceUsage: false,
 	}
 	command.Run = func(cmd *cobra.Command, args []string) {
