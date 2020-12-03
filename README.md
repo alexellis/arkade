@@ -14,9 +14,9 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 
 With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
 
-## Value and usefulness
+## The value to your workflow
 
-If you think this project is useful and has value to your workflow, then please become a GitHub Sponsor and find a tier that works for your budget.
+If you're a user or find value in this project for your workflow, then support its ongoing development and support on GitHub.
 
 * [Sponsor on GitHub](https://github.com/sponsors/alexellis/)
 
