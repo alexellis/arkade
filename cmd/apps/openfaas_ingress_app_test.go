@@ -36,7 +36,7 @@ spec:
 	}
 }
 
-func Test_buildYAML_IngressTakesEmailOverride(t *testing.T) {
+func Test_buildYAML_IssuerTakesEmailOverride(t *testing.T) {
 	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false, "openfaas")
 	var want = `
 apiVersion: cert-manager.io/v1
@@ -98,6 +98,38 @@ metadata:
   namespace: openfaas
   annotations:
     cert-manager.io/issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: openfaas.subdomain.example.com
+    http:
+      paths:
+      - backend:
+          serviceName: gateway
+          servicePort: 8080
+        path: /
+  tls:
+  - hosts:
+    - openfaas.subdomain.example.com
+    secretName: openfaas-gateway
+`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+	}
+}
+
+func Test_buildIngress_WithCustomIssuername(t *testing.T) {
+	templBytes, _ := buildOpenfaasIngressYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "venafi-tpp", "openfaas")
+	var want = `
+apiVersion: extensions/v1beta1 
+kind: Ingress
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+  annotations:
+    cert-manager.io/issuer: venafi-tpp
     kubernetes.io/ingress.class: traefik
 spec:
   rules:
