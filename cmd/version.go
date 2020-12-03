@@ -25,6 +25,7 @@ func MakeVersion() *cobra.Command {
 		Use:          "version",
 		Short:        "Print the version",
 		Example:      `  arkade version`,
+		Aliases:      []string{"v"},
 		SilenceUsage: false,
 	}
 	command.Run = func(cmd *cobra.Command, args []string) {

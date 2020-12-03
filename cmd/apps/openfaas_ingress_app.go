@@ -37,10 +37,12 @@ type inputData struct {
 //MakeInstallOpenFaaSIngess will install a clusterissuer and request a cert from certmanager for the domain you specify
 func MakeInstallOpenFaaSIngress() *cobra.Command {
 	var openfaasIngress = &cobra.Command{
-		Use:          "openfaas-ingress",
-		Short:        "Install openfaas ingress with TLS",
-		Long:         `Install openfaas ingress. Requires cert-manager 0.11.0 or higher installation in the cluster. Please set --domain to your custom domain and set --email to your email - this email is used by letsencrypt for domain expiry etc.`,
-		Example:      `  arkade install openfaas-ingress --domain openfaas.example.com --email openfaas@example.com`,
+		Use:   "openfaas-ingress",
+		Short: "Install openfaas ingress with TLS",
+		Long:  `Install openfaas ingress. Requires cert-manager 1.0.0+ the cluster.`,
+		Example: `  arkade install openfaas-ingress \
+  --domain openfaas.example.com \
+  --email openfaas@example.com`,
 		SilenceUsage: true,
 	}
 

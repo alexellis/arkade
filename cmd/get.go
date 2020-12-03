@@ -40,7 +40,7 @@ and provides a fast and easy alternative to a package manager.`,
   # Get a complete list of CLIs to download:
   arkade get --help`,
 		SilenceUsage: true,
-		Aliases:      []string{"g"},
+		Aliases:      []string{"g", "d", "download"},
 		ValidArgs:    validToolOptions,
 	}
 
