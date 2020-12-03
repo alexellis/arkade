@@ -324,7 +324,14 @@ arkade VENDOR install PRODUCT
 arkade acmeco install dashboard
 ```
 
-Email [sales@openfaas.com](mailto:sales@openfaas.com) to find out more.
+Current sponsored apps include [Venafi](https://venafi.com) for Machine Identity:
+
+```bash
+arkade venafi install --help
+arkade venafi info --help
+```
+
+[Contact us](mailto:sales@openfaas.com) to find out how you can have your Sponsored App added to arkade.
 
 ### How does `arkade` compare to `helm`?
 
