@@ -18,8 +18,9 @@ type ArkadeApp struct {
 
 func MakeInstall() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   "install",
-		Short: "Install Kubernetes apps from helm charts or YAML files",
+		Use:     "install",
+		Short:   "Install Kubernetes apps from helm charts or YAML files",
+		Aliases: []string{"i"},
 		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
 command. 
 

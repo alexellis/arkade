@@ -15,7 +15,7 @@ func MakeInfo() *cobra.Command {
 		Use:     "info",
 		Short:   "Find info about a Kubernetes app",
 		Long:    "Find info about how to use the installed Kubernetes app",
-		Aliases: []string{"i"},
+		Aliases: []string{"f"},
 		Example: `  arkade info [APP]
 arkade info openfaas
 arkade info inlets-operator
