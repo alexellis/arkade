@@ -10,31 +10,9 @@ import (
 	"testing"
 )
 
-func Test_buildYAML_SubsitutesDomainEmailAndIngress(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false)
+func Test_buildYAML_Issuer(t *testing.T) {
+	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false, "openfaas")
 	var want = `
-apiVersion: extensions/v1beta1 
-kind: Ingress
-metadata:
-  name: openfaas-gateway
-  namespace: openfaas
-  annotations:
-    cert-manager.io/issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-  - host: openfaas.subdomain.example.com
-    http:
-      paths:
-      - backend:
-          serviceName: gateway
-          servicePort: 8080
-        path: /
-  tls:
-  - hosts:
-    - openfaas.subdomain.example.com
-    secretName: openfaas-gateway
----
 apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -54,12 +32,64 @@ spec:
 
 	got := string(templBytes)
 	if want != got {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
 	}
 }
 
-func Test_buildYAMLStaging(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false)
+func Test_buildYAML_IngressTakesEmailOverride(t *testing.T) {
+	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false, "openfaas")
+	var want = `
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-prod
+  namespace: openfaas
+spec:
+  acme:
+    email: openfaas@subdomain.example.com
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: example-issuer-account-key
+    solvers:
+    - selector: {}
+      http01:
+        ingress:
+          class: traefik`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+	}
+}
+
+func Test_buildIssuerYAMLStaging(t *testing.T) {
+	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "openfaas")
+	var want = `
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: letsencrypt-staging
+  namespace: openfaas
+spec:
+  acme:
+    email: openfaas@subdomain.example.com
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: example-issuer-account-key
+    solvers:
+    - selector: {}
+      http01:
+        ingress:
+          class: traefik`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+	}
+}
+
+func Test_buildIngressYAMLStaging(t *testing.T) {
+	templBytes, _ := buildOpenfaasIngressYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "", "openfaas")
 	var want = `
 apiVersion: extensions/v1beta1 
 kind: Ingress
@@ -82,12 +112,21 @@ spec:
   - hosts:
     - openfaas.subdomain.example.com
     secretName: openfaas-gateway
----
+`
+
+	got := string(templBytes)
+	if want != got {
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+	}
+}
+
+func Test_buildYAMLClusterIssuer_HasNoNamespace(t *testing.T) {
+	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, true, "openfaas")
+	var want = `
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: letsencrypt-staging
-  namespace: openfaas
 spec:
   acme:
     email: openfaas@subdomain.example.com
@@ -102,64 +141,16 @@ spec:
 
 	got := string(templBytes)
 	if want != got {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
 	}
 }
-
-func Test_buildYAMLClusterIssuer(t *testing.T) {
-	templBytes, _ := buildYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, true)
-	var want = `
-apiVersion: extensions/v1beta1 
-kind: Ingress
-metadata:
-  name: openfaas-gateway
-  namespace: openfaas
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-    kubernetes.io/ingress.class: traefik
-spec:
-  rules:
-  - host: openfaas.subdomain.example.com
-    http:
-      paths:
-      - backend:
-          serviceName: gateway
-          servicePort: 8080
-        path: /
-  tls:
-  - hosts:
-    - openfaas.subdomain.example.com
-    secretName: openfaas-gateway
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-prod
-spec:
-  acme:
-    email: openfaas@subdomain.example.com
-    server: https://acme-v02.api.letsencrypt.org/directory
-    privateKeySecretRef:
-      name: example-issuer-account-key
-    solvers:
-    - selector: {}
-      http01:
-        ingress:
-          class: traefik`
-
-	got := string(templBytes)
-	if want != got {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
-	}
-}
-
 func Test_writeTempFile_writes_to_tmp(t *testing.T) {
 	var want = "some input string"
 	tmpLocation, _ := writeTempFile([]byte(want), "tmp_file_name.yaml")
 
 	got, _ := ioutil.ReadFile(tmpLocation)
 	if string(got) != want {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
 	}
 }
 
@@ -169,6 +160,6 @@ func Test_createTempDirectory_creates(t *testing.T) {
 	got, _ := createTempDirectory(".arkade")
 
 	if got != want {
-		t.Errorf("suffix, want: %q, got: %q", want, got)
+		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
 	}
 }
