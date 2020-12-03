@@ -34,7 +34,7 @@ type inputData struct {
 	Namespace        string
 }
 
-//MakeInstallOpenFaaSIngess will install a clusterissuer and request a cert from certmanager for the domain you specify
+// MakeInstallOpenFaaSIngress will install a clusterissuer and request a cert from certmanager for the domain you specify
 func MakeInstallOpenFaaSIngress() *cobra.Command {
 	var openfaasIngress = &cobra.Command{
 		Use:   "openfaas-ingress",
@@ -297,6 +297,7 @@ metadata:
     cert-manager.io/issuer: {{.IssuerName}}
 {{- end }}
     kubernetes.io/ingress.class: {{.IngressClass}}
+    cert-manager.io/common-name: {{.IngressDomain}}
 spec:
   rules:
   - host: {{.IngressDomain}}
