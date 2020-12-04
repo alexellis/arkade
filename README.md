@@ -16,7 +16,7 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
 
 ## Built for developers by developers
 
-<a href="https://github.com/sponsors/inlets/">
+<a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
 </a>
 
