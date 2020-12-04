@@ -72,7 +72,7 @@ func MakeInstallJenkins() *cobra.Command {
 			return err
 		}
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
+		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
 		if err != nil {
 			return err
 		}

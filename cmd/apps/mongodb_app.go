@@ -71,7 +71,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com/", updateRepo)
+		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable/", updateRepo)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
