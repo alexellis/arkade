@@ -91,7 +91,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = helm.AddHelmRepo("stable", "https://kubernetes-charts.storage.googleapis.com", updateRepo)
+		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
 		if err != nil {
 			return err
 		}
