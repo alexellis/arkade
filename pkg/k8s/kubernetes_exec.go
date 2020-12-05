@@ -5,6 +5,7 @@ package k8s
 
 import (
 	"fmt"
+	"io"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/types"
@@ -19,7 +20,18 @@ func GetNodeArchitecture() string {
 
 	return arch
 }
+func KubectlTaskStdin(reader io.Reader, parts ...string) (execute.ExecResult, error) {
+	task := execute.ExecTask{
+		Command:     "kubectl",
+		Args:        parts,
+		StreamStdio: false,
+		Stdin:       reader,
+	}
 
+	res, err := task.Execute()
+
+	return res, err
+}
 func KubectlTask(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
 		Command:     "kubectl",
