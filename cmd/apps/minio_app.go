@@ -11,7 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -39,16 +41,66 @@ func MakeInstallMinio() *cobra.Command {
 	minio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
+	minio.PreRunE = func(command *cobra.Command, args []string) error {
+		_, err := command.Flags().GetString("kubeconfig")
+		if err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("wait")
+		if err != nil {
+			return fmt.Errorf("error with --wait usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("persistence")
+		if err != nil {
+			return fmt.Errorf("error with --persistence usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("namespace")
+		if err != nil {
+			return fmt.Errorf("error with --namespace usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("update-repo")
+		if err != nil {
+			return fmt.Errorf("error with --update-repo usage: %s", err)
+		}
+
+		_, err = command.Flags().GetStringArray("set")
+		if err != nil {
+			return fmt.Errorf("error with --set usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("access-key")
+		if err != nil {
+			return fmt.Errorf("error with --access-key usage: %s", err)
+		}
+		_, err = command.Flags().GetString("secret-key")
+		if err != nil {
+			return fmt.Errorf("error with --secret-key usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("distributed")
+		if err != nil {
+			return fmt.Errorf("error with --distributed usage: %s", err)
+		}
+
+		return nil
+	}
+
 	minio.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
 		wait, _ := command.Flags().GetBool("wait")
+		updateRepo, _ := command.Flags().GetBool("update-repo")
+		ns, _ := command.Flags().GetString("namespace")
+		persistence, _ := command.Flags().GetBool("persistence")
+		accessKey, _ := command.Flags().GetString("access-key")
+		secretKey, _ := command.Flags().GetString("secret-key")
+		dist, _ := command.Flags().GetBool("distributed")
+		customFlags, _ := command.Flags().GetStringArray("set")
 
-		updateRepo, _ := minio.Flags().GetBool("update-repo")
-
+		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
@@ -68,33 +120,7 @@ func MakeInstallMinio() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := minio.Flags().GetString("namespace")
-
-		if ns != "default" {
-			return fmt.Errorf("please use the helm chart if you'd like to change the namespace to %s", ns)
-		}
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
-		if err != nil {
-			return err
-		}
-
-		err = helm.FetchChart("stable/minio", defaultVersion)
-
-		if err != nil {
-			return err
-		}
-
-		persistence, _ := minio.Flags().GetBool("persistence")
-
 		overrides := map[string]string{}
-		accessKey, _ := minio.Flags().GetString("access-key")
-		secretKey, _ := minio.Flags().GetString("secret-key")
 
 		gen, err := password.NewGenerator(&password.GeneratorInput{
 			Symbols: "+/",
@@ -112,34 +138,33 @@ func MakeInstallMinio() *cobra.Command {
 			secretKey, err = gen.Generate(40, 10, 5, false, true)
 		}
 
-		if err != nil {
-			return err
-		}
-
 		overrides["accessKey"] = accessKey
 		overrides["secretKey"] = secretKey
-
 		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
-
-		if dist, _ := minio.Flags().GetBool("distributed"); dist {
+		if dist {
 			overrides["mode"] = "distributed"
-		}
-
-		customFlags, err := minio.Flags().GetStringArray("set")
-		if err != nil {
-			return fmt.Errorf("error with --set usage: %s", err)
 		}
 
 		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/minio", ns,
-			"values.yaml",
-			defaultVersion,
-			overrides,
-			wait)
+		minioAppOptions := types.DefaultInstallOptions().
+			WithNamespace(ns).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("minio/minio").
+			WithHelmURL("https://helm.min.io/").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath).
+			WithWait(wait)
 
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		if err != nil {
+			return err
+		}
+
+		_, err = apps.MakeInstallChart(minioAppOptions)
 		if err != nil {
 			return err
 		}
