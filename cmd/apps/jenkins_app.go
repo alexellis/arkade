@@ -11,7 +11,9 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
@@ -35,14 +37,47 @@ func MakeInstallJenkins() *cobra.Command {
 	jenkins.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
-	jenkins.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath := config.GetDefaultKubeconfig()
-		wait, _ := command.Flags().GetBool("wait")
-
-		if command.Flags().Changed("kubeconfig") {
-			kubeConfigPath, _ = command.Flags().GetString("kubeconfig")
+	jenkins.PreRunE = func(command *cobra.Command, args []string) error {
+		_, err := command.Flags().GetString("kubeconfig")
+		if err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %s", err)
 		}
+
+		_, err = command.Flags().GetBool("wait")
+		if err != nil {
+			return fmt.Errorf("error with --wait usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("persistence")
+		if err != nil {
+			return fmt.Errorf("error with --persistence usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("namespace")
+		if err != nil {
+			return fmt.Errorf("error with --namespace usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("update-repo")
+		if err != nil {
+			return fmt.Errorf("error with --update-repo usage: %s", err)
+		}
+
+		_, err = command.Flags().GetStringArray("set")
+		if err != nil {
+			return fmt.Errorf("error with --set usage: %s", err)
+		}
+
+		return nil
+	}
+
+	jenkins.RunE = func(command *cobra.Command, args []string) error {
+		wait, _ := command.Flags().GetBool("wait")
+		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		updateRepo, _ := jenkins.Flags().GetBool("update-repo")
+		ns, _ := command.Flags().GetString("namespace")
+		persistence, _ := command.Flags().GetBool("persistence")
+		customFlags, _ := command.Flags().GetStringArray("set")
 
 		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
@@ -65,44 +100,30 @@ func MakeInstallJenkins() *cobra.Command {
 
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		ns, _ := jenkins.Flags().GetString("namespace")
+		overrides := map[string]string{}
+		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
+
+		// set custom flags
+		if err := mergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
+
+		jenkinsAppOptions := types.DefaultInstallOptions().
+			WithNamespace(ns).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("jenkins/jenkins").
+			WithHelmURL("https://charts.jenkins.io/").
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath).
+			WithWait(wait)
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
 		if err != nil {
 			return err
 		}
 
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
-		if err != nil {
-			return err
-		}
-
-		err = helm.FetchChart("stable/jenkins", defaultVersion)
-
-		if err != nil {
-			return err
-		}
-
-		persistence, _ := jenkins.Flags().GetBool("persistence")
-		overrides := map[string]string{}
-
-		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
-
-		customFlags, err := jenkins.Flags().GetStringArray("set")
-		if err != nil {
-			return fmt.Errorf("error with --set usage: %s", err)
-		}
-
-		if err := mergeFlags(overrides, customFlags); err != nil {
-			return err
-		}
-
-		err = helm.Helm3Upgrade("stable/jenkins", ns,
-			"values.yaml",
-			defaultVersion,
-			overrides,
-			wait)
-
+		_, err = apps.MakeInstallChart(jenkinsAppOptions)
 		if err != nil {
 			return err
 		}
