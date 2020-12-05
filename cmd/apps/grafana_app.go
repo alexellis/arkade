@@ -9,12 +9,13 @@ import (
 	"os"
 	"path"
 
-	"github.com/alexellis/arkade/pkg/k8s"
-
 	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +31,42 @@ func MakeInstallGrafana() *cobra.Command {
 	grafana.Flags().StringP("namespace", "n", "grafana", "The namespace to install grafana")
 	grafana.Flags().Bool("update-repo", true, "Update the helm repo")
 	grafana.Flags().Bool("persistence", false, "Make grafana persistent")
+	grafana.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
+
+	grafana.PreRunE = func(command *cobra.Command, args []string) error {
+		_, err := command.Flags().GetString("kubeconfig")
+		if err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("wait")
+		if err != nil {
+			return fmt.Errorf("error with --wait usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("persistence")
+		if err != nil {
+			return fmt.Errorf("error with --persistence usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("namespace")
+		if err != nil {
+			return fmt.Errorf("error with --namespace usage: %s", err)
+		}
+
+		_, err = command.Flags().GetBool("update-repo")
+		if err != nil {
+			return fmt.Errorf("error with --update-repo usage: %s", err)
+		}
+
+		_, err = command.Flags().GetStringArray("set")
+		if err != nil {
+			return fmt.Errorf("error with --set usage: %s", err)
+		}
+
+		return nil
+	}
 
 	grafana.RunE = func(command *cobra.Command, args []string) error {
 
@@ -37,13 +74,15 @@ func MakeInstallGrafana() *cobra.Command {
 
 		// Get all flags
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
 		wait, _ := command.Flags().GetBool("wait")
 		persistence, _ := command.Flags().GetBool("persistence")
 		namespace, _ := command.Flags().GetString("namespace")
+		updateRepo, _ := command.Flags().GetBool("update-repo")
+		customFlags, _ := command.Flags().GetStringArray("set")
 
+		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
 		// initialize client env
 		userPath, err := config.InitUserDir()
 		if err != nil {
@@ -62,12 +101,6 @@ func MakeInstallGrafana() *cobra.Command {
 			return err
 		}
 
-		updateRepo, _ := grafana.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
-		if err != nil {
-			return err
-		}
-
 		// create the namespace
 		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
 		if nsErr != nil {
@@ -77,12 +110,6 @@ func MakeInstallGrafana() *cobra.Command {
 		// ignore errors
 		if nsRes.ExitCode != 0 {
 			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
-		}
-
-		// download the chart
-		err = helm.FetchChart("stable/grafana", chartVersion)
-		if err != nil {
-			return err
 		}
 
 		// define the values to override
@@ -97,13 +124,28 @@ func MakeInstallGrafana() *cobra.Command {
 			overrides["persistence.size"] = "2Gi"
 		}
 
-		// install the chart
-		err = helm.Helm3Upgrade("stable/grafana", namespace,
-			"values.yaml",
-			chartVersion,
-			overrides,
-			wait)
+		// set custom flags
+		if err := mergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
 
+		grafanaAppOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmPath(path.Join(userPath, ".helm")).
+			WithHelmRepo("grafana/grafana").
+			WithHelmURL("https://grafana.github.io/helm-charts/").
+			WithHelmRepoVersion(chartVersion).
+			WithOverrides(overrides).
+			WithHelmUpdateRepo(updateRepo).
+			WithKubeconfigPath(kubeConfigPath).
+			WithWait(wait)
+
+		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		if err != nil {
+			return err
+		}
+
+		_, err = apps.MakeInstallChart(grafanaAppOptions)
 		if err != nil {
 			return err
 		}

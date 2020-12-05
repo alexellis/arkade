@@ -68,6 +68,11 @@ func (o *InstallerOptions) WithHelmRepo(s string) *InstallerOptions {
 	return o
 }
 
+func (o *InstallerOptions) WithHelmRepoVersion(s string) *InstallerOptions {
+	o.Helm.Repo.Version = s
+	return o
+}
+
 func (o *InstallerOptions) WithHelmURL(s string) *InstallerOptions {
 	o.Helm.Repo.URL = s
 	return o
