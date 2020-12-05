@@ -4,7 +4,9 @@
 package apps
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -46,6 +48,29 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
+	inletsOperator.PreRunE = func(command *cobra.Command, args []string) error {
+		tokenFileName, _ := command.Flags().GetString("token-file")
+		tokenString, _ := command.Flags().GetString("token")
+
+		if len(tokenFileName) > 0 && len(tokenString) > 0 {
+			return fmt.Errorf(`--token-file or --access-key is a required field for your cloud API token or service account JSON`)
+		}
+		if len(tokenFileName) > 0 {
+			if _, err := os.Stat(tokenFileName); err != nil {
+				return err
+			}
+		}
+
+		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
+		if len(secretKeyFile) > 0 {
+			if _, err := os.Stat(secretKeyFile); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
@@ -65,11 +90,8 @@ func MakeInstallInletsOperator() *cobra.Command {
 		}
 
 		clientArch, clientOS := env.GetClientArch()
-
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-
 		log.Printf("User dir established as: %s\n", userPath)
-
 		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
@@ -101,42 +123,40 @@ func MakeInstallInletsOperator() *cobra.Command {
 		tokenFileName, _ := command.Flags().GetString("token-file")
 		tokenString, _ := command.Flags().GetString("token")
 
-		var accessKeyFrom, accessKeyValue string
+		s := Secret{
+			Namespace: namespace,
+			Name:      "inlets-access-key",
+		}
 		if len(tokenFileName) > 0 {
-			accessKeyFrom = "--from-file"
-			accessKeyValue = tokenFileName
-		} else if len(tokenString) > 0 {
-			accessKeyFrom = "--from-literal"
-			accessKeyValue = tokenString
+			s.Literals = append(s.Literals, SecretLiteral{
+				Name:     "inlets-access-key",
+				FromFile: tokenFileName,
+			})
 		} else {
-			return fmt.Errorf(`--token-file or --access-key is a required field for your cloud API token or service account JSON`)
+			s.Literals = append(s.Literals, SecretLiteral{
+				Name:      "inlets-access-key",
+				FromValue: tokenString,
+			})
 		}
 
-		res, err := k8s.KubectlTask("create", "secret", "generic",
-			"inlets-access-key",
-			"--namespace="+namespace,
-			accessKeyFrom, "inlets-access-key="+accessKeyValue)
-
+		err = applySecret(s)
 		if err != nil {
 			return err
-		} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
-			fmt.Println("[Warning] secret inlets-access-key already exists and will be used.")
-		} else if len(res.Stderr) > 0 {
-			return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 		}
 
 		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
-
 		if len(secretKeyFile) > 0 {
-			res, err := k8s.KubectlTask("create", "secret", "generic",
-				"inlets-secret-key",
-				"--namespace="+namespace,
-				"--from-file", "inlets-secret-key="+secretKeyFile)
-			if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "AlreadyExists") {
-				fmt.Println("[Warning] secret inlets-access-key already exists and will be used.")
-			} else if len(res.Stderr) > 0 {
-				return fmt.Errorf("error from kubectl\n%q", res.Stderr)
-			} else if err != nil {
+			s := Secret{
+				Namespace: namespace,
+				Name:      "inlets-secret-key",
+			}
+			s.Literals = append(s.Literals, SecretLiteral{
+				Name:     "inlets-access-key",
+				FromFile: secretKeyFile,
+			})
+
+			err = applySecret(s)
+			if err != nil {
 				return err
 			}
 		}
@@ -305,3 +325,46 @@ const inletsOperatorPostInstallMsg = `==========================================
 = inlets-operator has been installed.                                  =
 =======================================================================` +
 	"\n\n" + InletsOperatorInfoMsg + "\n\n" + pkg.ThanksForUsing
+
+type Secret struct {
+	Namespace string
+	Name      string
+	Stdin     io.Reader
+	Literals  []SecretLiteral
+}
+
+type SecretLiteral struct {
+	Name      string
+	FromFile  string
+	FromValue string
+}
+
+func applySecret(s Secret) error {
+	parts := []string{"create", "secret", "generic", s.Name, "--dry-run=client", "-o=yaml"}
+
+	for _, l := range s.Literals {
+		if len(l.FromFile) > 0 {
+			parts = append(parts, "--from-file", s.Name+"="+l.FromFile)
+		} else {
+			parts = append(parts, "--from-literal", s.Name+"="+l.FromValue)
+		}
+	}
+
+	res, err := k8s.KubectlTask(parts...)
+
+	if err != nil {
+		return err
+	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
+	}
+
+	manifest := bytes.NewReader([]byte(res.Stdout))
+	res, err = k8s.KubectlTaskStdin(manifest, "apply", "-f", "-")
+
+	if err != nil {
+		return err
+	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
+	}
+	return nil
+}
