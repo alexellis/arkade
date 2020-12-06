@@ -759,7 +759,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	{{- else if eq .Arch "aarch64" -}}
 	{{.Name}}_arm64
 	{{- else -}}
-	{{.Name}}
+	{{.Name}}_linux_amd64
 	{{- end -}}`,
 		})
 	tools = append(tools,
