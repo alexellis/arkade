@@ -34,10 +34,10 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'packet', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
-	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Packet)")
-	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Packet and Scaleway)")
+	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Equinix Metal)")
+	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Equinix Metal and Scaleway)")
 	inletsOperator.Flags().String("organization-id", "", "The organization id (Scaleway)")
 	inletsOperator.Flags().String("subscription-id", "", "The subscription id (Azure)")
 	inletsOperator.Flags().StringP("token-file", "t", "", "Text file containing token or a service account JSON file")
@@ -213,7 +213,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	}
 
 	providers := []string{
-		"digitalocean", "packet", "ec2", "scaleway", "civo", "gce", "linode", "azure",
+		"digitalocean", "equinix-metal", "ec2", "scaleway", "civo", "gce", "linode", "azure",
 	}
 
 	found := false
@@ -246,14 +246,14 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 		if len(gceProjectID) == 0 {
 			return overrides, fmt.Errorf("project-id is required for provider %s", provider)
 		}
-	} else if provider == "packet" {
-		packetProjectID, err := command.Flags().GetString("project-id")
+	} else if provider == "equinix-metal" {
+		equinixMetalProjectID, err := command.Flags().GetString("project-id")
 		if err != nil {
 			return overrides, err
 		}
-		overrides["projectID"] = packetProjectID
+		overrides["projectID"] = equinixMetalProjectID
 
-		if len(packetProjectID) == 0 {
+		if len(equinixMetalProjectID) == 0 {
 			return overrides, fmt.Errorf("project-id is required for provider %s", provider)
 		}
 
