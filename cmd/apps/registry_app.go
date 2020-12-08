@@ -9,6 +9,8 @@ import (
 	"log"
 	"os"
 	"path"
+	"strconv"
+	"strings"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -36,6 +38,7 @@ func MakeInstallRegistry() *cobra.Command {
 	registry.Flags().StringP("username", "u", "admin", "Username for the registry")
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
 	registry.Flags().StringP("write-file", "w", "", "Write generated password to this file")
+	registry.Flags().Bool("persistence", false, "Enable persistence")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -103,9 +106,11 @@ func MakeInstallRegistry() *cobra.Command {
 			return err
 		}
 
+		persistence, _ := registry.Flags().GetBool("persistence")
+
 		overrides := map[string]string{}
 
-		overrides["persistence.enabled"] = "false"
+		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
 		overrides["secrets.htpasswd"] = string(htPasswd)
 
 		arch := k8s.GetNodeArchitecture()
