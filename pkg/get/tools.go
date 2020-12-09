@@ -273,7 +273,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	tools = append(tools,
 		Tool{
 			Owner:   "linkerd",
-			Repo:    "linkerd",
+			Repo:    "linkerd2",
 			Name:    "linkerd2",
 			Version: "stable-2.9.0",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
