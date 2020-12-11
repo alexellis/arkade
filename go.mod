@@ -1,6 +1,6 @@
 module github.com/alexellis/arkade
 
-go 1.13
+go 1.15
 
 require (
 	github.com/alexellis/go-execute v0.0.0-20201205082949-69a2cde04f4f
