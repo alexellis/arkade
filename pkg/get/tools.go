@@ -188,6 +188,25 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 	{{.Name}}
 	{{- end -}}`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner: "alexellis",
+			Repo:  "arkade",
+			Name:  "arkade",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+		{{.Name}}.exe
+		{{- else if eq .OS "darwin" -}}
+		{{.Name}}-darwin
+		{{- else if eq .Arch "armv6l" -}}
+		{{.Name}}-armhf
+		{{- else if eq .Arch "armv7l" -}}
+		{{.Name}}-armhf
+		{{- else if eq .Arch "aarch64" -}}
+		{{.Name}}-arm64
+		{{- else -}}
+		{{.Name}}
+		{{- end -}}`,
+		})
 
 	tools = append(tools,
 		Tool{
