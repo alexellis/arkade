@@ -981,3 +981,48 @@ func Test_getBinaryURL_NoSlashInDownloadPath(t *testing.T) {
 		t.Fatalf("want %s, but got: %s", want, got)
 	}
 }
+
+func Test_DownloadMinio(t *testing.T) {
+	tools := MakeTools()
+	name := "mc"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:   "ming",
+			arch: "amd64",
+			url:  `https://dl.min.io/client/mc/release/windows-amd64/mc.exe`,
+		},
+		{
+			os:   "linux",
+			arch: "amd64",
+			url:  `https://dl.min.io/client/mc/release/linux-amd64/mc`,
+		},
+		{
+			os:   "linux",
+			arch: "arm",
+			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
+		},
+		{
+			os:   "linux",
+			arch: "arm64",
+			url:  `https://dl.min.io/client/mc/release/linux-arm64/mc`,
+		},
+		{
+			os:   "darwin",
+			arch: "amd64",
+			url:  `https://dl.min.io/client/mc/release/darwin-amd64/mc`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, "")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

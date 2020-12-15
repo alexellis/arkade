@@ -836,12 +836,42 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Repo:  "opa",
 			Name:  "opa",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-		{{.Name}}_windows_amd64.exe
-		{{- else if eq .OS "darwin" -}}
-		{{.Name}}_darwin_amd64
-		{{- else -}}
-		{{.Name}}_linux_amd64
-		{{- end -}}`,
+			{{.Name}}_windows_amd64.exe
+			{{- else if eq .OS "darwin" -}}
+			{{.Name}}_darwin_amd64
+			{{- else -}}
+			{{.Name}}_linux_amd64
+			{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner: "minio",
+			Repo:  "mc",
+			Name:  "mc",
+			URLTemplate: `{{$arch := .Arch}}
+			{{ if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "armv6l" -}}
+			{$arch = "arm"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{$arch = "arm"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{$arch = "arm64"}}
+			{{- end -}}
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+			{{$ext := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+			https://dl.min.io/client/{{.Repo}}/release/{{$osStr}}-{{$arch}}/{{.Name}}{{$ext}}`,
 		})
 
 	return tools
