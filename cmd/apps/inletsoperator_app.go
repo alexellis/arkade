@@ -5,12 +5,14 @@ package apps
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -339,8 +341,45 @@ type SecretLiteral struct {
 	FromValue string
 }
 
+type K8sVer struct {
+	ClientVersion struct {
+		Major string `json:"major"`
+		Minor string `json:"minor"`
+	} `json:"clientVersion"`
+}
+
+func getKubectlVersion() (int, int, error) {
+	res, err := k8s.KubectlTask("version", "--client", "-o=json")
+	if err != nil {
+		return 0, 0, err
+	}
+
+	if err != nil {
+		return 0, 0, err
+	}
+
+	v := K8sVer{}
+	if err := json.Unmarshal([]byte(res.Stdout), &v); err != nil {
+		return 0, 0, err
+	}
+
+	major, _ := strconv.Atoi(v.ClientVersion.Major)
+	minor, _ := strconv.Atoi(v.ClientVersion.Minor)
+	return major, minor, nil
+
+}
 func applySecret(s Secret) error {
-	parts := []string{"create", "secret", "generic", s.Name, "--dry-run=client", "-o=yaml"}
+
+	_, minor, err := getKubectlVersion()
+	if err != nil {
+		return err
+	}
+	dryRunSuffix := ""
+	if minor >= 19 {
+		dryRunSuffix = "=client"
+	}
+
+	parts := []string{"create", "secret", "generic", s.Name, "--dry-run" + dryRunSuffix, "-o=yaml"}
 
 	for _, l := range s.Literals {
 		if len(l.FromFile) > 0 {
@@ -351,7 +390,6 @@ func applySecret(s Secret) error {
 	}
 
 	res, err := k8s.KubectlTask(parts...)
-
 	if err != nil {
 		return err
 	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
