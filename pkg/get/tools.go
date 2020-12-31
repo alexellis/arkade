@@ -456,13 +456,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$extStr}}`,
 		})
 
-	// https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip
+	// https://releases.hashicorp.com/terraform/0.14.3/terraform_0.14.3_linux_amd64.zip
 	tools = append(tools,
 		Tool{
 			Owner:   "hashicorp",
 			Repo:    "terraform",
 			Name:    "terraform",
-			Version: "0.13.1",
+			Version: "0.14.3",
 			URLTemplate: `{{$arch := .Arch}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -504,7 +504,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:   "hashicorp",
 			Repo:    "packer",
 			Name:    "packer",
-			Version: "1.6.5",
+			Version: "1.6.6",
 			URLTemplate: `{{$arch := .Arch}}
 
 {{- if eq .Arch "x86_64" -}}
