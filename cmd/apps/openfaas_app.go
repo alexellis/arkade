@@ -56,6 +56,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set gateway.replicas=2)")
 
+	openfaas.Flags().String("license-file", "", "Path to OpenFaaS Pro license file")
+
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
 
@@ -149,6 +151,21 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		if logUrl != "" {
 			overrides["gateway.logsProviderURL"] = logUrl
+		}
+
+		// If license file is sent, then we assume to set the --pro flag and create the secret
+		licenseFile, err := command.Flags().GetString("license-file")
+		if err != nil {
+			return err
+		}
+		if len(licenseFile) != 0 {
+			overrides["openfaasPRO"] = "true"
+			secretData := []types.SecretsData{
+				{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
+			}
+
+			proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
+			appOpts.WithSecret(proLicense)
 		}
 
 		createOperator, err := command.Flags().GetBool("operator")
