@@ -753,11 +753,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	{{- else if eq .OS "darwin" -}}
 	{{.Name}}_darwin_amd64
 	{{- else if eq .Arch "armv6l" -}}
-	{{.Name}}_arm
+	{{.Name}}_linux_arm
 	{{- else if eq .Arch "armv7l" -}}
-	{{.Name}}_arm
+	{{.Name}}_linux_arm
 	{{- else if eq .Arch "aarch64" -}}
-	{{.Name}}_arm64
+	{{.Name}}_linux_arm64
 	{{- else -}}
 	{{.Name}}_linux_amd64
 	{{- end -}}`,

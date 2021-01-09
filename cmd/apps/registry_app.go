@@ -106,7 +106,10 @@ func MakeInstallRegistry() *cobra.Command {
 			return err
 		}
 
-		persistence, _ := registry.Flags().GetBool("persistence")
+		persistence, err := registry.Flags().GetBool("persistence")
+		if err != nil {
+			return err
+		}
 
 		overrides := map[string]string{}
 
