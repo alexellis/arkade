@@ -182,8 +182,7 @@ ACCESSKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.accesskey}" 
 SECRETKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.secretkey}" | base64 --decode; echo)
 
 # Get the Minio Client
-curl -SLf https://dl.min.io/client/mc/release/` + strings.ToLower(clientOS) + `-amd64/mc \
-  && chmod +x mc
+arkade get mc
 
 # Add a host
 mc config host add minio http://127.0.0.1:9000 $ACCESSKEY $SECRETKEY
