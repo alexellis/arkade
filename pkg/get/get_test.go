@@ -1076,3 +1076,44 @@ func Test_DownloadNats(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadLinkerd(t *testing.T) {
+	tools := MakeTools()
+	name := "linkerd2"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "stable-2.9.1",
+			url:     "https://github.com/linkerd/linkerd2/releases/download/stable-2.9.1/linkerd2-cli-stable-2.9.1-windows.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "stable-2.9.1",
+			url:     "https://github.com/linkerd/linkerd2/releases/download/stable-2.9.1/linkerd2-cli-stable-2.9.1-linux-amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "stable-2.9.1",
+			url:     "https://github.com/linkerd/linkerd2/releases/download/stable-2.9.1/linkerd2-cli-stable-2.9.1-darwin"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "stable-2.9.1",
+			url:     "https://github.com/linkerd/linkerd2/releases/download/stable-2.9.1/linkerd2-cli-stable-2.9.1-linux-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

@@ -294,13 +294,15 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "linkerd",
 			Repo:    "linkerd2",
 			Name:    "linkerd2",
-			Version: "stable-2.9.0",
+			Version: "stable-2.9.1",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}-cli-{{.Version}}-windows.exe
 {{- else if eq .OS "darwin" -}}
 {{.Name}}-cli-{{.Version}}-darwin
-{{- else if eq .OS "linux" -}}
-{{.Name}}-cli-{{.Version}}-linux
+{{- else if eq .Arch "x86_64" -}}
+{{.Name}}-cli-{{.Version}}-linux-amd64
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-cli-{{.Version}}-linux-arm64
 {{- end -}}
 `,
 		})
