@@ -23,7 +23,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linkerdVersion = "stable-2.9.0"
+var linkerdVersion = "stable-2.9.1"
 
 func MakeInstallLinkerd() *cobra.Command {
 	var linkerd = &cobra.Command{
