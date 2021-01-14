@@ -5,15 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
@@ -38,20 +33,6 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		namespace, _ := nfsProvisionerApp.Flags().GetString("namespace")
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
-		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
-			return err
-		}
 
 		nfsServer, _ := command.Flags().GetString("nfs-server")
 		nfsPath, _ := command.Flags().GetString("nfs-path")
@@ -84,20 +65,12 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 
 		nfsProvisionerOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("stable/nfs-client-provisioner").
 			WithHelmURL("https://charts.helm.sh/stable").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(nfsProvisionerOptions)
+		_, err := apps.MakeInstallChart(nfsProvisionerOptions)
 		if err != nil {
 			return err
 		}

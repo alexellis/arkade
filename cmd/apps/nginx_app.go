@@ -5,15 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -40,21 +35,10 @@ flag and the ingress-nginx docs for more info`,
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
 
 		wait, _ := command.Flags().GetBool("wait")
 
 		namespace, _ := command.Flags().GetString("namespace")
-
-		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		overrides := map[string]string{}
 
@@ -79,18 +63,13 @@ flag and the ingress-nginx docs for more info`,
 
 		nginxOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("ingress-nginx/ingress-nginx").
 			WithHelmURL("https://kubernetes.github.io/ingress-nginx").
 			WithOverrides(overrides).
 			WithWait(wait).
 			WithKubeconfigPath(kubeConfigPath)
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-		_, err = apps.MakeInstallChart(nginxOptions)
+		_, err := apps.MakeInstallChart(nginxOptions)
 
 		if err != nil {
 			return err

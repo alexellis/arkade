@@ -5,14 +5,10 @@ package apps
 
 import (
 	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -36,20 +32,6 @@ func MakeInstallLoki() *cobra.Command {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		log.Println(kubeConfigPath)
 		namespace, _ := lokiApp.Flags().GetString("namespace")
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
-		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
-			return err
-		}
 
 		persistence, _ := lokiApp.Flags().GetBool("persistence")
 		installGrafana, _ := lokiApp.Flags().GetBool("grafana")
@@ -71,20 +53,12 @@ func MakeInstallLoki() *cobra.Command {
 
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("loki/loki-stack").
 			WithHelmURL("https://grafana.github.io/loki/charts").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(lokiOptions)
+		_, err := apps.MakeInstallChart(lokiOptions)
 		if err != nil {
 			return err
 		}

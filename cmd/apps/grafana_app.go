@@ -5,16 +5,9 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -80,38 +73,6 @@ func MakeInstallGrafana() *cobra.Command {
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 		customFlags, _ := command.Flags().GetStringArray("set")
 
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
-		// initialize client env
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		// create the namespace
-		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil {
-			return nsErr
-		}
-
-		// ignore errors
-		if nsRes.ExitCode != 0 {
-			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
-		}
-
 		// define the values to override
 		// due the missing arm support. datasource and dashboard sidecars are not possible
 		overrides := map[string]string{
@@ -131,7 +92,6 @@ func MakeInstallGrafana() *cobra.Command {
 
 		grafanaAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("grafana/grafana").
 			WithHelmURL("https://grafana.github.io/helm-charts/").
 			WithHelmRepoVersion(chartVersion).
@@ -140,12 +100,7 @@ func MakeInstallGrafana() *cobra.Command {
 			WithKubeconfigPath(kubeConfigPath).
 			WithWait(wait)
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(grafanaAppOptions)
+		_, err := apps.MakeInstallChart(grafanaAppOptions)
 		if err != nil {
 			return err
 		}

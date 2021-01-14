@@ -53,11 +53,6 @@ func (o *InstallerOptions) WithNamespace(namespace string) *InstallerOptions {
 	return o
 }
 
-func (o *InstallerOptions) WithHelmPath(helmPath string) *InstallerOptions {
-	o.Helm.HelmPath = helmPath
-	return o
-}
-
 func (o *InstallerOptions) WithWait(wait bool) *InstallerOptions {
 	o.Helm.Wait = wait
 	return o
