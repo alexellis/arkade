@@ -65,6 +65,18 @@ func Kubectl(parts ...string) error {
 	return nil
 }
 
+func CreateNamespace(namespace string) error {
+	nsRes, nsErr := KubectlTask("create", "namespace", namespace)
+	if nsErr != nil {
+		return nsErr
+	}
+	if nsRes.ExitCode != 0 {
+		fmt.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
+	}
+
+	return nil
+}
+
 func CreateSecret(secret types.K8sSecret) error {
 	secretData, err := flattenSecretData(secret.SecretData)
 	if err != nil {

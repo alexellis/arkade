@@ -5,15 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
@@ -38,16 +33,6 @@ func MakeInstallRedis() *cobra.Command {
 		wait, _ := command.Flags().GetBool("wait")
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		// exit on arm
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
@@ -56,24 +41,9 @@ func MakeInstallRedis() *cobra.Command {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
-			return err
-		}
-
 		overrides := map[string]string{
 			"serviceAccount.create": "true",
 			"rbac.create":           "true",
-		}
-
-		// create the namespace
-		nsRes, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil {
-			return nsErr
-		}
-
-		// ignore errors
-		if nsRes.ExitCode != 0 {
-			log.Printf("[Warning] unable to create namespace %s, may already exist: %s", namespace, nsRes.Stderr)
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
@@ -84,7 +54,6 @@ func MakeInstallRedis() *cobra.Command {
 
 		redisAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("bitnami-redis/redis").
 			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
@@ -92,12 +61,7 @@ func MakeInstallRedis() *cobra.Command {
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(redisAppOptions)
+		_, err := apps.MakeInstallChart(redisAppOptions)
 		if err != nil {
 			return err
 		}

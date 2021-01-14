@@ -197,8 +197,3 @@ var LinkerdInfoMsg = `# Find out more at:
 
 export PATH=$PATH:` + getExportPath() + `
 linkerd2 --help`
-
-var linkerdInstallMsg = `=======================================================================
-= Linkerd has been installed.                                         =
-=======================================================================` +
-	"\n\n" + LinkerdInfoMsg + "\n\n" + pkg.ThanksForUsing

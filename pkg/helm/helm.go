@@ -134,13 +134,33 @@ func AddHelmRepo(name, url string, update bool) error {
 	}
 	res, err := task.Execute()
 
-	println(res.Stderr)
-
 	if err != nil {
 		return err
 	}
+
+	println(res.Stderr)
+
 	if res.ExitCode != 0 {
 		return fmt.Errorf("exit code %d", res.ExitCode)
+	}
+
+	if update {
+		task := execute.ExecTask{
+			Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
+			Env:         os.Environ(),
+			StreamStdio: true,
+		}
+		res, err := task.Execute()
+
+		if err != nil {
+			return err
+		}
+
+		println(res.Stderr)
+
+		if res.ExitCode != 0 {
+			return fmt.Errorf("exit code %d", res.ExitCode)
+		}
 	}
 
 	return nil
