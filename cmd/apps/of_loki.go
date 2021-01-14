@@ -5,17 +5,12 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -39,20 +34,6 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
 		namespace, _ := OpenFaaSlokiApp.Flags().GetString("namespace")
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-
-		log.Printf("User dir established as: %s\n", userPath)
-
-		if err := os.Setenv("HELM_HOME", path.Join(userPath, ".helm")); err != nil {
-			return err
-		}
 
 		openfaasNamespace, _ := OpenFaaSlokiApp.Flags().GetString("openfaas-namespace")
 		lokiURL, _ := OpenFaaSlokiApp.Flags().GetString("loki-url")
@@ -68,20 +49,12 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("lucas/openfaas-loki").
 			WithHelmURL("https://lucasroesler.com/openfaas-loki").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(lokiOptions)
+		_, err := apps.MakeInstallChart(lokiOptions)
 		if err != nil {
 			return err
 		}

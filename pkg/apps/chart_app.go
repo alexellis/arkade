@@ -1,7 +1,13 @@
 package apps
 
 import (
+	"fmt"
+	"log"
+	"os"
+	"path"
+
 	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
@@ -14,13 +20,35 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 		return nil, err
 	}
 
+	if err := k8s.CreateNamespace(options.Namespace); err != nil {
+		return nil, err
+	}
+
 	for _, secret := range options.Secrets {
 		if err := k8s.CreateSecret(secret); err != nil {
 			return nil, err
 		}
 	}
 
-	err := helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
+	userPath, err := config.InitUserDir()
+	if err != nil {
+		return nil, err
+	}
+
+	clientArch, clientOS := env.GetClientArch()
+
+	fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
+
+	log.Printf("User dir established as: %s\n", userPath)
+
+	os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
+
+	_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+	if err != nil {
+		return nil, err
+	}
+
+	err = helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
 	if err != nil {
 		return result, err
 	}

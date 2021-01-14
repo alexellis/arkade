@@ -5,9 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 	"strconv"
 	"strings"
 
@@ -16,9 +13,6 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -52,18 +46,6 @@ func MakeInstallPostgresql() *cobra.Command {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
 		ns, _ := postgresql.Flags().GetString("namespace")
 
 		if ns != "default" {
@@ -73,10 +55,6 @@ func MakeInstallPostgresql() *cobra.Command {
 		persistence, _ := postgresql.Flags().GetBool("persistence")
 
 		overrides := map[string]string{}
-
-		if err != nil {
-			return err
-		}
 
 		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
 
@@ -91,17 +69,11 @@ func MakeInstallPostgresql() *cobra.Command {
 
 		postgresqlAppOptions := types.DefaultInstallOptions().
 			WithNamespace(ns).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("bitnami/postgresql").
 			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
 
 		_, err = apps.MakeInstallChart(postgresqlAppOptions)
 		if err != nil {

@@ -5,18 +5,12 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -41,23 +35,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
 		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas", install via tiller`)
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		topicsVal, err := command.Flags().GetString("topics")
 		if err != nil {
@@ -91,17 +69,11 @@ func MakeInstallKafkaConnector() *cobra.Command {
 
 		kafkaConnectorAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("openfaas/kafka-connector").
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
 
 		_, err = apps.MakeInstallChart(kafkaConnectorAppOptions)
 		if err != nil {

@@ -4,15 +4,9 @@
 package apps
 
 import (
-	"log"
-	"os"
-	"path"
-
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -45,16 +39,7 @@ func MakeInstallGitLab() *cobra.Command {
 
 	gitlabApp.RunE = func(cmd *cobra.Command, args []string) error {
 		namespace, _ := cmd.Flags().GetString("namespace")
-		userPath, err := config.InitUserDir()
 		kubeConfigPath, _ := cmd.Flags().GetString("kubeconfig")
-
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-		log.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
 
 		overrides := map[string]string{}
 		overrides["global.domain"], _ = cmd.Flags().GetString("domain")
@@ -89,20 +74,12 @@ func MakeInstallGitLab() *cobra.Command {
 
 		options := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("gitlab/gitlab").
 			WithHelmURL("https://charts.gitlab.io").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
-		_ = os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		_, err = apps.MakeInstallChart(options)
+		_, err := apps.MakeInstallChart(options)
 		if err != nil {
 			return err
 		}

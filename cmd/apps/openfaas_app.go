@@ -5,9 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 	"strconv"
 	"strings"
 
@@ -18,8 +15,6 @@ import (
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/sethvargo/go-password/password"
 
 	"github.com/spf13/cobra"
@@ -70,13 +65,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-		os.Setenv("KUBECONFIG", kubeConfigPath)
 		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "openfaas" {
-			return fmt.Errorf(`to override the "openfaas", install OpenFaaS via helm manually`)
-		}
 
 		basicAuthEnabled, err := command.Flags().GetBool("basic-auth")
 		if err != nil {
@@ -84,24 +73,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
 
 		valuesSuffix := getValuesSuffix(arch)
-
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
 
 		updateRepo, err := openfaas.Flags().GetBool("update-repo")
 		if err != nil {
@@ -225,7 +198,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithHelmRepo("openfaas/openfaas").
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithWait(wait)
 
 		if _, err := apps.MakeInstallChart(appOpts); err != nil {

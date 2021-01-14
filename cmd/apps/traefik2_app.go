@@ -121,8 +121,7 @@ arkade install traefik2 --dashboard
 
 # Find your LoadBalancer IP:
 
-kubectl get svc -n kube-system traefik
-`
+kubectl get svc -n kube-system traefik`
 
 const traefikInstallMsg = `=======================================================================
 =                  traefik2 has been installed                        =
