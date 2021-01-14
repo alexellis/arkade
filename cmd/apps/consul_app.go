@@ -7,9 +7,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"log"
-	"os"
-	"path"
 	"strconv"
 	"strings"
 
@@ -19,9 +16,6 @@ import (
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -54,16 +48,6 @@ func MakeInstallConsul() *cobra.Command {
 			return fmt.Errorf(OnlyIntelArch)
 		}
 
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
 		namespace, _ := consul.Flags().GetString("namespace")
 
 		overrides := map[string]string{}
@@ -84,16 +68,12 @@ func MakeInstallConsul() *cobra.Command {
 		gossipEncryptionEnabled, _ := command.Flags().GetBool("enable-gossip-encryption")
 		gossipEncryptionKey, _ := command.Flags().GetString("gossip-encryption-key")
 
+		var err error
 		if gossipEncryptionEnabled && gossipEncryptionKey == "" {
 			gossipEncryptionKey, err = generateGossipEncryptionKey()
 			if err != nil {
 				return err
 			}
-		}
-
-		_, nsErr := k8s.KubectlTask("create", "namespace", namespace)
-		if nsErr != nil && !strings.Contains(nsErr.Error(), "AlreadyExists") {
-			return nsErr
 		}
 
 		if gossipEncryptionEnabled {
@@ -123,19 +103,11 @@ func MakeInstallConsul() *cobra.Command {
 
 		consulOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("hashicorp/consul").
 			WithHelmURL("https://helm.releases.hashicorp.com").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
 
 		_, err = apps.MakeInstallChart(consulOptions)
 		if err != nil {

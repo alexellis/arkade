@@ -5,9 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 	"strconv"
 	"strings"
 
@@ -16,9 +13,6 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
@@ -47,18 +41,6 @@ func MakeInstallGitea() *cobra.Command {
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
-
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
-
-		clientArch, clientOS := env.GetClientArch()
-
-		fmt.Printf("Client: %s, %s\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
 		ns, _ := gitea.Flags().GetString("namespace")
 
@@ -101,17 +83,11 @@ func MakeInstallGitea() *cobra.Command {
 
 		giteaAppOptions := types.DefaultInstallOptions().
 			WithNamespace(ns).
-			WithHelmPath(path.Join(userPath, ".helm")).
 			WithHelmRepo("gitea-charts/gitea").
 			WithHelmURL("https://dl.gitea.io/charts").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
 
 		if _, found := overrides["gitea.config.database.HOST"]; !found && arch != IntelArch {
 			return fmt.Errorf("if installing on ARM platform you'll need to use an external database")

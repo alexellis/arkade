@@ -38,7 +38,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 			return err
 		}
 
-		fmt.Println(KubernetesDashboardInfoMsg)
+		fmt.Println(KubernetesDashboardInstallMsg)
 
 		return nil
 	}
