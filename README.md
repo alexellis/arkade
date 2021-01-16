@@ -1,4 +1,4 @@
-# arkade - Portable DevOps Marketplace
+# arkade - The Open Source Kubernetes Marketplace
 
 arkade provides a portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.
 
