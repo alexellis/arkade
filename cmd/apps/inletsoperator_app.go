@@ -26,10 +26,12 @@ import (
 
 func MakeInstallInletsOperator() *cobra.Command {
 	var inletsOperator = &cobra.Command{
-		Use:          "inlets-operator",
-		Short:        "Install inlets-operator",
-		Long:         `Install inlets-operator to get public IPs for your cluster`,
-		Example:      `  arkade install inlets-operator --namespace default`,
+		Use:   "inlets-operator",
+		Short: "Install inlets-operator",
+		Long:  `Install inlets-operator to get public IPs for your cluster`,
+		Example: `  arkade install inlets-operator \
+  --license-file ~/.inlets/license
+  --token-file ~/api-token`,
 		SilenceUsage: true,
 	}
 
@@ -51,12 +53,13 @@ func MakeInstallInletsOperator() *cobra.Command {
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	inletsOperator.PreRunE = func(command *cobra.Command, args []string) error {
-		tokenFileName, _ := command.Flags().GetString("token-file")
 		tokenString, _ := command.Flags().GetString("token")
+		tokenFileName, _ := command.Flags().GetString("token-file")
 
-		if len(tokenFileName) > 0 && len(tokenString) > 0 {
-			return fmt.Errorf(`--token-file or --access-key is a required field for your cloud API token or service account JSON`)
+		if len(tokenFileName) == 0 && len(tokenString) == 0 {
+			return fmt.Errorf(`--token-file or --token is a required field for your cloud API token or service account JSON`)
 		}
+
 		if len(tokenFileName) > 0 {
 			if _, err := os.Stat(tokenFileName); err != nil {
 				return err
@@ -171,9 +174,9 @@ func MakeInstallInletsOperator() *cobra.Command {
 
 		region, _ := command.Flags().GetString("region")
 		overrides["region"] = region
-
+		licenseVal := ""
 		if val, _ := command.Flags().GetString("license"); len(val) > 0 {
-			overrides["inletsProLicense"] = val
+			licenseVal = val
 		}
 
 		if licenseFile, _ := command.Flags().GetString("license-file"); len(licenseFile) > 0 {
@@ -182,7 +185,13 @@ func MakeInstallInletsOperator() *cobra.Command {
 				return err
 			}
 
-			overrides["inletsProLicense"] = strings.TrimSpace(string(licenseKey))
+			licenseVal = strings.TrimSpace(string(licenseKey))
+		}
+
+		if len(licenseVal) > 0 {
+			overrides["inletsProLicense"] = licenseVal
+		} else {
+			return fmt.Errorf("an inlets PRO license is required for the inlets-operator")
 		}
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
