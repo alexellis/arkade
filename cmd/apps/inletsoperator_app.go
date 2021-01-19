@@ -28,7 +28,8 @@ func MakeInstallInletsOperator() *cobra.Command {
 	var inletsOperator = &cobra.Command{
 		Use:   "inlets-operator",
 		Short: "Install inlets-operator",
-		Long:  `Install inlets-operator to get public IPs for your cluster`,
+		Long: `Install inlets-operator to get public IPs for your services and 
+IngressController`,
 		Example: `  arkade install inlets-operator \
   --license-file ~/.inlets/license
   --token-file ~/api-token`,
