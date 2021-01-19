@@ -25,6 +25,8 @@ func MakeInstallRedis() *cobra.Command {
 
 	redis.Flags().StringP("namespace", "n", "redis", "The namespace to install redis")
 	redis.Flags().Bool("update-repo", true, "Update the helm repo")
+	redis.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	redis.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -46,9 +48,12 @@ func MakeInstallRedis() *cobra.Command {
 			"rbac.create":           "true",
 		}
 
-		customFlags, _ := command.Flags().GetStringArray("set")
+		customFlags, err := command.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
 
-		if err := config.MergeFlags(overrides, customFlags); err != nil {
+		if err = config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
@@ -61,7 +66,7 @@ func MakeInstallRedis() *cobra.Command {
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
 
-		_, err := apps.MakeInstallChart(redisAppOptions)
+		_, err = apps.MakeInstallChart(redisAppOptions)
 		if err != nil {
 			return err
 		}

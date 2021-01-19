@@ -5,14 +5,12 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"strconv"
-	"strings"
-
-	"github.com/alexellis/arkade/pkg/k8s"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -39,10 +37,11 @@ func MakeInstallRegistry() *cobra.Command {
 	registry.Flags().StringP("password", "p", "", "Password for the registry, leave blank to generate")
 	registry.Flags().StringP("write-file", "w", "", "Write generated password to this file")
 	registry.Flags().Bool("persistence", false, "Enable persistence")
+	registry.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	registry.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
@@ -113,8 +112,17 @@ func MakeInstallRegistry() *cobra.Command {
 
 		overrides := map[string]string{}
 
-		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
-		overrides["secrets.htpasswd"] = string(htPasswd)
+		overrides["persistence.enabled"] = strconv.FormatBool(persistence)
+		overrides["secrets.htpasswd"] = htPasswd
+
+		customFlags, err := command.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
+
+		if err = config.MergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)

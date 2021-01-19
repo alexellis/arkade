@@ -52,9 +52,6 @@ func MakeInstallLinkerd() *cobra.Command {
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
-		// if arch != IntelArch {
-		// 	return fmt.Errorf(OnlyIntelArch)
-		// }
 
 		userPath, err := getUserPath()
 		if err != nil {

@@ -31,6 +31,8 @@ schedule workloads to any Kubernetes cluster`,
 
 	crossplane.Flags().StringP("namespace", "n", "crossplane-system", "The namespace used for installation")
 	crossplane.Flags().Bool("update-repo", true, "Update the helm repo")
+	crossplane.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	crossplane.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
@@ -53,6 +55,15 @@ schedule workloads to any Kubernetes cluster`,
 
 		userPath, err := config.InitUserDir()
 		if err != nil {
+			return err
+		}
+
+		overrideValues, err := crossplane.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
+		values := make(map[string]string)
+		if err := mergeFlags(values, overrideValues); err != nil {
 			return err
 		}
 
@@ -86,7 +97,7 @@ schedule workloads to any Kubernetes cluster`,
 		}
 
 		err = helm.Helm3Upgrade("crossplane-alpha/crossplane",
-			namespace, "values.yaml", "", map[string]string{}, wait)
+			namespace, "values.yaml", "", values, wait)
 		if err != nil {
 			return err
 		}
