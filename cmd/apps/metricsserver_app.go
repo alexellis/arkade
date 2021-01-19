@@ -28,6 +28,8 @@ func MakeInstallMetricsServer() *cobra.Command {
 	}
 
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
+	metricsServer.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
@@ -80,6 +82,15 @@ func MakeInstallMetricsServer() *cobra.Command {
 		case "arm64", "aarch64":
 			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm64`
 			break
+		}
+
+		customFlags, err := command.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
+
+		if err = config.MergeFlags(overrides, customFlags); err != nil {
+			return err
 		}
 
 		fmt.Println("Chart path: ", chartPath)
