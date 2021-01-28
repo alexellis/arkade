@@ -339,9 +339,11 @@ arkade venafi info --help
 
 ### Merchandise & SWAG
 
+<a href="https://store.openfaas.com">
 <img src="docs/arkade-swag.jpg" alt="Merchandise and SWAG for arkade">
+</a>
 
-[Check out the store](https://store.openfaas.com/products/arkade-t-shirt)
+[Check out the store](https://store.openfaas.com)
 
 ### How does `arkade` compare to `helm`?
 
