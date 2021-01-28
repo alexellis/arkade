@@ -14,7 +14,9 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 
 With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
 
-## Built for developers by developers
+## Do you use this project?
+
+Sponsor the developer so that he can continue to make the project available to you, for free.
 
 <a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
@@ -308,12 +310,6 @@ Available Commands:
 
 ## Community & contributing
 
-### SWAG
-
-<img src="https://cdn.shopify.com/s/files/1/0340/9739/7895/products/mockup-91022b03_1024x1024@2x.jpg?v=1605359612" width="250">
-
-[You can buy an arkade t-shirt in the OpenFaaS Ltd store](https://store.openfaas.com/products/arkade-t-shirt)
-
 ### Suggesting a new app
 
 To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade). Think also whether your app suggestion would be a good candidate for a Sponsored App.
@@ -339,6 +335,13 @@ arkade venafi info --help
 ```
 
 [Contact us](mailto:sales@openfaas.com) to find out how you can have your Sponsored App added to arkade.
+
+
+### Merchandise & SWAG
+
+<img src="docs/arkade-swag.jpg" alt="Merchandise and SWAG for arkade">
+
+[Check out the store](https://store.openfaas.com/products/arkade-t-shirt)
 
 ### How does `arkade` compare to `helm`?
 
