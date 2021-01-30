@@ -198,6 +198,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithHelmRepo("openfaas/openfaas").
 			WithNamespace(namespace).
+			WithInstallNamespace(false).
 			WithWait(wait)
 
 		if _, err := apps.MakeInstallChart(appOpts); err != nil {

@@ -20,8 +20,10 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 		return nil, err
 	}
 
-	if err := k8s.CreateNamespace(options.Namespace); err != nil {
-		return nil, err
+	if options.CreateNamespace {
+		if err := k8s.CreateNamespace(options.Namespace); err != nil {
+			return nil, err
+		}
 	}
 
 	for _, secret := range options.Secrets {
