@@ -3,12 +3,13 @@ package types
 import "github.com/alexellis/arkade/pkg/config"
 
 type InstallerOptions struct {
-	Namespace      string
-	KubeconfigPath string
-	NodeArch       string
-	Helm           *HelmConfig
-	Verbose        bool
-	Secrets        []K8sSecret
+	Namespace       string
+	CreateNamespace bool
+	KubeconfigPath  string
+	NodeArch        string
+	Helm            *HelmConfig
+	Verbose         bool
+	Secrets         []K8sSecret
 }
 
 type K8sSecret struct {
@@ -93,11 +94,17 @@ func (o *InstallerOptions) WithSecret(secret K8sSecret) *InstallerOptions {
 	return o
 }
 
+func (o *InstallerOptions) WithInstallNamespace(b bool) *InstallerOptions {
+	o.CreateNamespace = b
+	return o
+}
+
 func DefaultInstallOptions() *InstallerOptions {
 	return &InstallerOptions{
-		Namespace:      "default",
-		KubeconfigPath: config.GetDefaultKubeconfig(),
-		NodeArch:       "x86_64",
+		Namespace:       "default",
+		KubeconfigPath:  config.GetDefaultKubeconfig(),
+		NodeArch:        "x86_64",
+		CreateNamespace: false,
 		Helm: &HelmConfig{
 			Repo: &HelmRepo{
 				Version: "",
