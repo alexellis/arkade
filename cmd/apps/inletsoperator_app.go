@@ -37,7 +37,7 @@ IngressController`,
 	}
 
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	inletsOperator.Flags().StringP("license", "l", "", "The license key if using inlets-pro")
+	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
 	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
