@@ -5,13 +5,12 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"strconv"
-
-	"github.com/alexellis/arkade/pkg/k8s"
 
 	"golang.org/x/crypto/bcrypt"
 
