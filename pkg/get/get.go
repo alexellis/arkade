@@ -49,7 +49,7 @@ type Tool struct {
 }
 
 var templateFuncs = map[string]interface{}{
-	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+	"HasPrefix": strings.HasPrefix,
 }
 
 func (tool Tool) IsArchive() bool {

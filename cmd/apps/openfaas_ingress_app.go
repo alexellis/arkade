@@ -164,7 +164,7 @@ Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 o
 func createTempDirectory(directory string) (string, error) {
 	tempDirectory := filepath.Join(os.TempDir(), directory)
 	if _, err := os.Stat(tempDirectory); os.IsNotExist(err) {
-		log.Printf(tempDirectory)
+		log.Print(tempDirectory)
 		errr := os.Mkdir(tempDirectory, 0744)
 		if errr != nil {
 			log.Printf("couldnt make dir %s", err)

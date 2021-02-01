@@ -103,7 +103,7 @@ func downloadOSM(userPath, arch, clientOS string) error {
 		return fmt.Errorf("unable to find tool definition")
 	}
 
-	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(env.LocalBinary(tool.Name, "")); errors.Is(err, os.ErrNotExist) {
 
 		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, false)
 		if err != nil {
@@ -119,7 +119,7 @@ func downloadOSM(userPath, arch, clientOS string) error {
 
 func osmCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("osm", "")),
+		Command:     env.LocalBinary("osm", ""),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,

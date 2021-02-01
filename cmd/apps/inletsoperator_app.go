@@ -402,7 +402,7 @@ func applySecret(s Secret) error {
 	res, err := k8s.KubectlTask(parts...)
 	if err != nil {
 		return err
-	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+	} else if len(res.Stderr) > 0 && !strings.Contains(res.Stderr, "Warning") {
 		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 	}
 
@@ -411,7 +411,7 @@ func applySecret(s Secret) error {
 
 	if err != nil {
 		return err
-	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+	} else if len(res.Stderr) > 0 && !strings.Contains(res.Stderr, "Warning") {
 		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 	}
 	return nil
