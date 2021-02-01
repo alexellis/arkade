@@ -16,7 +16,7 @@ import (
 func MakeInstallNginx() *cobra.Command {
 	var nginx = &cobra.Command{
 		Use:     "ingress-nginx",
-		Aliases: []string{"nginx-ingress"},
+		Aliases: []string{"nginx-ingress"}, // backward compatibility
 		Short:   "Install ingress-nginx",
 		Long: `Install ingress-nginx. This app can be installed with Host networking for
 cases where an external LB is not available. please see the --host-mode
