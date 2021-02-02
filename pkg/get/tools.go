@@ -874,5 +874,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			https://dl.min.io/client/{{.Repo}}/release/{{$osStr}}-{{$arch}}/{{.Name}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "nats-io",
+			Repo:    "natscli",
+			Name:    "nats",
+			Version: "0.0.21",
+			URLTemplate: `{{$arch := .Arch}}
+			{{ if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "armv6l" -}}
+			{$arch = "arm6"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{$arch = "arm7"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{$arch = "arm64"}}
+			{{- end -}}
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.zip`,
+		})
+
 	return tools
 }

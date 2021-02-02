@@ -1026,3 +1026,53 @@ func Test_DownloadMinio(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadNats(t *testing.T) {
+	tools := MakeTools()
+	name := "nats"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    "amd64",
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-windows-amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    "amd64",
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    "arm6",
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-arm6.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    "arm7",
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-arm7.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    "amd64",
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-darwin-amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
