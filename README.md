@@ -292,6 +292,7 @@ Available Commands:
   kubernetes-dashboard    Install kubernetes-dashboard
   linkerd                 Install linkerd
   loki                    Install Loki for monitoring and tracing
+  metallb                 Install metallb
   metrics-server          Install metrics-server
   minio                   Install minio
   mongodb                 Install mongodb
