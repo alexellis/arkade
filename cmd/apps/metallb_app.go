@@ -31,6 +31,13 @@ func MakeInstallMetalLB() *cobra.Command {
 			return err
 		}
 
+		arch := k8s.GetNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
+		if arch != IntelArch {
+			return fmt.Errorf(OnlyIntelArch)
+		}
+
 		addressRange, _ := command.Flags().GetString("address-range")
 
 		err := k8s.Kubectl("apply", "-f",
