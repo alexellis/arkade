@@ -91,6 +91,28 @@ func Kubectl(parts ...string) error {
 	return nil
 }
 
+func KubectlIn(stdin io.Reader, parts ...string) error {
+	task := execute.ExecTask{
+		Command:     "kubectl",
+		Args:        parts,
+		StreamStdio: true,
+		Stdin:       stdin,
+	}
+
+	res, err := task.Execute()
+
+	if err != nil {
+		return err
+	}
+
+	if res.ExitCode != 0 {
+		return fmt.Errorf("kubectl exit code %d, stderr: %s",
+			res.ExitCode,
+			res.Stderr)
+	}
+	return nil
+}
+
 func CreateNamespace(namespace string) error {
 	nsRes, nsErr := KubectlTask("create", "namespace", namespace)
 	if nsErr != nil {
