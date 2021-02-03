@@ -104,7 +104,7 @@ func DefaultInstallOptions() *InstallerOptions {
 		Namespace:       "default",
 		KubeconfigPath:  config.GetDefaultKubeconfig(),
 		NodeArch:        "x86_64",
-		CreateNamespace: false,
+		CreateNamespace: true,
 		Helm: &HelmConfig{
 			Repo: &HelmRepo{
 				Version: "",
