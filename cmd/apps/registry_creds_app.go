@@ -50,10 +50,13 @@ and ARM64 clusters.`,
 		)
 
 		fmt.Printf("Applying controller's manifests.\n")
-		_, err := k8s.KubectlTask("apply", "-f",
-			"https://raw.githubusercontent.com/alexellis/registry-creds/master/mainfest.yaml")
+		res, err := k8s.KubectlTask("apply", "-f",
+			"https://raw.githubusercontent.com/alexellis/registry-creds/master/manifest.yaml")
 		if err != nil {
 			return err
+		}
+		if res.ExitCode != 0 {
+			return fmt.Errorf("unable to create crds, %s", res.Stdout)
 		}
 
 		if command.Flags().Changed("username") {
