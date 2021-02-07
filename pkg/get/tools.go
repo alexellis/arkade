@@ -857,7 +857,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "armv6l" -}}
 			{$arch = "arm"}}
 			{{- else if eq .Arch "armv7l" -}}
-			{$arch = "arm"}}
+			{{$arch = "arm"}}
 			{{- else if eq .Arch "aarch64" -}}
 			{$arch = "arm64"}}
 			{{- end -}}
