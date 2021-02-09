@@ -3,6 +3,7 @@ module github.com/alexellis/arkade
 go 1.15
 
 require (
+	github.com/Masterminds/semver v1.5.0
 	github.com/alexellis/go-execute v0.0.0-20201205082949-69a2cde04f4f
 	github.com/cheggaaa/pb/v3 v3.0.5
 	github.com/fatih/color v1.9.0 // indirect
