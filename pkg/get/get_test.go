@@ -3,11 +3,16 @@ package get
 import (
 	"fmt"
 	"reflect"
+	"regexp"
 	"sort"
+	"strings"
 	"testing"
+
+	"github.com/Masterminds/semver"
 )
 
-const faasCLIVersion = "0.13.0"
+var faasCLIVersionConstraint, _ = semver.NewConstraint(">= 0.13.2")
+
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
 const archARM64 = "aarch64"
@@ -28,6 +33,15 @@ func getTool(name string, tools []Tool) *Tool {
 		}
 	}
 	return tool
+}
+
+func getFaaSCLIVersion(url string, expectedBinaryName string) *semver.Version {
+	faasCLIURLVersionRegex := regexp.MustCompile(
+		"https://github.com/openfaas/faas-cli/releases/download/" +
+			semver.SemVerRegex + "/" + expectedBinaryName)
+	result := faasCLIURLVersionRegex.FindStringSubmatch(url)
+	version, _ := semver.NewVersion(strings.Join(result[1:], ""))
+	return version
 }
 
 func Test_MakeSureToolsAreSorted(t *testing.T) {
@@ -85,13 +99,14 @@ func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("darwin", "", "")
+	gotURL, err := tool.GetURL("darwin", "", "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/openfaas/faas-cli/releases/download/" + faasCLIVersion + "/faas-cli-darwin"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
+	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-darwin")
+	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
+	if !valid {
+		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
@@ -179,7 +194,7 @@ func Test_DownloadKubens(t *testing.T) {
 	}
 }
 
-func Test_DownloadArmhf(t *testing.T) {
+func Test_DownloadFaaSCLIArmhf(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
 	var tool *Tool
@@ -190,17 +205,18 @@ func Test_DownloadArmhf(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("Linux", "armv7l", "")
+	gotURL, err := tool.GetURL("Linux", "armv7l", "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/openfaas/faas-cli/releases/download/" + faasCLIVersion + "/faas-cli-armhf"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
+	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-armhf")
+	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
+	if !valid {
+		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
-func Test_DownloadArm64(t *testing.T) {
+func Test_DownloadFaaSCLIArm64(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
 	var tool *Tool
@@ -211,17 +227,18 @@ func Test_DownloadArm64(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("Linux", "aarch64", "")
+	gotURL, err := tool.GetURL("Linux", "aarch64", "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/openfaas/faas-cli/releases/download/" + faasCLIVersion + "/faas-cli-arm64"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
+	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-arm64")
+	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
+	if !valid {
+		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
-func Test_DownloadWindows(t *testing.T) {
+func Test_DownloadFaaSCLIWindows(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
 	var tool *Tool
@@ -232,13 +249,14 @@ func Test_DownloadWindows(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("mingw64_nt-10.0-18362", arch64bit, "")
+	gotURL, err := tool.GetURL("mingw64_nt-10.0-18362", arch64bit, "")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/openfaas/faas-cli/releases/download/" + faasCLIVersion + "/faas-cli.exe"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
+	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli.exe")
+	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
+	if !valid {
+		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
