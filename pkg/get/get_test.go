@@ -1024,6 +1024,16 @@ func Test_DownloadMinio(t *testing.T) {
 		},
 		{
 			os:   "linux",
+			arch: "armv6l",
+			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
+		},
+		{
+			os:   "linux",
+			arch: "armv7l",
+			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
+		},
+		{
+			os:   "linux",
 			arch: "arm64",
 			url:  `https://dl.min.io/client/mc/release/linux-arm64/mc`,
 		},
