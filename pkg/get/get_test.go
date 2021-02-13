@@ -125,7 +125,7 @@ func Test_DownloadKubectlDarwin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl"
+	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -146,7 +146,7 @@ func Test_DownloadKubectlLinux(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/linux/amd64/kubectl"
+	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -275,7 +275,7 @@ func Test_DownloadHelmDarwin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-darwin-amd64.tar.gz"
+	want := "https://get.helm.sh/helm-v3.5.2-darwin-amd64.tar.gz"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -296,7 +296,7 @@ func Test_DownloadHelmLinux(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-linux-amd64.tar.gz"
+	want := "https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -317,7 +317,7 @@ func Test_DownloadHelmWindows(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://get.helm.sh/helm-v3.2.4-windows-amd64.zip"
+	want := "https://get.helm.sh/helm-v3.5.2-windows-amd64.zip"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
