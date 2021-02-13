@@ -47,7 +47,7 @@ func MakeTools() Tools {
 			Owner:   "helm",
 			Repo:    "helm",
 			Name:    "helm",
-			Version: "v3.2.4",
+			Version: "v3.5.2",
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -92,7 +92,7 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 			Owner:   "kubernetes",
 			Repo:    "kubernetes",
 			Name:    "kubectl",
-			Version: "v1.18.0",
+			Version: "v1.20.0",
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -213,7 +213,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:   "bitnami-labs",
 			Repo:    "sealed-secrets",
 			Name:    "kubeseal",
-			Version: "v0.12.4",
+			Version: "v0.14.1",
 			URLTemplate: `{{$arch := "arm"}}
 {{- if eq .Arch "armv7l" -}}
 https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{$arch}}
@@ -241,7 +241,7 @@ https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/ku
 			Owner:   "inlets",
 			Repo:    "inletsctl",
 			Name:    "inletsctl",
-			Version: "0.5.4",
+			Version: "0.8.2",
 			URLTemplate: `
 {{$fileName := ""}}
 {{- if eq .Arch "armv6l" -}}
@@ -276,7 +276,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:    "osm",
 			Repo:    "osm",
 			Owner:   "openservicemesh",
-			Version: "v0.1.0",
+			Version: "v0.7.0",
 			URLTemplate: `
 	{{$osStr := ""}}
 	{{ if HasPrefix .OS "ming" -}}
@@ -332,7 +332,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "kubernetes-sigs",
 			Repo:    "kustomize",
 			Name:    "kustomize",
-			Version: "kustomize/v3.8.1",
+			Version: "kustomize/v4.0.0",
 			URLTemplate: `
 	{{$osStr := ""}}
 	{{- if eq .OS "linux" -}}
@@ -350,7 +350,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "digitalocean",
 			Repo:    "doctl",
 			Name:    "doctl",
-			Version: "1.46.0",
+			Version: "1.56.0",
 			URLTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -381,7 +381,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "derailed",
 			Repo:    "k9s",
 			Name:    "k9s",
-			Version: "v0.21.7",
+			Version: "v0.24.2",
 			URLTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
