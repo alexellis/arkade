@@ -332,17 +332,19 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "kubernetes-sigs",
 			Repo:    "kustomize",
 			Name:    "kustomize",
-			Version: "kustomize/v4.0.0",
+			Version: "v4.0.0",
 			URLTemplate: `
 	{{$osStr := ""}}
 	{{- if eq .OS "linux" -}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$osStr = "linux_amd64"}}
+	{{- else if eq .Arch "aarch64" -}}
+  {{$osStr = "linux_arm64"}}
 	{{- end -}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_v3.8.1_{{$osStr}}.tar.gz`,
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
