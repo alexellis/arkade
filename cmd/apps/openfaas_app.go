@@ -39,7 +39,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 	openfaas.Flags().Bool("operator", false, "Create OpenFaaS Operator")
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
-	openfaas.Flags().Bool("direct-functions", true, "Invoke functions directly from the gateway")
+	openfaas.Flags().Bool("direct-functions", false, "Invoke functions directly from the gateway, or load-balance via endpoint IPs when set to false")
 
 	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
 	openfaas.Flags().Int("max-inflight", 1, "Max tasks for queue-worker to process in parallel")
