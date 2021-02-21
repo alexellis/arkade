@@ -16,10 +16,14 @@ import (
 
 func MakeInstallOPAGateKeeper() *cobra.Command {
 	var opaGatekeeper = &cobra.Command{
-		Use:          "opa-gatekeeper",
-		Short:        "Install OPA Gatekeeper",
-		Long:         `Install Open Policy Agent Gatekeeper`,
-		Example:      `  arkade install opa-gatekeeper`,
+		Use:   "opa-gatekeeper",
+		Short: "Install Open Policy Agent (OPA) Gatekeeper",
+		Long: `Install Open Policy Agent's Gatekeeper which brings Policy and Governance
+for the Kubernetes API.`,
+		Aliases: []string{"gatekeeper"},
+		Example: `  arkade install opa-gatekeeper
+  arkade install opa-gatekeeper --set helmKey=value
+  arkade install gatekeeper`,
 		SilenceUsage: true,
 	}
 
@@ -88,9 +92,16 @@ func MakeInstallOPAGateKeeper() *cobra.Command {
 }
 
 var OPAGatekeeperInfoMsg = `
-# Find out more at: https://github.com/open-policy-agent/gatekeeper
-# Learn about how to use gatekeeper: https://github.com/open-policy-agent/gatekeeper#how-to-use-gatekeeper
-# Uninstall Gatekeeper: https://github.com/open-policy-agent/gatekeeper#how-to-use-gatekeeper
+Open Policy Agent (OPA) Gatekeeper
+
+# Find out more at:
+https://github.com/open-policy-agent/gatekeeper
+
+# Learn about how to use gatekeeper
+https://github.com/open-policy-agent/gatekeeper#how-to-use-gatekeeper
+
+# Uninstall Gatekeeper
+https://github.com/open-policy-agent/gatekeeper#how-to-use-gatekeeper
 `
 
 var opaGatekeeperInstallMsg = `=======================================================================
