@@ -801,28 +801,28 @@ func Test_DownloadGH(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.0.0"
+	const toolVersion = "1.6.1"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_windows_amd64.zip`,
+			url:     `https://github.com/cli/cli/releases/download/v1.6.1/gh_1.6.1_windows_amd64.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_linux_amd64.tar.gz`,
+			url:     `https://github.com/cli/cli/releases/download/v1.6.1/gh_1.6.1_linux_amd64.tar.gz`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_macOS_amd64.tar.gz`,
+			url:     `https://github.com/cli/cli/releases/download/v1.6.1/gh_1.6.1_macOS_amd64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cli/cli/releases/download/v1.0.0/gh_1.0.0_linux_arm64.tar.gz`,
+			url:     `https://github.com/cli/cli/releases/download/v1.6.1/gh_1.6.1_linux_arm64.tar.gz`,
 		},
 	}
 
