@@ -57,6 +57,7 @@ With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 ```bash
 arkade get APP
 Use "arkade get TOOL" to download a tool or application:
+  argocd
   buildx
   civo
   docker-compose
