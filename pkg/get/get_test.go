@@ -1145,3 +1145,40 @@ func Test_DownloadLinkerd(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadArgocd(t *testing.T) {
+	tools := MakeTools()
+	name := "argocd"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v1.8.6",
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-windows-amd64.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v1.8.6",
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-linux-amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v1.8.6",
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-darwin-amd64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

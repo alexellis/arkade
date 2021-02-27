@@ -905,5 +905,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.zip`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "argoproj",
+			Repo:    "argo-cd",
+			Name:    "argocd",
+			Version: "v1.8.6",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- end -}}
+			
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$ext := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+			
+			https://github.com/argoproj/argo-cd/releases/download/{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
+		})
+
 	return tools
 }
