@@ -14,6 +14,7 @@ import (
 func main() {
 
 	cmdVersion := cmd.MakeVersion()
+	cmdOutdated := cmd.MakeOutdated()
 	cmdInstall := cmd.MakeInstall()
 	cmdInfo := cmd.MakeInfo()
 
@@ -29,6 +30,7 @@ func main() {
 
 	rootCmd.AddCommand(cmdInstall)
 	rootCmd.AddCommand(cmdVersion)
+	rootCmd.AddCommand(cmdOutdated)
 	rootCmd.AddCommand(cmdInfo)
 	rootCmd.AddCommand(cmd.MakeUpdate())
 	rootCmd.AddCommand(cmd.MakeGet())

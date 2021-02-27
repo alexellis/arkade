@@ -6,12 +6,17 @@ import (
 	"errors"
 	"fmt"
 	"html/template"
+	"log"
 	"net"
 	"net/http"
+	"path"
+	"regexp"
 	"strings"
 	"time"
 
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
+	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
 // Tool describes how to download a CLI tool from a binary
@@ -46,10 +51,40 @@ type Tool struct {
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
+
+	// VersionCommandArgs is the command + args used to find the version of installed tool
+	VersionCommandArgs []string
+
+	// VersionRegex is a regex used for finding the version of the installed tool
+	// from the output of version command. The first group must be the version string.
+	VersionRegex *regexp.Regexp
 }
 
 var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+}
+
+func (tool Tool) GetInstalledVersion() (error, string) {
+	// Execute the version command and pass VersionRegex to find version
+	if len(tool.VersionCommandArgs) > 0 {
+		binPath := path.Join(config.GetUserDir(), "bin/", tool.Name)
+		task := execute.ExecTask{Command: binPath, Args: tool.VersionCommandArgs, StreamStdio: false}
+		res, err := task.Execute()
+		if err != nil {
+			log.Println(err)
+			return err, ""
+		}
+
+		versionStdout := strings.TrimSpace(res.Stdout)
+		version := tool.VersionRegex.FindStringSubmatch(versionStdout)
+		if len(version) > 0 {
+			return nil, version[1]
+		}
+
+		return errors.New("Unable to determine installed version"), ""
+	}
+
+	return errors.New("Unable to determine installed version"), ""
 }
 
 func (tool Tool) IsArchive() bool {

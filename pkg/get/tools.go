@@ -1,6 +1,9 @@
 package get
 
-import "strings"
+import (
+	"regexp"
+	"strings"
+)
 
 func (t Tools) Len() int { return len(t) }
 
@@ -44,10 +47,12 @@ func MakeTools() Tools {
 
 	tools = append(tools,
 		Tool{
-			Owner:   "helm",
-			Repo:    "helm",
-			Name:    "helm",
-			Version: "v3.5.2",
+			Owner:              "helm",
+			Repo:               "helm",
+			Name:               "helm",
+			Version:            "v3.5.2",
+			VersionCommandArgs: []string{"version"},
+			VersionRegex:       regexp.MustCompile("Version:\"(.*?)\""),
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -89,10 +94,12 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 	// https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
-			Owner:   "kubernetes",
-			Repo:    "kubernetes",
-			Name:    "kubectl",
-			Version: "v1.20.0",
+			Owner:              "kubernetes",
+			Repo:               "kubernetes",
+			Name:               "kubectl",
+			Version:            "v1.20.0",
+			VersionCommandArgs: []string{"version"},
+			VersionRegex:       regexp.MustCompile("GitVersion:\"(.*?)\""),
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -463,10 +470,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	// https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip
 	tools = append(tools,
 		Tool{
-			Owner:   "hashicorp",
-			Repo:    "terraform",
-			Name:    "terraform",
-			Version: "0.13.1",
+			Owner:              "hashicorp",
+			Repo:               "terraform",
+			Name:               "terraform",
+			Version:            "0.13.1",
+			VersionCommandArgs: []string{"-version"},
+			VersionRegex:       regexp.MustCompile("Terraform v(.*)"),
 			URLTemplate: `{{$arch := .Arch}}
 
 {{- if eq .Arch "x86_64" -}}
@@ -704,10 +713,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 
 	tools = append(tools,
 		Tool{
-			Owner:   "stern",
-			Repo:    "stern",
-			Name:    "stern",
-			Version: "1.13.0",
+			Owner:              "stern",
+			Repo:               "stern",
+			Name:               "stern",
+			Version:            "1.13.0",
+			VersionCommandArgs: []string{"--version"},
+			VersionRegex:       regexp.MustCompile("version\\: (.*)"),
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "aarch64" -}}
