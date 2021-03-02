@@ -336,16 +336,7 @@ arkade venafi install --help
 arkade venafi info --help
 ```
 
-[Contact us](mailto:sales@openfaas.com) to find out how you can have your Sponsored App added to arkade.
-
-
-### Merchandise & SWAG
-
-<a href="https://store.openfaas.com">
-<img src="docs/arkade-swag.jpg" alt="Merchandise and SWAG for arkade">
-</a>
-
-[Check out the store](https://store.openfaas.com)
+[Contact us](mailto:contact@openfaas.com) to find out how you can have your Sponsored App added to arkade.
 
 ### How does `arkade` compare to `helm`?
 
