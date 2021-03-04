@@ -283,6 +283,7 @@ Available Commands:
   docker-registry-ingress Install registry ingress with TLS
   gitea                   Install gitea
   grafana                 Install grafana
+  falco                   Install falco
   info                    Find info about a Kubernetes app
   ingress-nginx           Install ingress-nginx
   inlets-operator         Install inlets-operator
