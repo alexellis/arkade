@@ -16,9 +16,10 @@ import (
 
 func MakeInstallMQTTConnector() *cobra.Command {
 	var command = &cobra.Command{
-		Use:          "mqtt-connector",
-		Short:        "Install mqtt-connector for OpenFaaS",
-		Long:         `Install mqtt-connector for OpenFaaS`,
+		Use:   "mqtt-connector",
+		Short: "Install mqtt-connector for OpenFaaS",
+		Long: `Install mqtt-connector for OpenFaaS so that you can invoke functions when 
+messages are received on a given topic on an MQTT broker.`,
 		Example:      `  arkade install mqtt-connector`,
 		SilenceUsage: true,
 	}

@@ -7,7 +7,6 @@ import (
 	"fmt"
 
 	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
@@ -16,9 +15,10 @@ import (
 
 func MakeInstallKafkaConnector() *cobra.Command {
 	var command = &cobra.Command{
-		Use:          "kafka-connector",
-		Short:        "Install kafka-connector for OpenFaaS",
-		Long:         `Install kafka-connector for OpenFaaS`,
+		Use:   "kafka-connector",
+		Short: "Install kafka-connector for OpenFaaS",
+		Long: `Install OpenFaaS PRO kafka-connector for OpenFaaS so that you can invoke 
+functions when messages are received on a given topic on a Kafka broker.`,
 		Example:      `  arkade install kafka-connector`,
 		SilenceUsage: true,
 	}
@@ -27,6 +27,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 	command.Flags().Bool("update-repo", true, "Update the helm repo")
 	command.Flags().StringP("topics", "t", "faas-request", "The topics for the connector to bind to")
 	command.Flags().String("broker-host", "kafka", "The host for the Kafka broker")
+	command.Flags().String("license-file", "", "The path to your license for OpenFaaS PRO")
 	command.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set key=value)")
 
@@ -61,12 +62,6 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			return err
 		}
 
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		kafkaConnectorAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
 			WithHelmRepo("openfaas/kafka-connector").
@@ -74,6 +69,23 @@ func MakeInstallKafkaConnector() *cobra.Command {
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
+
+		// If license file is sent, then we assume to set the --pro flag and create the secret
+		licenseFile, err := command.Flags().GetString("license-file")
+		if err != nil {
+			return err
+		}
+		if len(licenseFile) == 0 {
+			return fmt.Errorf("--license-file is required for OpenFaaS PRO")
+		}
+
+		overrides["openfaasPRO"] = "true"
+		secretData := []types.SecretsData{
+			{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
+		}
+
+		proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
+		kafkaConnectorAppOptions.WithSecret(proLicense)
 
 		_, err = apps.MakeInstallChart(kafkaConnectorAppOptions)
 		if err != nil {
