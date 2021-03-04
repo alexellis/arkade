@@ -1182,3 +1182,44 @@ func Test_DownloadArgocd(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadNerdctl(t *testing.T) {
+	tools := MakeTools()
+	name := "nerdctl"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.6.1",
+			url:     "https://github.com/AkihiroSuda/nerdctl/releases/download/v0.6.1/nerdctl-0.6.1-linux-amd64.tar.gz",
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: "v0.6.1",
+			url:     "https://github.com/AkihiroSuda/nerdctl/releases/download/v0.6.1/nerdctl-0.6.1-linux-arm-v7.tar.gz",
+		},
+		{os: "linux",
+			arch:    archARM64,
+			version: "v0.6.1",
+			url:     "https://github.com/AkihiroSuda/nerdctl/releases/download/v0.6.1/nerdctl-0.6.1-linux-arm64.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
+		}
+	}
+}
