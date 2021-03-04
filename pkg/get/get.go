@@ -72,10 +72,11 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 
 		var buf bytes.Buffer
 		err = t.Execute(&buf, map[string]string{
-			"OS":      os,
-			"Arch":    arch,
-			"Name":    tool.Name,
-			"Version": version,
+			"OS":            os,
+			"Arch":          arch,
+			"Name":          tool.Name,
+			"Version":       version,
+			"VersionNumber": strings.TrimPrefix(version, "v"),
 		})
 		if err != nil {
 			return "", err
@@ -130,10 +131,11 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 
 	var buf bytes.Buffer
 	pref := map[string]string{
-		"OS":      os,
-		"Arch":    arch,
-		"Name":    tool.Name,
-		"Version": version,
+		"OS":            os,
+		"Arch":          arch,
+		"Name":          tool.Name,
+		"Version":       version,
+		"VersionNumber": strings.TrimPrefix(version, "v"),
 	}
 
 	err = t.Execute(&buf, pref)
@@ -205,12 +207,13 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 
 	var buf bytes.Buffer
 	inputs := map[string]string{
-		"OS":      os,
-		"Arch":    arch,
-		"Version": version,
-		"Repo":    tool.Repo,
-		"Owner":   tool.Owner,
-		"Name":    tool.Name,
+		"OS":            os,
+		"Arch":          arch,
+		"Version":       version,
+		"VersionNumber": strings.TrimPrefix(version, "v"),
+		"Repo":          tool.Repo,
+		"Owner":         tool.Owner,
+		"Name":          tool.Name,
 	}
 
 	err = t.Execute(&buf, inputs)

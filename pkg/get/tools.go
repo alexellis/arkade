@@ -934,5 +934,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			https://github.com/argoproj/argo-cd/releases/download/{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "AkihiroSuda",
+			Repo:    "nerdctl",
+			Name:    "nerdctl",
+			Version: "v0.6.1",
+			URLTemplate: `
+{{ $file := "" }}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "armv6l" -}}
+		{{ $file = "arm-v7.tar.gz" }}
+	{{- else if eq .Arch "armv7l" -}}
+		{{ $file = "arm-v7.tar.gz" }}
+	{{- else if eq .Arch "aarch64" -}}
+		{{ $file = "arm64.tar.gz" }}
+	{{- else -}}
+		{{ $file = "amd64.tar.gz" }}
+	{{- end -}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{.OS}}-{{$file}}`,
+		})
+
 	return tools
 }
