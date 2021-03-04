@@ -106,6 +106,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["nginx-inc"] = NewArkadeApp(apps.MakeInstallNginxIncIngress, apps.NginxIncIngressInfoMsg)
 	arkadeApps["opa-gatekeeper"] = NewArkadeApp(apps.MakeInstallOPAGateKeeper, apps.OPAGatekeeperInfoMsg)
 	arkadeApps["mqtt-connector"] = NewArkadeApp(apps.MakeInstallMQTTConnector, apps.MQTTConnectorInfoMsg)
+	arkadeApps["falco"] = NewArkadeApp(apps.MakeInstallFalco, apps.FalcoInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
