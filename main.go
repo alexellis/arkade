@@ -12,11 +12,6 @@ import (
 )
 
 func main() {
-
-	cmdVersion := cmd.MakeVersion()
-	cmdInstall := cmd.MakeInstall()
-	cmdInfo := cmd.MakeInfo()
-
 	printarkadeASCIIArt := cmd.PrintArkadeASCIIArt
 
 	var rootCmd = &cobra.Command{
@@ -27,9 +22,9 @@ func main() {
 		},
 	}
 
-	rootCmd.AddCommand(cmdInstall)
-	rootCmd.AddCommand(cmdVersion)
-	rootCmd.AddCommand(cmdInfo)
+	rootCmd.AddCommand(cmd.MakeInstall())
+	rootCmd.AddCommand(cmd.MakeVersion())
+	rootCmd.AddCommand(cmd.MakeInfo())
 	rootCmd.AddCommand(cmd.MakeUpdate())
 	rootCmd.AddCommand(cmd.MakeGet())
 	rootCmd.AddCommand(cmd.MakeUninstall())
