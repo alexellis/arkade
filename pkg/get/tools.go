@@ -957,5 +957,40 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{.OS}}-{{$file}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "istio",
+			Repo:    "istio",
+			Name:    "istioctl",
+			Version: "1.9.1",
+			URLTemplate: `
+				{{$arch := .Arch}}
+				{{ if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if eq .Arch "arm" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "armv6l" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$versionString:=(printf "%s-%s" .OS $arch)}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$versionString = "win"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$versionString = "osx"}}
+				{{- end -}}
+
+				{{$ext := ".tar.gz"}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+				
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$versionString}}{{$ext}}`,
+		})
+
 	return tools
 }

@@ -94,6 +94,7 @@ Use "arkade get TOOL" to download a tool or application:
   terraform
   vagrant
   yq
+  istioctl
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.
