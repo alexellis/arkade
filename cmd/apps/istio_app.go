@@ -4,21 +4,23 @@
 package apps
 
 import (
+	"bufio"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
-	"path"
-	"time"
-
-	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/get"
+	"github.com/alexellis/arkade/pkg/k8s"
+	execute "github.com/alexellis/go-execute/pkg/v1"
 	"github.com/spf13/cobra"
 )
+
+var istioVer = "1.9.1"
 
 func MakeInstallIstio() *cobra.Command {
 	var istio = &cobra.Command{
@@ -28,31 +30,75 @@ func MakeInstallIstio() *cobra.Command {
 		Example:      `  arkade install istio --loadbalancer`,
 		SilenceUsage: true,
 	}
-	istio.Flags().Bool("update-repo", true, "Update the helm repo")
-	istio.Flags().String("namespace", "istio-system", "Namespace for the app")
-	istio.Flags().Bool("init", true, "Run the Istio init to add CRDs etc")
+	istio.Flags().StringP("version", "v", istioVer, "Specify a version of Istio")
+	istio.Flags().String("namespace", "default", "Namespace for the app")
+	istio.Flags().String("istio-namespace", "istio-system", "Namespace for the app")
+	istio.Flags().String("profile", "default", "Set istio profile")
+	istio.Flags().String("cpu", "100m", "Allocate CPU resource")
+	istio.Flags().String("memory", "100Mi", "Allocate Memory resource")
 
 	istio.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set prometheus.enabled=false)")
 
+	istio.PreRunE = func(command *cobra.Command, args []string) error {
+		_, err := command.Flags().GetString("version")
+		if err != nil {
+			return fmt.Errorf("error with --version usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("namespace")
+		if err != nil {
+			return fmt.Errorf("error with --namespace usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("istio-namespace")
+		if err != nil {
+			return fmt.Errorf("error with --istio-namespace usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("profile")
+		if err != nil {
+			return fmt.Errorf("error with --profile usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("cpu")
+		if err != nil {
+			return fmt.Errorf("error with --cpu usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("memory")
+		if err != nil {
+			return fmt.Errorf("error with --memory usage: %s", err)
+		}
+
+		_, err = command.Flags().GetString("kubeconfig")
+		if err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %s", err)
+		}
+
+		_, err = command.Flags().GetStringArray("set")
+		if err != nil {
+			return fmt.Errorf("error with --set usage: %s", err)
+		}
+
+		return nil
+	}
+
 	istio.RunE = func(command *cobra.Command, args []string) error {
+		version, _ := command.Flags().GetString("version")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
-		wait, _ := command.Flags().GetBool("wait")
-
 		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "istio-system" {
-			return fmt.Errorf(`to override the "istio-system" namespace, install Istio via helm manually`)
-		}
+		istioNamespace, _ := command.Flags().GetString("istio-namespace")
+		profile, _ := command.Flags().GetString("profile")
+		cpu, _ := command.Flags().GetString("cpu")
+		memory, _ := command.Flags().GetString("memory")
+		setOverrides, _ := command.Flags().GetStringArray("set")
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
+		if suffix := getValuesSuffix(arch); suffix == "-armhf" {
+			return fmt.Errorf(`Istio is currently not supported on armhf architectures`)
 		}
 
 		userPath, err := config.InitUserDir()
@@ -60,87 +106,60 @@ func MakeInstallIstio() *cobra.Command {
 			return err
 		}
 
-		clientArch, clientOS := env.GetClientArch()
+		arch, clientOS := env.GetClientArch()
 
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-
+		fmt.Printf("Client: %q\n", clientOS)
 		log.Printf("User dir established as: %s\n", userPath)
 
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		err = downloadIstio(userPath, arch, clientOS, version)
 		if err != nil {
 			return err
 		}
 
-		istioVer := "1.4.5"
+		fmt.Println("Running istio check, this may take a few moments.")
+		defaultFlags := []string{"--namespace", namespace, "--istioNamespace", istioNamespace}
 
-		updateRepo, _ := istio.Flags().GetBool("update-repo")
+		if len(kubeConfigPath) > 0 {
+			defaultFlags = append(defaultFlags, "--kubeconfig", kubeConfigPath)
+		}
 
-		err = helm.AddHelmRepo(
-			"istio",
-			fmt.Sprintf("https://storage.googleapis.com/istio-release/releases/%s/charts", istioVer),
-			updateRepo,
-		)
+		preCheckFlags := mergeFlagsSlices([]string{"experimental", "precheck"}, defaultFlags)
+		_, err = istioCli(preCheckFlags...)
 		if err != nil {
-			return fmt.Errorf("unable to add repo %s", err)
-		}
-
-		_, err = k8s.KubectlTask("create", "ns", "istio-system")
-
-		if err != nil {
-			return fmt.Errorf("unable to create namespace %s", err)
-		}
-
-		err = helm.FetchChart("istio/istio", defaultVersion)
-
-		if err != nil {
-			return fmt.Errorf("unable fetch chart %s", err)
-		}
-
-		overrides := map[string]string{}
-
-		valuesFile, writeErr := writeIstioValues()
-		if writeErr != nil {
-			return writeErr
-		}
-
-		if initIstio, _ := command.Flags().GetBool("init"); initIstio {
-			// Waiting for the crds to appear
-			err = helm.Helm3Upgrade("istio/istio-init", namespace, "", defaultVersion, overrides, true)
-			if err != nil {
-				return fmt.Errorf("unable to istio-init install chart with helm %s", err)
-			}
-		}
-
-		fmt.Printf("Waiting for Istio init jobs to create CRDs\n")
-
-		_, err = k8s.KubectlTask("wait", "-n", "istio-system", "--for=condition=complete", "job", "--all")
-		if err != nil {
-			fmt.Printf("error waiting for init jobs")
-		}
-
-		fmt.Printf("Giving Istio a few moments to propagate its CRDs.\n")
-		time.Sleep(time.Second * 5)
-
-		fmt.Printf("Istio init jobs in completed state or timed-out waiting.\n")
-
-		customFlags, customFlagErr := command.Flags().GetStringArray("set")
-		if customFlagErr != nil {
-			return fmt.Errorf("error with --set usage: %s", customFlagErr)
-		}
-
-		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("istio/istio", namespace, valuesFile, defaultVersion, overrides, wait)
+		// set installation flags
+		installFlags := mergeFlagsSlices([]string{"install", "--skip-confirmation",
+			"--set", fmt.Sprintf("values.pilot.resources.requests.cpu=%s", cpu),
+			"--set", fmt.Sprintf("values.pilot.resources.requests.memory=%s", memory),
+			"--set", fmt.Sprintf("profile=%s", profile)}, defaultFlags, fmtSetFlags(setOverrides))
+
+		res, err := istioCli(installFlags...)
 		if err != nil {
-			return fmt.Errorf("unable to istio install chart with helm %s", err)
+			return err
+		}
+		file, err := ioutil.TempFile("", "istio")
+		if err != nil {
+			return err
+		}
+
+		w := bufio.NewWriter(file)
+		_, err = w.WriteString(res.Stdout)
+		if err != nil {
+			return err
+		}
+		w.Flush()
+
+		defer os.Remove(file.Name())
+
+		verifyFlags := mergeFlagsSlices([]string{"verify-install"}, defaultFlags)
+		_, err = istioCli(verifyFlags...)
+		if err != nil {
+			return err
 		}
 
 		fmt.Println(istioPostInstallMsg)
-
 		return nil
 	}
 
@@ -155,67 +174,70 @@ const istioPostInstallMsg = `===================================================
 =======================================================================` +
 	"\n\n" + IstioInfoMsg + "\n\n" + pkg.ThanksForUsing
 
-func writeIstioValues() (string, error) {
-	out := `#
-# Minimal Istio Configuration taken from https://github.com/weaveworks/flagger
+func downloadIstio(userPath, arch, clientOS, version string) error {
 
-# pilot configuration
-pilot:
-  enabled: true
-  sidecar: true
-  resources:
-    requests:
-      cpu: 10m
-      memory: 128Mi
+	tools := get.MakeTools()
+	var tool *get.Tool
+	for _, t := range tools {
+		if t.Name == "istioctl" {
+			tool = &t
+			break
+		}
+	}
 
-gateways:
-  enabled: true
-  istio-ingressgateway:
-    autoscaleMax: 1
+	if tool == nil {
+		return fmt.Errorf("unable to find tool definition")
+	}
 
-# sidecar-injector webhook configuration
-sidecarInjectorWebhook:
-  enabled: true
+	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-# galley configuration
-galley:
-  enabled: false
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false)
+		if err != nil {
+			return err
+		}
 
-# mixer configuration
-mixer:
-  policy:
-    enabled: false
-  telemetry:
-    enabled: true
-    replicaCount: 1
-    autoscaleEnabled: false
-  resources:
-    requests:
-      cpu: 10m
-      memory: 128Mi
+		fmt.Println("Downloaded to: ", outPath, finalName)
+	} else {
+		fmt.Printf("%s already exists, skipping download.\n", tool.Name)
+	}
 
-# addon prometheus configuration
-prometheus:
-  enabled: true
-  scrapeInterval: 5s
+	return nil
+}
 
-# addon jaeger tracing configuration
-tracing:
-  enabled: false
+func istioCli(parts ...string) (execute.ExecResult, error) {
+	task := execute.ExecTask{
+		Command:     fmt.Sprintf("%s", env.LocalBinary("istioctl", "")),
+		Args:        parts,
+		Env:         os.Environ(),
+		StreamStdio: true,
+	}
 
-# Common settings.
-global:
-  proxy:
-    # Resources for the sidecar.
-    resources:
-      requests:
-        cpu: 10m
-        memory: 64Mi
-      limits:
-        cpu: 1000m
-        memory: 256Mi
-  useMCP: false`
+	res, err := task.Execute()
 
-	writeTo := path.Join(os.TempDir(), "istio-values.yaml")
-	return writeTo, ioutil.WriteFile(writeTo, []byte(out), 0600)
+	if err != nil {
+		return res, err
+	}
+
+	if res.ExitCode != 0 {
+		return res, fmt.Errorf("exit code %d, stderr: %s", res.ExitCode, res.Stderr)
+	}
+
+	return res, nil
+}
+
+func fmtSetFlags(setOverrides []string) []string {
+	fmtOverrides := []string{}
+	for _, setOverride := range setOverrides {
+		fmtOverrides = append(fmtOverrides, "--set", setOverride)
+	}
+	return fmtOverrides
+}
+
+func mergeFlagsSlices(args ...[]string) []string {
+	mergedSlice := make([]string, 0)
+	for _, oneSlice := range args {
+		mergedSlice = append(mergedSlice, oneSlice...)
+	}
+
+	return mergedSlice
 }

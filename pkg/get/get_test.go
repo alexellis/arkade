@@ -1223,3 +1223,71 @@ func Test_DownloadNerdctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadIstioCtl(t *testing.T) {
+	tools := MakeTools()
+	name := "istioctl"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    "amd64",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-win.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    "x86_64",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "amd64",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "arm",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-armv7.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-armv7.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv7l",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-armv7.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "arm64",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    "amd64",
+			version: "1.9.1",
+			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-osx.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
