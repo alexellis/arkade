@@ -12,5 +12,5 @@ require (
 	github.com/sethvargo/go-password v0.2.0
 	github.com/spf13/cobra v1.1.3
 	golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550
-	golang.org/x/mod v0.4.1
+	golang.org/x/mod v0.4.2
 )
