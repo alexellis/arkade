@@ -132,7 +132,6 @@ kubectl delete -f deploy/test-pod.yaml -f deploy/test-claim.yaml
 # Now check the folder has been deleted.
 
 
-
 `
 
 const nfsClientInstallMsg = `=======================================================================

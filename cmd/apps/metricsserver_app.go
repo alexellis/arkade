@@ -5,16 +5,12 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
 
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
-	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -32,46 +28,11 @@ func MakeInstallMetricsServer() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
-		wait, _ := command.Flags().GetBool("wait")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
-
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
 		namespace, _ := command.Flags().GetString("namespace")
-
-		if namespace != "kube-system" {
-			return fmt.Errorf(`to override the "kube-system", install via tiller`)
-		}
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
-
-		clientArch, clientOS := env.GetClientArch()
-		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
-
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
-		if err != nil {
-			return err
-		}
-
-		err = helm.UpdateHelmRepos(true)
-		if err != nil {
-			return err
-		}
-
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/metrics-server", defaultVersion)
-
-		if err != nil {
-			return err
-		}
 
 		overrides := map[string]string{}
 		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
@@ -83,54 +44,40 @@ func MakeInstallMetricsServer() *cobra.Command {
 			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm64`
 			break
 		}
+		customFlags, _ := command.Flags().GetStringArray("set")
 
-		customFlags, err := command.Flags().GetStringArray("set")
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
+
+		nfsProvisionerOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmRepo("stable/metrics-server").
+			WithHelmURL("https://charts.helm.sh/stable").
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
+
+		_, err := apps.MakeInstallChart(nfsProvisionerOptions)
 		if err != nil {
 			return err
 		}
 
-		if err = config.MergeFlags(overrides, customFlags); err != nil {
-			return err
-		}
-
-		fmt.Println("Chart path: ", chartPath)
-
-		err = helm.Helm3Upgrade("stable/metrics-server", namespace,
-			"values.yaml",
-			defaultVersion,
-			overrides,
-			wait)
-
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(`=======================================================================
-= metrics-server has been installed.                                  =
-=======================================================================
-
-# It can take a few minutes for the metrics-server to collect data
-# from the cluster. Try these commands and wait a few moments if
-# no data is showing.
-
-` + MetricsInfoMsg + `
-
-` + pkg.ThanksForUsing)
-
+		println(MetricsInfoMsg)
 		return nil
 	}
 
 	return metricsServer
 }
 
-const MetricsInfoMsg = `# Check pod usage
+const MetricsInfoMsg = `
 
+You have installed the metrics-server for Kubernetes:
+
+# Check pod usage
 kubectl top pod
 
 # Check node usage
-
 kubectl top node
-
 
 # Find out more at:
 # https://github.com/helm/charts/tree/master/stable/metrics-server`
