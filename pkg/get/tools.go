@@ -936,10 +936,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:   "AkihiroSuda",
+			Owner:   "containerd",
 			Repo:    "nerdctl",
 			Name:    "nerdctl",
-			Version: "v0.6.1",
+			Version: "v0.7.2",
 			URLTemplate: `
 {{ $file := "" }}
 {{- if eq .OS "linux" -}}
