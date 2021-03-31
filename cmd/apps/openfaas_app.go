@@ -206,6 +206,11 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		fmt.Println(openfaasPostInstallMsg)
+
+		if basicAuthEnabled == false {
+			fmt.Println(
+				`Warning: It is not recommended to disable authentication for OpenFaaS.`)
+		}
 		return nil
 	}
 	return openfaas
