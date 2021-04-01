@@ -52,7 +52,6 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		email, _ := command.Flags().GetString("email")
 		domain, _ := command.Flags().GetString("domain")

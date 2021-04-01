@@ -35,8 +35,6 @@ func MakeInstallPostgresql() *cobra.Command {
 
 	postgresql.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
 		updateRepo, _ := postgresql.Flags().GetBool("update-repo")
 
 		arch := k8s.GetNodeArchitecture()

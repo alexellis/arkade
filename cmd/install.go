@@ -22,7 +22,7 @@ func MakeInstall() *cobra.Command {
 		Short:   "Install Kubernetes apps from helm charts or YAML files",
 		Aliases: []string{"i"},
 		Long: `Install Kubernetes apps from helm charts or YAML files using the "install"
-command. 
+command.
 
 You can also find the post-install message for each app with the "info"
 command.`,

@@ -35,7 +35,6 @@ func MakeInstallMongoDB() *cobra.Command {
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
