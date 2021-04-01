@@ -28,11 +28,7 @@ func MakeInstallCronConnector() *cobra.Command {
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
 		namespace, _ := command.Flags().GetString("namespace")
 
 		overrides := map[string]string{}

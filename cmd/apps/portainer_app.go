@@ -34,8 +34,6 @@ func MakeInstallPortainer() *cobra.Command {
 			return err
 		}
 
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
-
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 

@@ -37,7 +37,6 @@ func MakeInstallTraefik2() *cobra.Command {
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		updateRepo, _ := traefik2.Flags().GetBool("update-repo")
 		namespace, _ := traefik2.Flags().GetString("namespace")

@@ -38,7 +38,6 @@ service mesh created by Microsoft Azure.`,
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)

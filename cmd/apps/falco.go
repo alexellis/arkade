@@ -61,7 +61,6 @@ func MakeInstallFalco() *cobra.Command {
 		sidekickEnabled, _ := command.Flags().GetBool("sidekick")
 		webUIEnabled, _ := command.Flags().GetBool("webui")
 
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
