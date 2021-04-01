@@ -14,7 +14,6 @@ import (
 	"github.com/alexellis/arkade/pkg/k8s"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/config"
 	"github.com/sethvargo/go-password/password"
 
 	"github.com/spf13/cobra"
@@ -62,9 +61,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
-			return err
-		}
 		namespace, _ := command.Flags().GetString("namespace")
 
 		basicAuthEnabled, err := command.Flags().GetBool("basic-auth")

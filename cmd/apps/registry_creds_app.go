@@ -39,7 +39,6 @@ and ARM64 clusters.`,
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
-		fmt.Printf("Using kubeconfig: %s\n", kubeConfigPath)
 
 		var (
 			username string
