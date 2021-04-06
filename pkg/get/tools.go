@@ -433,7 +433,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:          "civo",
 			Repo:           "cli",
 			Name:           "civo",
-			Version:        "0.7.10",
+			Version:        "0.7.11",
 			BinaryTemplate: `civo`,
 			URLTemplate: `
 
