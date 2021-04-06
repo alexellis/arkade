@@ -717,28 +717,28 @@ func Test_DownloadCivo(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.7.10"
+	const toolVersion = "0.7.11"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.10/civo-0.7.10-windows-amd64.zip`,
+			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-windows-amd64.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.10/civo-0.7.10-linux-amd64.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-linux-amd64.tar.gz`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.10/civo-0.7.10-darwin-amd64.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-darwin-amd64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.10/civo-0.7.10-linux-arm.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-linux-arm.tar.gz`,
 		},
 	}
 
