@@ -5,8 +5,7 @@ go 1.15
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/alexellis/go-execute v0.0.0-20201205082949-69a2cde04f4f
-	github.com/cheggaaa/pb/v3 v3.0.7
-	github.com/fatih/color v1.9.0 // indirect
+	github.com/cheggaaa/pb/v3 v3.0.8
 	github.com/morikuni/aec v1.0.0
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.2.0
