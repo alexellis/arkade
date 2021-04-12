@@ -28,7 +28,7 @@ func MakeInstallInletsOperator() *cobra.Command {
 	var inletsOperator = &cobra.Command{
 		Use:   "inlets-operator",
 		Short: "Install inlets-operator",
-		Long: `Install inlets-operator to get public IPs for your services and 
+		Long: `Install inlets-operator to get public IPs for your services and
 IngressController`,
 		Example: `  arkade install inlets-operator \
   --license-file ~/.inlets/license
@@ -39,7 +39,7 @@ IngressController`,
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets-pro")
 	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure'")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure', 'hetzner'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Equinix Metal)")
 	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Equinix Metal and Scaleway)")
@@ -225,7 +225,8 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	}
 
 	providers := []string{
-		"digitalocean", "equinix-metal", "ec2", "scaleway", "civo", "gce", "linode", "azure",
+		"digitalocean", "equinix-metal", "ec2", "scaleway",
+		"civo", "gce", "linode", "azure", "hetzner",
 	}
 
 	found := false
@@ -296,13 +297,36 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 		if len(secretKeyFile) == 0 {
 			return overrides, fmt.Errorf("secret-key-file is required for provider %s", provider)
 		}
+	} else if provider == "hetzner" {
+		hetznerRegion, err := command.Flags().GetString("region")
+		userInputRegion := strings.ToLower(hetznerRegion)
+		if err != nil {
+			return overrides, err
+		}
+		if len(hetznerRegion) == 0 {
+			return overrides, fmt.Errorf("region is required for provider %s", provider)
+		}
+
+		validHetznerRegions := []string{"fsn1", "nbg1", "hel1"}
+		foundRegion := false
+		for _, validRegion := range validHetznerRegions {
+			if validRegion == userInputRegion {
+				foundRegion = true
+				overrides["region"] = userInputRegion
+				break
+			}
+		}
+
+		if !foundRegion {
+			return overrides, fmt.Errorf("invalid region set for provider %s. Valid regions are: %s", provider, strings.Join(validHetznerRegions, ","))
+		}
 	}
 
 	return overrides, nil
 }
 
 const InletsOperatorInfoMsg = `# The default configuration is for DigitalOcean and your secret is
-# stored as "inlets-access-key" in the "default" namespace or the namespace 
+# stored as "inlets-access-key" in the "default" namespace or the namespace
 # you gave if installing with helm3
 
 # To get your first Public IP run the following:
@@ -319,7 +343,7 @@ kubectl apply -f \
 
 kubectl expose deployment nginx-1 --port=80 --type=LoadBalancer
 
-# Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to 
+# Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to
 # change to an IP
 
 kubectl get svc -w
