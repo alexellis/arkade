@@ -45,3 +45,9 @@ cat /etc/os-release
 ```
 arkade version
 ```
+
+## Are you a GitHub Sponsor (Yes/No?)
+
+Check at: https://github.com/sponsors/alexellis
+- [ ] Yes
+- [ ] No
