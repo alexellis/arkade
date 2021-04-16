@@ -992,5 +992,36 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$versionString}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "tektoncd",
+			Repo:    "cli",
+			Name:    "tkn",
+			Version: "0.17.2",
+			URLTemplate: `
+				{{$arch := .Arch}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "x86_64"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$osString:= .OS}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osString = "Windows"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osString = "Darwin"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "Linux"}}
+				{{- end -}}
+
+				{{$ext := ".tar.gz"}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+				
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/tkn_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+		})
+
 	return tools
 }
