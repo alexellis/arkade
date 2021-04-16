@@ -61,21 +61,24 @@ func MakeInstallArgoCD() *cobra.Command {
 
 const ArgoCDInfoMsg = `
 # Get the ArgoCD CLI
+arkade install argocd
 
-brew tap argoproj/tap
-brew install argoproj/tap/argocd
+# Port-forward the ArgoCD API server
+kubectl port-forward svc/argocd-server -n argocd 8443:443 &
 
-# Or download via https://github.com/argoproj/argo-cd/releases/latest
+# Get the password
+PASS=$(kubectl get secret argocd-initial-admin-secret \
+  -n argocd \
+  -o jsonpath="{.data.password}" | base64 -d)
+echo $PASS
 
-# Username is "admin", get the password
+# Or log in:
+argocd login --name local 127.0.0.1:8443 --insecure \
+ --username admin \
+ --password $PASS
 
-kubectl get pods -n argocd -l app.kubernetes.io/name=argocd-server -o name | cut -d'/' -f 2
-
-# Port-forward
-
-kubectl port-forward svc/argocd-server -n argocd 8081:443 &
-
-http://localhost:8081
+# Open the UI:
+https://127.0.0.1:8443
 
 # Get started with ArgoCD at
 # https://argoproj.github.io/argo-cd/#quick-start`
