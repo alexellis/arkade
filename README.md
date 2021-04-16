@@ -91,6 +91,7 @@ Use "arkade get TOOL" to download a tool or application:
   packer
   popeye
   stern
+  tkn
   terraform
   vagrant
   yq
