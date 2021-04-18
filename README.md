@@ -282,25 +282,31 @@ Available Commands:
   crossplane              Install Crossplane
   docker-registry         Install a Docker registry
   docker-registry-ingress Install registry ingress with TLS
+  falco                   Install Falco
   gitea                   Install gitea
+  gitlab                  Install GitLab
   grafana                 Install grafana
-  falco                   Install falco
   info                    Find info about a Kubernetes app
   ingress-nginx           Install ingress-nginx
   inlets-operator         Install inlets-operator
   istio                   Install istio
   jenkins                 Install jenkins
   kafka-connector         Install kafka-connector for OpenFaaS
+  kong-ingress            Install kong-ingress for OpenFaaS
   kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
+  kyverno                 Install kyverno
   linkerd                 Install linkerd
   loki                    Install Loki for monitoring and tracing
   metrics-server          Install metrics-server
   minio                   Install minio
   mongodb                 Install mongodb
+  mqtt-connector          Install mqtt-connector for OpenFaaS
   nats-connector          Install OpenFaaS connector for NATS
   nfs-client-provisioner  Install nfs client provisioner
+  nginx-inc               Install nginx-inc for OpenFaaS
+  opa-gatekeeper          Install Open Policy Agent (OPA) Gatekeeper
   openfaas                Install openfaas
   openfaas-ingress        Install openfaas ingress with TLS
   openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
@@ -309,8 +315,10 @@ Available Commands:
   postgresql              Install postgresql
   redis                   Install redis
   registry-creds          Install registry-creds
+  sealed-secrets          Install sealed-secrets
   tekton                  Install Tekton pipelines and dashboard
   traefik2                Install traefik2
+
 ```
 
 ## Community & contributing
