@@ -817,7 +817,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:   "docker",
 			Repo:    "compose",
 			Name:    "docker-compose",
-			Version: "1.27.4",
+			Version: "1.29.1",
 			URLTemplate: `
 {{$osStr := ""}}
 {{ if HasPrefix .OS "ming" -}}
