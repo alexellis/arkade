@@ -1023,5 +1023,25 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/tkn_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner: "inlets",
+			Repo:  "inlets-pro",
+			Name:  "inlets-pro",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}.exe
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-darwin
+{{- else if eq .Arch "armv6l" -}}
+{{.nAME}}-armhf
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-armhf
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-arm64
+{{- else -}}
+{{.Name}}
+{{- end -}}`,
+		})
+
 	return tools
 }

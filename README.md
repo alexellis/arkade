@@ -68,6 +68,7 @@ Use "arkade get TOOL" to download a tool or application:
   helmfile
   hugo
   inletsctl
+  inlets-pro
   k3d
   k3sup
   k9s

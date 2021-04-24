@@ -1335,3 +1335,48 @@ func Test_DownloadTektonCli(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloandInletsProCli(t *testing.T) {
+	tools := MakeTools()
+	name := "inlets-pro"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-arm64`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-darwin`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
