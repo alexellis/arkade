@@ -889,7 +889,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:   "nats-io",
 			Repo:    "natscli",
 			Name:    "nats",
-			Version: "0.0.21",
+			Version: "0.0.23",
 			URLTemplate: `{{$arch := .Arch}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
