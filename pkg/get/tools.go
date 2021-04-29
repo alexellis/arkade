@@ -936,6 +936,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:   "argoproj",
+			Repo:    "argo-workflows",
+			Name:    "argo-workflows",
+			Version: "v3.1.1",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- end -}}
+			
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$ext := ".gz"}}
+			
+			https://github.com/argoproj/argo-workflows/releases/download/{{.Version}}/argo-{{$osStr}}-{{$arch}}{{$ext}}`,
+			BinaryTemplate: `
+			argo
+			`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:   "containerd",
 			Repo:    "nerdctl",
 			Name:    "nerdctl",
