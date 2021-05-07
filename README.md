@@ -70,6 +70,7 @@ Use "arkade get TOOL" to download a tool or application:
   helm
   helmfile
   hugo
+  influx
   inlets-pro
   inletsctl
   istioctl

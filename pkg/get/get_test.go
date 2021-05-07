@@ -1280,6 +1280,51 @@ func Test_DownloadTektonCli(t *testing.T) {
 	}
 }
 
+func Test_DownloandInfluxCli(t *testing.T) {
+	tools := MakeTools()
+	name := "influx"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "windows",
+			arch:    arch64bit,
+			version: "2.0.7",
+			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-windows-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "2.0.7",
+			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "2.0.7",
+			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "2.0.7",
+			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-darwin-amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
+
 func Test_DownloandInletsProCli(t *testing.T) {
 	tools := MakeTools()
 	name := "inlets-pro"
