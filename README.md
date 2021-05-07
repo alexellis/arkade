@@ -94,6 +94,7 @@ Use "arkade get TOOL" to download a tool or application:
   stern
   tkn
   terraform
+  trivy
   vagrant
   yq
   istioctl
