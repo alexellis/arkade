@@ -1215,6 +1215,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext := ".tar.gz"}}
 				{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:       "influxdata",
+			Repo:        "influxdb",
+			Name:        "influx",
+			Version:     "2.0.7",
+			Description: "InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.",
+			URLTemplate: `{{$arch := .Arch}}
+		{{ if eq .Arch "x86_64" -}}
+		{{$arch = "amd64"}}
+		{{- else if eq .Arch "aarch64" -}}
+		{{$arch = "arm64"}}
+		{{- end -}}
+
+		{{$ext := ".tar.gz"}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$ext = ".zip"}}
+		{{- end -}}
+
+				https://dl.{{.Owner}}.com/{{.Repo}}/releases/{{.Repo}}2-client-{{.Version}}-{{.OS}}-{{$arch}}{{$ext}}`,
+		})
 
 	tools = append(tools,
 		Tool{
