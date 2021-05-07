@@ -1425,5 +1425,49 @@ func Test_DownloadKim(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_DownloandTrivyCli(t *testing.T) {
+	tools := MakeTools()
+	name := "trivy"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.17.2",
+			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-64bit.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "0.17.2",
+			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-ARM.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.17.2",
+			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-ARM64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.17.2",
+			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_macOS-64bit.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
 
 }

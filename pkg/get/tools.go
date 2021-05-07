@@ -1069,6 +1069,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
 			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		},
+	)
+
+	tools = append(tools,
+		Tool{
+			Owner:   "aquasecurity",
+			Repo:    "trivy",
+			Name:    "trivy",
+			Version: "0.17.2",
+			URLTemplate: `
+				{{$arch := .Arch}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "64bit"}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{$arch = "ARM"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "ARM64"}}
+				{{- end -}}
+
+				{{$osString:= .OS}}
+				{{ if HasPrefix .OS "darwin" -}}
+				{{$osString = "macOS"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "Linux"}}
+				{{- end -}}
+
+				{{$ext := ".tar.gz"}}
+				
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/trivy_{{.Version}}_{{$osString}}-{{$arch}}{{$ext}}`,
 		})
 
 	return tools
