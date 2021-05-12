@@ -63,6 +63,7 @@ Use "arkade get TOOL" to download a tool or application:
   docker-compose
   doctl
   faas-cli
+  flux
   gh
   helm
   helmfile
