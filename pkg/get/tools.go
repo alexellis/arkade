@@ -1043,5 +1043,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 {{- end -}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "rancher",
+			Repo:    "kim",
+			Name:    "kim",
+			Version: `v0.1.0-alpha.12`,
+			BinaryTemplate: `
+			{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{	$osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+
+			{{ $archStr := "amd64" }}
+
+			{{- if eq .Arch "armv6l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		})
+
 	return tools
 }
