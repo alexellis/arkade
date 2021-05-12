@@ -1380,3 +1380,50 @@ func Test_DownloandInletsProCli(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKim(t *testing.T) {
+	tools := MakeTools()
+	name := "kim"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v0.1.0-alpha.12",
+			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-windows-amd64.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.1.0-alpha.12",
+			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.1.0-alpha.12",
+			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-linux-arm64`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.1.0-alpha.12",
+			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-darwin-amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				r.Fatal(err)
+			}
+			if got != tc.url {
+				r.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+
+}
