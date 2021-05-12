@@ -1100,5 +1100,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/trivy_{{.Version}}_{{$osString}}-{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "fluxcd",
+			Repo:    "flux2",
+			Name:    "flux",
+			Version: "0.13.4",
+			URLTemplate: `
+				{{$arch := .Arch}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "amd64"}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{$arch = "arm"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+
+				{{$osString := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osString = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osString = "darwin"}}
+				{{- end -}}
+
+				{{$ext := ".tar.gz"}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+				
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+		})
+
 	return tools
 }
