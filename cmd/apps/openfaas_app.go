@@ -112,7 +112,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		functionPullPolicy, _ := command.Flags().GetString("function-pull-policy")
-		if len(pullPolicy) == 0 {
+		if len(functionPullPolicy) == 0 {
 			return fmt.Errorf("you must give a value for function-pull-policy such as IfNotPresent or Always")
 		}
 
