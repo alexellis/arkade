@@ -968,7 +968,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:   "istio",
 			Repo:    "istio",
 			Name:    "istioctl",
-			Version: "1.9.1",
+			Version: "1.10.0",
 			URLTemplate: `
 				{{$arch := .Arch}}
 				{{ if eq .Arch "x86_64" -}}

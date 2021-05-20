@@ -20,7 +20,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var istioVer = "1.9.1"
+var istioVer = "1.10.0"
 
 func MakeInstallIstio() *cobra.Command {
 	var istio = &cobra.Command{
