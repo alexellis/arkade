@@ -58,6 +58,7 @@ With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 arkade get APP
 Use "arkade get TOOL" to download a tool or application:
   argocd
+  argocd-autopilot
   arkade
   buildx
   civo

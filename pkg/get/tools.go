@@ -913,6 +913,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:   "argoproj-labs",
+			Repo:    "argocd-autopilot",
+			Name:    "argocd-autopilot",
+			Version: "v0.1.6",
+			BinaryTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osString := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osString = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osString = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osString = "darwin"}}
+			{{- end -}}
+			{{$ext := ".gz"}}
+			{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}`,
+		},
+	)
+
+	tools = append(tools,
+		Tool{
 			Owner:   "argoproj",
 			Repo:    "argo-cd",
 			Name:    "argocd",
