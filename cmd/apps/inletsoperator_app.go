@@ -37,8 +37,9 @@ IngressController`,
 	}
 
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets-pro")
-	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
+	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets PRO")
+	inletsOperator.Flags().StringP("license-file", "f", "$HOME/.inlets/LICENSE", "Path to license JWT file for inlets PRO")
+
 	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure', 'hetzner'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Equinix Metal)")
@@ -175,25 +176,33 @@ IngressController`,
 
 		region, _ := command.Flags().GetString("region")
 		overrides["region"] = region
-		licenseVal := ""
-		if val, _ := command.Flags().GetString("license"); len(val) > 0 {
-			licenseVal = val
-		}
 
-		if licenseFile, _ := command.Flags().GetString("license-file"); len(licenseFile) > 0 {
-			licenseKey, err := ioutil.ReadFile(licenseFile)
-			if err != nil {
-				return err
+		license, _ := command.Flags().GetString("license")
+		licenseFile, _ := command.Flags().GetString("license-file")
+		fileFlagChanged := command.Flags().Changed("license-file")
+
+		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets PRO")
+		if len(license) == 0 {
+			if len(licenseFile) > 0 {
+				licenseFile = os.ExpandEnv(licenseFile)
+
+				res, err := ioutil.ReadFile(licenseFile)
+				if err != nil {
+					if fileFlagChanged == false {
+						return noLicenseErr
+					}
+
+					return fmt.Errorf("unable to open license file: %s", err.Error())
+				}
+				license = strings.TrimSpace(string(res))
 			}
-
-			licenseVal = strings.TrimSpace(string(licenseKey))
 		}
 
-		if len(licenseVal) > 0 {
-			overrides["inletsProLicense"] = licenseVal
-		} else {
-			return fmt.Errorf("an inlets PRO license is required for the inlets-operator")
+		if len(license) == 0 {
+			return noLicenseErr
 		}
+
+		overrides["inletsProLicense"] = license
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
 			overrides["proClientImage"] = val
