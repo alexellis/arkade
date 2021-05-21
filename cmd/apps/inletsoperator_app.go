@@ -175,25 +175,31 @@ IngressController`,
 
 		region, _ := command.Flags().GetString("region")
 		overrides["region"] = region
-		licenseVal := ""
-		if val, _ := command.Flags().GetString("license"); len(val) > 0 {
-			licenseVal = val
-		}
 
-		if licenseFile, _ := command.Flags().GetString("license-file"); len(licenseFile) > 0 {
-			licenseKey, err := ioutil.ReadFile(licenseFile)
-			if err != nil {
-				return err
+		license, _ := command.Flags().GetString("license")
+		licenseFile, _ := command.Flags().GetString("license-file")
+
+		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets PRO")
+		if len(license) == 0 {
+			if len(licenseFile) > 0 {
+				licenseFile = os.ExpandEnv(licenseFile)
+
+				res, err := ioutil.ReadFile(licenseFile)
+				if err != nil {
+					if command.Flags().Changed("license-file") == false {
+						return noLicenseErr
+					}
+					return fmt.Errorf("unable to open license file: %s", err.Error())
+				}
+				license = strings.TrimSpace(string(res))
 			}
-
-			licenseVal = strings.TrimSpace(string(licenseKey))
 		}
 
-		if len(licenseVal) > 0 {
-			overrides["inletsProLicense"] = licenseVal
-		} else {
-			return fmt.Errorf("an inlets PRO license is required for the inlets-operator")
+		if len(license) == 0 {
+			return noLicenseErr
 		}
+
+		overrides["inletsProLicense"] = license
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
 			overrides["proClientImage"] = val
