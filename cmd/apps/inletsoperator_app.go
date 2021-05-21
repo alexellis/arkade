@@ -179,6 +179,7 @@ IngressController`,
 
 		license, _ := command.Flags().GetString("license")
 		licenseFile, _ := command.Flags().GetString("license-file")
+		fileFlagChanged := command.Flags().Changed("license-file")
 
 		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets PRO")
 		if len(license) == 0 {
@@ -187,9 +188,10 @@ IngressController`,
 
 				res, err := ioutil.ReadFile(licenseFile)
 				if err != nil {
-					if command.Flags().Changed("license-file") == false {
+					if fileFlagChanged == false {
 						return noLicenseErr
 					}
+
 					return fmt.Errorf("unable to open license file: %s", err.Error())
 				}
 				license = strings.TrimSpace(string(res))
