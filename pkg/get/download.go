@@ -40,22 +40,11 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 		}
 
 		outFilePathDir := filepath.Dir(outFilePath)
-		if len(tool.BinaryTemplate) > 0 {
-			fileName, err := GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-			if err != nil {
-				return "", "", err
-			}
-			outFilePath = path.Join(outFilePathDir, fileName)
-		} else {
-			outFilePath = path.Join(outFilePathDir, tool.Name)
-		}
 
-		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
-			outFilePath += ".exe"
-		}
-
-		if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-			untarErr := archive.Untar(archiveFile, outFilePathDir)
+		var tarFileName string
+		if strings.HasSuffix(downloadURL, "gz") || strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
+			var untarErr error
+			tarFileName, untarErr = archive.Untar(archiveFile, outFilePathDir)
 			if untarErr != nil {
 				return "", "", untarErr
 			}
@@ -71,6 +60,20 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 			if unzipErr != nil {
 				return "", "", unzipErr
 			}
+		}
+
+		if len(tool.BinaryTemplate) > 0 {
+			fileName, err := GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+			if err != nil {
+				return "", "", err
+			}
+			outFilePath = checkForTarFileName(tarFileName, outFilePathDir, fileName)
+		} else {
+			outFilePath = checkForTarFileName(tarFileName, outFilePathDir, tool.Name)
+		}
+
+		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
+			outFilePath += ".exe"
 		}
 	}
 
@@ -96,6 +99,14 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	return outFilePath, finalName, nil
+}
+
+func checkForTarFileName(archiveFileName string, outFilePathDir string, fileName string) string {
+	if len(archiveFileName) > 0 {
+		return path.Join(outFilePathDir, archiveFileName)
+	} else {
+		return path.Join(outFilePathDir, fileName)
+	}
 }
 
 func downloadFile(downloadURL string, displayProgress bool) (string, error) {

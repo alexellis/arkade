@@ -25,11 +25,11 @@ import (
 //
 // Edited on 2019-10-11 to remove support for nested folders when un-taring
 // so that all files are placed in the same target directory
-func Untar(r io.Reader, dir string) error {
+func Untar(r io.Reader, dir string) (string, error) {
 	return untar(r, dir)
 }
 
-func untar(r io.Reader, dir string) (err error) {
+func untar(r io.Reader, dir string) (fileName string, err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
@@ -43,7 +43,7 @@ func untar(r io.Reader, dir string) (err error) {
 	}()
 	zr, err := gzip.NewReader(r)
 	if err != nil {
-		return fmt.Errorf("requires gzip-compressed body: %v", err)
+		return fileName, fmt.Errorf("requires gzip-compressed body: %v", err)
 	}
 	tr := tar.NewReader(zr)
 	loggedChtimesError := false
@@ -54,12 +54,13 @@ func untar(r io.Reader, dir string) (err error) {
 		}
 		if err != nil {
 			log.Printf("tar reading error: %v", err)
-			return fmt.Errorf("tar error: %v", err)
+			return fileName, fmt.Errorf("tar error: %v", err)
 		}
 		if !validRelPath(f.Name) {
-			return fmt.Errorf("tar contained invalid name error %q", f.Name)
+			return fileName, fmt.Errorf("tar contained invalid name error %q", f.Name)
 		}
 		baseFile := filepath.Base(f.Name)
+		fileName = f.Name
 		abs := path.Join(dir, baseFile)
 		fmt.Println(abs, f.Name)
 
@@ -74,17 +75,17 @@ func untar(r io.Reader, dir string) (err error) {
 
 			wf, err := os.OpenFile(abs, os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
 			if err != nil {
-				return err
+				return fileName, err
 			}
 			n, err := io.Copy(wf, tr)
 			if closeErr := wf.Close(); closeErr != nil && err == nil {
 				err = closeErr
 			}
 			if err != nil {
-				return fmt.Errorf("error writing to %s: %v", abs, err)
+				return fileName, fmt.Errorf("error writing to %s: %v", abs, err)
 			}
 			if n != f.Size {
-				return fmt.Errorf("only wrote %d bytes to %s; expected %d", n, abs, f.Size)
+				return fileName, fmt.Errorf("only wrote %d bytes to %s; expected %d", n, abs, f.Size)
 			}
 			modTime := f.ModTime
 			if modTime.After(t0) {
@@ -109,7 +110,7 @@ func untar(r io.Reader, dir string) (err error) {
 		default:
 		}
 	}
-	return nil
+	return fileName, nil
 }
 
 func validRelativeDir(dir string) bool {

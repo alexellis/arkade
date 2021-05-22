@@ -57,7 +57,7 @@ func (tool Tool) IsArchive() bool {
 	version := ""
 
 	downloadURL, _ := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip") || strings.HasSuffix(downloadURL, "tgz")
+	return strings.HasSuffix(downloadURL, "gz") || strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip") || strings.HasSuffix(downloadURL, "tgz")
 }
 
 func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
