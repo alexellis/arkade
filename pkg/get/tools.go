@@ -861,7 +861,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- else if eq .Arch "aarch64" -}}
-			{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- end -}}
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
