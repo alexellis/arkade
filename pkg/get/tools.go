@@ -48,14 +48,16 @@ func MakeTools() Tools {
 			Repo:    "helm",
 			Name:    "helm",
 			Version: "v3.5.2",
-			URLTemplate: `{{$arch := "arm"}}
+			URLTemplate: `{{$arch := "amd64"}}
 
-{{- if eq .Arch "x86_64" -}}
-{{$arch = "amd64"}}
+{{- if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
 {{- end -}}
 
-{{- if eq .Arch "aarch64" -}}
-{{$arch = "arm64"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+	{{- end -}}
 {{- end -}}
 
 {{$os := .OS}}
