@@ -260,69 +260,6 @@ func Test_DownloadFaaSCLIWindows(t *testing.T) {
 	}
 }
 
-func Test_DownloadHelmDarwin(t *testing.T) {
-	tools := MakeTools()
-	name := "helm"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	got, err := tool.GetURL("darwin", arch64bit, tool.Version)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := "https://get.helm.sh/helm-v3.5.2-darwin-amd64.tar.gz"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
-
-func Test_DownloadHelmLinux(t *testing.T) {
-	tools := MakeTools()
-	name := "helm"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	got, err := tool.GetURL("linux", arch64bit, tool.Version)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := "https://get.helm.sh/helm-v3.5.2-linux-amd64.tar.gz"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
-
-func Test_DownloadHelmWindows(t *testing.T) {
-	tools := MakeTools()
-	name := "helm"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	got, err := tool.GetURL("mingw64_nt-10.0-18362", arch64bit, tool.Version)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := "https://get.helm.sh/helm-v3.5.2-windows-amd64.zip"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
-
 func Test_DownloadKubeseal(t *testing.T) {
 	tools := MakeTools()
 	name := "kubeseal"
@@ -1502,6 +1439,51 @@ func Test_DownloandFluxCli(t *testing.T) {
 			arch:    arch64bit,
 			version: "0.13.4",
 			url:     `https://github.com/fluxcd/flux2/releases/download/v0.13.4/flux_0.13.4_darwin_amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloandHelm(t *testing.T) {
+	tools := MakeTools()
+	name := "helm"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "3.5.4",
+			url:     `https://get.helm.sh/helm-3.5.4-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "3.5.4",
+			url:     `https://get.helm.sh/helm-3.5.4-linux-arm.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "3.5.4",
+			url:     `https://get.helm.sh/helm-3.5.4-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "3.5.4",
+			url:     `https://get.helm.sh/helm-3.5.4-darwin-amd64.tar.gz`,
 		},
 	}
 
