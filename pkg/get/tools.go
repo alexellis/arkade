@@ -60,6 +60,10 @@ func MakeTools() Tools {
 	{{- end -}}
 {{- end -}}
 
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+
 {{$os := .OS}}
 {{$ext := "tar.gz"}}
 
