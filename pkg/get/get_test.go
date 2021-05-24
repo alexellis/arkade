@@ -1485,6 +1485,12 @@ func Test_DownloandHelm(t *testing.T) {
 			version: "3.5.4",
 			url:     `https://get.helm.sh/helm-3.5.4-darwin-amd64.tar.gz`,
 		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "3.5.4",
+			url:     `https://get.helm.sh/helm-3.5.4-darwin-amd64.tar.gz`,
+		},
 	}
 
 	for _, tc := range tests {
