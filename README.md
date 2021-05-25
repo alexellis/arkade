@@ -86,6 +86,7 @@ Use "arkade get TOOL" to download a tool or application:
   kubectx
   kubens
   kubeseal
+  kubie
   kustomize
   linkerd2
   mc

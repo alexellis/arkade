@@ -927,7 +927,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- end -}}
-			
+
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$osStr = "windows"}}
@@ -941,7 +941,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$ext = ".exe"}}
 			{{- end -}}
-			
+
 			https://github.com/argoproj/argo-cd/releases/download/{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
@@ -999,7 +999,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ if HasPrefix .OS "ming" -}}
 				{{$ext = ".zip"}}
 				{{- end -}}
-				
+
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$versionString}}{{$ext}}`,
 		})
 
@@ -1030,7 +1030,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ if HasPrefix .OS "ming" -}}
 				{{$ext = ".zip"}}
 				{{- end -}}
-				
+
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/tkn_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
@@ -1107,7 +1107,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 
 				{{$ext := ".tar.gz"}}
-				
+
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/trivy_{{.Version}}_{{$osString}}-{{$arch}}{{$ext}}`,
 		})
 
@@ -1141,7 +1141,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ if HasPrefix .OS "ming" -}}
 				{{$ext = ".zip"}}
 				{{- end -}}
-				
+
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
@@ -1167,6 +1167,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 				{{$ext := ".tar.gz"}}
 				{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "sbstp",
+			Repo:    "kubie",
+			Name:    "kubie",
+			Version: "v0.14.1",
+			URLTemplate: `{{$arch := .Arch}}
+				{{ if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{$arch = "arm64"}}
+				{{- end -}}
+				{{$osStr := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osStr = "darwin"}}
+				{{- end -}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}-{{$arch}}`,
 		})
 
 	return tools
