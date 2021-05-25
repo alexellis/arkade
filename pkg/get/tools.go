@@ -48,10 +48,16 @@ func MakeTools() Tools {
 			Repo:    "helm",
 			Name:    "helm",
 			Version: "v3.5.2",
-			URLTemplate: `{{$arch := "arm"}}
+			URLTemplate: `{{$arch := "amd64"}}
 
-{{- if eq .Arch "x86_64" -}}
-{{$arch = "amd64"}}
+{{- if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
+{{- end -}}
+
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+	{{- end -}}
 {{- end -}}
 
 {{$os := .OS}}
@@ -883,7 +889,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:   "nats-io",
 			Repo:    "natscli",
 			Name:    "nats",
-			Version: "0.0.21",
+			Version: "0.0.23",
 			URLTemplate: `{{$arch := .Arch}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
@@ -962,7 +968,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:   "istio",
 			Repo:    "istio",
 			Name:    "istioctl",
-			Version: "1.9.1",
+			Version: "1.10.0",
 			URLTemplate: `
 				{{$arch := .Arch}}
 				{{ if eq .Arch "x86_64" -}}
