@@ -393,7 +393,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "derailed",
 			Repo:    "k9s",
 			Name:    "k9s",
-			Version: "v0.24.2",
+			Version: "v0.24.10",
 			URLTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -410,7 +410,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{- else if eq .Arch "aarch64" -}}
 		{{$archStr = "arm64"}}
 		{{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
