@@ -632,28 +632,28 @@ func Test_DownloadK9s(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v0.21.7"
+	const toolVersion = "v0.24.10"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Windows_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Windows_x86_64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_x86_64.tar.gz`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Darwin_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Darwin_x86_64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.21.7/k9s_Linux_arm.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_arm.tar.gz`,
 		},
 	}
 
