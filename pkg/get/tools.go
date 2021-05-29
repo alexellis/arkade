@@ -92,7 +92,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 		})
 
-	// https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
+	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:   "kubernetes",
@@ -103,6 +103,10 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 
 {{- if eq .Arch "x86_64" -}}
 {{$arch = "amd64"}}
+{{- end -}}
+
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
 {{- end -}}
 
 {{$ext := ""}}
