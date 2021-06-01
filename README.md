@@ -96,6 +96,7 @@ Use "arkade get TOOL" to download a tool or application:
   osm
   pack
   packer
+  polaris
   popeye
   stern
   terraform
