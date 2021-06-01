@@ -1218,10 +1218,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:   "argoproj-labs",
-			Repo:    "argocd-autopilot",
-			Name:    "argocd-autopilot",
-			Version: "0.2.1",
+			Owner:       "argoproj-labs",
+			Repo:        "argocd-autopilot",
+			Name:        "argocd-autopilot",
+			Description: "An opinionated way of installing Argo-CD and managing GitOps repositories.",
+			Version:     "0.2.1",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
