@@ -1453,6 +1453,50 @@ func Test_DownloandFluxCli(t *testing.T) {
 	}
 
 }
+func Test_DownloandPolarisCli(t *testing.T) {
+	tools := MakeTools()
+	name := "polaris"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_armv7.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
 
 func Test_DownloandHelm(t *testing.T) {
 	tools := MakeTools()
