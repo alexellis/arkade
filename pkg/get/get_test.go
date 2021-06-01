@@ -496,16 +496,16 @@ func Test_DownloadKubebuilder(t *testing.T) {
 	tests := []test{
 		{os: "darwin",
 			arch:    arch64bit,
-			version: "2.3.1",
-			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.1/kubebuilder_2.3.1_darwin_amd64.tar.gz"},
+			version: "3.1.0",
+			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_darwin_amd64"},
 		{os: "linux",
 			arch:    arch64bit,
-			version: "2.3.1",
-			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.1/kubebuilder_2.3.1_linux_amd64.tar.gz"},
+			version: "3.1.0",
+			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_linux_amd64"},
 		{os: "linux",
 			arch:    "arm64",
-			version: "2.3.1",
-			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v2.3.1/kubebuilder_2.3.1_linux_arm64.tar.gz"},
+			version: "3.1.0",
+			url:     "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v3.1.0/kubebuilder_linux_arm64"},
 	}
 
 	for _, tc := range tests {

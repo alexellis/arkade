@@ -336,7 +336,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "kubernetes-sigs",
 			Repo:        "kubebuilder",
 			Name:        "kubebuilder",
-			Version:     "2.3.1",
+			NoExtension: true,
+			Version:     "3.1.0",
 			Description: "Framework for building Kubernetes APIs using custom resource definitions (CRDs).",
 			URLTemplate: `{{$arch := "arm64"}}
 			{{- if eq .Arch "x86_64" -}}
@@ -349,7 +350,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- else if eq .OS "darwin" -}}
 			{{$osStr = "darwin"}}
 			{{- end -}}
-			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.Version}}/kubebuilder_{{.Version}}_{{$osStr}}_{{$arch}}.tar.gz`,
+			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.Version}}/kubebuilder_{{$osStr}}_{{$arch}}`,
 		})
 
 	tools = append(tools,
