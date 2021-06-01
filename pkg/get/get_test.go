@@ -991,7 +991,7 @@ func Test_DownloadMinio(t *testing.T) {
 		},
 		{
 			os:   "linux",
-			arch: arch64bit,
+			arch: archARM64,
 			url:  `https://dl.min.io/client/mc/release/linux-arm64/mc`,
 		},
 		{
@@ -1002,13 +1002,16 @@ func Test_DownloadMinio(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, "")
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
+
+			got, err := tool.GetURL(tc.os, tc.arch, "")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
 	}
 }
 
@@ -1245,13 +1248,15 @@ func Test_DownloadIstioCtl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
 	}
 }
 
@@ -1513,13 +1518,16 @@ func Test_DownloandPolarisCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
 	}
 
 }
@@ -1564,13 +1572,15 @@ func Test_DownloandHelm(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				r.Fatal(err)
+			}
+			if got != tc.url {
+				r.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
 	}
 
 }
