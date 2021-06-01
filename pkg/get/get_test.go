@@ -131,6 +131,26 @@ func Test_DownloadKubectlDarwin(t *testing.T) {
 	}
 }
 
+func Test_DownloadKubectlLinuxArm64(t *testing.T) {
+	tools := MakeTools()
+	name := "kubectl"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("linux", archARM64, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/arm64/kubectl"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
+}
 func Test_DownloadKubectlLinux(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectl"
