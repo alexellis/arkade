@@ -92,7 +92,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 		})
 
-	// https://storage.googleapis.com/kubernetes-release/release/v1.18.0/bin/darwin/amd64/kubectl
+	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:   "kubernetes",
@@ -103,6 +103,10 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 
 {{- if eq .Arch "x86_64" -}}
 {{$arch = "amd64"}}
+{{- end -}}
+
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
 {{- end -}}
 
 {{$ext := ""}}
@@ -389,7 +393,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:   "derailed",
 			Repo:    "k9s",
 			Name:    "k9s",
-			Version: "v0.24.2",
+			Version: "v0.24.10",
 			URLTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -406,7 +410,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{- else if eq .Arch "aarch64" -}}
 		{{$archStr = "arm64"}}
 		{{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -867,7 +871,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- else if eq .Arch "aarch64" -}}
-			{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- end -}}
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
@@ -894,12 +898,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "armv6l" -}}
-			{$arch = "arm6"}}
+			{{$arch = "arm6"}}
 			{{- else if eq .Arch "armv7l" -}}
-			{$arch = "arm7"}}
+			{{$arch = "arm7"}}
 			{{- else if eq .Arch "aarch64" -}}
-			{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- end -}}
+
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$osStr = "windows"}}
@@ -980,7 +985,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{$arch = "armv7"}}
 				{{- else if eq .Arch "aarch64" -}}
-				{$arch = "arm64"}}
+				{{$arch = "arm64"}}
 				{{- end -}}
 
 				{{$versionString:=(printf "%s-%s" .OS $arch)}}
@@ -1138,6 +1143,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 				
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:   "FairwindsOps",
+			Repo:    "polaris",
+			Name:    "polaris",
+			Version: "3.2.1",
+			BinaryTemplate: `
+				{{$arch := "amd64"}}
+				{{if eq .Arch "armv7l" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$osString:= .OS}}
+				{{ if HasPrefix .OS "darwin" -}}
+				{{$osString = "darwin"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "linux"}}
+				{{- end -}}
+				{{$ext := ".tar.gz"}}
+				{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
 	return tools
