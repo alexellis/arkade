@@ -991,7 +991,7 @@ func Test_DownloadMinio(t *testing.T) {
 		},
 		{
 			os:   "linux",
-			arch: "arm64",
+			arch: arch64bit,
 			url:  `https://dl.min.io/client/mc/release/linux-arm64/mc`,
 		},
 		{
@@ -1033,13 +1033,19 @@ func Test_DownloadNats(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    "arm6",
+			arch:    archARM64,
+			version: "0.0.21",
+			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-arm64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
 			version: "0.0.21",
 			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-arm6.zip`,
 		},
 		{
 			os:      "linux",
-			arch:    "arm7",
+			arch:    "armv7l",
 			version: "0.0.21",
 			url:     `https://github.com/nats-io/natscli/releases/download/0.0.21/nats-0.0.21-linux-arm7.zip`,
 		},
@@ -1220,13 +1226,13 @@ func Test_DownloadIstioCtl(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "1.9.1",
 			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-armv7.tar.gz`,
 		},
 		{
 			os:      "linux",
-			arch:    "arm64",
+			arch:    archARM64,
 			version: "1.9.1",
 			url:     `https://github.com/istio/istio/releases/download/1.9.1/istioctl-1.9.1-linux-arm64.tar.gz`,
 		},

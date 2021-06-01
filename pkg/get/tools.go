@@ -871,7 +871,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- else if eq .Arch "aarch64" -}}
-			{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- end -}}
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
@@ -898,12 +898,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "armv6l" -}}
-			{$arch = "arm6"}}
+			{{$arch = "arm6"}}
 			{{- else if eq .Arch "armv7l" -}}
-			{$arch = "arm7"}}
+			{{$arch = "arm7"}}
 			{{- else if eq .Arch "aarch64" -}}
-			{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- end -}}
+
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$osStr = "windows"}}
@@ -984,7 +985,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{$arch = "armv7"}}
 				{{- else if eq .Arch "aarch64" -}}
-				{$arch = "arm64"}}
+				{{$arch = "arm64"}}
 				{{- end -}}
 
 				{{$versionString:=(printf "%s-%s" .OS $arch)}}
