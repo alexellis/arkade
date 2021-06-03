@@ -1560,3 +1560,42 @@ func Test_DownloandHelm(t *testing.T) {
 	}
 
 }
+
+func Test_DownloandArgoCDAutopilotCli(t *testing.T) {
+	tools := MakeTools()
+	name := "argocd-autopilot"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.2.1",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.2.1",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.2.1",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-darwin-amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}

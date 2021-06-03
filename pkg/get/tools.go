@@ -1168,5 +1168,50 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:   "argoproj-labs",
+			Repo:    "argocd-autopilot",
+			Name:    "argocd-autopilot",
+			Version: "0.2.1",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osString := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osString = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osString = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osString = "darwin"}}
+			{{- end -}}
+			{{$ext := ".tar.gz"}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}
+			`,
+			BinaryTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osString := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osString = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osString = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osString = "darwin"}}
+			{{- end -}}
+			{{.Name}}-{{$osString}}-{{$arch}}
+			`,
+		},
+	)
 	return tools
 }
