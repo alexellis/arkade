@@ -29,8 +29,8 @@ func MakeGet() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "get",
 		Short: `The get command downloads a tool`,
-		Long: `The get command downloads a CLI or application from the specific tool's 
-releases or downloads page. The tool is usually downloaded in binary format 
+		Long: `The get command downloads a CLI or application from the specific tool's
+releases or downloads page. The tool is usually downloaded in binary format
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
   arkade get linkerd2 --stash=false
@@ -50,13 +50,8 @@ and provides a fast and easy alternative to a package manager.`,
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			const arkadeGet = `Use "arkade get TOOL" to download a tool or application:`
+			get.CreateToolsTable(tools)
 
-			buf := ""
-			for _, t := range tools {
-				buf = buf + t.Name + "\n"
-			}
-			fmt.Println(arkadeGet + "\n" + buf)
 			return nil
 		}
 

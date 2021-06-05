@@ -32,6 +32,9 @@ type Tool struct {
 	// if any only if only BinaryTemplate is specified.
 	Version string
 
+	// Description of what the tool is used for.
+	Description string
+
 	// URLTemplate specifies a Go template for the download URL
 	// override the OS, architecture and extension
 	// All whitespace will be trimmed/
