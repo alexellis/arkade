@@ -110,9 +110,10 @@ func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 	}
 }
 
-func Test_DownloadKubectlDarwin(t *testing.T) {
+func Test_DownloadKubectl(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectl"
+
 	var tool *Tool
 	for _, target := range tools {
 		if name == target.Name {
@@ -121,54 +122,29 @@ func Test_DownloadKubectlDarwin(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("darwin", arch64bit, tool.Version)
-	if err != nil {
-		t.Fatal(err)
+	tests := []test{
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "1.20.0",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "1.20.0",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "1.20.0",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/arm64/kubectl"},
 	}
-	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
 
-func Test_DownloadKubectlLinuxArm64(t *testing.T) {
-	tools := MakeTools()
-	name := "kubectl"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
 		}
-	}
-
-	got, err := tool.GetURL("linux", archARM64, tool.Version)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/arm64/kubectl"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
-func Test_DownloadKubectlLinux(t *testing.T) {
-	tools := MakeTools()
-	name := "kubectl"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
 		}
-	}
-
-	got, err := tool.GetURL("linux", arch64bit, tool.Version)
-	if err != nil {
-		t.Fatal(err)
-	}
-	want := "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl"
-	if got != want {
-		t.Fatalf("want: %s, got: %s", want, got)
 	}
 }
 
