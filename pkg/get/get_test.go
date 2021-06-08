@@ -692,28 +692,28 @@ func Test_DownloadTerraform(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.13.1"
+	const toolVersion = "1.0.0"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_windows_amd64.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_windows_amd64.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_amd64.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_darwin_amd64.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_darwin_amd64.zip`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/0.13.1/terraform_0.13.1_linux_arm.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_arm.zip`,
 		},
 	}
 
