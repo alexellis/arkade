@@ -1262,5 +1262,16 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		},
 	)
+	tools = append(tools,
+		Tool{
+			Owner:       "jonmosco",
+			Repo:        "kube-ps1",
+			Name:        "kube-ps1",
+			Version:     "v0.7.0",
+			URLTemplate: "https://raw.githubusercontent.com/{{.Owner}}/{{.Repo}}/{{.Version}}/kube-ps1.sh",
+			NoExtension: true,
+		},
+	)
+
 	return tools
 }
