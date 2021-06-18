@@ -1306,6 +1306,18 @@ func Test_DownloandInletsProCli(t *testing.T) {
 			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-arm64`,
 		},
 		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-armhf`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "0.8.3",
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-armhf`,
+		},
+		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: "0.8.3",

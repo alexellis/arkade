@@ -1087,7 +1087,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 {{- else if eq .OS "darwin" -}}
 {{.Name}}-darwin
 {{- else if eq .Arch "armv6l" -}}
-{{.nAME}}-armhf
+{{.Name}}-armhf
 {{- else if eq .Arch "armv7l" -}}
 {{.Name}}-armhf
 {{- else if eq .Arch "aarch64" -}}
