@@ -49,7 +49,7 @@ func MakeTools() Tools {
 			Repo:        "helm",
 			Name:        "helm",
 			Version:     "v3.5.2",
-			Description: "Build and deploy functions to OpenFaaS.",
+			Description: "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `{{$arch := "amd64"}}
 
 {{- if eq .Arch "armv7l" -}}
