@@ -101,7 +101,7 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 			Owner:       "kubernetes",
 			Repo:        "kubernetes",
 			Name:        "kubectl",
-			Version:     "1.20.0",
+			Version:     "v1.20.0",
 			Description: "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
@@ -121,7 +121,7 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 {{$os = "windows"}}
 {{- end -}}
 
-https://storage.googleapis.com/kubernetes-release/release/v{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
+https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
