@@ -125,15 +125,15 @@ func Test_DownloadKubectl(t *testing.T) {
 	tests := []test{
 		{os: "darwin",
 			arch:    arch64bit,
-			version: "1.20.0",
+			version: "v1.20.0",
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"},
 		{os: "linux",
 			arch:    arch64bit,
-			version: "1.20.0",
+			version: "v1.20.0",
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl"},
 		{os: "linux",
 			arch:    archARM64,
-			version: "1.20.0",
+			version: "v1.20.0",
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/arm64/kubectl"},
 	}
 
