@@ -1283,5 +1283,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		},
 	)
+
+	tools = append(tools,
+		Tool{
+			Owner:       "FairwindsOps",
+			Repo:        "nova",
+			Name:        "nova",
+			Version:     "2.3.2",
+			Description: "Find outdated or deprecated Helm charts running in your cluster.",
+			URLTemplate: `
+				{{$arch := "amd64"}}
+				{{if eq .Arch "armv7l" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$osString:= .OS}}
+				{{ if HasPrefix .OS "darwin" -}}
+				{{$osString = "darwin"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "linux"}}
+				{{- end -}}
+				{{$ext := ".tar.gz"}}
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}
+				`,
+		})
+
 	return tools
 }
