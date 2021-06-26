@@ -93,6 +93,7 @@ Use "arkade get TOOL" to download a tool or application:
   minikube
   nats
   nerdctl
+  nova
   opa
   osm
   pack
