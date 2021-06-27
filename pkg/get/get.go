@@ -73,13 +73,15 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 			return "", err
 		}
 
+		ver := getToolVersion(tool, version)
+
 		var buf bytes.Buffer
 		err = t.Execute(&buf, map[string]string{
 			"OS":            os,
 			"Arch":          arch,
 			"Name":          tool.Name,
-			"Version":       version,
-			"VersionNumber": strings.TrimPrefix(version, "v"),
+			"Version":       ver,
+			"VersionNumber": strings.TrimPrefix(ver, "v"),
 		})
 		if err != nil {
 			return "", err
@@ -94,10 +96,7 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os,  architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
-	ver := tool.Version
-	if len(version) > 0 {
-		ver = version
-	}
+	ver := getToolVersion(tool, version)
 
 	dlURL, err := tool.GetURL(os, arch, ver)
 	if err != nil {
@@ -264,4 +263,12 @@ func makeHTTPClientWithDisableKeepAlives(timeout *time.Duration, tlsInsecure boo
 	}
 
 	return client
+}
+
+func getToolVersion(tool *Tool, version string) string {
+	ver := tool.Version
+	if len(version) > 0 {
+		ver = version
+	}
+	return ver
 }
