@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"html/template"
+	"text/template"
 	"net"
 	"net/http"
 	"strings"
