@@ -1609,5 +1609,25 @@ func Test_DownloandArgoCDAutopilotCli(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
+}
 
+func Test_DownloadKubePs(t *testing.T) {
+	tools := MakeTools()
+	name := "kube-ps1"
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	got, err := tool.GetURL("linux", arch64bit, tool.Version)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := "https://raw.githubusercontent.com/jonmosco/kube-ps1/v0.7.0/kube-ps1.sh"
+	if got != want {
+		t.Fatalf("want: %s, got: %s", want, got)
+	}
 }
