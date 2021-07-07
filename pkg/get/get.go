@@ -5,10 +5,10 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"text/template"
 	"net"
 	"net/http"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/alexellis/arkade/pkg/env"
