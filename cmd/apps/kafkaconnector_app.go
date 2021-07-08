@@ -33,9 +33,7 @@ functions when messages are received on a given topic on a Kafka broker.`,
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
-
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-
 		namespace, _ := command.Flags().GetString("namespace")
 
 		topicsVal, err := command.Flags().GetString("topics")
@@ -49,8 +47,8 @@ functions when messages are received on a given topic on a Kafka broker.`,
 		}
 
 		overrides := map[string]string{
-			"topics":      topicsVal,
-			"broker_host": brokerHostVal,
+			"topics":     topicsVal,
+			"brokerHost": brokerHostVal,
 		}
 
 		customFlags, err := command.Flags().GetStringArray("set")
@@ -75,11 +73,11 @@ functions when messages are received on a given topic on a Kafka broker.`,
 		if err != nil {
 			return err
 		}
+
 		if len(licenseFile) == 0 {
 			return fmt.Errorf("--license-file is required for OpenFaaS PRO")
 		}
 
-		overrides["openfaasPRO"] = "true"
 		secretData := []types.SecretsData{
 			{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
 		}

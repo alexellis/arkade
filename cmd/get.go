@@ -29,8 +29,8 @@ func MakeGet() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "get",
 		Short: `The get command downloads a tool`,
-		Long: `The get command downloads a CLI or application from the specific tool's 
-releases or downloads page. The tool is usually downloaded in binary format 
+		Long: `The get command downloads a CLI or application from the specific tool's
+releases or downloads page. The tool is usually downloaded in binary format
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
   arkade get linkerd2 --stash=false
@@ -45,18 +45,23 @@ and provides a fast and easy alternative to a package manager.`,
 	}
 
 	command.Flags().Bool("progress", true, "Display a progress bar")
+	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown)")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			const arkadeGet = `Use "arkade get TOOL" to download a tool or application:`
-
-			buf := ""
-			for _, t := range tools {
-				buf = buf + t.Name + "\n"
+			output, _ := command.Flags().GetString("output")
+			fmt.Println(output)
+			if len(output) > 0 {
+				if get.TableFormat(output) == get.MarkdownStyle {
+					get.CreateToolsTable(tools, get.MarkdownStyle)
+				} else {
+					get.CreateToolsTable(tools, get.TableStyle)
+				}
+			} else {
+				get.CreateToolsTable(tools, get.TableStyle)
 			}
-			fmt.Println(arkadeGet + "\n" + buf)
 			return nil
 		}
 

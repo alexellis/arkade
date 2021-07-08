@@ -58,20 +58,27 @@ With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 arkade get APP
 Use "arkade get TOOL" to download a tool or application:
   argocd
+  argocd-autopilot
+  arkade
   buildx
   civo
   docker-compose
   doctl
   faas-cli
+  flux
   gh
   helm
   helmfile
   hugo
+  influx
+  inlets-pro
   inletsctl
+  istioctl
   k3d
   k3sup
   k9s
   kail
+  kim
   kind
   kops
   krew
@@ -83,19 +90,23 @@ Use "arkade get TOOL" to download a tool or application:
   kubeseal
   kustomize
   linkerd2
+  mc
   minikube
   nats
+  nerdctl
+  nova
   opa
   osm
   pack
   packer
+  polaris
   popeye
   stern
-  tkn
   terraform
+  tkn
+  trivy
   vagrant
   yq
-  istioctl
 ```
 
 > This is a time saver compared to searching for download pages every time you need a tool.

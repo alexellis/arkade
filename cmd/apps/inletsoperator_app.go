@@ -15,13 +15,14 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
-	"github.com/spf13/cobra"
+	"github.com/alexellis/arkade/pkg/k8s"
 )
 
 func MakeInstallInletsOperator() *cobra.Command {
@@ -37,8 +38,9 @@ IngressController`,
 	}
 
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets-pro")
-	inletsOperator.Flags().StringP("license-file", "f", "", "Text file containing license key, used for inlets-pro")
+	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets PRO")
+	inletsOperator.Flags().StringP("license-file", "f", "$HOME/.inlets/LICENSE", "Path to license JWT file for inlets PRO")
+
 	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure', 'hetzner'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Equinix Metal)")
@@ -56,25 +58,9 @@ IngressController`,
 	inletsOperator.PreRunE = func(command *cobra.Command, args []string) error {
 		tokenString, _ := command.Flags().GetString("token")
 		tokenFileName, _ := command.Flags().GetString("token-file")
-
-		if len(tokenFileName) == 0 && len(tokenString) == 0 {
-			return fmt.Errorf(`--token-file or --token is a required field for your cloud API token or service account JSON`)
-		}
-
-		if len(tokenFileName) > 0 {
-			if _, err := os.Stat(tokenFileName); err != nil {
-				return err
-			}
-		}
-
 		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
-		if len(secretKeyFile) > 0 {
-			if _, err := os.Stat(secretKeyFile); err != nil {
-				return err
-			}
-		}
 
-		return nil
+		return validatePreRun(tokenString, tokenFileName, secretKeyFile)
 	}
 
 	inletsOperator.RunE = func(command *cobra.Command, args []string) error {
@@ -84,7 +70,6 @@ IngressController`,
 		}
 
 		wait, _ := command.Flags().GetBool("wait")
-
 		namespace, _ := command.Flags().GetString("namespace")
 
 		arch := k8s.GetNodeArchitecture()
@@ -175,25 +160,33 @@ IngressController`,
 
 		region, _ := command.Flags().GetString("region")
 		overrides["region"] = region
-		licenseVal := ""
-		if val, _ := command.Flags().GetString("license"); len(val) > 0 {
-			licenseVal = val
-		}
 
-		if licenseFile, _ := command.Flags().GetString("license-file"); len(licenseFile) > 0 {
-			licenseKey, err := ioutil.ReadFile(licenseFile)
-			if err != nil {
-				return err
+		license, _ := command.Flags().GetString("license")
+		licenseFile, _ := command.Flags().GetString("license-file")
+		fileFlagChanged := command.Flags().Changed("license-file")
+
+		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets PRO")
+		if len(license) == 0 {
+			if len(licenseFile) > 0 {
+				licenseFile = os.ExpandEnv(licenseFile)
+
+				res, err := ioutil.ReadFile(licenseFile)
+				if err != nil {
+					if fileFlagChanged == false {
+						return noLicenseErr
+					}
+
+					return fmt.Errorf("unable to open license file: %s", err.Error())
+				}
+				license = strings.TrimSpace(string(res))
 			}
-
-			licenseVal = strings.TrimSpace(string(licenseKey))
 		}
 
-		if len(licenseVal) > 0 {
-			overrides["inletsProLicense"] = licenseVal
-		} else {
-			return fmt.Errorf("an inlets PRO license is required for the inlets-operator")
+		if len(license) == 0 {
+			return noLicenseErr
 		}
+
+		overrides["inletsProLicense"] = license
 
 		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
 			overrides["proClientImage"] = val
@@ -318,7 +311,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 		}
 
 		if !foundRegion {
-			return overrides, fmt.Errorf("invalid region set for provider %s. Valid regions are: %s", provider, strings.Join(validHetznerRegions, ","))
+			return overrides, fmt.Errorf("invalid region set for provider %s. Valid regions are: %s", provider, strings.Join(validHetznerRegions, ", "))
 		}
 	}
 
@@ -400,10 +393,9 @@ func getKubectlVersion() (int, int, error) {
 	major, _ := strconv.Atoi(v.ClientVersion.Major)
 	minor, _ := strconv.Atoi(v.ClientVersion.Minor)
 	return major, minor, nil
-
 }
-func applySecret(s Secret) error {
 
+func applySecret(s Secret) error {
 	_, minor, err := getKubectlVersion()
 	if err != nil {
 		return err
@@ -426,7 +418,7 @@ func applySecret(s Secret) error {
 	res, err := k8s.KubectlTask(parts...)
 	if err != nil {
 		return err
-	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+	} else if len(res.Stderr) > 0 && !strings.Contains(res.Stderr, "Warning") {
 		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 	}
 
@@ -435,8 +427,28 @@ func applySecret(s Secret) error {
 
 	if err != nil {
 		return err
-	} else if len(res.Stderr) > 0 && strings.Contains(res.Stderr, "Warning") == false {
+	} else if len(res.Stderr) > 0 && !strings.Contains(res.Stderr, "Warning") {
 		return fmt.Errorf("error from kubectl\n%q", res.Stderr)
 	}
+	return nil
+}
+
+func validatePreRun(tokenString, tokenFileName, secretKeyFileName string) error {
+	if len(tokenFileName) == 0 && len(tokenString) == 0 {
+		return fmt.Errorf(`--token-file or --token is a required field for your cloud API token or service account JSON`)
+	}
+
+	if len(tokenFileName) > 0 {
+		if _, err := os.Stat(tokenFileName); err != nil {
+			return errors.Wrapf(err, "failed to check the token file %s", tokenFileName)
+		}
+	}
+
+	if len(secretKeyFileName) > 0 {
+		if _, err := os.Stat(secretKeyFileName); err != nil {
+			return errors.Wrapf(err, "failed to check the secret file %s", secretKeyFileName)
+		}
+	}
+
 	return nil
 }
