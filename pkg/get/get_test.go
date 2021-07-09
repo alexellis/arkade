@@ -1280,7 +1280,7 @@ func Test_DownloadTektonCli(t *testing.T) {
 	}
 }
 
-func Test_DownloandInfluxCli(t *testing.T) {
+func Test_DownloadInfluxCli(t *testing.T) {
 	tools := MakeTools()
 	name := "influx"
 
@@ -1325,7 +1325,7 @@ func Test_DownloandInfluxCli(t *testing.T) {
 
 }
 
-func Test_DownloandInletsProCli(t *testing.T) {
+func Test_DownloadInletsProCli(t *testing.T) {
 	tools := MakeTools()
 	name := "inlets-pro"
 
@@ -1428,7 +1428,7 @@ func Test_DownloadKim(t *testing.T) {
 	}
 }
 
-func Test_DownloandTrivyCli(t *testing.T) {
+func Test_DownloadTrivyCli(t *testing.T) {
 	tools := MakeTools()
 	name := "trivy"
 
@@ -1473,7 +1473,7 @@ func Test_DownloandTrivyCli(t *testing.T) {
 
 }
 
-func Test_DownloandFluxCli(t *testing.T) {
+func Test_DownloadFluxCli(t *testing.T) {
 	tools := MakeTools()
 	name := "flux"
 
@@ -1517,7 +1517,7 @@ func Test_DownloandFluxCli(t *testing.T) {
 	}
 
 }
-func Test_DownloandPolarisCli(t *testing.T) {
+func Test_DownloadPolarisCli(t *testing.T) {
 	tools := MakeTools()
 	name := "polaris"
 
@@ -1565,7 +1565,7 @@ func Test_DownloandPolarisCli(t *testing.T) {
 
 }
 
-func Test_DownloandHelm(t *testing.T) {
+func Test_DownloadHelm(t *testing.T) {
 	tools := MakeTools()
 	name := "helm"
 
@@ -1618,7 +1618,7 @@ func Test_DownloandHelm(t *testing.T) {
 
 }
 
-func Test_DownloandArgoCDAutopilotCli(t *testing.T) {
+func Test_DownloadArgoCDAutopilotCli(t *testing.T) {
 	tools := MakeTools()
 	name := "argocd-autopilot"
 
@@ -1657,7 +1657,7 @@ func Test_DownloandArgoCDAutopilotCli(t *testing.T) {
 
 }
 
-func Test_DownloandNovaCli(t *testing.T) {
+func Test_DownloadNovaCli(t *testing.T) {
 	tools := MakeTools()
 	name := "nova"
 
