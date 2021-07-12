@@ -1310,5 +1310,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "johanhaleby",
+			Repo:        "kubetail",
+			Name:        "kubetail",
+			Version:     "1.6.13",
+			Description: "Bash script to tail Kubernetes logs from multiple pods at the same time.",
+			URLTemplate: `https://raw.githubusercontent.com/{{.Owner}}/{{.Repo}}/{{.Version}}/{{.Name}}`,
+		})
 	return tools
 }
