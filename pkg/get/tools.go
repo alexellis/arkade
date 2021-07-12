@@ -1,6 +1,9 @@
 package get
 
-import "strings"
+import (
+	"runtime"
+	"strings"
+)
 
 func (t Tools) Len() int { return len(t) }
 
@@ -1310,5 +1313,69 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+
+	tools = append(tools,
+		Tool{
+			Owner:       "k0sproject",
+			Repo:        "k0s",
+			Name:        "k0s",
+			Description: "Zero Friction Kubernetes",
+			BinaryTemplate: `
+			{{$arch := ""}}
+			{{$ext := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+			{{.Name}}-{{.Version}}-{{$arch}}{{$ext}}
+			`,
+		},
+	)
+	// k0s binary is available only for linux and windows
+	if runtime.GOOS != "darwin" {
+		tools = append(tools,
+			Tool{
+				Owner:       "k0sproject",
+				Repo:        "k0s",
+				Name:        "k0s",
+				Description: "Zero Friction Kubernetes",
+				BinaryTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+			{{.Name}}-{{.Version}}-{{$arch}}
+			`,
+			},
+		)
+	}
+	tools = append(tools,
+		Tool{
+			Owner:       "k0sproject",
+			Repo:        "k0sctl",
+			Name:        "k0sctl",
+			Description: "A bootstrapping and management tool for k0s clusters",
+			BinaryTemplate: `{{$arch := "x64"}}
+	{{- if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+	{{- end -}}
+
+	{{$os := .OS}}
+	{{$ext := ""}}
+
+	{{ if HasPrefix .OS "ming" -}}
+	{{$os = "win"}}
+	{{$ext = ".exe"}}
+	{{- end -}}
+
+	{{.Name}}-{{$os}}-{{$arch}}{{$ext}}`,
+		},
+	)
 	return tools
 }
