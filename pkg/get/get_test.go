@@ -1749,5 +1749,60 @@ func Test_DownloadKubetailCli(t *testing.T) {
 			}
 		})
 	}
+}
 
+func Test_DownloadKgctl(t *testing.T) {
+	tools := MakeTools()
+	name := "kgctl"
+	tool := getTool(name, tools)
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-linux-arm`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-linux-arm64`,
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.3.0",
+			url:     `https://github.com/squat/kilo/releases/download/0.3.0/kgctl-windows-amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
 }

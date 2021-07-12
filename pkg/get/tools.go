@@ -1319,5 +1319,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Description: "Bash script to tail Kubernetes logs from multiple pods at the same time.",
 			URLTemplate: `https://raw.githubusercontent.com/{{.Owner}}/{{.Repo}}/{{.Version}}/{{.Name}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+
+			Owner:       "squat",
+			Repo:        "kilo",
+			Name:        "kgctl",
+			Version:     "0.3.0",
+			Description: "A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.",
+			BinaryTemplate: `
+{{$os := .OS}}
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+{{$arch := "amd64"}}
+{{ if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}-{{$os}}-{{$arch}}`,
+		})
+
 	return tools
 }
