@@ -78,6 +78,7 @@ Use "arkade get TOOL" to download a tool or application:
   k3sup
   k9s
   kail
+  kgctl
   kim
   kind
   kops
