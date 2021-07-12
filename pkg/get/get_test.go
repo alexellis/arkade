@@ -1704,3 +1704,50 @@ func Test_DownloadNovaCli(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKubetailCli(t *testing.T) {
+	tools := MakeTools()
+	name := "kubetail"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "1.6.13",
+			url:     `https://raw.githubusercontent.com/johanhaleby/kubetail/1.6.13/kubetail`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "1.6.13",
+			url:     `https://raw.githubusercontent.com/johanhaleby/kubetail/1.6.13/kubetail`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "1.6.13",
+			url:     `https://raw.githubusercontent.com/johanhaleby/kubetail/1.6.13/kubetail`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "1.6.13",
+			url:     `https://raw.githubusercontent.com/johanhaleby/kubetail/1.6.13/kubetail`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
