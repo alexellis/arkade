@@ -8,6 +8,14 @@
 <!--- If describing a bug, tell us what happens instead of the expected behavior -->
 <!--- If suggesting a change/improvement, explain the difference from current behavior -->
 
+## Are you a GitHub Sponsor (Yes/No?)
+
+Check at https://github.com/sponsors/alexellis
+<!--- Sponsors get priority because they support the project -->
+
+- [ ] Yes
+- [ ] No
+
 ## Possible Solution
 <!--- Not obligatory, but suggest a fix/reason for the bug, -->
 <!--- or ideas how to implement the addition or change -->
@@ -45,9 +53,3 @@ cat /etc/os-release
 ```
 arkade version
 ```
-
-## Are you a GitHub Sponsor (Yes/No?)
-
-Check at: https://github.com/sponsors/alexellis
-- [ ] Yes
-- [ ] No
