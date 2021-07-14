@@ -1859,3 +1859,44 @@ func Test_DownloadPacketCli(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadPorterCli(t *testing.T) {
+	tools := MakeTools()
+	name := "porter"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.38.4",
+			url:     `https://github.com/getporter/porter/releases/download/v0.38.4/porter-darwin-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.38.4",
+			url:     `https://github.com/getporter/porter/releases/download/v0.38.4/porter-linux-amd64`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v0.38.4",
+			url:     `https://github.com/getporter/porter/releases/download/v0.38.4/porter-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
