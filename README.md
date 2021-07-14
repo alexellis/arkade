@@ -104,6 +104,7 @@ Use "arkade get TOOL" to download a tool or application:
   packet
   polaris
   popeye
+  porter
   stern
   terraform
   tkn
