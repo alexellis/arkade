@@ -1342,5 +1342,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 {{.Name}}-{{$os}}-{{$arch}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "packethost",
+			Repo:        "packet-cli",
+			Name:        "packet",
+			Version:     "0.5.0",
+			Description: "The Equinix Metal CLI allows interaction with Equinix Metal platform.",
+			BinaryTemplate: `
+			{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{	$osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+			{{ $archStr := "amd64" }}
+			{{ if eq .Arch "armv7l" -}}
+			{{$archStr = "armv7"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$archStr = "arm64"}}
+			{{- end -}}
+			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		})
+
 	return tools
 }
