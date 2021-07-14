@@ -101,6 +101,7 @@ Use "arkade get TOOL" to download a tool or application:
   osm
   pack
   packer
+  packet
   polaris
   popeye
   stern

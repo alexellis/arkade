@@ -1806,3 +1806,56 @@ func Test_DownloadKgctl(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadPacketCli(t *testing.T) {
+	tools := MakeTools()
+	name := "packet"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.5.0",
+			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-darwin-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.5.0",
+			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.5.0",
+			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "0.5.0",
+			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-armv7`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "0.5.0",
+			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
