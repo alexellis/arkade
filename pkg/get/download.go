@@ -53,7 +53,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
 			outFilePath += ".exe"
 		}
-
+		
 		if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
 			untarErr := archive.Untar(archiveFile, outFilePathDir)
 			if untarErr != nil {
@@ -70,6 +70,18 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 			unzipErr := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir)
 			if unzipErr != nil {
 				return "", "", unzipErr
+			}
+		} else if strings.HasSuffix(downloadURL, "gz") {
+			
+			fileName, err := GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+
+			if err != nil {
+				return "", "", err
+			}
+
+			gunzipErr := archive.Ungzip(archiveFile, outFilePathDir, fileName)
+			if gunzipErr != nil {
+				return "", "", gunzipErr
 			}
 		}
 	}
