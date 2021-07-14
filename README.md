@@ -303,6 +303,7 @@ Available Commands:
   istio                   Install istio
   jenkins                 Install jenkins
   kafka-connector         Install kafka-connector for OpenFaaS
+  kafka                   Install Confluent Platform Kafka
   kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
