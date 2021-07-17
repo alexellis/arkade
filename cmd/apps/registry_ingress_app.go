@@ -33,8 +33,8 @@ func MakeInstallRegistryIngress() *cobra.Command {
 	var registryIngress = &cobra.Command{
 		Use:   "docker-registry-ingress",
 		Short: "Install registry ingress with TLS",
-		Long: `Install registry ingress. Requires cert-manager 0.11.0 or higher installation 
-in the cluster. Please set --domain to your custom domain and set --email 
+		Long: `Install registry ingress. Requires cert-manager 0.11.0 or higher installation
+in the cluster. Please set --domain to your custom domain and set --email
 to your email - this email is used by letsencrypt for domain expiry etc.`,
 		Example:      `  arkade install registry-ingress --domain registry.example.com --email openfaas@example.com`,
 		SilenceUsage: true,
@@ -67,8 +67,14 @@ to your email - this email is used by letsencrypt for domain expiry etc.`,
 			return errors.New("--ingress-class must be set")
 		}
 
+		caps, err := k8s.GetCapabilities()
+		if err != nil {
+			return err
+		}
+
+		hasNetworking := caps["networking.k8s.io/v1"]
 		staging, _ := registryIngress.Flags().GetBool("staging")
-		yamlBytes, templateErr := buildRegistryYAML(domain, email, ingressClass, namespace, maxSize, staging)
+		yamlBytes, templateErr := buildRegistryYAML(domain, email, ingressClass, namespace, maxSize, staging, hasNetworking)
 		if templateErr != nil {
 			log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 			return templateErr
@@ -101,8 +107,9 @@ Have you got the Registry running and cert-manager 0.11.0 or higher installed? %
 	return registryIngress
 }
 
-func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string, staging bool) ([]byte, error) {
-	tmpl, err := template.New("yaml").Parse(registryIngressYamlTemplate)
+func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string, staging, hasNetworking bool) ([]byte, error) {
+	tmplString := registryIngressExtensionsYamlTemplate
+	tmpl, err := template.New("yaml").Parse(tmplString)
 
 	if err != nil {
 		return nil, err
@@ -139,10 +146,10 @@ func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string, s
 }
 
 const RegistryIngressInfoMsg = `# You will need to ensure that your domain points to your cluster and is
-# accessible through ports 80 and 443. 
+# accessible through ports 80 and 443.
 #
 # This is used to validate your ownership of this domain by LetsEncrypt
-# and then you can use https with your installation. 
+# and then you can use https with your installation.
 
 # Ingress to your domain has been installed for the Registry
 # to see the ingress record run
@@ -158,7 +165,7 @@ kubectl describe -n <installed-namespace> Issuer letsencrypt-prod-registry
 # To check the status of your certificate you can run
 kubectl describe -n <installed-namespace> Certificate docker-registry
 
-# It may take a while to be issued by LetsEncrypt, in the meantime a 
+# It may take a while to be issued by LetsEncrypt, in the meantime a
 # self-signed cert will be installed`
 
 const RegistryIngressInstallMsg = `=======================================================================
@@ -166,8 +173,9 @@ const RegistryIngressInstallMsg = `=============================================
 =======================================================================` +
 	"\n\n" + RegistryIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
 
-var registryIngressYamlTemplate = `
-apiVersion: extensions/v1beta1 
+// Ingress in extensions/v1beta1 are removed in k8s 1.22+, July 2021
+var registryIngressExtensionsYamlTemplate = `
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: docker-registry
@@ -185,6 +193,51 @@ spec:
           serviceName: docker-registry
           servicePort: 5000
         path: /
+  tls:
+  - hosts:
+    - {{.IngressDomain}}
+    secretName: docker-registry
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{.IssuerType}}
+  namespace: {{.Namespace}}
+spec:
+  acme:
+    email: {{.CertmanagerEmail}}
+    server: {{.IssuerAPI}}
+    privateKeySecretRef:
+      name: {{.IssuerType}}
+    solvers:
+    - http01:
+        ingress:
+          class: {{.IngressClass}}`
+
+// Ingress in networking.k8s.io/v1 was added in k8s 1.19+
+// this includes the pathType change added in 1.18
+var registryIngressNetworkingYamlTemplate = `
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-registry
+  namespace: {{.Namespace}}
+  annotations:
+    cert-manager.io/issuer: {{.IssuerType}}
+    kubernetes.io/ingress.class: {{.IngressClass}}
+{{.NginxMaxBuffer}}
+spec:
+  rules:
+  - host: {{.IngressDomain}}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service
+            name: docker-registry
+            port:
+              number: 5000
   tls:
   - hosts:
     - {{.IngressDomain}}
