@@ -85,14 +85,21 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 			return err
 		}
 
-		if err := createIngress(domain, email, ingressClass, "openfaas-gateway", staging, clusterIssuer, issuer, namespace); err != nil {
+		caps, err := k8s.GetCapabilities()
+		if err != nil {
+			return err
+		}
+
+		hasNetworking := caps["networking.k8s.io/v1"]
+
+		if err := createIngress(domain, email, ingressClass, "openfaas-gateway", staging, clusterIssuer, issuer, namespace, hasNetworking); err != nil {
 			return err
 		}
 
 		oidcDomain, _ := command.Flags().GetString("oauth2-plugin-domain")
 
 		if len(oidcDomain) > 0 {
-			if err := createIngress(oidcDomain, email, ingressClass, "oauth2-plugin", staging, clusterIssuer, issuer, namespace); err != nil {
+			if err := createIngress(oidcDomain, email, ingressClass, "oauth2-plugin", staging, clusterIssuer, issuer, namespace, hasNetworking); err != nil {
 				return err
 			}
 		}
@@ -133,8 +140,8 @@ Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 o
 	return nil
 }
 
-func createIngress(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool, issuerName, namespace string) error {
-	yamlBytes, templateErr := buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer, issuerName, namespace)
+func createIngress(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool, issuerName, namespace string, hasNetworking bool) error {
+	yamlBytes, templateErr := buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer, issuerName, namespace, hasNetworking)
 	if templateErr != nil {
 		log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 		return templateErr
@@ -190,9 +197,13 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 	return filename, nil
 }
 
-func buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool, issuerName, namespace string) ([]byte, error) {
-	templ, err := template.New("yaml").Parse(openfaasIngressTemplate)
+func buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool, issuerName, namespace string, hasNetworking bool) ([]byte, error) {
+	tmplString := openfaasIngressExtensionTemplate
+	if hasNetworking {
+		tmplString = openfaasIngressNetworkingTemplate
+	}
 
+	templ, err := template.New("yaml").Parse(tmplString)
 	if err != nil {
 		return nil, err
 	}
@@ -257,10 +268,10 @@ func buildIssuerYAML(domain, email, ingressClass, ingressName string, staging, c
 }
 
 const OpenfaasIngressInfoMsg = `# You will need to ensure that your domain points to your cluster and is
-# accessible through ports 80 and 443. 
+# accessible through ports 80 and 443.
 #
 # This is used to validate your ownership of this domain by LetsEncrypt
-# and then you can use https with your installation. 
+# and then you can use https with your installation.
 
 # Ingress to your domain has been installed for OpenFaaS
 # to see the ingress record run
@@ -276,7 +287,7 @@ kubectl describe ClusterIssuer letsencrypt-prod
 # To check the status of your certificate you can run
 kubectl describe -n openfaas Certificate openfaas-gateway
 
-# It may take a while to be issued by LetsEncrypt, in the meantime a 
+# It may take a while to be issued by LetsEncrypt, in the meantime a
 # self-signed cert will be installed`
 
 const openfaasIngressInstallMsg = `=======================================================================
@@ -284,8 +295,9 @@ const openfaasIngressInstallMsg = `=============================================
 =======================================================================` +
 	"\n\n" + OpenfaasIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
 
-var openfaasIngressTemplate = `
-apiVersion: extensions/v1beta1 
+// Ingress in extensions/v1beta1 are removed in k8s 1.22+, July 2021
+var openfaasIngressExtensionTemplate = `
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: {{.IngressName}}
@@ -312,6 +324,41 @@ spec:
     - {{.IngressDomain}}
     secretName: {{.IngressName}}
 `
+
+// Ingress in networking.k8s.io/v1 was added in k8s 1.19+
+// this includes the pathType change added in 1.18
+var openfaasIngressNetworkingTemplate = `
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{.IngressName}}
+  namespace: {{.Namespace}}
+  annotations:
+{{- if .ClusterIssuer }}
+    cert-manager.io/cluster-issuer: {{.IssuerName}}
+{{- else }}
+    cert-manager.io/issuer: {{.IssuerName}}
+{{- end }}
+    kubernetes.io/ingress.class: {{.IngressClass}}
+    cert-manager.io/common-name: {{.IngressDomain}}
+spec:
+  rules:
+  - host: {{.IngressDomain}}
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: {{.IngressService}}
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - {{.IngressDomain}}
+    secretName: {{.IngressName}}
+`
+
 var http01IssuerTemplate = `
 apiVersion: cert-manager.io/v1
 {{- if .ClusterIssuer }}

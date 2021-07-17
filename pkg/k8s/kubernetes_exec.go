@@ -4,6 +4,7 @@
 package k8s
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"strings"
@@ -13,6 +14,9 @@ import (
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
+// Capabilities is an index of the support API versions on the server
+type Capabilities map[string]bool
+
 func GetNodeArchitecture() string {
 	res, _ := KubectlTask("get", "nodes", `--output`, `jsonpath={range $.items[0]}{.status.nodeInfo.architecture}`)
 
@@ -20,6 +24,28 @@ func GetNodeArchitecture() string {
 
 	return arch
 }
+
+// GetCapabilities returns the supported API versions on the server
+func GetCapabilities() (Capabilities, error) {
+	caps := Capabilities{}
+
+	result, err := KubectlTask("api-versions")
+	if err != nil {
+		return caps, fmt.Errorf("can not retreive cluster capabilities: %w", err)
+	}
+
+	apis := strings.Split(result.Stdout, "")
+	lines := bufio.NewScanner(strings.NewReader(result.Stdout))
+	for lines.Scan() {
+		caps[lines.Text()] = true
+	}
+
+	for _, api := range apis {
+		caps[api] = true
+	}
+	return caps, nil
+}
+
 func KubectlTaskStdin(reader io.Reader, parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
 		Command:     "kubectl",
