@@ -29,10 +29,10 @@ const arkadeUpdate = `You can update arkade with the following:
 rm -rf $HOME/.arkade
 
 # For Linux/MacOS:
-curl -SLfs https://dl.get-arkade.dev | sudo sh
+curl -SLfs https://get.arkade.dev | sudo sh
 
 # For Windows (using Git Bash)
-curl -SLfs https://dl.get-arkade.dev | sh
+curl -SLfs https://get.arkade.dev | sh
 
 # Or download from GitHub: https://github.com/alexellis/arkade/releases
 
