@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -88,10 +89,33 @@ spec:
 	}
 }
 
-func Test_buildIngressYAMLStaging(t *testing.T) {
-	templBytes, _ := buildOpenfaasIngressYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "", "openfaas")
-	var want = `
-apiVersion: extensions/v1beta1 
+func Test_buildIngressYAML(t *testing.T) {
+	cases := []struct {
+		name          string
+		domain        string
+		email         string
+		ingressClass  string
+		ingressName   string
+		staging       bool
+		clusterIssuer bool
+		issuerName    string
+		namespace     string
+		hasNetworking bool
+		want          string
+	}{
+		{
+			name:          "build staging extensions/v1",
+			domain:        "openfaas.subdomain.example.com",
+			email:         "openfaas@subdomain.example.com",
+			ingressClass:  "traefik",
+			ingressName:   "openfaas-gateway",
+			staging:       true,
+			clusterIssuer: false,
+			issuerName:    "",
+			namespace:     "openfaas",
+			hasNetworking: false,
+			want: `
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: openfaas-gateway
@@ -113,18 +137,60 @@ spec:
   - hosts:
     - openfaas.subdomain.example.com
     secretName: openfaas-gateway
-`
-
-	got := string(templBytes)
-	if want != got {
-		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
-	}
-}
-
-func Test_buildIngress_WithCustomIssuername(t *testing.T) {
-	templBytes, _ := buildOpenfaasIngressYAML("openfaas.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "venafi-tpp", "openfaas")
-	var want = `
-apiVersion: extensions/v1beta1 
+      `,
+		},
+		{
+			name:          "build staging networking/v1",
+			domain:        "openfaas.subdomain.example.com",
+			email:         "openfaas@subdomain.example.com",
+			ingressClass:  "traefik",
+			ingressName:   "openfaas-gateway",
+			staging:       true,
+			clusterIssuer: false,
+			issuerName:    "",
+			namespace:     "openfaas",
+			hasNetworking: true,
+			want: `
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+  annotations:
+    cert-manager.io/issuer: letsencrypt-staging
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/common-name: openfaas.subdomain.example.com
+spec:
+  rules:
+  - host: openfaas.subdomain.example.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - openfaas.subdomain.example.com
+    secretName: openfaas-gateway
+      `,
+		},
+		{
+			name:          "build with custom issuer",
+			domain:        "openfaas.example.com",
+			email:         "openfaas@example.com",
+			ingressClass:  "traefik",
+			ingressName:   "openfaas-gateway",
+			staging:       true,
+			clusterIssuer: false,
+			issuerName:    "venafi-tpp",
+			namespace:     "openfaas",
+			hasNetworking: false,
+			want: `
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: openfaas-gateway
@@ -146,12 +212,74 @@ spec:
   - hosts:
     - openfaas.example.com
     secretName: openfaas-gateway
-`
-
-	got := string(templBytes)
-	if want != got {
-		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+  `,
+		},
+		{
+			name:          "build custom issuer networking/v1",
+			domain:        "openfaas.subdomain.example.com",
+			email:         "openfaas@subdomain.example.com",
+			ingressClass:  "traefik",
+			ingressName:   "openfaas-gateway",
+			staging:       true,
+			clusterIssuer: false,
+			issuerName:    "awesome-issuer",
+			namespace:     "openfaas",
+			hasNetworking: true,
+			want: `
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: openfaas-gateway
+  namespace: openfaas
+  annotations:
+    cert-manager.io/issuer: awesome-issuer
+    kubernetes.io/ingress.class: traefik
+    cert-manager.io/common-name: openfaas.subdomain.example.com
+spec:
+  rules:
+  - host: openfaas.subdomain.example.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: gateway
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - openfaas.subdomain.example.com
+    secretName: openfaas-gateway
+      `,
+		},
 	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			result, err := buildOpenfaasIngressYAML(
+				tc.domain,
+				tc.email,
+				tc.ingressClass,
+				tc.ingressName,
+				tc.staging,
+				tc.clusterIssuer,
+				tc.issuerName,
+				tc.namespace,
+				tc.hasNetworking,
+			)
+			if err != nil {
+				t.Fatalf("unexpected error: %s", err)
+			}
+
+			got := string(result)
+			if strings.TrimSpace(tc.want) != strings.TrimSpace(got) {
+				t.Errorf("want:\n%q\ngot:\n%q\n", tc.want, got)
+			}
+
+		})
+	}
+
 }
 
 func Test_buildYAMLClusterIssuer_HasNoNamespace(t *testing.T) {
