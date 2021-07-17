@@ -14,9 +14,9 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 
 With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
 
-## Do you use this project?
+## Do you use this project? 👋
 
-Sponsor the developer so that he can continue to make the project available to you, for free.
+Alex created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
 
 <a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
@@ -26,13 +26,13 @@ Sponsor the developer so that he can continue to make the project available to y
 
 ```bash
 # Note: you can also run without `sudo` and move the binary yourself
-curl -sLS https://dl.get-arkade.dev | sudo sh
+curl -sLS https://get.arkade.dev | sudo sh
 
 arkade --help
 ark --help  # a handy alias
 
 # Windows users with Git Bash
-curl -sLS https://dl.get-arkade.dev | sh
+curl -sLS https://get.arkade.dev | sh
 ```
 
 > Windows users: arkade requires bash to be available, therefore Windows users can [install Git Bash](https://git-scm.com/downloads).
