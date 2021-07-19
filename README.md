@@ -91,6 +91,8 @@ Use "arkade get TOOL" to download a tool or application:
   kubeseal
   kubetail
   kustomize
+  k10multicluster
+  k10tools
   linkerd2
   mc
   minikube

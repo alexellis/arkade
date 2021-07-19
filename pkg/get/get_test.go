@@ -1515,8 +1515,8 @@ func Test_DownloadFluxCli(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
-
 }
+
 func Test_DownloadPolarisCli(t *testing.T) {
 	tools := MakeTools()
 	name := "polaris"
@@ -1899,4 +1899,140 @@ func Test_DownloadPorterCli(t *testing.T) {
 		})
 	}
 
+}
+
+func Test_DownloadKanister(t *testing.T) {
+	tools := MakeTools()
+	name := "kanister"
+	v := "0.63.0"
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kanisterio/kanister/releases/download/0.63.0/kanister_0.63.0_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kanisterio/kanister/releases/download/0.63.0/kanister_0.63.0_linux_amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadKubestr(t *testing.T) {
+	tools := MakeTools()
+	name := "kubestr"
+	v := "v0.4.17"
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-linux-amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadK10multicluster(t *testing.T) {
+	tools := MakeTools()
+	name := "k10multicluster"
+	v := "4.0.6"
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_macOS_amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_linux_amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadK10tools(t *testing.T) {
+	tools := MakeTools()
+	name := "k10tools"
+	v := "4.0.6"
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10tools_4.0.6_macOS_amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10tools_4.0.6_linux_amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want:\n%s\ngot:\n%s", tc.url, got)
+			}
+		})
+	}
 }
