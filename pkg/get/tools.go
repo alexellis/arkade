@@ -1247,42 +1247,42 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Description: "An opinionated way of installing Argo-CD and managing GitOps repositories.",
 			Version:     "0.2.1",
 			URLTemplate: `
-			{{$arch := ""}}
-			{{- if eq .Arch "x86_64" -}}
-			{{$arch = "amd64"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$arch = "arm64"}}
-			{{- end -}}
+{{$arch := ""}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
 
-			{{$osString := ""}}
-			{{ if HasPrefix .OS "ming" -}}
-			{{$osString = "windows"}}
-			{{- else if eq .OS "linux" -}}
-			{{$osString = "linux"}}
-			{{- else if eq .OS "darwin" -}}
-			{{$osString = "darwin"}}
-			{{- end -}}
-			{{$ext := ".tar.gz"}}
-			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}
-			`,
+{{$osString := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$osString = "windows"}}
+{{- else if eq .OS "linux" -}}
+{{$osString = "linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$osString = "darwin"}}
+{{- end -}}
+{{$ext := ".tar.gz"}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}
+`,
 			BinaryTemplate: `
-			{{$arch := ""}}
-			{{- if eq .Arch "x86_64" -}}
-			{{$arch = "amd64"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$arch = "arm64"}}
-			{{- end -}}
+{{$arch := ""}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
 
-			{{$osString := ""}}
-			{{ if HasPrefix .OS "ming" -}}
-			{{$osString = "windows"}}
-			{{- else if eq .OS "linux" -}}
-			{{$osString = "linux"}}
-			{{- else if eq .OS "darwin" -}}
-			{{$osString = "darwin"}}
-			{{- end -}}
-			{{.Name}}-{{$osString}}-{{$arch}}
-			`,
+{{$osString := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$osString = "windows"}}
+{{- else if eq .OS "linux" -}}
+{{$osString = "linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$osString = "darwin"}}
+{{- end -}}
+{{.Name}}-{{$osString}}-{{$arch}}
+`,
 		},
 	)
 
@@ -1354,14 +1354,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `
 			{{ $ext := "" }}
 			{{ $osStr := "linux" }}
-			{{ if HasPrefix .OS "ming" -}}
+			{{- if HasPrefix .OS "ming" -}}
 			{{	$osStr = "windows" }}
 			{{ $ext = ".exe" }}
 			{{- else if eq .OS "darwin" -}}
 			{{  $osStr = "darwin" }}
 			{{- end -}}
 			{{ $archStr := "amd64" }}
-			{{ if eq .Arch "armv7l" -}}
+			{{- if eq .Arch "armv7l" -}}
 			{{$archStr = "armv7"}}
 			{{- else if eq .Arch "aarch64" -}}
 			{{$archStr = "arm64"}}
@@ -1429,6 +1429,92 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	{{.Name}}-{{$os}}-{{$arch}}{{$ext}}`,
 		},
 	)
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kanisterio",
+			Repo:        "kanister",
+			Name:        "kanister",
+			Version:     "0.63.0",
+			Description: "Framework for application-level data management on Kubernetes.",
+			URLTemplate: `
+{{ $osStr := "linux" }}
+{{- if eq .OS "darwin" -}}
+{{ $osStr = "darwin" }}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$.Version}}_{{$osStr}}_amd64.tar.gz`,
+			BinaryTemplate: `{{.Name}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kastenhq",
+			Repo:        "kubestr",
+			Name:        "kubestr",
+			Version:     "v0.4.17",
+			Description: "Kubestr discovers, validates and evaluates your Kubernetes storage options.",
+
+			URLTemplate: `
+{{ $ext := "tar.gz" }}
+{{ $osStr := "linux" }}
+
+{{- if eq .OS "darwin" -}}
+{{ $osStr = "darwin" }}
+{{- else if HasPrefix .OS "ming" -}}
+{{ $osStr = "windows" }}
+{{ $ext = ".zip" }}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-amd64.{{$ext}}`,
+			BinaryTemplate: `{{.Name}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kastenhq",
+			Repo:        "external-tools",
+			Name:        "k10multicluster",
+			Version:     "4.0.6",
+			Description: "Multi-cluster support for K10.",
+
+			BinaryTemplate: `
+	{{ $osStr := "linux" }}
+	{{ $archStr := "amd64" }}
+
+	{{- if eq .Arch "aarch64" -}}
+	{{ $archStr = "arm64" }}
+	{{- end -}}
+
+	{{- if eq .OS "darwin" -}}
+	{{ $osStr = "macOS" }}
+	{{- end -}}
+
+	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kastenhq",
+			Repo:        "external-tools",
+			Name:        "k10tools",
+			Version:     "4.0.6",
+			Description: "Tools for evaluating and debugging K10.",
+
+			BinaryTemplate: `
+	{{ $osStr := "linux" }}
+	{{ $archStr := "amd64" }}
+
+	{{- if eq .Arch "aarch64" -}}
+	{{ $archStr = "arm64" }}
+	{{- end -}}
+
+	{{- if eq .OS "darwin" -}}
+	{{ $osStr = "macOS" }}
+	{{- end -}}
+
+	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}`,
+		})
 
 	return tools
 }
