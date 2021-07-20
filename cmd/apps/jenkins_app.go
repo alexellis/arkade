@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
@@ -78,6 +79,13 @@ func MakeInstallJenkins() *cobra.Command {
 		// set custom flags
 		if err := mergeFlags(overrides, customFlags); err != nil {
 			return err
+		}
+
+		arch := k8s.GetNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
+		if arch != IntelArch {
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		jenkinsAppOptions := types.DefaultInstallOptions().
