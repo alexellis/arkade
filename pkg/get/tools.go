@@ -99,10 +99,10 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 
 	tools = append(tools,
 		Tool{
-			Owner: "stedolan",
-			Repo: "jq",
-			Name: "jq",
-			Version: "1.6",
+			Owner:       "stedolan",
+			Repo:        "jq",
+			Name:        "jq",
+			Version:     "1.6",
 			Description: "jq is a lightweight and flexible command-line JSON processor",
 			URLTemplate: `{{$arch := "arm"}}
 

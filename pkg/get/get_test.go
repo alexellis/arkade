@@ -1911,29 +1911,29 @@ func Test_DownloadJq(t *testing.T) {
 
 	tests := []test{
 		{
-			os:      "darwin",
-			arch:    arch64bit,
-			url:     prefix + "jq-osx-amd64",
+			os:   "darwin",
+			arch: arch64bit,
+			url:  prefix + "jq-osx-amd64",
 		},
 		{
-			os:      "linux",
-			arch:    arch64bit,
-			url:     prefix + "jq-linux64",
+			os:   "linux",
+			arch: arch64bit,
+			url:  prefix + "jq-linux64",
 		},
 		{
-			os:      "linux",
-			arch:    arch32bit,
-			url:     prefix + "jq-linux32",
+			os:   "linux",
+			arch: arch32bit,
+			url:  prefix + "jq-linux32",
 		},
 		{
-			os:      "ming",
-			arch:    arch64bit,
-			url:     prefix + "jq-win64.exe",
+			os:   "ming",
+			arch: arch64bit,
+			url:  prefix + "jq-win64.exe",
 		},
 		{
-			os:      "ming",
-			arch:    arch32bit,
-			url:     prefix + "jq-win32.exe",
+			os:   "ming",
+			arch: arch32bit,
+			url:  prefix + "jq-win32.exe",
 		},
 	}
 
