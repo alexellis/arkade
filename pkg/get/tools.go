@@ -97,6 +97,34 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner: "stedolan",
+			Repo: "jq",
+			Name: "jq",
+			Version: "1.6",
+			Description: "jq is a lightweight and flexible command-line JSON processor",
+			URLTemplate: `{{$arch := "arm"}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "64"}}
+{{- else -}}
+{{$arch = "32"}}
+{{- end -}}
+
+{{$ext := ""}}
+{{$os := .OS}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = ".exe"}}
+{{$os = "win"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "osx-amd"}}
+{{- end -}}
+
+https://github.com/stedolan/jq/releases/download/jq-{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
+		})
+
 	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
