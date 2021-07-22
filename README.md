@@ -74,6 +74,7 @@ Use "arkade get TOOL" to download a tool or application:
   inlets-pro
   inletsctl
   istioctl
+  jq
   k3d
   k3sup
   k9s
