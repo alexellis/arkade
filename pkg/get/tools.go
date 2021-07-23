@@ -592,7 +592,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:          "cli",
 			Repo:           "cli",
 			Name:           "gh",
-			Version:        "1.6.1",
+			Version:        "1.13.1",
 			Description:    "GitHub’s official command line tool.",
 			BinaryTemplate: `gh`,
 			URLTemplate: `
