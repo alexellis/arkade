@@ -1950,3 +1950,50 @@ func Test_DownloadJq(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadCosignCli(t *testing.T) {
+	tools := MakeTools()
+	name := "cosign"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.6.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_darwin_amd64_0.6.0_darwin_amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "0.6.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_darwin_arm64_0.6.0_darwin_arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.6.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_linux_amd64_0.6.0_linux_amd64`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "0.6.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_windows_amd64_0.6.0_windows_amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}

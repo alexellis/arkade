@@ -62,6 +62,7 @@ Use "arkade get TOOL" to download a tool or application:
   arkade
   buildx
   civo
+  cosign
   docker-compose
   doctl
   faas-cli
