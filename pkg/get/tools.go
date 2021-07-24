@@ -1458,5 +1458,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "sigstore",
+			Repo:        "cosign",
+			Name:        "cosign",
+			Version:     "0.6.0",
+			Description: "Container Signing, Verification and Storage in an OCI registry.",
+			URLTemplate: `{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{	$osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+
+			{{ $archStr := "amd64" }}
+
+			{{- if eq .Arch "armv6l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}_{{.Version}}_{{$osStr}}_{{$archStr}}{{$ext}}`,
+		},
+	)
+
 	return tools
 }
