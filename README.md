@@ -95,6 +95,7 @@ Use "arkade get TOOL" to download a tool or application:
   kustomize
   linkerd2
   mc
+  metal
   minikube
   nats
   nerdctl
@@ -103,7 +104,6 @@ Use "arkade get TOOL" to download a tool or application:
   osm
   pack
   packer
-  packet
   polaris
   popeye
   porter
