@@ -1808,9 +1808,9 @@ func Test_DownloadKgctl(t *testing.T) {
 	}
 }
 
-func Test_DownloadPacketCli(t *testing.T) {
+func Test_DownloadEquinixMetalCli(t *testing.T) {
 	tools := MakeTools()
-	name := "packet"
+	name := "metal"
 
 	tool := getTool(name, tools)
 
@@ -1818,32 +1818,38 @@ func Test_DownloadPacketCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-darwin-amd64`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-darwin-amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-amd64`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-amd64`,
 		},
 		{
 			os:      "linux",
-			arch:    archARM64,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-arm64`,
+			arch:    "aarch64",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-arm64`,
 		},
 		{
 			os:      "linux",
-			arch:    archARM7,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-armv7`,
+			arch:    "armv7l",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-armv7`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-armv6`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-windows-amd64.exe`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-windows-amd64.exe`,
 		},
 	}
 
@@ -1858,7 +1864,6 @@ func Test_DownloadPacketCli(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func Test_DownloadPorterCli(t *testing.T) {
