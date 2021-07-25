@@ -2,6 +2,8 @@ curators:
  - alexellis
  - Waterdrips
  - utsavanand2
+ - yankeexe
+ - dirien
 
 features:
  - dco_check
@@ -15,7 +17,7 @@ custom_messages:
   - name: slack
     value: |
            --
-           The arkade project uses the #contributors channel in the OpenFaaS 
+           The arkade project uses the #contributors channel in the OpenFaaS
            Slack community.
 
            Join Slack to connect with the community
@@ -26,7 +28,7 @@ custom_messages:
            This project uses Issue and PR templates and requires that all
            users fill out the template in detail before help can be given.
 
-           To continue please edit your Issue/PR or open a new one, and 
+           To continue please edit your Issue/PR or open a new one, and
            please provide all the fields requested.
 
            Thank you for your contribution.
@@ -35,7 +37,7 @@ custom_messages:
     value: |
            This project follows a contributing guide which states that all
            changes must be proposed with an Issue before being worked on.
-           
+
            Please raise an Issue and update your Pull Request to include
            the ID or link as part of the description.
 
@@ -49,7 +51,7 @@ custom_messages:
            changes are good.
 
            Screenshots and command line output are also accepted, but
-           must show the positive, and negative cases, not just that 
+           must show the positive, and negative cases, not just that
            what was added worked as you expected.
 
            Thank you for your contribution.
