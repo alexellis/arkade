@@ -1374,28 +1374,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "packethost",
-			Repo:        "packet-cli",
-			Name:        "packet",
-			Version:     "0.5.0",
-			Description: "The Equinix Metal CLI allows interaction with Equinix Metal platform.",
-			BinaryTemplate: `
-			{{ $ext := "" }}
-			{{ $osStr := "linux" }}
-			{{ if HasPrefix .OS "ming" -}}
-			{{	$osStr = "windows" }}
-			{{ $ext = ".exe" }}
-			{{- else if eq .OS "darwin" -}}
-			{{  $osStr = "darwin" }}
-			{{- end -}}
-			{{ $archStr := "amd64" }}
-			{{ if eq .Arch "armv7l" -}}
-			{{$archStr = "armv7"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$archStr = "arm64"}}
-			{{- end -}}
-			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
-		})
+			Owner:       "equinix",
+			Repo:        "metal-cli",
+			Name:        "metal",
+			Version:     "0.6.0-alpha2",
+			Description: "Official Equinix Metal CLI",
+			BinaryTemplate: `{{ $ext := "" }}
+				{{ $osStr := "linux" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{	$osStr = "windows" }}
+				{{ $ext = ".exe" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{- end -}}
+
+				{{ $archStr := "amd64" }}
+				{{- if eq .Arch "armv6l" -}}
+				{{ $archStr = "armv6" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "armv7" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		},
+	)
 
 	tools = append(tools,
 		Tool{
@@ -1468,7 +1471,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			URLTemplate: `{{ $ext := "" }}
 			{{ $osStr := "linux" }}
 			{{ if HasPrefix .OS "ming" -}}
-			{{	$osStr = "windows" }}
+			{{ $osStr = "windows" }}
 			{{ $ext = ".exe" }}
 			{{- else if eq .OS "darwin" -}}
 			{{  $osStr = "darwin" }}
