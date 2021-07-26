@@ -312,6 +312,7 @@ Available Commands:
   kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
+  kyverno                 Install Kyverno
   linkerd                 Install linkerd
   loki                    Install Loki for monitoring and tracing
   metrics-server          Install metrics-server
