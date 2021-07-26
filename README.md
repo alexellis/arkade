@@ -325,6 +325,7 @@ Available Commands:
   redis                   Install redis
   registry-creds          Install registry-creds
   sealed-secrets          Install sealed-secrets
+  rabbitmq                Install rabbitmq
   tekton                  Install Tekton pipelines and dashboard
   traefik2                Install traefik2
 ```
