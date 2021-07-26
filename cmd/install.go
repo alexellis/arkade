@@ -109,6 +109,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["falco"] = NewArkadeApp(apps.MakeInstallFalco, apps.FalcoInfoMsg)
 	arkadeApps["influxdb"] = NewArkadeApp(apps.MakeInstallinfluxdb, apps.InfluxdbInfoMsg)
 	arkadeApps["kafka"] = NewArkadeApp(apps.MakeInstallConfluentPlatformKafka, apps.KafkaInfoMsg)
+	arkadeApps["kyverno"] = NewArkadeApp(apps.MakeInstallKyverno, apps.KyvernoInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
