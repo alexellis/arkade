@@ -1466,7 +1466,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "sigstore",
 			Repo:        "cosign",
 			Name:        "cosign",
-			Version:     "0.6.0",
+			Version:     "1.0.0",
 			Description: "Container Signing, Verification and Storage in an OCI registry.",
 			URLTemplate: `{{ $ext := "" }}
 			{{ $osStr := "linux" }}
@@ -1486,7 +1486,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "aarch64" -}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
-			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}_{{.Version}}_{{$osStr}}_{{$archStr}}{{$ext}}`,
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
 
