@@ -1966,26 +1966,26 @@ func Test_DownloadCosignCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.6.0",
-			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_darwin_amd64_0.6.0_darwin_amd64`,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
-			version: "0.6.0",
-			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_darwin_arm64_0.6.0_darwin_arm64`,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.6.0",
-			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_linux_amd64_0.6.0_linux_amd64`,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-linux-amd64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.6.0",
-			url:     `https://github.com/sigstore/cosign/releases/download/v0.6.0/cosign_windows_amd64_0.6.0_windows_amd64.exe`,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-windows-amd64.exe`,
 		},
 	}
 
