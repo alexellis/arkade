@@ -84,6 +84,7 @@ arkade get APP
 | arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command. |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                   |
 | civo             | CLI for interacting with your Civo resources.                                                                      |
+| cosign           | Container Signing, Verification and Storage in an OCI registry.                                                    |
 | docker-compose   | Define and run multi-container applications with Docker.                                                           |
 | doctl            | Official command line interface for the DigitalOcean API.                                                          |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                         |
@@ -96,6 +97,9 @@ arkade get APP
 | inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                      |
 | inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                      |
 | istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                 |
+| jq               | jq is a lightweight and flexible command-line JSON processor                                                       |
+| k0s              | Zero Friction Kubernetes                                                                                           |
+| k0sctl           | A bootstrapping and management tool for k0s clusters                                                               |
 | k3d              | Helper to run Rancher Lab's k3s in Docker.                                                                         |
 | k3sup            | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                    |
 | k9s              | Provides a terminal UI to interact with your Kubernetes clusters.                                                  |
@@ -115,6 +119,7 @@ arkade get APP
 | kustomize        | Customization of kubernetes YAML configurations                                                                    |
 | linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                            |
 | mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.       |
+| metal            | Official Equinix Metal CLI                                                                                         |
 | minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                       |
 | nats             | Utility to interact with and manage NATS.                                                                          |
 | nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                     |
@@ -125,6 +130,8 @@ arkade get APP
 | packer           | Build identical machine images for multiple platforms from a single source configuration.                          |
 | polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                          |
 | popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.             |
+| porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.    |
+| rekor-cli        | Secure Supply Chain - Transparency Log                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                  |
 | tkn              | A CLI for interacting with Tekton.                                                                                 |
