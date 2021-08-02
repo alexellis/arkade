@@ -8,8 +8,8 @@ import (
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/types"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
 
@@ -90,7 +90,7 @@ func MakeInstallRabbitmq() *cobra.Command {
 		rabbitmqAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
 			WithHelmRepo("bitnami/rabbitmq").
-			WithHelmURL("https://charts.bitnami.com/bitnami"). 
+			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath).
