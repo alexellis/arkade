@@ -283,6 +283,7 @@ Examples:
 
 Available Commands:
   argocd                  Install argocd
+  cassandra               Install cassandra
   cert-manager            Install cert-manager
   chart                   Install the specified helm chart
   consul-connect          Install Consul Service Mesh
@@ -306,6 +307,7 @@ Available Commands:
   kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
+  kyverno                 Install Kyverno
   linkerd                 Install linkerd
   loki                    Install Loki for monitoring and tracing
   metrics-server          Install metrics-server
@@ -322,10 +324,10 @@ Available Commands:
   osm                     Install osm
   portainer               Install portainer to visualise and manage containers
   postgresql              Install postgresql
+  rabbitmq                Install rabbitmq
   redis                   Install redis
   registry-creds          Install registry-creds
   sealed-secrets          Install sealed-secrets
-  rabbitmq                Install rabbitmq
   tekton                  Install Tekton pipelines and dashboard
   traefik2                Install traefik2
 ```
