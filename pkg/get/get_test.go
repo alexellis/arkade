@@ -13,6 +13,7 @@ import (
 
 var faasCLIVersionConstraint, _ = semver.NewConstraint(">= 0.13.2")
 
+const arch32bit = "i686"
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
 const archARM64 = "aarch64"
@@ -1807,9 +1808,9 @@ func Test_DownloadKgctl(t *testing.T) {
 	}
 }
 
-func Test_DownloadPacketCli(t *testing.T) {
+func Test_DownloadEquinixMetalCli(t *testing.T) {
 	tools := MakeTools()
-	name := "packet"
+	name := "metal"
 
 	tool := getTool(name, tools)
 
@@ -1817,32 +1818,38 @@ func Test_DownloadPacketCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-darwin-amd64`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-darwin-amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-amd64`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-amd64`,
 		},
 		{
 			os:      "linux",
-			arch:    archARM64,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-arm64`,
+			arch:    "aarch64",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-arm64`,
 		},
 		{
 			os:      "linux",
-			arch:    archARM7,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-linux-armv7`,
+			arch:    "armv7l",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-armv7`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-armv6`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.5.0",
-			url:     `https://github.com/packethost/packet-cli/releases/download/0.5.0/packet-windows-amd64.exe`,
+			version: "0.6.0-alpha2",
+			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-windows-amd64.exe`,
 		},
 	}
 
@@ -1857,7 +1864,6 @@ func Test_DownloadPacketCli(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func Test_DownloadPorterCli(t *testing.T) {
@@ -1899,6 +1905,101 @@ func Test_DownloadPorterCli(t *testing.T) {
 		})
 	}
 
+}
+
+func Test_DownloadJq(t *testing.T) {
+	tools := MakeTools()
+	name := "jq"
+
+	tool := getTool(name, tools)
+	prefix := "https://github.com/" + tool.Owner + "/" + tool.Repo + "/releases/download/jq-" + tool.Version + "/"
+
+	tests := []test{
+		{
+			os:   "darwin",
+			arch: arch64bit,
+			url:  prefix + "jq-osx-amd64",
+		},
+		{
+			os:   "linux",
+			arch: arch64bit,
+			url:  prefix + "jq-linux64",
+		},
+		{
+			os:   "linux",
+			arch: arch32bit,
+			url:  prefix + "jq-linux32",
+		},
+		{
+			os:   "ming",
+			arch: arch64bit,
+			url:  prefix + "jq-win64.exe",
+		},
+		{
+			os:   "ming",
+			arch: arch32bit,
+			url:  prefix + "jq-win32.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tool.Version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
+
+func Test_DownloadCosignCli(t *testing.T) {
+	tools := MakeTools()
+	name := "cosign"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-linux-amd64`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "1.0.0",
+			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want:\n%s\ngot:\n%s", tc.url, got)
+			}
+		})
+	}
 }
 
 func Test_DownloadKanister(t *testing.T) {
