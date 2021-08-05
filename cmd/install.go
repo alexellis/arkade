@@ -5,8 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/alexellis/arkade/cmd/apps"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -34,8 +36,32 @@ command.`,
 
 	command.PersistentFlags().String("kubeconfig", "", "Local path for your kubeconfig file")
 	command.PersistentFlags().Bool("wait", false, "If we should wait for the resource to be ready before returning (helm3 only, default false)")
+	command.Flags().Bool("print-table", false, "print a table in markdown format")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
+
+		printTable, _ := command.Flags().GetBool("print-table")
+
+		if printTable {
+			appList := GetApps()
+
+			table := tablewriter.NewWriter(os.Stdout)
+			table.SetHeader([]string{"Tool", "Description"})
+
+			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+			table.SetCenterSeparator("|")
+			table.SetAutoWrapText(false)
+
+			for k, v := range appList {
+				table.Append([]string{k, v.Installer().Short})
+
+			}
+
+			table.Render()
+
+			fmt.Printf("\nThere are %d apps that you can install on your cluster.\n", len(appList))
+			return nil
+		}
 
 		if len(args) == 0 {
 			fmt.Printf(
@@ -58,8 +84,8 @@ To request a new app, raise a GitHub issue at:
 
 		return nil
 	}
-	appList := GetApps()
 
+	appList := GetApps()
 	for _, app := range appList {
 		command.AddCommand(app.Installer())
 	}

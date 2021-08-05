@@ -139,6 +139,8 @@ arkade get APP
 | vagrant          | Tool for building and distributing development environments.                                                       |
 | yq               | Portable command-line YAML processor.                                                                              |
 
+Note to contributors, run `arkade get --output markdown` to generate this list
+
 > This is a time saver compared to searching for download pages every time you need a tool.
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
@@ -287,57 +289,88 @@ Examples:
   arkade install
   arkade install openfaas --helm3 --gateways=2
   arkade install inlets-operator --token-file $HOME/do-token
-
-Available Commands:
-  argocd                  Install argocd
-  cassandra               Install cassandra
-  cert-manager            Install cert-manager
-  chart                   Install the specified helm chart
-  consul-connect          Install Consul Service Mesh
-  cron-connector          Install cron-connector for OpenFaaS
-  crossplane              Install Crossplane
-  docker-registry         Install a Docker registry
-  docker-registry-ingress Install registry ingress with TLS
-  falco                   Install Falco
-  gitea                   Install gitea
-  gitlab                  Install GitLab
-  grafana                 Install grafana
-  influxdb                Install influxdb
-  info                    Find info about a Kubernetes app
-  ingress-nginx           Install ingress-nginx
-  inlets-operator         Install inlets-operator
-  istio                   Install istio
-  jenkins                 Install jenkins
-  kafka                   Install Confluent Platform Kafka
-  kafka-connector         Install kafka-connector for OpenFaaS
-  kong-ingress            Install kong-ingress for OpenFaaS
-  kube-image-prefetch     Install kube-image-prefetch
-  kube-state-metrics      Install kube-state-metrics
-  kubernetes-dashboard    Install kubernetes-dashboard
-  kyverno                 Install Kyverno
-  linkerd                 Install linkerd
-  loki                    Install Loki for monitoring and tracing
-  metrics-server          Install metrics-server
-  minio                   Install minio
-  mongodb                 Install mongodb
-  mqtt-connector          Install mqtt-connector for OpenFaaS
-  nats-connector          Install OpenFaaS connector for NATS
-  nfs-client-provisioner  Install nfs client provisioner
-  nginx-inc               Install nginx-inc for OpenFaaS
-  opa-gatekeeper          Install Open Policy Agent (OPA) Gatekeeper
-  openfaas                Install openfaas
-  openfaas-ingress        Install openfaas ingress with TLS
-  openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
-  osm                     Install osm
-  portainer               Install portainer to visualise and manage containers
-  postgresql              Install postgresql
-  rabbitmq                Install rabbitmq
-  redis                   Install redis
-  registry-creds          Install registry-creds
-  sealed-secrets          Install sealed-secrets
-  tekton                  Install Tekton pipelines and dashboard
-  traefik2                Install traefik2
 ```
+
+Apps:
+
+|          TOOL           |                             DESCRIPTION                             |    ALIASES    |
+|-------------------------|---------------------------------------------------------------------|---------------|
+| redis                   | Install redis                                                       |               |
+| nats-connector          | Install OpenFaaS connector for NATS                                 |               |
+| traefik2                | Install traefik2                                                    |               |
+| kafka                   | Install Confluent Platform Kafka                                    |               |
+| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          | gatekeeper    |
+| influxdb                | Install influxdb                                                    |               |
+| cron-connector          | Install cron-connector for OpenFaaS                                 |               |
+| kube-state-metrics      | Install kube-state-metrics                                          |               |
+| inlets-operator         | Install inlets-operator                                             |               |
+| nfs-provisioner         | Install nfs client provisioner                                      |               |
+| tekton                  | Install Tekton pipelines and dashboard                              |               |
+| sealed-secret           | Install sealed-secrets                                              |               |
+| falco                   | Install Falco                                                       |               |
+| mongodb                 | Install mongodb                                                     |               |
+| openfaas                | Install openfaas                                                    |               |
+| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |               |
+| portainer               | Install portainer to visualise and manage containers                |               |
+| kong-ingress            | Install kong-ingress for OpenFaaS                                   |               |
+| consul-connect          | Install Consul Service Mesh                                         |               |
+| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |               |
+| chart                   | Install the specified helm chart                                    |               |
+| metrics-server          | Install metrics-server                                              |               |
+alex@am1 arkade % go build && ./arkade install --print-table
+|          TOOL           |                             DESCRIPTION                             |
+|-------------------------|---------------------------------------------------------------------|
+| cert-manager            | Install cert-manager                                                |
+| portainer               | Install portainer to visualise and manage containers                |
+| influxdb                | Install influxdb                                                    |
+| kyverno                 | Install Kyverno                                                     |
+| redis                   | Install redis                                                       |
+| jenkins                 | Install jenkins                                                     |
+| argocd                  | Install argocd                                                      |
+| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
+| gitlab                  | Install GitLab                                                      |
+| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
+| docker-registry-ingress | Install registry ingress with TLS                                   |
+| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
+| nats-connector          | Install OpenFaaS connector for NATS                                 |
+| nfs-provisioner         | Install nfs client provisioner                                      |
+| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
+| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
+| cassandra               | Install cassandra                                                   |
+| crossplane              | Install Crossplane                                                  |
+| loki                    | Install Loki for monitoring and tracing                             |
+| registry-creds          | Install registry-creds                                              |
+| falco                   | Install Falco                                                       |
+| linkerd                 | Install linkerd                                                     |
+| kafka-connector         | Install kafka-connector for OpenFaaS                                |
+| tekton                  | Install Tekton pipelines and dashboard                              |
+| OSM                     | Install osm                                                         |
+| sealed-secret           | Install sealed-secrets                                              |
+| consul-connect          | Install Consul Service Mesh                                         |
+| kafka                   | Install Confluent Platform Kafka                                    |
+| grafana                 | Install grafana                                                     |
+| mongodb                 | Install mongodb                                                     |
+| metrics-server          | Install metrics-server                                              |
+| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
+| istio                   | Install istio                                                       |
+| postgresql              | Install postgresql                                                  |
+| minio                   | Install minio                                                       |
+| openfaas                | Install openfaas                                                    |
+| gitea                   | Install gitea                                                       |
+| cron-connector          | Install cron-connector for OpenFaaS                                 |
+| openfaas-ingress        | Install openfaas ingress with TLS                                   |
+| traefik2                | Install traefik2                                                    |
+| docker-registry         | Install a Docker registry                                           |
+| kube-image-prefetch     | Install kube-image-prefetch                                         |
+| kube-state-metrics      | Install kube-state-metrics                                          |
+| ingress-nginx           | Install ingress-nginx                                               |
+| inlets-operator         | Install inlets-operator                                             |
+| rabbitmq                | Install rabbitmq                                                    |
+| chart                   | Install the specified helm chart                                    |
+
+There are 47 apps that you can install on your cluster.
+
+Note to contributors, run `arkade install --print-table` to generate this list
 
 ## Community & contributing
 
