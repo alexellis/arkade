@@ -434,6 +434,74 @@ Both Issues and PRs have their own templates. Please fill out the whole template
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
 
+### Developer workflow
+
+Here's the basics for contributing:
+
+#### Cloning
+
+```bash
+mkdir $GOPATH/go/src/github.com/alexellis
+git clone https://github.com/alexellis/arkade
+cd arkade
+
+go build
+```
+
+#### Adding your fork:
+
+```bash
+git remote add fork https://github.com/NAME/arkade
+```
+
+#### To verify changes:
+
+```bash
+gofmt -w -s ./pkg
+gofmt -w -s ./cmd
+go test ./...
+```
+
+#### Checkout a branch to start work
+
+```bash
+git checkout -b fork/add-NAME-of-APP
+```
+
+#### Push up your changes for a PR
+
+```bash
+git config user.name "Full name"
+git config user.email "real@email.com"
+
+git commit -s
+
+git push fork add-NAME-of-APP
+```
+
+#### Test other people's PRs
+
+You can also check out other people's PRs and test them:
+
+```bash
+arkade get gh
+gh auth
+
+$ gh pr list
+
+Showing 10 of 10 open pull requests in alexellis/arkade
+
+#477  Add comma escaping for --set flag        yankeexe:fix-openfaas-helm-set
+#438  Added support to install kube-ps1        andreppires:master
+
+gh checkout 477
+
+go build
+
+# Try the new version of arkade
+./arkade
+```
+
 ### Join us on Slack
 
 Join `#contributors` at [slack.openfaas.io](https://slack.openfaas.io)
