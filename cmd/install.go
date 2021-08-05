@@ -39,14 +39,20 @@ command.`,
 
 		if len(args) == 0 {
 			fmt.Printf(
-				`To see a complete list of apps run:
+				`You can install %d apps to your Kubernetes cluster:
 
+See the whole list of apps by typing in:
   arkade install --help
 
-And to see options for a specific app before installing, run:
+To see options for a specific app before installing, run:
 
   arkade install APP --help
-`)
+  arkade install openfaas --help
+  arkade install grafana --help
+
+To request a new app, raise a GitHub issue at:
+  https://arkade.dev/
+`, len(command.Commands()))
 			return nil
 		}
 
