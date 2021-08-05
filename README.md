@@ -12,15 +12,34 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
+With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
-## Do you use this project? 👋
+## Should you try arkade?
 
-Alex created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
+Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com has to say about arkade:
 
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
+> I was setting up a new dev environment yesterday. Kind, helm, kustomize, kubectl, all this stuff. My take is - arkade is highly underappreciated.
+> I'd spend an hour in the past to install such tools. With arkade it was under ten minutes.
+
+[Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer, he says:
+
+> This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
+
+[@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20) says:
+
+> for getting the basics installed, nothing beats arkade
+> it can install commonly used cli tools like kubectl locally for you, as well as common k8s pkgs like ingress-nginx or portainer
+
+[@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
+
+> It's hard to use K8s without Arkade these days. 
+> My team at @lftechnology absolutely loves it. 
+
+From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
+
+> I finally got around to installing Arkade, super simple! 
+> quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
+> also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
 
 ## Get arkade
 
@@ -62,6 +81,7 @@ Use "arkade get TOOL" to download a tool or application:
   arkade
   buildx
   civo
+  cosign
   docker-compose
   doctl
   faas-cli
@@ -74,6 +94,7 @@ Use "arkade get TOOL" to download a tool or application:
   inlets-pro
   inletsctl
   istioctl
+  jq
   k3d
   k3sup
   k9s
@@ -95,6 +116,7 @@ Use "arkade get TOOL" to download a tool or application:
   k10tools
   linkerd2
   mc
+  metal
   minikube
   nats
   nerdctl
@@ -103,7 +125,6 @@ Use "arkade get TOOL" to download a tool or application:
   osm
   pack
   packer
-  packet
   polaris
   popeye
   porter
@@ -250,32 +271,6 @@ arkade install inlets-operator \
   --license $(cat $HOME/license.txt)
 ```
 
-### Tutorials & community blog posts
-
-#### Video review from Rancher Labs
-
-* [Tool of the Day with Adrian from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
-
-#### Watch a video walk-through by Alex Ellis
-
-[![](http://img.youtube.com/vi/8wU9s_mua8M/hqdefault.jpg)](https://www.youtube.com/watch?v=8wU9s_mua8M)
-
-#### Featured tutorials
-
-* [arkade by example — Kubernetes apps, the easy way 😎](https://medium.com/@alexellisuk/kubernetes-apps-the-easy-way-f06d9e5cad3c) - Alex Ellis
-* [Walk-through — install Kubernetes to your Raspberry Pi in 15 minutes](https://medium.com/@alexellisuk/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a)
-* [Get a TLS-enabled Docker registry in 5 minutes](https://blog.alexellis.io/get-a-tls-enabled-docker-registry-in-5-minutes/) - Alex Ellis
-* [Get TLS for OpenFaaS the easy way with arkade](https://blog.alexellis.io/tls-the-easy-way-with-openfaas-and-k3sup/) - Alex Ellis
-
-#### Community posts
-
-* [A bit of Istio before tea-time](https://blog.alexellis.io/a-bit-of-istio-before-tea-time/) - Alex Ellis
-* [Kubernetes: Automatic Let's Encrypt Certificates for Services with arkade](https://medium.com/@admantium/kubernetes-automatic-lets-encrypt-certificates-for-services-2a5f4aa7f886)
-* [Introducing Arkade - The Kubernetes app installer](https://blog.heyal.co.uk/introducing-arkade/) - Alistair Hey
-* [Portainer for kubernetes in less than 60 seconds!!](https://www.portainer.io/2020/04/portainer-for-kubernetes-in-less-than-60-seconds/) - by Saiyam Pathak
-* [Video walk-through with DJ Adams - Pi & Kubernetes with k3s, k3sup, arkade and OpenFaaS](https://www.youtube.com/watch?v=ZiR3QEfBivk)
-* [Coffee chat: Easy way to install Kubernetes Apps - arkade (ark)](https://sachcode.com/tech/coffee-chat-easy-way-install-kubernetes-apps/) by Sachin Jha
-* [Arkade & OpenFaaS: serverless on the spot](https://zero2datadog.readthedocs.io/en/latest/faas.html) by Blaise Pabon
 
 #### Explore the apps
 
@@ -312,6 +307,7 @@ Available Commands:
   kube-image-prefetch     Install kube-image-prefetch
   kube-state-metrics      Install kube-state-metrics
   kubernetes-dashboard    Install kubernetes-dashboard
+  kyverno                 Install Kyverno
   linkerd                 Install linkerd
   loki                    Install Loki for monitoring and tracing
   metrics-server          Install metrics-server
@@ -333,7 +329,42 @@ Available Commands:
 
 ## Community & contributing
 
-### Suggesting a new app
+### Do you use this project? 👋
+
+Alex created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
+
+<a href="https://github.com/sponsors/alexellis/">
+<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
+</a>
+
+### Tutorials & community blog posts
+
+#### Video review from Rancher Labs
+
+* [Tool of the Day with Adrian from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
+
+#### Watch a video walk-through by Alex Ellis
+
+[![](http://img.youtube.com/vi/8wU9s_mua8M/hqdefault.jpg)](https://www.youtube.com/watch?v=8wU9s_mua8M)
+
+#### Featured tutorials
+
+* [arkade by example — Kubernetes apps, the easy way 😎](https://medium.com/@alexellisuk/kubernetes-apps-the-easy-way-f06d9e5cad3c) - Alex Ellis
+* [Walk-through — install Kubernetes to your Raspberry Pi in 15 minutes](https://medium.com/@alexellisuk/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a)
+* [Get a TLS-enabled Docker registry in 5 minutes](https://blog.alexellis.io/get-a-tls-enabled-docker-registry-in-5-minutes/) - Alex Ellis
+* [Get TLS for OpenFaaS the easy way with arkade](https://blog.alexellis.io/tls-the-easy-way-with-openfaas-and-k3sup/) - Alex Ellis
+
+#### Community posts
+
+* [A bit of Istio before tea-time](https://blog.alexellis.io/a-bit-of-istio-before-tea-time/) - Alex Ellis
+* [Kubernetes: Automatic Let's Encrypt Certificates for Services with arkade](https://medium.com/@admantium/kubernetes-automatic-lets-encrypt-certificates-for-services-2a5f4aa7f886)
+* [Introducing Arkade - The Kubernetes app installer](https://blog.heyal.co.uk/introducing-arkade/) - Alistair Hey
+* [Portainer for kubernetes in less than 60 seconds!!](https://www.portainer.io/2020/04/portainer-for-kubernetes-in-less-than-60-seconds/) - by Saiyam Pathak
+* [Video walk-through with DJ Adams - Pi & Kubernetes with k3s, k3sup, arkade and OpenFaaS](https://www.youtube.com/watch?v=ZiR3QEfBivk)
+* [Coffee chat: Easy way to install Kubernetes Apps - arkade (ark)](https://sachcode.com/tech/coffee-chat-easy-way-install-kubernetes-apps/) by Sachin Jha
+* [Arkade & OpenFaaS: serverless on the spot](https://zero2datadog.readthedocs.io/en/latest/faas.html) by Blaise Pabon
+
+### Suggest a new app
 
 To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade). Think also whether your app suggestion would be a good candidate for a Sponsored App.
 

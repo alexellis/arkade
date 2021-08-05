@@ -97,6 +97,34 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "stedolan",
+			Repo:        "jq",
+			Name:        "jq",
+			Version:     "1.6",
+			Description: "jq is a lightweight and flexible command-line JSON processor",
+			URLTemplate: `{{$arch := "arm"}}
+
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "64"}}
+{{- else -}}
+{{$arch = "32"}}
+{{- end -}}
+
+{{$ext := ""}}
+{{$os := .OS}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = ".exe"}}
+{{$os = "win"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "osx-amd"}}
+{{- end -}}
+
+https://github.com/stedolan/jq/releases/download/jq-{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
+		})
+
 	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
@@ -564,7 +592,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:          "cli",
 			Repo:           "cli",
 			Name:           "gh",
-			Version:        "1.6.1",
+			Version:        "1.13.1",
 			Description:    "GitHub’s official command line tool.",
 			BinaryTemplate: `gh`,
 			URLTemplate: `
@@ -1346,31 +1374,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "packethost",
-			Repo:        "packet-cli",
-			Name:        "packet",
-			Version:     "0.5.0",
-			Description: "The Equinix Metal CLI allows interaction with Equinix Metal platform.",
-			BinaryTemplate: `
-			{{ $ext := "" }}
-			{{ $osStr := "linux" }}
-			{{- if HasPrefix .OS "ming" -}}
-			{{	$osStr = "windows" }}
-			{{ $ext = ".exe" }}
-			{{- else if eq .OS "darwin" -}}
-			{{  $osStr = "darwin" }}
-			{{- end -}}
-			{{ $archStr := "amd64" }}
-			{{- if eq .Arch "armv7l" -}}
-			{{$archStr = "armv7"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$archStr = "arm64"}}
-			{{- end -}}
-			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
-		})
-
-	tools = append(tools,
-		Tool{
 			Owner:       "getporter",
 			Repo:        "porter",
 			Name:        "porter",
@@ -1427,6 +1430,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	{{- end -}}
 
 	{{.Name}}-{{$os}}-{{$arch}}{{$ext}}`,
+		},
+	)
+
+	tools = append(tools,
+		Tool{
+			Owner:       "equinix",
+			Repo:        "metal-cli",
+			Name:        "metal",
+			Version:     "0.6.0-alpha2",
+			Description: "Official Equinix Metal CLI",
+			BinaryTemplate: `{{ $ext := "" }}
+				{{ $osStr := "linux" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{	$osStr = "windows" }}
+				{{ $ext = ".exe" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{- end -}}
+
+				{{ $archStr := "amd64" }}
+				{{- if eq .Arch "armv6l" -}}
+				{{ $archStr = "armv6" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "armv7" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
 
@@ -1515,6 +1546,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "sigstore",
+			Repo:        "cosign",
+			Name:        "cosign",
+			Version:     "1.0.0",
+			Description: "Container Signing, Verification and Storage in an OCI registry.",
+			URLTemplate: `{{ $ext := "" }}
+				{{ $osStr := "linux" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $osStr = "windows" }}
+				{{ $ext = ".exe" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{- end -}}
+	
+				{{ $archStr := "amd64" }}
+	
+				{{- if eq .Arch "armv6l" -}}
+				{{ $archStr = "arm" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "arm" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		},
+	)
 
 	return tools
 }
