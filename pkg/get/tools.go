@@ -1465,7 +1465,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 		Tool{
 			Owner:       "kanisterio",
 			Repo:        "kanister",
-			Name:        "kanister",
+			Name:        "kanctl",
 			Version:     "0.63.0",
 			Description: "Framework for application-level data management on Kubernetes.",
 			URLTemplate: `
@@ -1474,7 +1474,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 {{ $osStr = "darwin" }}
 {{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$.Version}}_{{$osStr}}_amd64.tar.gz`,
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}_{{$.Version}}_{{$osStr}}_amd64.tar.gz`,
 			BinaryTemplate: `{{.Name}}`,
 		})
 

@@ -2004,7 +2004,7 @@ func Test_DownloadCosignCli(t *testing.T) {
 
 func Test_DownloadKanister(t *testing.T) {
 	tools := MakeTools()
-	name := "kanister"
+	name := "kanctl"
 	v := "0.63.0"
 	tool := getTool(name, tools)
 
