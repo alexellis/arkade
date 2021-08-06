@@ -153,6 +153,7 @@ arkade get APP
 | kubectl          | Run commands against Kubernetes clusters                                                                           |
 | kubectx          | Faster way to switch between clusters.                                                                             |
 | kubens           | Switch between Kubernetes namespaces smoothly.                                                                     |
+| kubie            | Alternative to kubectx/kubens                                                                                      |
 | kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                     |
 | kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                           |
 | kustomize        | Customization of kubernetes YAML configurations                                                                    |

@@ -2236,3 +2236,43 @@ func Test_DownloadTFSecCli(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadKubie(t *testing.T) {
+	tools := MakeTools()
+	name := "kubie"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.15.1",
+			url:     `https://github.com/sbstp/kubie/releases/download/v0.15.1/kubie-linux-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.15.1",
+			url:     `https://github.com/sbstp/kubie/releases/download/v0.15.1/kubie-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v0.15.1",
+			url:     `https://github.com/sbstp/kubie/releases/download/v0.15.1/kubie-darwin-arm64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				r.Fatal(err)
+			}
+			if got != tc.url {
+				r.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}

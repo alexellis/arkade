@@ -1562,9 +1562,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .OS "darwin" -}}
 				{{  $osStr = "darwin" }}
 				{{- end -}}
-	
+
 				{{ $archStr := "amd64" }}
-	
+
 				{{- if eq .Arch "armv6l" -}}
 				{{ $archStr = "arm" }}
 				{{- else if eq .Arch "armv7l" -}}
@@ -1628,6 +1628,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
+
+	tools = append(tools,
+		Tool{
+			Owner:       "sbstp",
+			Repo:        "kubie",
+			Name:        "kubie",
+			Version:     "v0.15.1",
+			Owner:       "sbstp",
+			Repo:        "kubie",
+			Name:        "kubie",
+			Version:     "v0.15.1",
+			Description: "Alternative to kubectx/kubens",
+			URLTemplate: `{{$arch := .Arch}}
+				{{ if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{$arch = "arm64"}}
+				{{- end -}}
+				{{$osStr := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osStr = "darwin"}}
+				{{- end -}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}-{{$arch}}`,
+		})
 
 	return tools
 }
