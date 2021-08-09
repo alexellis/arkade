@@ -332,31 +332,6 @@ Examples:
 
 Apps:
 
-|          TOOL           |                             DESCRIPTION                             |    ALIASES    |
-|-------------------------|---------------------------------------------------------------------|---------------|
-| redis                   | Install redis                                                       |               |
-| nats-connector          | Install OpenFaaS connector for NATS                                 |               |
-| traefik2                | Install traefik2                                                    |               |
-| kafka                   | Install Confluent Platform Kafka                                    |               |
-| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          | gatekeeper    |
-| influxdb                | Install influxdb                                                    |               |
-| cron-connector          | Install cron-connector for OpenFaaS                                 |               |
-| kube-state-metrics      | Install kube-state-metrics                                          |               |
-| inlets-operator         | Install inlets-operator                                             |               |
-| nfs-provisioner         | Install nfs client provisioner                                      |               |
-| tekton                  | Install Tekton pipelines and dashboard                              |               |
-| sealed-secret           | Install sealed-secrets                                              |               |
-| falco                   | Install Falco                                                       |               |
-| mongodb                 | Install mongodb                                                     |               |
-| openfaas                | Install openfaas                                                    |               |
-| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |               |
-| portainer               | Install portainer to visualise and manage containers                |               |
-| kong-ingress            | Install kong-ingress for OpenFaaS                                   |               |
-| consul-connect          | Install Consul Service Mesh                                         |               |
-| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |               |
-| chart                   | Install the specified helm chart                                    |               |
-| metrics-server          | Install metrics-server                                              |               |
-alex@am1 arkade % go build && ./arkade install --print-table
 |          TOOL           |                             DESCRIPTION                             |
 |-------------------------|---------------------------------------------------------------------|
 | cert-manager            | Install cert-manager                                                |
