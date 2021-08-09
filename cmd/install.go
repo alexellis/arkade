@@ -5,8 +5,10 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/alexellis/arkade/cmd/apps"
+	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 )
 
@@ -34,26 +36,56 @@ command.`,
 
 	command.PersistentFlags().String("kubeconfig", "", "Local path for your kubeconfig file")
 	command.PersistentFlags().Bool("wait", false, "If we should wait for the resource to be ready before returning (helm3 only, default false)")
+	command.Flags().Bool("print-table", false, "print a table in markdown format")
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 
+		printTable, _ := command.Flags().GetBool("print-table")
+
+		if printTable {
+			appList := GetApps()
+
+			table := tablewriter.NewWriter(os.Stdout)
+			table.SetHeader([]string{"Tool", "Description"})
+
+			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+			table.SetCenterSeparator("|")
+			table.SetAutoWrapText(false)
+
+			for k, v := range appList {
+				table.Append([]string{k, v.Installer().Short})
+
+			}
+
+			table.Render()
+
+			fmt.Printf("\nThere are %d apps that you can install on your cluster.\n", len(appList))
+			return nil
+		}
+
 		if len(args) == 0 {
 			fmt.Printf(
-				`To see a complete list of apps run:
+				`You can install %d apps to your Kubernetes cluster:
 
+See the whole list of apps by typing in:
   arkade install --help
 
-And to see options for a specific app before installing, run:
+To see options for a specific app before installing, run:
 
   arkade install APP --help
-`)
+  arkade install openfaas --help
+  arkade install grafana --help
+
+To request a new app, raise a GitHub issue at:
+  https://arkade.dev/
+`, len(command.Commands()))
 			return nil
 		}
 
 		return nil
 	}
-	appList := GetApps()
 
+	appList := GetApps()
 	for _, app := range appList {
 		command.AddCommand(app.Installer())
 	}
@@ -108,6 +140,10 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["mqtt-connector"] = NewArkadeApp(apps.MakeInstallMQTTConnector, apps.MQTTConnectorInfoMsg)
 	arkadeApps["falco"] = NewArkadeApp(apps.MakeInstallFalco, apps.FalcoInfoMsg)
 	arkadeApps["influxdb"] = NewArkadeApp(apps.MakeInstallinfluxdb, apps.InfluxdbInfoMsg)
+	arkadeApps["kafka"] = NewArkadeApp(apps.MakeInstallConfluentPlatformKafka, apps.KafkaInfoMsg)
+	arkadeApps["kyverno"] = NewArkadeApp(apps.MakeInstallKyverno, apps.KyvernoInfoMsg)
+	arkadeApps["rabbitmq"] = NewArkadeApp(apps.MakeInstallRabbitmq, apps.RabbitmqInfoMsg)
+	arkadeApps["cassandra"] = NewArkadeApp(apps.MakeInstallCassandra, apps.CassandraInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")

@@ -33,7 +33,11 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 		return "", "", err
 	}
 
-	if tool.IsArchive() {
+	if isArchive, err := tool.IsArchive(); isArchive {
+		if err != nil {
+			return "", "", err
+		}
+
 		archiveFile, err := os.Open(outFilePath)
 		if err != nil {
 			return "", "", err

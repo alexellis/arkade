@@ -5,10 +5,10 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"html/template"
 	"net"
 	"net/http"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/alexellis/arkade/pkg/env"
@@ -55,49 +55,24 @@ var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
 }
 
-func (tool Tool) IsArchive() bool {
+func (tool Tool) IsArchive() (bool, error) {
 	arch, operatingSystem := env.GetClientArch()
 	version := ""
 
-	downloadURL, _ := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-	return strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "zip") || strings.HasSuffix(downloadURL, "tgz")
-}
-
-func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
-	if len(tool.BinaryTemplate) > 0 {
-		var err error
-		t := template.New(tool.Name + "_binaryname")
-		t = t.Funcs(templateFuncs)
-		t, err = t.Parse(tool.BinaryTemplate)
-		if err != nil {
-			return "", err
-		}
-
-		var buf bytes.Buffer
-		err = t.Execute(&buf, map[string]string{
-			"OS":            os,
-			"Arch":          arch,
-			"Name":          tool.Name,
-			"Version":       version,
-			"VersionNumber": strings.TrimPrefix(version, "v"),
-		})
-		if err != nil {
-			return "", err
-		}
-		res := strings.TrimSpace(buf.String())
-		return res, nil
+	downloadURL, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+	if err != nil {
+		return false, err
 	}
 
-	return "", errors.New("BinaryTemplate is not set")
+	return strings.HasSuffix(downloadURL, "tar.gz") ||
+		strings.HasSuffix(downloadURL, "zip") ||
+		strings.HasSuffix(downloadURL, "tgz"), nil
 }
 
 // GetDownloadURL fetches the download URL for a release of a tool
-// for a given os,  architecture and version
+// for a given os, architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
-	ver := tool.Version
-	if len(version) > 0 {
-		ver = version
-	}
+	ver := getToolVersion(tool, version)
 
 	dlURL, err := tool.GetURL(os, arch, ver)
 	if err != nil {
@@ -151,17 +126,6 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 	return getBinaryURL(tool.Owner, tool.Repo, version, downloadName), nil
 }
 
-func getBinaryURL(owner, repo, version, downloadName string) string {
-	if in := strings.Index(downloadName, "/"); in > -1 {
-		return fmt.Sprintf(
-			"https://github.com/%s/%s/releases/download/%s",
-			owner, repo, downloadName)
-	}
-	return fmt.Sprintf(
-		"https://github.com/%s/%s/releases/download/%s/%s",
-		owner, repo, version, downloadName)
-}
-
 func findGitHubRelease(owner, repo string) (string, error) {
 
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
@@ -199,6 +163,17 @@ func findGitHubRelease(owner, repo string) (string, error) {
 	return version, nil
 }
 
+func getBinaryURL(owner, repo, version, downloadName string) string {
+	if in := strings.Index(downloadName, "/"); in > -1 {
+		return fmt.Sprintf(
+			"https://github.com/%s/%s/releases/download/%s",
+			owner, repo, downloadName)
+	}
+	return fmt.Sprintf(
+		"https://github.com/%s/%s/releases/download/%s/%s",
+		owner, repo, version, downloadName)
+}
+
 func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) {
 	var err error
 	t := template.New(tool.Name)
@@ -228,7 +203,6 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 	return res, nil
 }
 
-// https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/kubeseal-linux-amd64
 // makeHTTPClient makes a HTTP client with good defaults for timeouts.
 func makeHTTPClient(timeout *time.Duration, tlsInsecure bool) http.Client {
 	return makeHTTPClientWithDisableKeepAlives(timeout, tlsInsecure, false)
@@ -264,4 +238,44 @@ func makeHTTPClientWithDisableKeepAlives(timeout *time.Duration, tlsInsecure boo
 	}
 
 	return client
+}
+
+func getToolVersion(tool *Tool, version string) string {
+	ver := tool.Version
+	if len(version) > 0 {
+		ver = version
+	}
+	return ver
+}
+
+// GetBinaryName returns the name of a binary for the given tool or an
+// error if the tool's template cannot be parsed or executed.
+func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
+	if len(tool.BinaryTemplate) > 0 {
+		var err error
+		t := template.New(tool.Name + "_binaryname")
+		t = t.Funcs(templateFuncs)
+
+		t, err = t.Parse(tool.BinaryTemplate)
+		if err != nil {
+			return "", err
+		}
+
+		var buf bytes.Buffer
+		ver := getToolVersion(tool, version)
+		if err := t.Execute(&buf, map[string]string{
+			"OS":            os,
+			"Arch":          arch,
+			"Name":          tool.Name,
+			"Version":       ver,
+			"VersionNumber": strings.TrimPrefix(ver, "v"),
+		}); err != nil {
+			return "", err
+		}
+
+		res := strings.TrimSpace(buf.String())
+		return res, nil
+	}
+
+	return "", errors.New("BinaryTemplate is not set")
 }

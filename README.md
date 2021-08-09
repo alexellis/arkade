@@ -12,27 +12,85 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![GitHub All Releases](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like IngressNginx, Postgres and Cert-Manager.
+With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
-## Do you use this project?
+- [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
+  - [Should you try arkade?](#should-you-try-arkade)
+  - [Get arkade](#get-arkade)
+  - [Usage](#usage)
+    - [Install a CLI tool](#install-a-cli-tool)
+    - [Create a Kubernetes cluster](#create-a-kubernetes-cluster)
+    - [Install an app](#install-an-app)
+    - [Uninstall an app](#uninstall-an-app)
+      - [Reduce the repetition](#reduce-the-repetition)
+      - [Bye-bye values.yaml, hello flags](#bye-bye-valuesyaml-hello-flags)
+      - [Override with `--set`](#override-with---set)
+      - [Get a self-hosted TLS registry with authentication](#get-a-self-hosted-tls-registry-with-authentication)
+      - [Get OpenFaaS with TLS](#get-openfaas-with-tls)
+      - [Get a public IP for a private cluster and your IngressController](#get-a-public-ip-for-a-private-cluster-and-your-ingresscontroller)
+      - [Explore the apps](#explore-the-apps)
+  - [Community & contributing](#community--contributing)
+    - [Do you use this project? 👋](#do-you-use-this-project-)
+    - [Tutorials & community blog posts](#tutorials--community-blog-posts)
+      - [Video review from Rancher Labs](#video-review-from-rancher-labs)
+      - [Watch a video walk-through by Alex Ellis](#watch-a-video-walk-through-by-alex-ellis)
+      - [Featured tutorials](#featured-tutorials)
+      - [Community posts](#community-posts)
+    - [Suggest a new app](#suggest-a-new-app)
+    - [Sponsored apps](#sponsored-apps)
+    - [How does `arkade` compare to `helm`?](#how-does-arkade-compare-to-helm)
+    - [Is arkade suitable for production use?](#is-arkade-suitable-for-production-use)
+    - [What is in scope for `arkade get`?](#what-is-in-scope-for-arkade-get)
+    - [Automatic download of tools](#automatic-download-of-tools)
+    - [Improving the code or fixing an issue](#improving-the-code-or-fixing-an-issue)
+    - [Developer workflow](#developer-workflow)
+      - [Cloning](#cloning)
+      - [Adding your fork:](#adding-your-fork)
+      - [To verify changes:](#to-verify-changes)
+      - [Checkout a branch to start work](#checkout-a-branch-to-start-work)
+      - [Push up your changes for a PR](#push-up-your-changes-for-a-pr)
+      - [Test other people's PRs](#test-other-peoples-prs)
+    - [Join us on Slack](#join-us-on-slack)
+    - [License](#license)
 
-Sponsor the developer so that he can continue to make the project available to you, for free.
+## Should you try arkade?
 
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
+Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com has to say about arkade:
+
+> I was setting up a new dev environment yesterday. Kind, helm, kustomize, kubectl, all this stuff. My take is - arkade is highly underappreciated.
+> I'd spend an hour in the past to install such tools. With arkade it was under ten minutes.
+
+[Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer, he says:
+
+> This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
+
+[@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20) says:
+
+> for getting the basics installed, nothing beats arkade
+> it can install commonly used cli tools like kubectl locally for you, as well as common k8s pkgs like ingress-nginx or portainer
+
+[@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
+
+> It's hard to use K8s without Arkade these days. 
+> My team at @lftechnology absolutely loves it. 
+
+From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
+
+> I finally got around to installing Arkade, super simple! 
+> quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
+> also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
 
 ## Get arkade
 
 ```bash
 # Note: you can also run without `sudo` and move the binary yourself
-curl -sLS https://dl.get-arkade.dev | sudo sh
+curl -sLS https://get.arkade.dev | sudo sh
 
 arkade --help
 ark --help  # a handy alias
 
 # Windows users with Git Bash
-curl -sLS https://dl.get-arkade.dev | sh
+curl -sLS https://get.arkade.dev | sh
 ```
 
 > Windows users: arkade requires bash to be available, therefore Windows users can [install Git Bash](https://git-scm.com/downloads).
@@ -106,7 +164,72 @@ Use "arkade get TOOL" to download a tool or application:
   vagrant
   yq
   kube-ps1
+
 ```
+
+|       TOOL       |                                                    DESCRIPTION                                                     |
+|------------------|--------------------------------------------------------------------------------------------------------------------|
+| argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                       |
+| argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                         |
+| arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command. |
+| buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                   |
+| civo             | CLI for interacting with your Civo resources.                                                                      |
+| cosign           | Container Signing, Verification and Storage in an OCI registry.                                                    |
+| docker-compose   | Define and run multi-container applications with Docker.                                                           |
+| doctl            | Official command line interface for the DigitalOcean API.                                                          |
+| faas-cli         | Official CLI for OpenFaaS.                                                                                         |
+| flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                             |
+| gh               | GitHub’s official command line tool.                                                                               |
+| helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                  |
+| helmfile         | Deploy Kubernetes Helm Charts                                                                                      |
+| hugo             | Static HTML and CSS website generator.                                                                             |
+| influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                               |
+| inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                      |
+| inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                      |
+| istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                 |
+| jq               | jq is a lightweight and flexible command-line JSON processor                                                       |
+| k0s              | Zero Friction Kubernetes                                                                                           |
+| k0sctl           | A bootstrapping and management tool for k0s clusters                                                               |
+| k3d              | Helper to run Rancher Lab's k3s in Docker.                                                                         |
+| k3sup            | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                    |
+| k9s              | Provides a terminal UI to interact with your Kubernetes clusters.                                                  |
+| kail             | Kubernetes log viewer.                                                                                             |
+| kgctl            | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                |
+| kim              | Build container images inside of Kubernetes. (Experimental)                                                        |
+| kind             | Run local Kubernetes clusters using Docker container nodes.                                                        |
+| kops             | Production Grade K8s Installation, Upgrades, and Management.                                                       |
+| krew             | Package manager for kubectl plugins.                                                                               |
+| kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.   |
+| kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                   |
+| kubectl          | Run commands against Kubernetes clusters                                                                           |
+| kubectx          | Faster way to switch between clusters.                                                                             |
+| kubens           | Switch between Kubernetes namespaces smoothly.                                                                     |
+| kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                     |
+| kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                           |
+| kustomize        | Customization of kubernetes YAML configurations                                                                    |
+| linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                            |
+| mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.       |
+| metal            | Official Equinix Metal CLI                                                                                         |
+| minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                       |
+| nats             | Utility to interact with and manage NATS.                                                                          |
+| nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                     |
+| nova             | Find outdated or deprecated Helm charts running in your cluster.                                                   |
+| opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.      |
+| osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                      |
+| pack             | Build apps using Cloud Native Buildpacks.                                                                          |
+| packer           | Build identical machine images for multiple platforms from a single source configuration.                          |
+| polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                          |
+| popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.             |
+| porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.    |
+| rekor-cli        | Secure Supply Chain - Transparency Log                                                                             |
+| stern            | Multi pod and container log tailing for Kubernetes.                                                                |
+| terraform        | Infrastructure as Code for major cloud providers.                                                                  |
+| tkn              | A CLI for interacting with Tekton.                                                                                 |
+| trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                         |
+| vagrant          | Tool for building and distributing development environments.                                                       |
+| yq               | Portable command-line YAML processor.                                                                              |
+
+Note to contributors, run `arkade get --output markdown` to generate this list
 
 > This is a time saver compared to searching for download pages every time you need a tool.
 
@@ -243,6 +366,87 @@ arkade install inlets-operator \
   --license $(cat $HOME/license.txt)
 ```
 
+
+#### Explore the apps
+
+You can view the various apps available with `arkade install / --help`, more are available when you run the command yourself.
+
+```bash
+arkade install --help
+ark --help
+
+Examples:
+  arkade install
+  arkade install openfaas --helm3 --gateways=2
+  arkade install inlets-operator --token-file $HOME/do-token
+```
+
+Apps:
+
+|          TOOL           |                             DESCRIPTION                             |
+|-------------------------|---------------------------------------------------------------------|
+| cert-manager            | Install cert-manager                                                |
+| portainer               | Install portainer to visualise and manage containers                |
+| influxdb                | Install influxdb                                                    |
+| kyverno                 | Install Kyverno                                                     |
+| redis                   | Install redis                                                       |
+| jenkins                 | Install jenkins                                                     |
+| argocd                  | Install argocd                                                      |
+| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
+| gitlab                  | Install GitLab                                                      |
+| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
+| docker-registry-ingress | Install registry ingress with TLS                                   |
+| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
+| nats-connector          | Install OpenFaaS connector for NATS                                 |
+| nfs-provisioner         | Install nfs client provisioner                                      |
+| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
+| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
+| cassandra               | Install cassandra                                                   |
+| crossplane              | Install Crossplane                                                  |
+| loki                    | Install Loki for monitoring and tracing                             |
+| registry-creds          | Install registry-creds                                              |
+| falco                   | Install Falco                                                       |
+| linkerd                 | Install linkerd                                                     |
+| kafka-connector         | Install kafka-connector for OpenFaaS                                |
+| tekton                  | Install Tekton pipelines and dashboard                              |
+| OSM                     | Install osm                                                         |
+| sealed-secret           | Install sealed-secrets                                              |
+| consul-connect          | Install Consul Service Mesh                                         |
+| kafka                   | Install Confluent Platform Kafka                                    |
+| grafana                 | Install grafana                                                     |
+| mongodb                 | Install mongodb                                                     |
+| metrics-server          | Install metrics-server                                              |
+| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
+| istio                   | Install istio                                                       |
+| postgresql              | Install postgresql                                                  |
+| minio                   | Install minio                                                       |
+| openfaas                | Install openfaas                                                    |
+| gitea                   | Install gitea                                                       |
+| cron-connector          | Install cron-connector for OpenFaaS                                 |
+| openfaas-ingress        | Install openfaas ingress with TLS                                   |
+| traefik2                | Install traefik2                                                    |
+| docker-registry         | Install a Docker registry                                           |
+| kube-image-prefetch     | Install kube-image-prefetch                                         |
+| kube-state-metrics      | Install kube-state-metrics                                          |
+| ingress-nginx           | Install ingress-nginx                                               |
+| inlets-operator         | Install inlets-operator                                             |
+| rabbitmq                | Install rabbitmq                                                    |
+| chart                   | Install the specified helm chart                                    |
+
+There are 47 apps that you can install on your cluster.
+
+Note to contributors, run `arkade install --print-table` to generate this list
+
+## Community & contributing
+
+### Do you use this project? 👋
+
+Alex created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
+
+<a href="https://github.com/sponsors/alexellis/">
+<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
+</a>
+
 ### Tutorials & community blog posts
 
 #### Video review from Rancher Labs
@@ -270,62 +474,7 @@ arkade install inlets-operator \
 * [Coffee chat: Easy way to install Kubernetes Apps - arkade (ark)](https://sachcode.com/tech/coffee-chat-easy-way-install-kubernetes-apps/) by Sachin Jha
 * [Arkade & OpenFaaS: serverless on the spot](https://zero2datadog.readthedocs.io/en/latest/faas.html) by Blaise Pabon
 
-#### Explore the apps
-
-You can view the various apps available with `arkade install / --help`, more are available when you run the command yourself.
-
-```bash
-arkade install --help
-ark --help
-
-Examples:
-  arkade install
-  arkade install openfaas --helm3 --gateways=2
-  arkade install inlets-operator --token-file $HOME/do-token
-
-Available Commands:
-  argocd                  Install argocd
-  cert-manager            Install cert-manager
-  chart                   Install the specified helm chart
-  consul-connect          Install Consul Service Mesh
-  cron-connector          Install cron-connector for OpenFaaS
-  crossplane              Install Crossplane
-  docker-registry         Install a Docker registry
-  docker-registry-ingress Install registry ingress with TLS
-  gitea                   Install gitea
-  grafana                 Install grafana
-  falco                   Install falco
-  info                    Find info about a Kubernetes app
-  ingress-nginx           Install ingress-nginx
-  inlets-operator         Install inlets-operator
-  istio                   Install istio
-  jenkins                 Install jenkins
-  kafka-connector         Install kafka-connector for OpenFaaS
-  kube-image-prefetch     Install kube-image-prefetch
-  kube-state-metrics      Install kube-state-metrics
-  kubernetes-dashboard    Install kubernetes-dashboard
-  linkerd                 Install linkerd
-  loki                    Install Loki for monitoring and tracing
-  metrics-server          Install metrics-server
-  minio                   Install minio
-  mongodb                 Install mongodb
-  nats-connector          Install OpenFaaS connector for NATS
-  nfs-client-provisioner  Install nfs client provisioner
-  openfaas                Install openfaas
-  openfaas-ingress        Install openfaas ingress with TLS
-  openfaas-loki           Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS
-  osm                     Install osm
-  portainer               Install portainer to visualise and manage containers
-  postgresql              Install postgresql
-  redis                   Install redis
-  registry-creds          Install registry-creds
-  tekton                  Install Tekton pipelines and dashboard
-  traefik2                Install traefik2
-```
-
-## Community & contributing
-
-### Suggesting a new app
+### Suggest a new app
 
 To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade). Think also whether your app suggestion would be a good candidate for a Sponsored App.
 
@@ -382,6 +531,74 @@ Before contributing code, please see the [CONTRIBUTING guide](https://github.com
 Both Issues and PRs have their own templates. Please fill out the whole template.
 
 All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
+
+### Developer workflow
+
+Here's the basics for contributing:
+
+#### Cloning
+
+```bash
+mkdir $GOPATH/go/src/github.com/alexellis
+git clone https://github.com/alexellis/arkade
+cd arkade
+
+go build
+```
+
+#### Adding your fork:
+
+```bash
+git remote add fork https://github.com/NAME/arkade
+```
+
+#### To verify changes:
+
+```bash
+gofmt -w -s ./pkg
+gofmt -w -s ./cmd
+go test ./...
+```
+
+#### Checkout a branch to start work
+
+```bash
+git checkout -b fork/add-NAME-of-APP
+```
+
+#### Push up your changes for a PR
+
+```bash
+git config user.name "Full name"
+git config user.email "real@email.com"
+
+git commit -s
+
+git push fork add-NAME-of-APP
+```
+
+#### Test other people's PRs
+
+You can also check out other people's PRs and test them:
+
+```bash
+arkade get gh
+gh auth
+
+$ gh pr list
+
+Showing 10 of 10 open pull requests in alexellis/arkade
+
+#477  Add comma escaping for --set flag        yankeexe:fix-openfaas-helm-set
+#438  Added support to install kube-ps1        andreppires:master
+
+gh checkout 477
+
+go build
+
+# Try the new version of arkade
+./arkade
+```
 
 ### Join us on Slack
 

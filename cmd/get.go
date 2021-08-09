@@ -52,7 +52,7 @@ and provides a fast and easy alternative to a package manager.`,
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			output, _ := command.Flags().GetString("output")
-			fmt.Println(output)
+
 			if len(output) > 0 {
 				if get.TableFormat(output) == get.MarkdownStyle {
 					get.CreateToolsTable(tools, get.MarkdownStyle)
@@ -79,7 +79,7 @@ and provides a fast and easy alternative to a package manager.`,
 			return fmt.Errorf("cannot get tool: %s", args[0])
 		}
 
-		fmt.Printf("Downloading %s\n", tool.Name)
+		fmt.Printf("Downloading: %s\n", tool.Name)
 
 		arch, operatingSystem := env.GetClientArch()
 		version := ""
@@ -108,14 +108,11 @@ and provides a fast and easy alternative to a package manager.`,
 		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 
 		go func() {
-			select {
-			case <-signalChan:
-				os.Exit(2)
-			}
+			<-signalChan
+			os.Exit(2)
 		}()
 
 		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode, progress)
-
 		if err != nil {
 			return errors.Wrap(err, "check with the vendor whether this tool is available for your system")
 		}
