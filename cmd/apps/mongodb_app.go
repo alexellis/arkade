@@ -19,6 +19,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	repoUri   = "https://charts.bitnami.com/bitnami"
+	repoName  = "bitnami"
+	chartName = "bitnami/mongodb"
+)
+
 func MakeInstallMongoDB() *cobra.Command {
 	var command = &cobra.Command{
 		Use:          "mongodb",
@@ -70,12 +76,12 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable/", updateRepo)
+		err = helm.AddHelmRepo(repoName, repoUri, updateRepo)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("stable/mongodb", defaultVersion)
+		err = helm.FetchChart(chartName, defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -94,7 +100,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/mongodb",
+		err = helm.Helm3Upgrade(chartName,
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
@@ -128,4 +134,4 @@ kubectl run --namespace {{namespace}} mongodb-client --rm --tty -i --restart='Ne
 kubectl port-forward --namespace {{namespace}} svc/mongodb 27017:27017 &
 mongo --host 127.0.0.1 --authenticationDatabase admin -p $MONGODB_ROOT_PASSWORD
 
-# More on GitHub : https://github.com/helm/charts/tree/master/stable/mongodb`
+# More on GitHub : https://bitnami.com/stack/mongodb/helm`
