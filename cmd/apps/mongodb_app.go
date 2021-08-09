@@ -19,12 +19,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	repoUri   = "https://charts.bitnami.com/bitnami"
-	repoName  = "bitnami"
-	chartName = "bitnami/mongodb"
-)
-
 func MakeInstallMongoDB() *cobra.Command {
 	var command = &cobra.Command{
 		Use:          "mongodb",
@@ -76,12 +70,12 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo(repoName, repoUri, updateRepo)
+		err = helm.AddHelmRepo("bitnami", "https://charts.bitnami.com/bitnami", updateRepo)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart(chartName, defaultVersion)
+		err = helm.FetchChart("bitnami/mongodb", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -100,7 +94,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade(chartName,
+		err = helm.Helm3Upgrade("bitnami/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
