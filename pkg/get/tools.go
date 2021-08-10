@@ -1605,5 +1605,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "aquasecurity",
+			Repo:        "tfsec",
+			Name:        "tfsec",
+			Version:     "v0.57.1",
+			Description: "Security scanner for your Terraform code",
+			BinaryTemplate: `{{ $ext := "" }}
+				{{ $osStr := "linux" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{	$osStr = "windows" }}
+				{{ $ext = ".exe" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{- end -}}
+
+				{{ $archStr := "amd64" }}
+				{{- if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		},
+	)
+
 	return tools
 }
