@@ -65,7 +65,7 @@ Which tier or option is right for you? [Find out now](https://github.com/sponsor
 > I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
 > also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
-> 
+>
 > [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
 
 > You've to install latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍

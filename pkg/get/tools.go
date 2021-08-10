@@ -898,7 +898,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{ else if HasPrefix .OS "ming" -}}
 				{{$osStr =".exe"}}
 			{{- end -}}
-			
+
 			{{.Name}}{{$osStr}}`,
 		})
 
@@ -2077,7 +2077,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else -}}
 				{{$archiveStr = ""}}
 				{{- end -}}
-	
+
 				{{ if HasPrefix .OS "ming" -}}
 				{{ $osStr = "windows" }}
 				{{- else if eq .OS "linux" -}}
@@ -2085,7 +2085,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .OS "darwin" -}}
 				{{ $osStr = "darwin" }}
 				{{- end -}}
-	
+
 				{{- if eq .Arch "x86_64" -}}
 				{{ $archStr = "amd64" }}
 				{{- else if eq .Arch "aarch64" -}}
@@ -2093,7 +2093,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{ $archStr = "arm" }}
 				{{- end -}}
-	
+
 				{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
 		})
 	tools = append(tools,
@@ -2273,7 +2273,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{ $archStr = "arm7" }}
 				{{- end -}}
-	
+
 				{{ .Name }}-{{ .Version }}-{{ $osStr }}-{{ $archStr }}.zip
 				`,
 		})
@@ -2340,6 +2340,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 				{{.Name}}-{{.VersionNumber}}-{{$osStr}}_{{$archStr}}{{$ext}}
 				`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "tenable",
+			Repo:        "terrascan",
+			Name:        "terrascan",
+			Description: "Detect compliance and security violations across Infrastructure as Code.",
+			BinaryTemplate: `
+					{{$osStr := ""}}
+					{{ if HasPrefix .OS "ming" -}}
+					{{$osStr = "Windows"}}
+					{{- else if eq .OS "linux" -}}
+					{{$osStr = "Linux"}}
+					{{- else if eq .OS "darwin" -}}
+					{{$osStr = "Darwin"}}
+					{{- end -}}
+					{{$archStr := .Arch}}
+					{{- if eq .Arch "aarch64" -}}
+					{{$archStr = "arm64"}}
+					{{- else if eq .Arch "x86_64" -}}
+					{{$archStr = "x86_64"}}
+					{{- end -}}
+					{{.Name}}_{{slice .Version 1}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	return tools
