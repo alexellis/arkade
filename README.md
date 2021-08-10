@@ -173,6 +173,7 @@ arkade get APP
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                  |
+| tfsec            | Security scanner for your Terraform code                                                                           |
 | tkn              | A CLI for interacting with Tekton.                                                                                 |
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                         |
 | vagrant          | Tool for building and distributing development environments.                                                       |
