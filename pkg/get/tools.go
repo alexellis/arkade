@@ -1273,7 +1273,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Repo:        "argocd-autopilot",
 			Name:        "argocd-autopilot",
 			Description: "An opinionated way of installing Argo-CD and managing GitOps repositories.",
-			Version:     "0.2.1",
+			Version:     "0.2.13",
 			URLTemplate: `
 {{$arch := ""}}
 {{- if eq .Arch "x86_64" -}}

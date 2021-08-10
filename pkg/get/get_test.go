@@ -1629,20 +1629,20 @@ func Test_DownloadArgoCDAutopilotCli(t *testing.T) {
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.2.1",
-			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-linux-amd64.tar.gz`,
+			version: "0.2.13",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-linux-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.2.1",
-			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-linux-arm64.tar.gz`,
+			version: "0.2.13",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.2.1",
-			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.1/argocd-autopilot-darwin-amd64.tar.gz`,
+			version: "0.2.13",
+			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-darwin-amd64.tar.gz`,
 		},
 	}
 
