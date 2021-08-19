@@ -148,6 +148,7 @@ arkade get APP
 | kind             | Run local Kubernetes clusters using Docker container nodes.                                                        |
 | kops             | Production Grade K8s Installation, Upgrades, and Management.                                                       |
 | krew             | Package manager for kubectl plugins.                                                                               |
+| ks               | A CLI to makes it be easy to work with KubeSphere.
 | kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.   |
 | kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                   |
 | kubectl          | Run commands against Kubernetes clusters                                                                           |

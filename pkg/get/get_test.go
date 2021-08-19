@@ -2236,3 +2236,49 @@ func Test_DownloadTFSecCli(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadKSCli(t *testing.T) {
+	tools := MakeTools()
+	name := "ks"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.0.39",
+			url:     `https://github.com/kubesphere-sigs/ks/releases/download/v0.0.39/ks-darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v0.0.39",
+			url:     `https://github.com/kubesphere-sigs/ks/releases/download/v0.0.39/ks-darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.0.39",
+			url:     `https://github.com/kubesphere-sigs/ks/releases/download/v0.0.39/ks-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.0.39",
+			url:     `https://github.com/kubesphere-sigs/ks/releases/download/v0.0.39/ks-linux-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

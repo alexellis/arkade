@@ -1629,5 +1629,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "kubesphere-sigs",
+			Repo:        "ks",
+			Name:        "ks",
+			Version:     "v0.0.39",
+			Description: "A CLI to makes it be easy to work with KubeSphere",
+			BinaryTemplate: `{{ $ext := "" }}
+				{{ $osStr := "linux" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{	$osStr = "windows" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{- end -}}
+
+				{{ $archStr := "amd64" }}
+				{{- if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				{{.Name}}-{{$osStr}}-{{$archStr}}.tar.gz`,
+		},
+	)
+
 	return tools
 }
