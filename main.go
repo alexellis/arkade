@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/alexellis/arkade/cmd"
-	"github.com/alexellis/arkade/cmd/k10"
+	"github.com/alexellis/arkade/cmd/kasten"
 	"github.com/alexellis/arkade/cmd/venafi"
 	"github.com/spf13/cobra"
 )
@@ -32,7 +32,7 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
 
 	rootCmd.AddCommand(venafi.MakeVenafi())
-	rootCmd.AddCommand(k10.MakeK10())
+	rootCmd.AddCommand(kasten.MakeK10())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
