@@ -17,10 +17,22 @@ import (
 
 func MakeInstallK10() *cobra.Command {
 	var k10cmd = &cobra.Command{
-		Use:          "k10",
-		Short:        "Install K10",
-		Long:         `Install K10 - backup and restore for Kubernetes.`,
-		Example:      `arkade install k10`,
+		Use:   "k10",
+		Short: "Install K10",
+		Long: `Kasten K10 by Veeam is purpose-built for Kubernetes backup and restore.
+
+Note: K10 performs best if your cluster supports a CSI driver, see the following command:
+  kubectl get storageclasses
+`,
+		Example: `  arkade install k10
+  arkade install k10 --help
+  arkade install k10 \
+    --set eula.accept=true \
+    --set clusterName=my-k10 \
+    --set prometheus.server.enabled=false
+
+See also: all helm chart options:
+https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-options`,
 		SilenceUsage: true,
 	}
 

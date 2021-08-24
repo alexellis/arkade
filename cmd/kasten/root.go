@@ -11,9 +11,10 @@ import (
 func MakeK10() *cobra.Command {
 
 	command := &cobra.Command{
-		Use:     "kasten",
-		Short:   "Sponsored Apps for kasten",
-		Long:    `Sponsored apps for kasten.io. Kasten K10 by Veeam is purpose-built for Kubernetes backup and restore`,
+		Use:   "kasten",
+		Short: "Sponsored Apps for kasten",
+		Long: `Sponsored apps for kasten.io.
+Kasten K10 by Veeam is purpose-built for Kubernetes backup and restore`,
 		Aliases: []string{"k10"},
 		Example: `  arkade kasten install [APP]
   arkade kasten info [APP]`,
