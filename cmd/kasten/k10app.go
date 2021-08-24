@@ -69,7 +69,7 @@ func MakeInstallK10() *cobra.Command {
 const k10InfoMsg = `# The K10 app has been installed
 
 # You may also need to install pre-requisites and configure a 
-# CSI drive for your cluster.
+# CSI driver for your cluster.
 
 https://docs.kasten.io/latest/install/storage.html
 
@@ -82,8 +82,7 @@ http://127.0.0.1:8080/k10/#/
 
 # Find out your next steps here:
 
-https://docs.kasten.io/latest/install/install.html
-`
+https://docs.kasten.io/latest/install/install.html`
 
 const k10InstallCmd = `=======================================================================
 = k10 has been installed.                                   =
