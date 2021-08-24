@@ -1,8 +1,8 @@
 // Copyright (c) arkade author(s) 2021. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// k10 contains a suite of Sponsored Apps for arkade
-package k10
+// kasten contains a suite of Sponsored Apps for arkade
+package kasten
 
 import (
 	"fmt"
@@ -16,7 +16,7 @@ func MakeInfo() *cobra.Command {
 		Use:          "info",
 		Short:        "Info for an app",
 		Long:         `Info for an app`,
-		Example:      `  arkade k10 info [APP]`,
+		Example:      `  arkade kasten info [APP]`,
 		SilenceUsage: true,
 	}
 
@@ -26,6 +26,10 @@ func MakeInfo() *cobra.Command {
 		}
 
 		info := "None found."
+
+		if args[0] == "k10" {
+			info = k10InfoMsg
+		}
 
 		fmt.Printf("Info for your app: %s\n\n%s\n\n", args[0], info)
 
