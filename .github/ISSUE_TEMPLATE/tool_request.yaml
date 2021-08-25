@@ -1,0 +1,60 @@
+name: Tool request
+description: Request a new tool for arkade
+title: "Request: "
+labels: [ new tool ]
+
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Before contributing code, please see the [CONTRIBUTING guide](https://github.com/alexellis/inlets/blob/master/CONTRIBUTING.md). Note that arkade uses the same guide as [inlets.dev](https://inlets.dev/).
+
+        Both Issues and PRs have their own templates. Please fill out the whole template.
+
+        All commits must be signed-off as part of the [Developer Certificate of Origin (DCO)](https://developercertificate.org)
+
+  - type: input
+    attributes:
+      label: Tool Name
+      placeholder: "Example: inletsctl"
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Project page
+      description: >-
+        The page where you can download the tool. Could be Github, Gitlab, etc.
+      placeholder: "Example: https://github.com/inlets/inletsctl"
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Additional Comments
+      description: |
+        Is there anything else we should know about the tool? Remember that not everyone knows the tool as well as you do.
+      placeholder: "Example: inletsctl - create inlets servers on the top cloud platforms"
+
+  - type: dropdown
+    attributes:
+      label: Contributing
+      description: >-
+        This is an open source project and and we are happy with contributions. Do you want to add this tool?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+
+  - type: dropdown
+    attributes:
+      label: Sponsor
+      description: >-
+        Are you a GitHub Sponsor?
+        Check at https://github.com/sponsors/alexellis
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
