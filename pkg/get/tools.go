@@ -1191,7 +1191,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "fluxcd",
 			Repo:        "flux2",
 			Name:        "flux",
-			Version:     "0.13.4",
+			Version:     "0.16.2",
 			Description: "Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.",
 			URLTemplate: `
 				{{$arch := .Arch}}
