@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"sort"
 	"strconv"
+	"strings"
 	"syscall"
 
 	"github.com/alexellis/arkade/pkg/env"
@@ -36,6 +37,7 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get linkerd2 --stash=false
   arkade get terraform --version=0.12.0
   arkade get kubectl --progress=false
+  arkade get kubectl@v1.19.3
 
   # Get a complete list of CLIs to download:
   arkade get --help`,
@@ -65,11 +67,24 @@ and provides a fast and easy alternative to a package manager.`,
 			return nil
 		}
 
-		var tool *get.Tool
+		version := ""
+		if command.Flags().Changed("version") {
+			version, _ = command.Flags().GetString("version")
+		}
 
+		name := args[0]
+		if i := strings.LastIndex(name, "@"); i > -1 {
+			if len(version) > 0 {
+				return fmt.Errorf("cannot specify --version flag and @ syntax at the same time")
+			}
+			version = name[i+1:]
+			name = name[:i]
+		}
+
+		var tool *get.Tool
 		if len(args) == 1 {
 			for _, t := range tools {
-				if t.Name == args[0] {
+				if t.Name == name {
 					tool = &t
 					break
 				}
@@ -82,11 +97,6 @@ and provides a fast and easy alternative to a package manager.`,
 		fmt.Printf("Downloading: %s\n", tool.Name)
 
 		arch, operatingSystem := env.GetClientArch()
-		version := ""
-
-		if command.Flags().Changed("version") {
-			version, _ = command.Flags().GetString("version")
-		}
 
 		stash, _ := command.Flags().GetBool("stash")
 		progress, _ := command.Flags().GetBool("progress")
