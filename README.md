@@ -114,6 +114,8 @@ With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
 arkade get APP
+arkade get APP --version VERSION
+arkade get APP@VERSION
 ```
 
 |       TOOL       |                                                    DESCRIPTION                                                     |
