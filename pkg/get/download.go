@@ -169,6 +169,16 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		}
 
 		outFilePath = path.Join(outFilePathDir, fileName)
+	} else if len(tool.BinaryTemplate) > 0 && len(tool.URLTemplate) > 0 {
+		fileName, err := GetBinaryName(tool,
+			strings.ToLower(operatingSystem),
+			strings.ToLower(arch),
+			version)
+		if err != nil {
+			return "", err
+		}
+		outFilePath = path.Join(outFilePathDir, fileName)
+
 	} else {
 		outFilePath = path.Join(outFilePathDir, tool.Name)
 	}
