@@ -47,7 +47,7 @@ and provides a fast and easy alternative to a package manager.`,
 	}
 
 	command.Flags().Bool("progress", true, "Display a progress bar")
-	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown)")
+	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 
@@ -58,6 +58,11 @@ and provides a fast and easy alternative to a package manager.`,
 			if len(output) > 0 {
 				if get.TableFormat(output) == get.MarkdownStyle {
 					get.CreateToolsTable(tools, get.MarkdownStyle)
+				} else if get.TableFormat(output) == get.ListStyle {
+					for _, r := range tools {
+						fmt.Printf("%s\n", r.Name)
+					}
+
 				} else {
 					get.CreateToolsTable(tools, get.TableStyle)
 				}
