@@ -12,6 +12,7 @@ type TableFormat string
 const (
 	TableStyle    TableFormat = "table"
 	MarkdownStyle TableFormat = "markdown"
+	ListStyle     TableFormat = "list"
 )
 
 // CreateToolTable creates table to show the avaiable CLI tools

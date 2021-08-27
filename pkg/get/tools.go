@@ -864,9 +864,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:       "gohugoio",
 			Repo:        "hugo",
 			Name:        "hugo",
-			Version:     "0.79.0",
 			Description: "Static HTML and CSS website generator.",
-			URLTemplate: `
+			BinaryTemplate: `
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$osStr = "Windows"}}
@@ -882,7 +881,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			{{- else if eq .Arch "aarch64" -}}
 			{{$archStr = "ARM64"}}
 			{{- end -}}
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}-{{$archStr}}.tar.gz`,
+
+			{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}-{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
