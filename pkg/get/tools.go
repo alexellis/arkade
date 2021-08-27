@@ -883,7 +883,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Name:        "docker-compose",
 			Version:     "1.29.1",
 			Description: "Define and run multi-container applications with Docker.",
-			URLTemplate: `
+			BinaryTemplate: `
 {{$osStr := ""}}
 {{ if HasPrefix .OS "ming" -}}
 {{$osStr = "Windows"}}
@@ -896,7 +896,8 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 {{ if HasPrefix .OS "ming" -}}
 {{$ext = "exe"}}
 {{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}-{{.Arch}}{{$ext}}`,
+
+{{.Version}}/{{.Name}}-{{$osStr}}-{{.Arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -950,9 +951,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "nats-io",
 			Repo:        "natscli",
 			Name:        "nats",
-			Version:     "0.0.23",
 			Description: "Utility to interact with and manage NATS.",
-			URLTemplate: `{{$arch := .Arch}}
+			BinaryTemplate: `{{$arch := .Arch}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "armv6l" -}}
@@ -971,7 +971,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .OS "darwin" -}}
 			{{$osStr = "darwin"}}
 			{{- end -}}
-			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.zip`,
+
+			{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.zip`,
 		})
 
 	tools = append(tools,
@@ -979,9 +980,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "argoproj",
 			Repo:        "argo-cd",
 			Name:        "argocd",
-			Version:     "v1.8.6",
 			Description: "Declarative, GitOps continuous delivery tool for Kubernetes.",
-			URLTemplate: `
+			BinaryTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
@@ -1001,7 +1001,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{$ext = ".exe"}}
 			{{- end -}}
 
-			https://github.com/argoproj/argo-cd/releases/download/{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
+			{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -1009,9 +1009,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "containerd",
 			Repo:        "nerdctl",
 			Name:        "nerdctl",
-			Version:     "v0.7.2",
 			Description: "Docker-compatible CLI for containerd, with support for Compose",
-			URLTemplate: `
+			BinaryTemplate: `
 {{ $file := "" }}
 {{- if eq .OS "linux" -}}
 	{{- if eq .Arch "armv6l" -}}
@@ -1025,7 +1024,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	{{- end -}}
 {{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{.OS}}-{{$file}}`,
+{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{.OS}}-{{$file}}`,
 		})
 
 	tools = append(tools,
@@ -1033,9 +1032,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "istio",
 			Repo:        "istio",
 			Name:        "istioctl",
-			Version:     "1.10.0",
 			Description: "Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.",
-			URLTemplate: `
+			BinaryTemplate: `
 				{{$arch := .Arch}}
 				{{ if eq .Arch "x86_64" -}}
 				{{$arch = "amd64"}}
@@ -1061,7 +1059,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".zip"}}
 				{{- end -}}
 
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$versionString}}{{$ext}}`,
+				{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$versionString}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -1069,9 +1067,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "tektoncd",
 			Repo:        "cli",
 			Name:        "tkn",
-			Version:     "0.17.2",
 			Description: "A CLI for interacting with Tekton.",
-			URLTemplate: `
+			BinaryTemplate: `
 				{{$arch := .Arch}}
 				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
 				{{$arch = "x86_64"}}
@@ -1093,7 +1090,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".zip"}}
 				{{- end -}}
 
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/tkn_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+				{{.Version}}/tkn_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -1122,7 +1119,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "rancher",
 			Repo:        "kim",
 			Name:        "kim",
-			Version:     `v0.1.0-alpha.12`,
+			Version:     "v0.1.0-beta.4",
 			Description: "Build container images inside of Kubernetes. (Experimental)",
 			BinaryTemplate: `
 			{{ $ext := "" }}
@@ -1143,6 +1140,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "aarch64" -}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
+
 			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
@@ -1152,9 +1150,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "aquasecurity",
 			Repo:        "trivy",
 			Name:        "trivy",
-			Version:     "0.17.2",
 			Description: "Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.",
-			URLTemplate: `
+			BinaryTemplate: `
 				{{$arch := .Arch}}
 				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
 				{{$arch = "64bit"}}
@@ -1173,7 +1170,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 				{{$ext := ".tar.gz"}}
 
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/trivy_{{.Version}}_{{$osString}}-{{$arch}}{{$ext}}`,
+				{{.Version}}/trivy_{{.VersionNumber}}_{{$osString}}-{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -1214,7 +1211,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "FairwindsOps",
 			Repo:        "polaris",
 			Name:        "polaris",
-			Version:     "3.2.1",
 			Description: "Run checks to ensure Kubernetes pods and controllers are configured using best practices.",
 			BinaryTemplate: `
 				{{$arch := "amd64"}}
@@ -1231,14 +1227,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$osString = "linux"}}
 				{{- end -}}
 				{{$ext := ".tar.gz"}}
-				{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+				{{.Name}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 	tools = append(tools,
 		Tool{
 			Owner:       "influxdata",
 			Repo:        "influxdb",
 			Name:        "influx",
-			Version:     "2.0.7",
+			Version:     "2.0.8",
 			Description: "InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.",
 			URLTemplate: `{{$arch := .Arch}}
 		{{ if eq .Arch "x86_64" -}}
@@ -1261,7 +1257,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Repo:        "argocd-autopilot",
 			Name:        "argocd-autopilot",
 			Description: "An opinionated way of installing Argo-CD and managing GitOps repositories.",
-			Version:     "0.2.13",
 			URLTemplate: `
 {{$arch := ""}}
 {{- if eq .Arch "x86_64" -}}
@@ -1279,7 +1274,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 {{$osString = "darwin"}}
 {{- end -}}
 {{$ext := ".tar.gz"}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osString}}-{{$arch}}{{$ext}}
 `,
 			BinaryTemplate: `
 {{$arch := ""}}
@@ -1307,9 +1302,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:       "FairwindsOps",
 			Repo:        "nova",
 			Name:        "nova",
-			Version:     "2.3.2",
 			Description: "Find outdated or deprecated Helm charts running in your cluster.",
-			URLTemplate: `
+			BinaryTemplate: `
 				{{$arch := "amd64"}}
 				{{if eq .Arch "armv7l" -}}
 				{{$arch = "armv7"}}
@@ -1324,7 +1318,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 				{{$osString = "linux"}}
 				{{- end -}}
 				{{$ext := ".tar.gz"}}
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}
+				
+				{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}
 				`,
 		})
 
@@ -1344,7 +1339,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:       "squat",
 			Repo:        "kilo",
 			Name:        "kgctl",
-			Version:     "0.3.0",
 			Description: "A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.",
 			BinaryTemplate: `
 {{$os := .OS}}
@@ -1454,7 +1448,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:       "kanisterio",
 			Repo:        "kanister",
 			Name:        "kanctl",
-			Version:     "0.63.0",
 			Description: "Framework for application-level data management on Kubernetes.",
 			URLTemplate: `
 {{ $osStr := "linux" }}
@@ -1471,7 +1464,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Owner:       "kastenhq",
 			Repo:        "kubestr",
 			Name:        "kubestr",
-			Version:     "v0.4.17",
 			Description: "Kubestr discovers, validates and evaluates your Kubernetes storage options.",
 
 			URLTemplate: `
@@ -1494,7 +1486,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "kastenhq",
 			Repo:        "external-tools",
 			Name:        "k10multicluster",
-			Version:     "4.0.6",
 			Description: "Multi-cluster support for K10.",
 
 			BinaryTemplate: `
@@ -1517,7 +1508,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "kastenhq",
 			Repo:        "external-tools",
 			Name:        "k10tools",
-			Version:     "4.0.6",
 			Description: "Tools for evaluating and debugging K10.",
 
 			BinaryTemplate: `
@@ -1540,9 +1530,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "sigstore",
 			Repo:        "cosign",
 			Name:        "cosign",
-			Version:     "1.0.0",
+			Version:     "v1.1.0",
 			Description: "Container Signing, Verification and Storage in an OCI registry.",
-			URLTemplate: `{{ $ext := "" }}
+			BinaryTemplate: `{{ $ext := "" }}
 				{{ $osStr := "linux" }}
 				{{ if HasPrefix .OS "ming" -}}
 				{{ $osStr = "windows" }}
@@ -1560,18 +1550,19 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "aarch64" -}}
 				{{ $archStr = "arm64" }}
 				{{- end -}}
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+
+				{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
 
 	tools = append(tools,
 		Tool{
-			Owner:       "sigstore",
-			Repo:        "rekor",
-			Name:        "rekor-cli",
-			Version:     "0.3.0",
+			Owner: "sigstore",
+			Repo:  "rekor",
+			Name:  "rekor-cli",
+
 			Description: "Secure Supply Chain - Transparency Log",
-			URLTemplate: `{{ $ext := "" }}
+			BinaryTemplate: `{{ $ext := "" }}
 			{{ $osStr := "linux" }}
 			{{ if HasPrefix .OS "ming" -}}
 			{{ $osStr = "windows" }}
@@ -1589,7 +1580,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "aarch64" -}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
-			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+
+			{{.Version}}/{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		},
 	)
 
