@@ -102,9 +102,8 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 			Owner:       "stedolan",
 			Repo:        "jq",
 			Name:        "jq",
-			Version:     "1.6",
 			Description: "jq is a lightweight and flexible command-line JSON processor",
-			URLTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}
 {{$arch = "64"}}
@@ -122,7 +121,7 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 {{$os = "osx-amd"}}
 {{- end -}}
 
-https://github.com/stedolan/jq/releases/download/jq-{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
+{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
 		})
 
 	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
@@ -155,24 +154,24 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
-			Owner:       "ahmetb",
-			Repo:        "kubectx",
-			Name:        "kubectx",
-			Version:     "v0.9.1",
-			Description: "Faster way to switch between clusters.",
-			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubectx`,
-			NoExtension: true,
+			Owner:          "ahmetb",
+			Repo:           "kubectx",
+			Name:           "kubectx",
+			Version:        "v0.9.1",
+			Description:    "Faster way to switch between clusters.",
+			BinaryTemplate: `kubectx`,
+			NoExtension:    true,
 		})
 
 	tools = append(tools,
 		Tool{
-			Owner:       "ahmetb",
-			Repo:        "kubectx",
-			Name:        "kubens",
-			Version:     "v0.9.1",
-			Description: "Switch between Kubernetes namespaces smoothly.",
-			URLTemplate: `https://github.com/ahmetb/kubectx/releases/download/{{.Version}}/kubens`,
-			NoExtension: true,
+			Owner:          "ahmetb",
+			Repo:           "kubectx",
+			Name:           "kubens",
+			Version:        "v0.9.1",
+			Description:    "Switch between Kubernetes namespaces smoothly.",
+			BinaryTemplate: `kubens`,
+			NoExtension:    true,
 		})
 
 	tools = append(tools,
@@ -292,7 +291,6 @@ https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/ku
 			Owner:       "inlets",
 			Repo:        "inletsctl",
 			Name:        "inletsctl",
-			Version:     "0.8.2",
 			Description: "Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.",
 			URLTemplate: `
 {{$fileName := ""}}
@@ -329,7 +327,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:        "osm",
 			Owner:       "openservicemesh",
 			Description: "Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.",
-			URLTemplate: `
+			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$osStr = "windows"}}
@@ -338,7 +336,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin"}}
 	{{- end -}}
-	https://github.com/openservicemesh/osm/releases/download/{{.Version}}/osm-{{.Version}}-{{$osStr}}-amd64.tar.gz`,
+	{{.Version}}/osm-{{.Version}}-{{$osStr}}-amd64.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -387,9 +385,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "kubernetes-sigs",
 			Repo:        "kustomize",
 			Name:        "kustomize",
-			Version:     "v4.0.0",
 			Description: "Customization of kubernetes YAML configurations",
-			URLTemplate: `
+			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{- if eq .OS "linux" -}}
 	{{- if eq .Arch "x86_64" -}}
@@ -400,7 +397,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.tar.gz`,
+	kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -440,9 +437,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "derailed",
 			Repo:        "k9s",
 			Name:        "k9s",
-			Version:     "v0.24.10",
 			Description: "Provides a terminal UI to interact with your Kubernetes clusters.",
-			URLTemplate: `
+			BinaryTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
 		{{$osStr = "Windows"}}
@@ -458,7 +454,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{- else if eq .Arch "aarch64" -}}
 		{{$archStr = "arm64"}}
 		{{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+
+		{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -466,9 +463,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "derailed",
 			Repo:        "popeye",
 			Name:        "popeye",
-			Version:     "v0.9.0",
 			Description: "Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.",
-			URLTemplate: `
+			BinaryTemplate: `
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$osStr = "Windows"}}
@@ -484,18 +480,18 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- else if eq .Arch "aarch64" -}}
 			{{$archStr = "arm64"}}
 			{{- end -}}
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+
+			{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
 		Tool{
-			Owner:          "civo",
-			Repo:           "cli",
-			Name:           "civo",
-			Version:        "0.7.11",
-			Description:    "CLI for interacting with your Civo resources.",
-			BinaryTemplate: `civo`,
-			URLTemplate: `
+			Owner:       "civo",
+			Repo:        "cli",
+			Name:        "civo",
+			Description: "CLI for interacting with your Civo resources.",
+			// BinaryTemplate: `civo`,
+			BinaryTemplate: `
 
 		{{$extStr := "tar.gz"}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -517,7 +513,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		{{- else if eq .Arch "x86_64" -}}
 		{{$archStr = "amd64"}}
 		{{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$extStr}}`,
+
+		{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$osStr}}-{{$archStr}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,
@@ -588,13 +585,11 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 
 	tools = append(tools,
 		Tool{
-			Owner:          "cli",
-			Repo:           "cli",
-			Name:           "gh",
-			Version:        "1.13.1",
-			Description:    "GitHub’s official command line tool.",
-			BinaryTemplate: `gh`,
-			URLTemplate: `
+			Owner:       "cli",
+			Repo:        "cli",
+			Name:        "gh",
+			Description: "GitHub’s official command line tool.",
+			BinaryTemplate: `
 
 	{{$extStr := "tar.gz"}}
 	{{ if HasPrefix .OS "ming" -}}
@@ -616,7 +611,8 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 	{{- else if eq .Arch "x86_64" -}}
 	{{$archStr = "amd64"}}
 	{{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Version}}_{{$osStr}}_{{$archStr}}.{{$extStr}}`,
+
+	{{.Version}}/gh_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,
@@ -625,8 +621,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Ve
 			Repo:        "pack",
 			Name:        "pack",
 			Description: "Build apps using Cloud Native Buildpacks.",
-			Version:     "0.14.2",
-			URLTemplate: `
+			BinaryTemplate: `
 
 	{{$osStr := ""}}
 	{{ if HasPrefix .OS "ming" -}}
@@ -642,19 +637,16 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/gh_{{.Ve
 	{{$extStr = "zip"}}
 	{{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{.Version}}-{{$osStr}}.{{$extStr}}`,
+	{{.Version}}/pack-{{.Version}}-{{$osStr}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,
 		Tool{
-			Owner:          "docker",
-			Repo:           "buildx",
-			Name:           "buildx",
-			Version:        "0.4.2",
-			Description:    "Docker CLI plugin for extended build capabilities with BuildKit.",
-			BinaryTemplate: `buildx`,
-			URLTemplate: `
-
+			Owner:       "docker",
+			Repo:        "buildx",
+			Name:        "buildx",
+			Description: "Docker CLI plugin for extended build capabilities with BuildKit.",
+			BinaryTemplate: `
 				{{$extStr := ""}}
 				{{ if HasPrefix .OS "ming" -}}
 				{{$extStr = ".exe"}}
@@ -677,7 +669,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 				{{- else if eq .Arch "x86_64" -}}
 				{{$archStr = "amd64"}}
 				{{- end -}}
-		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}-v{{.Version}}.{{$osStr}}-{{$archStr}}{{$extStr}}`,
+
+				{{.Version}}/{{.Name}}-{{.Version}}.{{$osStr}}-{{$archStr}}{{$extStr}}`,
 		})
 
 	// See issue: https://github.com/rakyll/hey/issues/229
@@ -704,9 +697,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 			Owner:       "kubernetes",
 			Repo:        "kops",
 			Name:        "kops",
-			Version:     "v1.18.2",
 			Description: "Production Grade K8s Installation, Upgrades, and Management.",
-			URLTemplate: `
+			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{- if eq .OS "linux" -}}
 	{{- if eq .Arch "x86_64" -}}
@@ -720,7 +712,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 	{{$osStr ="windows-amd64"}}
 	{{- end -}}
 
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}`,
+	{{.Version}}/{{.Name}}-{{$osStr}}`,
 		})
 
 	tools = append(tools,
@@ -728,7 +720,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 			Owner:       "kubernetes-sigs",
 			Repo:        "krew",
 			Name:        "krew",
-			Version:     "v0.4.0",
 			Description: "Package manager for kubectl plugins.",
 			URLTemplate: `
 		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}.tar.gz`,
@@ -775,9 +766,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 			Owner:       "stern",
 			Repo:        "stern",
 			Name:        "stern",
-			Version:     "1.13.0",
 			Description: "Multi pod and container log tailing for Kubernetes.",
-			URLTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "aarch64" -}}
 {{$arch = "arm64"}}
@@ -791,7 +781,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/pack-v{{
 {{ if HasPrefix .OS "ming" -}}
 {{$os = "windows"}}
 {{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+
+{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -799,9 +790,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Owner:       "boz",
 			Repo:        "kail",
 			Name:        "kail",
-			Version:     "0.15.0",
 			Description: "Kubernetes log viewer.",
-			URLTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `{{$arch := "arm"}}
 
 	{{- if eq .Arch "aarch64" -}}
 	{{$arch = "arm64"}}
@@ -814,7 +804,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$os = "windows"}}
 	{{- end -}}
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+	
+	{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -844,7 +835,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 			Name:        "kube-bench",
 			Version:     "0.4.0",
 			Description: "Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.",
-			URLTemplate: `
+			BinaryTemplate: `
 {{$arch := "arm"}}
 {{$os := .OS}}
 
@@ -856,7 +847,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}
 {{$arch = "arm64"}}
 {{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
