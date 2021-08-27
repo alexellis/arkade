@@ -1484,25 +1484,25 @@ func Test_DownloadFluxCli(t *testing.T) {
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.13.4",
+			version: "v0.13.4",
 			url:     `https://github.com/fluxcd/flux2/releases/download/v0.13.4/flux_0.13.4_linux_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: "0.13.4",
+			version: "v0.13.4",
 			url:     `https://github.com/fluxcd/flux2/releases/download/v0.13.4/flux_0.13.4_linux_arm.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.13.4",
+			version: "v0.13.4",
 			url:     `https://github.com/fluxcd/flux2/releases/download/v0.13.4/flux_0.13.4_linux_arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.13.4",
+			version: "v0.13.4",
 			url:     `https://github.com/fluxcd/flux2/releases/download/v0.13.4/flux_0.13.4_darwin_amd64.tar.gz`,
 		},
 	}

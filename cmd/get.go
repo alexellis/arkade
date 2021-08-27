@@ -122,7 +122,12 @@ and provides a fast and easy alternative to a package manager.`,
 			os.Exit(2)
 		}()
 
-		outFilePath, finalName, err := get.Download(tool, arch, operatingSystem, version, dlMode, progress)
+		outFilePath, finalName, err := get.Download(tool,
+			arch,
+			operatingSystem,
+			version,
+			dlMode,
+			progress)
 		if err != nil {
 			return errors.Wrap(err, "check with the vendor whether this tool is available for your system")
 		}

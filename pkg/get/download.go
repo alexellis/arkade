@@ -3,6 +3,7 @@ package get
 import (
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path"
@@ -22,60 +23,34 @@ const (
 
 func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress bool) (string, string, error) {
 
-	downloadURL, err := GetDownloadURL(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+	downloadURL, err := GetDownloadURL(tool,
+		strings.ToLower(operatingSystem),
+		strings.ToLower(arch),
+		version)
 	if err != nil {
 		return "", "", err
 	}
 
-	fmt.Println(downloadURL)
+	fmt.Printf("Downloading: %s\n", downloadURL)
+
 	outFilePath, err := downloadFile(downloadURL, displayProgress)
 	if err != nil {
 		return "", "", err
 	}
+	fmt.Printf("%s written.\n", outFilePath)
 
 	if isArchive, err := tool.IsArchive(); isArchive {
 		if err != nil {
 			return "", "", err
 		}
 
-		archiveFile, err := os.Open(outFilePath)
+		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version)
 		if err != nil {
 			return "", "", err
 		}
 
-		outFilePathDir := filepath.Dir(outFilePath)
-		if len(tool.BinaryTemplate) > 0 {
-			fileName, err := GetBinaryName(tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-			if err != nil {
-				return "", "", err
-			}
-			outFilePath = path.Join(outFilePathDir, fileName)
-		} else {
-			outFilePath = path.Join(outFilePathDir, tool.Name)
-		}
-
-		if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
-			outFilePath += ".exe"
-		}
-
-		if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-			untarErr := archive.Untar(archiveFile, outFilePathDir)
-			if untarErr != nil {
-				return "", "", untarErr
-			}
-		} else if strings.HasSuffix(downloadURL, "zip") {
-			fInfo, err := archiveFile.Stat()
-			if err != nil {
-				return "", "", err
-			}
-
-			fmt.Println("name", fInfo.Name(), "size: ", fInfo.Size())
-
-			unzipErr := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir)
-			if unzipErr != nil {
-				return "", "", unzipErr
-			}
-		}
+		outFilePath = outPath
+		log.Printf("Extracted: %s", outFilePath)
 	}
 
 	finalName := tool.Name
@@ -84,7 +59,6 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	if downloadMode == DownloadArkadeDir {
-
 		_, err := config.InitUserDir()
 		if err != nil {
 			return "", "", err
@@ -92,10 +66,12 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 
 		localPath := env.LocalBinary(finalName, "")
 
-		_, err = copyFile(path.Join(outFilePath), localPath)
+		log.Printf("Copying %s to %s\n", outFilePath, localPath)
+		_, err = copyFile(outFilePath, localPath)
 		if err != nil {
 			return "", "", err
 		}
+
 		outFilePath = localPath
 	}
 
@@ -168,4 +144,54 @@ func withProgressBar(r io.ReadCloser, length int, displayProgress bool) io.ReadC
 
 	bar := pb.Simple.New(length).Start()
 	return bar.NewProxyReader(r)
+}
+
+func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, version string) (string, error) {
+
+	archiveFile, err := os.Open(outFilePath)
+	if err != nil {
+		return "", err
+	}
+
+	outFilePathDir := filepath.Dir(outFilePath)
+	if len(tool.BinaryTemplate) == 0 && len(tool.URLTemplate) > 0 {
+		outFilePath = path.Join(outFilePathDir, tool.Name)
+	} else if len(tool.BinaryTemplate) > 0 && len(tool.URLTemplate) == 0 &&
+		(!strings.Contains(tool.BinaryTemplate, "tar.gz") &&
+			!strings.Contains(tool.BinaryTemplate, "zip") &&
+			!strings.Contains(tool.BinaryTemplate, "tgz")) {
+		fileName, err := GetBinaryName(tool,
+			strings.ToLower(operatingSystem),
+			strings.ToLower(arch),
+			version)
+		if err != nil {
+			return "", err
+		}
+
+		outFilePath = path.Join(outFilePathDir, fileName)
+	} else {
+		outFilePath = path.Join(outFilePathDir, tool.Name)
+	}
+
+	if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
+		outFilePath += ".exe"
+	}
+
+	if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
+		if err := archive.Untar(archiveFile, outFilePathDir); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(downloadURL, "zip") {
+		fInfo, err := archiveFile.Stat()
+		if err != nil {
+			return "", err
+		}
+
+		fmt.Printf("Name: %s, size: %d", fInfo.Name(), fInfo.Size())
+		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir); err != nil {
+			return "", err
+		}
+	}
+
+	return outFilePath, nil
 }

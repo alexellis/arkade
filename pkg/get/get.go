@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"net/http"
 	"strings"
@@ -82,22 +83,36 @@ func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
 	return dlURL, nil
 }
 
-func (tool Tool) GetURL(os, arch, version string) (string, error) {
-	if len(tool.URLTemplate) == 0 {
-		return getURLByGithubTemplate(tool, os, arch, version)
+func getToolVersion(tool *Tool, version string) string {
+	ver := tool.Version
+	if len(version) > 0 {
+		ver = version
 	}
 
-	return getByDownloadTemplate(tool, os, arch, version)
+	return ver
 }
 
-func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error) {
-	if len(version) == 0 {
-		var err error
-		version, err = findGitHubRelease(tool.Owner, tool.Repo)
+func (tool Tool) GetURL(os, arch, version string) (string, error) {
+
+	if len(version) == 0 &&
+		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
+		log.Printf("Looking up version for %s", tool.Name)
+		v, err := findGitHubRelease(tool.Owner, tool.Repo)
 		if err != nil {
 			return "", err
 		}
+		log.Printf("Found: %s", v)
+		version = v
 	}
+
+	if len(tool.URLTemplate) > 0 {
+		return getByDownloadTemplate(tool, os, arch, version)
+	}
+
+	return getURLByGithubTemplate(tool, os, arch, version)
+}
+
+func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error) {
 
 	var err error
 	t := template.New(tool.Name + "binary")
@@ -127,7 +142,6 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 }
 
 func findGitHubRelease(owner, repo string) (string, error) {
-
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
 
 	timeout := time.Second * 5
@@ -194,11 +208,10 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		"Name":          tool.Name,
 	}
 
-	err = t.Execute(&buf, inputs)
-
-	if err != nil {
+	if err := t.Execute(&buf, inputs); err != nil {
 		return "", err
 	}
+
 	res := strings.TrimSpace(buf.String())
 	return res, nil
 }
@@ -238,14 +251,6 @@ func makeHTTPClientWithDisableKeepAlives(timeout *time.Duration, tlsInsecure boo
 	}
 
 	return client
-}
-
-func getToolVersion(tool *Tool, version string) string {
-	ver := tool.Version
-	if len(version) > 0 {
-		ver = version
-	}
-	return ver
 }
 
 // GetBinaryName returns the name of a binary for the given tool or an

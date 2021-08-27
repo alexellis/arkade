@@ -328,7 +328,6 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:        "osm",
 			Repo:        "osm",
 			Owner:       "openservicemesh",
-			Version:     "v0.7.0",
 			Description: "Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.",
 			URLTemplate: `
 	{{$osStr := ""}}
@@ -1191,9 +1190,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "fluxcd",
 			Repo:        "flux2",
 			Name:        "flux",
-			Version:     "0.16.2",
 			Description: "Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.",
-			URLTemplate: `
+			BinaryTemplate: `
 				{{$arch := .Arch}}
 				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
 				{{$arch = "amd64"}}
@@ -1202,7 +1200,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "aarch64" -}}
 				{{$arch = "arm64"}}
 				{{- end -}}
-
 
 				{{$osString := ""}}
 				{{ if HasPrefix .OS "ming" -}}
@@ -1218,7 +1215,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".zip"}}
 				{{- end -}}
 
-				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osString}}_{{$arch}}{{$ext}}`,
+				{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
