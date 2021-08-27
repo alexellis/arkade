@@ -615,22 +615,22 @@ func Test_DownloadK9s(t *testing.T) {
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Windows_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Windows_x86_64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Linux_x86_64.tar.gz`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Darwin_x86_64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Darwin_x86_64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_v0.24.10_Linux_arm.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Linux_arm.tar.gz`,
 		},
 	}
 
@@ -651,7 +651,7 @@ func Test_DownloadCivo(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.7.11"
+	const toolVersion = "v0.7.11"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -735,7 +735,7 @@ func Test_DownloadGH(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.6.1"
+	const toolVersion = "v1.6.1"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -777,7 +777,7 @@ func Test_DownloadPack(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.14.2"
+	const toolVersion = "v0.14.2"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -811,7 +811,7 @@ func Test_DownloadBuildx(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.4.2"
+	const toolVersion = "v0.4.2"
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -1247,25 +1247,25 @@ func Test_DownloadTektonCli(t *testing.T) {
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/tektoncd/cli/releases/download/v0.17.2/tkn_0.17.2_Windows_x86_64.zip`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/tektoncd/cli/releases/download/v0.17.2/tkn_0.17.2_Linux_x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/tektoncd/cli/releases/download/v0.17.2/tkn_0.17.2_Linux_arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/tektoncd/cli/releases/download/v0.17.2/tkn_0.17.2_Darwin_x86_64.tar.gz`,
 		},
 	}
@@ -1439,25 +1439,25 @@ func Test_DownloadTrivyCli(t *testing.T) {
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-64bit.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-ARM.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_Linux-ARM64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.17.2",
+			version: "v0.17.2",
 			url:     `https://github.com/aquasecurity/trivy/releases/download/v0.17.2/trivy_0.17.2_macOS-64bit.tar.gz`,
 		},
 	}
@@ -1528,26 +1528,26 @@ func Test_DownloadPolarisCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_darwin_amd64.tar.gz`,
+			version: "v3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_darwin_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_amd64.tar.gz`,
+			version: "v3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_arm64.tar.gz`,
+			version: "v3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: "3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/3.2.1/polaris_3.2.1_linux_armv7.tar.gz`,
+			version: "v3.2.1",
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_armv7.tar.gz`,
 		},
 	}
 
@@ -1629,19 +1629,19 @@ func Test_DownloadArgoCDAutopilotCli(t *testing.T) {
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.2.13",
+			version: "v0.2.13",
 			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-linux-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.2.13",
+			version: "v0.2.13",
 			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.2.13",
+			version: "v0.2.13",
 			url:     `https://github.com/argoproj-labs/argocd-autopilot/releases/download/v0.2.13/argocd-autopilot-darwin-amd64.tar.gz`,
 		},
 	}
@@ -1910,9 +1910,9 @@ func Test_DownloadPorterCli(t *testing.T) {
 func Test_DownloadJq(t *testing.T) {
 	tools := MakeTools()
 	name := "jq"
-
 	tool := getTool(name, tools)
-	prefix := "https://github.com/" + tool.Owner + "/" + tool.Repo + "/releases/download/jq-" + tool.Version + "/"
+	tool.Version = "jq-1.7"
+	prefix := "https://github.com/" + tool.Owner + "/" + tool.Repo + "/releases/download/" + tool.Version + "/"
 
 	tests := []test{
 		{
@@ -1966,25 +1966,25 @@ func Test_DownloadCosignCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "1.0.0",
+			version: "v1.0.0",
 			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
-			version: "1.0.0",
+			version: "v1.0.0",
 			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-darwin-arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "1.0.0",
+			version: "v1.0.0",
 			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-linux-amd64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "1.0.0",
+			version: "v1.0.0",
 			url:     `https://github.com/sigstore/cosign/releases/download/v1.0.0/cosign-windows-amd64.exe`,
 		},
 	}
@@ -2148,25 +2148,25 @@ func Test_DownloadRekorCli(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.3.0",
+			version: "v0.3.0",
 			url:     `https://github.com/sigstore/rekor/releases/download/v0.3.0/rekor-cli-darwin-amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
-			version: "0.3.0",
+			version: "v0.3.0",
 			url:     `https://github.com/sigstore/rekor/releases/download/v0.3.0/rekor-cli-darwin-arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.3.0",
+			version: "v0.3.0",
 			url:     `https://github.com/sigstore/rekor/releases/download/v0.3.0/rekor-cli-linux-amd64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.3.0",
+			version: "v0.3.0",
 			url:     `https://github.com/sigstore/rekor/releases/download/v0.3.0/rekor-cli-windows-amd64.exe`,
 		},
 	}
