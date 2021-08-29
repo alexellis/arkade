@@ -14,16 +14,39 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const (
+	MetalLBNamespaceManifest = "https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml"
+	MetalLBManifest          = "https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml"
+)
+
 func MakeInstallMetalLB() *cobra.Command {
 	var command = &cobra.Command{
-		Use:          "metallb",
-		Short:        "Install metallb",
-		Long:         `Install metallb for service type:LoadBalancer`,
-		Example:      `arkade install metallb`,
+		Use:          "metallb-arp",
+		Short:        "Install MetalLB in L2 (ARP) mode",
+		Long:         `Install a network load-balancer implementation for Kubernetes using standard routing protocols`,
+		Example:      `arkade install metallb-arp --address-range=<cidr>`,
 		SilenceUsage: true,
 	}
 
-	command.Flags().String("address-range", "192.168.0.0/24", "Address range for loadBalancer services")
+	command.Flags().String("address-range", "192.168.0.0/24", "Address range for LoadBalancer services")
+	command.Flags().String("memberlist-secretkey", "", "A predefined memberlist secretkey, a random key is generated if omitted")
+
+	command.PreRunE = func(command *cobra.Command, args []string) error {
+		_, err := command.Flags().GetString("kubeconfig")
+		if err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %s", err)
+		}
+		_, err = command.Flags().GetString("address-range")
+		if err != nil {
+			return fmt.Errorf("error with --address-range usage: %s", err)
+		}
+		_, err = command.Flags().GetString("memberlist-secretkey")
+		if err != nil {
+			return fmt.Errorf("error with --memberlist-secretkey usage: %s", err)
+		}
+
+		return nil
+	}
 
 	command.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -40,20 +63,23 @@ func MakeInstallMetalLB() *cobra.Command {
 
 		addressRange, _ := command.Flags().GetString("address-range")
 
-		err := k8s.Kubectl("apply", "-f",
-			"https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/namespace.yaml")
-		if err != nil {
+		if err := k8s.Kubectl("apply", "-f", MetalLBNamespaceManifest); err != nil {
 			return err
 		}
 
-		err = k8s.Kubectl("apply", "-f",
-			"https://raw.githubusercontent.com/metallb/metallb/v0.9.5/manifests/metallb.yaml")
-		if err != nil {
+		if err := k8s.Kubectl("apply", "-f", MetalLBManifest); err != nil {
 			return err
 		}
 
-		token := make([]byte, 32)
-		rand.Read(token)
+		var token string
+
+		token, _ = command.Flags().GetString("memberlist-secretkey")
+
+		if len(token) < 1 {
+			randomToken := make([]byte, 32)
+			rand.Read(randomToken)
+			token = b64.StdEncoding.EncodeToString(randomToken)
+		}
 
 		secret := types.K8sSecret{
 			Type:      "generic",
@@ -62,20 +88,18 @@ func MakeInstallMetalLB() *cobra.Command {
 			SecretData: []types.SecretsData{{
 				Type:  "string-literal",
 				Key:   "secretkey",
-				Value: b64.StdEncoding.EncodeToString(token),
+				Value: token,
 			}},
 		}
 
-		err = k8s.CreateSecret(secret)
-		if err != nil {
-			return fmt.Errorf("Create secret error: %+v", err)
+		if err := k8s.CreateSecret(secret); err != nil {
+			return fmt.Errorf("create secret error: %+v", err)
 		}
 
 		configMap := fmt.Sprintf(metalLBConfigMap, addressRange)
 
-		err = k8s.KubectlIn(strings.NewReader(configMap), "apply", "-f", "-")
-		if err != nil {
-			return fmt.Errorf("Create configmap error: %+v", err)
+		if err := k8s.KubectlIn(strings.NewReader(configMap), "apply", "-f", "-"); err != nil {
+			return fmt.Errorf("create configmap error: %+v", err)
 		}
 
 		fmt.Println(MetalLBInstallMsg)
@@ -86,12 +110,22 @@ func MakeInstallMetalLB() *cobra.Command {
 	return command
 }
 
-const MetalLBInfoMsg = `# Find out more at:
-# https://metallb.universe.tf/
+const MetalLBInfoMsg = `
+# Get the memberlist secretkey:
+export SECRET_KEY=$(kubectl get secret -n metallb-system memberlist \
+	-o jsonpath="{.data.secretkey}" | base64 --decode)
+
+echo "Secret Key: $SECRET_KEY"
+
+# Review the generated configuration:
+
+kubectl get configmap -n metallb-system config --template={{.data.config}}
+
+# Find out more at: https://metallb.universe.tf/
 `
 
 const MetalLBInstallMsg = `=======================================================================
-= metalLB has been installed.                                  =
+= MetalLB has been installed.                                         =
 =======================================================================` +
 	"\n\n" + MetalLBInfoMsg + "\n\n" + pkg.ThanksForUsing
 
