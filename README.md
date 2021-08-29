@@ -385,6 +385,7 @@ Apps:
 | inlets-operator         | Install inlets-operator                                             |
 | rabbitmq                | Install rabbitmq                                                    |
 | chart                   | Install the specified helm chart                                    |
+| metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
 
 There are 47 apps that you can install on your cluster.
 
