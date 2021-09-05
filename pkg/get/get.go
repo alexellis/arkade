@@ -284,3 +284,35 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 
 	return "", errors.New("BinaryTemplate is not set")
 }
+
+// UserTools checks if name of binaries passed as argument exists
+func UserTools(tools Tools, toolArgs []string, version string) (Tools, error) {
+	arkadeTools := []Tool{}
+outer:
+	for _, arg := range toolArgs {
+		name := arg
+
+		// Handle version specified tool name
+		if i := strings.LastIndex(arg, "@"); i > -1 {
+			if len(version) > 0 {
+				return nil, fmt.Errorf("cannot specify --version flag and @ syntax at the same time")
+			}
+
+			version = arg[i+1:]
+			name = arg[:i]
+		}
+
+		// Handle adding specified tools to a slice
+		for _, tool := range tools {
+			if name == tool.Name {
+				tool.Version = version
+				arkadeTools = append(arkadeTools, tool)
+				version = ""
+				continue outer
+			}
+		}
+		return nil, fmt.Errorf("Tool %s not found", arg)
+	}
+
+	return arkadeTools, nil
+}

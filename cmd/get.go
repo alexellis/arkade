@@ -9,14 +9,18 @@ import (
 	"os/signal"
 	"sort"
 	"strconv"
-	"strings"
 	"syscall"
+	"text/template"
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
+
+type toolLocal struct {
+	Name string
+	Path string
+}
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
@@ -40,7 +44,7 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get kubectl@v1.19.3
 
   # Get a complete list of CLIs to download:
-  arkade get --help`,
+  arkade get`,
 		SilenceUsage: true,
 		Aliases:      []string{"g", "d", "download"},
 		ValidArgs:    validToolOptions,
@@ -77,29 +81,10 @@ and provides a fast and easy alternative to a package manager.`,
 			version, _ = command.Flags().GetString("version")
 		}
 
-		name := args[0]
-		if i := strings.LastIndex(name, "@"); i > -1 {
-			if len(version) > 0 {
-				return fmt.Errorf("cannot specify --version flag and @ syntax at the same time")
-			}
-			version = name[i+1:]
-			name = name[:i]
+		userTools, err := get.UserTools(tools, args, version)
+		if err != nil {
+			return err
 		}
-
-		var tool *get.Tool
-		if len(args) == 1 {
-			for _, t := range tools {
-				if t.Name == name {
-					tool = &t
-					break
-				}
-			}
-		}
-		if tool == nil {
-			return fmt.Errorf("cannot get tool: %s", args[0])
-		}
-
-		fmt.Printf("Downloading: %s\n", tool.Name)
 
 		arch, operatingSystem := env.GetClientArch()
 
@@ -127,39 +112,56 @@ and provides a fast and easy alternative to a package manager.`,
 			os.Exit(2)
 		}()
 
-		outFilePath, finalName, err := get.Download(tool,
-			arch,
-			operatingSystem,
-			version,
-			dlMode,
-			progress)
-		if err != nil {
-			return errors.Wrap(err, "check with the vendor whether this tool is available for your system")
+		var outFilePath string
+		var localToolsStore []toolLocal
+
+		for _, tool := range userTools {
+			fmt.Printf("Downloading: %s\n", tool.Name)
+			outFilePath, _, err = get.Download(&tool,
+				arch,
+				operatingSystem,
+				version,
+				dlMode,
+				progress)
+			if err != nil {
+				return err
+			}
+
+			localToolsStore = append(localToolsStore, toolLocal{Name: tool.Name, Path: outFilePath})
+			fmt.Printf("Tool written to: %s\n\n", outFilePath)
 		}
 
-		fmt.Printf("Tool written to: %s\n\n", outFilePath)
+		t := template.New("Installation Instructions")
 
 		if dlMode == get.DownloadTempDir {
-			fmt.Printf(`Run the following to copy to install the tool:
+			t.Parse(`Run the following to copy to install the tool:
 
-chmod +x %s
-sudo install -m 755 %s /usr/local/bin/%s
-`, outFilePath, outFilePath, finalName)
+chmod +x {{range .}}{{.Path}} {{end}}
+{{- range . }}
+sudo install -m 755 {{.Path}} /usr/local/bin/{{.Name}}
+{{- end}}`)
+
 		} else {
-			fmt.Printf(`# Add (%s) to your PATH variable
+			t.Parse(`# Add arkade binary directory to your PATH variable
 export PATH=$PATH:$HOME/.arkade/bin/
 
 # Test the binary:
-%s
+{{- range . }}
+{{.Path}}
+{{- end }}
 
 # Or install with:
-sudo mv %s /usr/local/bin/
-
-`, finalName, outFilePath, outFilePath)
-
+{{- range . }}
+sudo mv {{.Path}} /usr/local/bin/
+{{- end}}`)
 		}
+
+		err = t.Execute(os.Stdout, localToolsStore)
+		if err != nil {
+			panic(err)
+		}
+
 		return err
 	}
-
 	return command
 }
