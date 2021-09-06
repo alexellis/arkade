@@ -2252,8 +2252,20 @@ func Test_DownloadDive(t *testing.T) {
 			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_darwin_amd64.tar.gz`,
 		},
 		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_darwin_amd64.tar.gz`,
+		},
+		{
 			os:      "linux",
 			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
 			version: version,
 			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz`,
 		},
@@ -2276,4 +2288,57 @@ func Test_DownloadDive(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_DownloadGoReleaserCli(t *testing.T) {
+	tools := MakeTools()
+	name := "goreleaser"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.177.0",
+			url:     `https://github.com/goreleaser/goreleaser/releases/download/v0.177.0/goreleaser_Darwin_x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v0.177.0",
+			url:     `https://github.com/goreleaser/goreleaser/releases/download/v0.177.0/goreleaser_Darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.177.0",
+			url:     `https://github.com/goreleaser/goreleaser/releases/download/v0.177.0/goreleaser_Linux_x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.177.0",
+			url:     `https://github.com/goreleaser/goreleaser/releases/download/v0.177.0/goreleaser_Linux_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v0.177.0",
+			url:     `https://github.com/goreleaser/goreleaser/releases/download/v0.177.0/goreleaser_Windows_x86_64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
 }
