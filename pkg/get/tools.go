@@ -1636,5 +1636,38 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "goreleaser",
+			Repo:        "goreleaser",
+			Name:        "goreleaser",
+			Description: "Deliver Go binaries as fast and easily as possible",
+			BinaryTemplate: `
+		{{$osStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$osStr = "Windows"}}
+		{{- else if eq .OS "linux" -}}
+		{{$osStr = "Linux"}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "Darwin"}}
+		{{- end -}}
+
+		{{$archStr := ""}}
+		{{- if eq .Arch "x86_64" -}}
+		{{$archStr = "x86_64"}}
+		{{- else if eq .Arch "aarch64" -}}
+        {{$archStr = "arm64"}}
+		{{- end -}}
+
+		{{$archiveStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$archiveStr = "zip"}}
+		{{- else -}}
+		{{$archiveStr = "tar.gz"}}
+		{{- end -}}
+
+		{{.Name}}_{{$osStr}}_{{$archStr}}.{{$archiveStr}}`,
+		})
+
 	return tools
 }
