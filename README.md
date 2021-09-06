@@ -132,6 +132,7 @@ arkade get APP@VERSION
 | faas-cli         | Official CLI for OpenFaaS.                                                                                         |
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                             |
 | gh               | GitHub’s official command line tool.                                                                               |
+| goreleaser       | Deliver Go binaries as fast and easily as possible                                                                 |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                  |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                      |
 | hugo             | Static HTML and CSS website generator.                                                                             |
