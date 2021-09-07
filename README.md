@@ -71,12 +71,12 @@ Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/14226052212268605
 
 [@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
 
-> It's hard to use K8s without Arkade these days. 
-> My team at @lftechnology absolutely loves it. 
+> It's hard to use K8s without Arkade these days.
+> My team at @lftechnology absolutely loves it.
 
 From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
 
-> I finally got around to installing Arkade, super simple! 
+> I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
 > also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
 
@@ -126,6 +126,7 @@ arkade get APP@VERSION
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                   |
 | civo             | CLI for interacting with your Civo resources.                                                                      |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                    |
+| dive             | A tool for exploring each layer in a docker image.                                                   |
 | docker-compose   | Define and run multi-container applications with Docker.                                                           |
 | doctl            | Official command line interface for the DigitalOcean API.                                                          |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                         |
