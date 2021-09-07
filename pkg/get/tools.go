@@ -804,7 +804,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 	{{ if HasPrefix .OS "ming" -}}
 	{{$os = "windows"}}
 	{{- end -}}
-	
+
 	{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
@@ -1318,7 +1318,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$osString = "linux"}}
 				{{- end -}}
 				{{$ext := ".tar.gz"}}
-				
+
 				{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}
 				`,
 		})
@@ -1540,9 +1540,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .OS "darwin" -}}
 				{{  $osStr = "darwin" }}
 				{{- end -}}
-	
+
 				{{ $archStr := "amd64" }}
-	
+
 				{{- if eq .Arch "armv6l" -}}
 				{{ $archStr = "arm" }}
 				{{- else if eq .Arch "armv7l" -}}
@@ -1606,6 +1606,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ $archStr = "arm64" }}
 				{{- end -}}
 				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		},
+	)
+
+	tools = append(tools,
+		Tool{
+			Owner:       "wagoodman",
+			Repo:        "dive",
+			Name:        "dive",
+			Version:     "0.10.0",
+			Description: "A tool for exploring each layer in a docker image",
+			URLTemplate: `{{$osStr := ""}}
+			{{- if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$archiveStr := ""}}
+			{{- if HasPrefix .OS "ming" -}}
+			{{$archiveStr = ".zip"}}
+			{{- else -}}
+			{{$archiveStr = ".tar.gz"}}
+			{{- end -}}
+
+			https://github.com/{{.Owner}}/{{.Name}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_amd64{{$archiveStr}}`,
 		},
 	)
 
