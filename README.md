@@ -157,6 +157,7 @@ arkade get APP@VERSION
 | kubectl          | Run commands against Kubernetes clusters                                                                           |
 | kubectx          | Faster way to switch between clusters.                                                                             |
 | kubens           | Switch between Kubernetes namespaces smoothly.                                                                     |
+| kubescape        | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
 | kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                     |
 | kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                           |
 | kustomize        | Customization of kubernetes YAML configurations                                                                    |
