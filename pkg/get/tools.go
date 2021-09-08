@@ -1669,5 +1669,25 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		{{.Name}}_{{$osStr}}_{{$archStr}}.{{$archiveStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "armosec",
+			Repo:        "kubescape",
+			Name:        "kubescape",
+			Description: "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA",
+			BinaryTemplate: `
+		{{$osStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$osStr = "windows"}}
+		{{- else if eq .OS "linux" -}}
+		{{$osStr = "ubuntu"}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "macos"}}
+		{{- end -}}
+
+
+		{{.Name}}-{{$osStr}}-latest`,
+		})
+
 	return tools
 }
