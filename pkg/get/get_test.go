@@ -2342,3 +2342,41 @@ func Test_DownloadGoReleaserCli(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKubescape(t *testing.T) {
+	tools := MakeTools()
+	name := "kubescape"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			version: "v1.0.69",
+			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-macos-latest`,
+		},
+		{
+			os:      "linux",
+			version: "v1.0.69",
+			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-ubuntu-latest`,
+		},
+		{
+			os:      "ming",
+			version: "v1.0.69",
+			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-windows-latest`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
