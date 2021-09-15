@@ -1530,7 +1530,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "sigstore",
 			Repo:        "cosign",
 			Name:        "cosign",
-			Version:     "v1.2.0",
 			Description: "Container Signing, Verification and Storage in an OCI registry.",
 			BinaryTemplate: `{{ $ext := "" }}
 				{{ $osStr := "linux" }}
