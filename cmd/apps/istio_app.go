@@ -190,7 +190,7 @@ func downloadIstio(userPath, arch, clientOS, version string) error {
 
 	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false, false)
 		if err != nil {
 			return err
 		}

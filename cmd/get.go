@@ -36,6 +36,7 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get terraform --version=0.12.0
   arkade get kubectl --progress=false
   arkade get kubectl@v1.19.3
+  arkade get kubectl --dry-run
 
   # Get a complete list of CLIs to download:
   arkade get`,
@@ -48,10 +49,20 @@ and provides a fast and easy alternative to a package manager.`,
 	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
+	command.Flags().Bool("dry-run", false, "When set to true, performs a dry run of binary download and install location")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
+		dryRun, _ := command.Flags().GetBool("dry-run")
+
 		if len(args) == 0 {
 			output, _ := command.Flags().GetString("output")
+
+			if dryRun {
+				fmt.Println(`Cannot use '--dry-run' flag without tool name.
+Get help using:
+arkade get --help`)
+				os.Exit(1)
+			}
 
 			if len(output) > 0 {
 				if get.TableFormat(output) == get.MarkdownStyle {
@@ -116,21 +127,25 @@ and provides a fast and easy alternative to a package manager.`,
 				operatingSystem,
 				version,
 				dlMode,
-				progress)
+				progress,
+				dryRun)
 			if err != nil {
 				return err
 			}
 
-			localToolsStore = append(localToolsStore, get.ToolLocal{Name: tool.Name, Path: outFilePath})
-			fmt.Printf("\nTool written to: %s\n\n", outFilePath)
+			if !dryRun {
+				localToolsStore = append(localToolsStore, get.ToolLocal{Name: tool.Name, Path: outFilePath})
+				fmt.Printf("\nTool written to: %s\n\n", outFilePath)
+			}
 		}
 
-		msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
-		if err != nil {
-			return err
+		if !dryRun {
+			msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("%s", msg)
 		}
-
-		fmt.Printf("%s", msg)
 
 		return err
 	}

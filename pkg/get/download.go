@@ -21,14 +21,31 @@ const (
 	DownloadArkadeDir = iota
 )
 
-func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress bool) (string, string, error) {
-
+func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress, dryRun bool) (string, string, error) {
 	downloadURL, err := GetDownloadURL(tool,
 		strings.ToLower(operatingSystem),
 		strings.ToLower(arch),
 		version)
 	if err != nil {
 		return "", "", err
+	}
+
+	// Check user provided version is valid on dry run
+	if len(version) > 1 && dryRun {
+		res, err := http.Head(downloadURL)
+		if err != nil {
+			return "", "", err
+		}
+
+		if res.StatusCode != http.StatusOK {
+			return "", "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
+		}
+
+	}
+
+	if dryRun {
+		fmt.Printf("Download URL: %s\n\n", downloadURL)
+		return "", "", nil
 	}
 
 	fmt.Printf("Downloading: %s\n", downloadURL)

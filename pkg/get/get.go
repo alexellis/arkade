@@ -101,12 +101,12 @@ func (tool Tool) GetURL(os, arch, version string) (string, error) {
 
 	if len(version) == 0 &&
 		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
-		log.Printf("Looking up version for %s", tool.Name)
+		log.Printf("Looking up latest release for %s", tool.Name)
 		v, err := findGitHubRelease(tool.Owner, tool.Repo)
 		if err != nil {
 			return "", err
 		}
-		log.Printf("Found: %s", v)
+		log.Printf("Found latest release: %s", v)
 		version = v
 	}
 

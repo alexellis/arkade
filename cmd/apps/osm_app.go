@@ -24,7 +24,7 @@ func MakeInstallOSM() *cobra.Command {
 	var osm = &cobra.Command{
 		Use:   "osm",
 		Short: "Install osm",
-		Long: `Install Open Service Mesh (OSM) - a lightweight, extensible, cloud native 
+		Long: `Install Open Service Mesh (OSM) - a lightweight, extensible, cloud native
 service mesh created by Microsoft Azure.`,
 		Example:      `  arkade install osm`,
 		SilenceUsage: true,
@@ -104,7 +104,7 @@ func downloadOSM(userPath, arch, clientOS string) error {
 
 	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, false)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, false, false)
 		if err != nil {
 			return err
 		}

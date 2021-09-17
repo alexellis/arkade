@@ -119,8 +119,10 @@ arkade get APP@VERSION
 
 # Download multiple tools at once
 arkade get APP1 APP2 APP3
-
 arkade get APP1 APP2@VERSION APP3
+
+# Dry Run
+arkade get APP@VERSION --dry-run
 ```
 
 |       TOOL       |                                                                DESCRIPTION                                                                |
