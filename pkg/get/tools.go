@@ -197,23 +197,103 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner:       "k3s-io",
+			Repo:        "k3s",
+			Name:        "k3s",
+			Description: "Lightweight Kubernetes",
+			BinaryTemplate: `
+{{- if eq .OS "darwin" -}}
+{{.Name}}-darwin
+{{ else if eq .Arch "aarch64" -}}
+{{.Name}}-arm64
+{{- else -}}
+{{.Name}}
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cnrancher",
+			Repo:        "autok3s",
+			Name:        "autok3s",
+			Description: "Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}_windows_amd64.exe
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}_darwin_amd64
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}_linux_arm
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}_linux_arm
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}_linux_arm64
+	{{- else -}}
+	{{.Name}}_linux_amd64
+	{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "loft-sh",
+			Repo:        "devspace",
+			Name:        "devspace",
+			Description: "Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}-windows-amd64.exe
+	{{- else if and (eq .OS "darwin") (eq .Arch "aarch64") -}}
+	{{.Name}}-darwin-arm64
+	{{- else if and (eq .OS "darwin") -}}
+	{{.Name}}-darwin-amd64
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-linux-arm64
+	{{- else -}}
+	{{.Name}}-linux-amd64
+	{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "tilt-dev",
+			Repo:        "tilt",
+			Name:        "tilt",
+			Description: "A multi-service dev environment for teams on Kubernetes.",
+			BinaryTemplate: `{{$version:=slice .Version 1}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}.{{$version}}.windows.x86_64.zip
+	{{- else if and (eq .OS "darwin") (eq .Arch "aarch64") -}}
+	{{.Name}}.{{$version}}.mac.arm64_ALPHA.tar.gz
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}.{{$version}}.mac.x86_64.tar.gz
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}.{{$version}}.linux.arm_ALPHA.tar.gz
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}.{{$version}}.linux.arm_ALPHA.tar.gz
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}.{{$version}}.linux.arm64_ALPHA.tar.gz
+	{{- else -}}
+	{{.Name}}.{{$version}}.linux.x86_64.tar.gz
+	{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "rancher",
 			Repo:        "k3d",
 			Name:        "k3d",
 			Description: "Helper to run Rancher Lab's k3s in Docker.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-{{.Name}}-windows-amd64
-{{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin-amd64
-{{- else if eq .Arch "armv6l" -}}
-{{.Name}}-linux-arm
-{{- else if eq .Arch "armv7l" -}}
-{{.Name}}-linux-arm
-{{- else if eq .Arch "aarch64" -}}
-{{.Name}}-linux-arm64
-{{- else -}}
-{{.Name}}-linux-amd64
-{{- end -}}`,
+	{{.Name}}-windows-amd64
+	{{- else if eq .OS "darwin" -}}
+	{{.Name}}-darwin-amd64
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}-linux-arm
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}-linux-arm
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-linux-arm64
+	{{- else -}}
+	{{.Name}}-linux-amd64
+	{{- end -}}`,
 		})
 
 	tools = append(tools,

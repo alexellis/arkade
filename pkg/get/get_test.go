@@ -392,6 +392,129 @@ func Test_DownloadK3d(t *testing.T) {
 	}
 }
 
+func Test_DownloadK3s(t *testing.T) {
+	tools := MakeTools()
+	name := "k3s"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v1.21.4+k3s1",
+			url:     "https://github.com/k3s-io/k3s/releases/download/v1.21.4+k3s1/k3s"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v1.21.4+k3s1",
+			url:     "https://github.com/k3s-io/k3s/releases/download/v1.21.4+k3s1/k3s-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadDevspace(t *testing.T) {
+	tools := MakeTools()
+	name := "devspace"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v5.15.0",
+			url:     "https://github.com/loft-sh/devspace/releases/download/v5.15.0/devspace-windows-amd64.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v5.15.0",
+			url:     "https://github.com/loft-sh/devspace/releases/download/v5.15.0/devspace-linux-amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v5.15.0",
+			url:     "https://github.com/loft-sh/devspace/releases/download/v5.15.0/devspace-darwin-amd64"},
+		{os: "darwin",
+			arch:    "aarch64",
+			version: "v5.15.0",
+			url:     "https://github.com/loft-sh/devspace/releases/download/v5.15.0/devspace-darwin-arm64"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v5.15.0",
+			url:     "https://github.com/loft-sh/devspace/releases/download/v5.15.0/devspace-linux-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadTilt(t *testing.T) {
+	tools := MakeTools()
+	name := "tilt"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.22.8",
+			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.22.8/tilt.0.22.8.windows.x86_64.zip"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.22.8",
+			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.22.8/tilt.0.22.8.linux.x86_64.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.22.8",
+			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.22.8/tilt.0.22.8.mac.x86_64.tar.gz"},
+		{os: "darwin",
+			arch:    "aarch64",
+			version: "v0.22.8",
+			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.22.8/tilt.0.22.8.mac.arm64_ALPHA.tar.gz"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v0.22.8",
+			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.22.8/tilt.0.22.8.linux.arm64_ALPHA.tar.gz"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadK3sup(t *testing.T) {
 	tools := MakeTools()
 	name := "k3sup"
@@ -425,6 +548,50 @@ func Test_DownloadK3sup(t *testing.T) {
 			arch:    "aarch64",
 			version: "0.9.2",
 			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+func Test_DownloadAutok3s(t *testing.T) {
+	tools := MakeTools()
+	name := "autok3s"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.4.4",
+			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_windows_amd64.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.4.4",
+			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_linux_amd64"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.4.4",
+			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_darwin_amd64"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "v0.4.4",
+			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_linux_arm"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v0.4.4",
+			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_linux_arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
