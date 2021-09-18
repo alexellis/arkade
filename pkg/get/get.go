@@ -52,6 +52,11 @@ type Tool struct {
 	NoExtension bool
 }
 
+type ToolLocal struct {
+	Name string
+	Path string
+}
+
 var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
 }
@@ -285,8 +290,8 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 	return "", errors.New("BinaryTemplate is not set")
 }
 
-// UserTools checks if name of binaries passed as argument exists
-func UserTools(tools Tools, toolArgs []string, version string) (Tools, error) {
+// DownloadList verifies tool exists and returns a download list
+func DownloadList(tools Tools, toolArgs []string, version string) (Tools, error) {
 	arkadeTools := []Tool{}
 outer:
 	for _, arg := range toolArgs {
@@ -315,4 +320,42 @@ outer:
 	}
 
 	return arkadeTools, nil
+}
+
+// PostInstallationMsg generates installation message after tool has been downloaded
+func PostInstallationMsg(dlMode int, localToolsStore []ToolLocal) ([]byte, error) {
+
+	t := template.New("Installation Instructions")
+
+	if dlMode == DownloadTempDir {
+		t.Parse(`Run the following to copy to install the tool:
+
+chmod +x {{range .}}{{.Path}} {{end}}
+{{- range . }}
+sudo install -m 755 {{.Path}} /usr/local/bin/{{.Name}}
+{{- end}}`)
+
+	} else {
+		t.Parse(`# Add arkade binary directory to your PATH variable
+export PATH=$PATH:$HOME/.arkade/bin/
+
+# Test the binary:
+{{- range . }}
+{{.Path}}
+{{- end }}
+
+# Or install with:
+{{- range . }}
+sudo mv {{.Path}} /usr/local/bin/
+{{- end}}`)
+	}
+
+	var tpl bytes.Buffer
+
+	err := t.Execute(&tpl, localToolsStore)
+	if err != nil {
+		return nil, err
+	}
+
+	return tpl.Bytes(), err
 }
