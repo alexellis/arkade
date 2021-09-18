@@ -103,7 +103,7 @@ Here's a few examples of apps you can install, for a complete list run: `arkade 
 
 * `arkade install` - install an app
 * `arkade info` - the post-install screen for an app
-* `arkade get` - install a CLI tool/s such as `kubectl` or `faas-cli`
+* `arkade get` - install a CLI tools such as `kubectl` or `faas-cli`
 * `arkade update` - print instructions to update arkade itself
 
 ### Install a CLI tool
@@ -118,6 +118,8 @@ arkade get APP --version VERSION
 arkade get APP@VERSION
 
 # Download multiple tools at once
+arkade get APP1 APP2 APP3
+
 arkade get APP1 APP2@VERSION APP3
 ```
 

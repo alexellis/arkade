@@ -10,17 +10,11 @@ import (
 	"sort"
 	"strconv"
 	"syscall"
-	"text/template"
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/spf13/cobra"
 )
-
-type toolLocal struct {
-	Name string
-	Path string
-}
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
@@ -81,7 +75,7 @@ and provides a fast and easy alternative to a package manager.`,
 			version, _ = command.Flags().GetString("version")
 		}
 
-		userTools, err := get.UserTools(tools, args, version)
+		downloadList, err := get.DownloadList(tools, args, version)
 		if err != nil {
 			return err
 		}
@@ -113,9 +107,9 @@ and provides a fast and easy alternative to a package manager.`,
 		}()
 
 		var outFilePath string
-		var localToolsStore []toolLocal
+		var localToolsStore []get.ToolLocal
 
-		for _, tool := range userTools {
+		for _, tool := range downloadList {
 			fmt.Printf("Downloading: %s\n", tool.Name)
 			outFilePath, _, err = get.Download(&tool,
 				arch,
@@ -127,39 +121,16 @@ and provides a fast and easy alternative to a package manager.`,
 				return err
 			}
 
-			localToolsStore = append(localToolsStore, toolLocal{Name: tool.Name, Path: outFilePath})
-			fmt.Printf("Tool written to: %s\n\n", outFilePath)
+			localToolsStore = append(localToolsStore, get.ToolLocal{Name: tool.Name, Path: outFilePath})
+			fmt.Printf("\nTool written to: %s\n\n", outFilePath)
 		}
 
-		t := template.New("Installation Instructions")
-
-		if dlMode == get.DownloadTempDir {
-			t.Parse(`Run the following to copy to install the tool:
-
-chmod +x {{range .}}{{.Path}} {{end}}
-{{- range . }}
-sudo install -m 755 {{.Path}} /usr/local/bin/{{.Name}}
-{{- end}}`)
-
-		} else {
-			t.Parse(`# Add arkade binary directory to your PATH variable
-export PATH=$PATH:$HOME/.arkade/bin/
-
-# Test the binary:
-{{- range . }}
-{{.Path}}
-{{- end }}
-
-# Or install with:
-{{- range . }}
-sudo mv {{.Path}} /usr/local/bin/
-{{- end}}`)
-		}
-
-		err = t.Execute(os.Stdout, localToolsStore)
+		msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
 		if err != nil {
-			panic(err)
+			return err
 		}
+
+		fmt.Printf("%s", msg)
 
 		return err
 	}
