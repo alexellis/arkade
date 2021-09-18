@@ -89,6 +89,65 @@ func Test_MakeSureToolsAreSorted(t *testing.T) {
 	}
 }
 
+func Test_PostInstallationMsg(t *testing.T) {
+
+	testCases := []struct {
+		dlMode          int
+		localToolsStore []ToolLocal
+		want            string
+	}{
+		{
+			dlMode: 1,
+			localToolsStore: []ToolLocal{
+				{Name: "yq",
+					Path: "/home/user/.arkade/bin/yq",
+				},
+				{
+					Name: "jq",
+					Path: "/home/user/.arkade/bin/jq",
+				}},
+			want: `# Add arkade binary directory to your PATH variable
+export PATH=$PATH:$HOME/.arkade/bin/
+
+# Test the binary:
+/home/user/.arkade/bin/yq
+/home/user/.arkade/bin/jq
+
+# Or install with:
+sudo mv /home/user/.arkade/bin/yq /usr/local/bin/
+sudo mv /home/user/.arkade/bin/jq /usr/local/bin/`,
+		},
+		{
+			dlMode: 0,
+			localToolsStore: []ToolLocal{
+				{Name: "yq",
+					Path: "/tmp/yq_linux_amd64",
+				},
+				{
+					Name: "jq",
+					Path: "/tmp/jq-linux64",
+				}},
+			want: `Run the following to copy to install the tool:
+
+chmod +x /tmp/yq_linux_amd64 /tmp/jq-linux64 
+sudo install -m 755 /tmp/yq_linux_amd64 /usr/local/bin/yq
+sudo install -m 755 /tmp/jq-linux64 /usr/local/bin/jq`,
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.localToolsStore[0].Name, func(t *testing.T) {
+			msg, _ := PostInstallationMsg(tt.dlMode, tt.localToolsStore)
+
+			got := fmt.Sprintf("%s", msg)
+
+			if got != tt.want {
+				t.Errorf("got %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 	tools := MakeTools()
 	name := "faas-cli"
