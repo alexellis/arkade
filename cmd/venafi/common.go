@@ -6,7 +6,6 @@ package venafi
 import (
 	"bytes"
 	"html/template"
-	"io/ioutil"
 	"os"
 	"path"
 )
@@ -15,7 +14,7 @@ func writeFile(name string, data []byte) (string, error) {
 	d := os.TempDir()
 	p := path.Join(d, "issuer.yaml")
 
-	err := ioutil.WriteFile(p, data, os.ModePerm)
+	err := os.WriteFile(p, data, os.ModePerm)
 
 	return p, err
 }

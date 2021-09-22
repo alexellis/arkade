@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -78,7 +77,7 @@ func MakeInstallLinkerd() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		file, err := ioutil.TempFile("", "linkerd")
+		file, err := os.CreateTemp("", "linkerd")
 		if err != nil {
 			return err
 		}

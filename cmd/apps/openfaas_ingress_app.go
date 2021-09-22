@@ -7,7 +7,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
@@ -190,7 +189,7 @@ func writeTempFile(input []byte, fileLocation string) (string, error) {
 
 	filename := filepath.Join(tempDirectory, fileLocation)
 
-	err := ioutil.WriteFile(filename, input, 0744)
+	err := os.WriteFile(filename, input, 0744)
 	if err != nil {
 		return "", err
 	}

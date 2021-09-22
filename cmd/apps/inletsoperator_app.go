@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -170,7 +169,7 @@ IngressController`,
 			if len(licenseFile) > 0 {
 				licenseFile = os.ExpandEnv(licenseFile)
 
-				res, err := ioutil.ReadFile(licenseFile)
+				res, err := os.ReadFile(licenseFile)
 				if err != nil {
 					if fileFlagChanged == false {
 						return noLicenseErr

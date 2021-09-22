@@ -6,7 +6,6 @@ package venafi
 import (
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strings"
 
@@ -109,7 +108,7 @@ instances.`,
 		}
 		encodedBundle := ""
 		if len(caBundlePath) > 0 {
-			data, err := ioutil.ReadFile(caBundlePath)
+			data, err := os.ReadFile(caBundlePath)
 			if err != nil {
 				return err
 			}

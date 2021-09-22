@@ -5,8 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"github.com/alexellis/arkade/pkg/k8s"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -18,6 +16,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/helm"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
@@ -144,7 +143,7 @@ func MakeInstallRegistry() *cobra.Command {
 		fmt.Println(registryInstallMsg)
 
 		if len(outputFile) > 0 {
-			err := ioutil.WriteFile(outputFile, []byte(pass), 0600)
+			err := os.WriteFile(outputFile, []byte(pass), 0600)
 			if err != nil {
 				return err
 			}

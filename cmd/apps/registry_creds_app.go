@@ -5,7 +5,6 @@ package apps
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 
@@ -111,7 +110,7 @@ and ARM64 clusters.`,
 			dir := os.TempDir()
 			cr := path.Join(dir, "clusterpullsecret.yaml")
 
-			err = ioutil.WriteFile(cr, []byte(`apiVersion: ops.alexellis.io/v1
+			err = os.WriteFile(cr, []byte(`apiVersion: ops.alexellis.io/v1
 kind: ClusterPullSecret
 metadata:
   name: primary
