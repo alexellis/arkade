@@ -25,7 +25,7 @@ func TestCloudIssuerTemplate_NamespacedIssuer(t *testing.T) {
 	}
 
 	// Uncomment to capture formatted results
-	// ioutil.WriteFile("/tmp/test.yaml", manifest, os.ModePerm)
+	// os.WriteFile("/tmp/test.yaml", manifest, os.ModePerm)
 	want := `apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
@@ -66,7 +66,7 @@ func TestCloudIssuerTemplate_ClusterIssuer(t *testing.T) {
 	}
 
 	// Uncomment to capture formatted results
-	// ioutil.WriteFile("/tmp/test.yaml", manifest, os.ModePerm)
+	// os.WriteFile("/tmp/test.yaml", manifest, os.ModePerm)
 	want := `apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:

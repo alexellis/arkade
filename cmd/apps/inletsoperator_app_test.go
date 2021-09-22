@@ -4,7 +4,6 @@
 package apps
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
 	"testing"
@@ -97,7 +96,7 @@ func Test_ValidatePreRun(t *testing.T) {
 }
 
 func createTempFile(t *testing.T, name string) string {
-	tempFile, err := ioutil.TempFile("", name)
+	tempFile, err := os.CreateTemp("", name)
 	if err != nil {
 		t.Errorf("expected no error when creating the temporary test file, but got: %s", err.Error())
 	}

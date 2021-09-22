@@ -5,7 +5,7 @@ package apps
 
 import (
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path"
@@ -60,12 +60,12 @@ func MakeInstallPortainer() *cobra.Command {
 		}
 
 		defer res.Body.Close()
-		body, _ := ioutil.ReadAll(res.Body)
+		body, _ := io.ReadAll(res.Body)
 		manifest := string(body)
 
 		tmp := os.TempDir()
 		joined := path.Join(tmp, "portainer.yaml")
-		err = ioutil.WriteFile(joined, []byte(manifest), 0644)
+		err = os.WriteFile(joined, []byte(manifest), 0644)
 		if err != nil {
 			return err
 		}
