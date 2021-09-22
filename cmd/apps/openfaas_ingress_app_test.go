@@ -4,7 +4,6 @@
 package apps
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -310,7 +309,7 @@ func Test_writeTempFile_writes_to_tmp(t *testing.T) {
 	var want = "some input string"
 	tmpLocation, _ := writeTempFile([]byte(want), "tmp_file_name.yaml")
 
-	got, _ := ioutil.ReadFile(tmpLocation)
+	got, _ := os.ReadFile(tmpLocation)
 	if string(got) != want {
 		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
 	}

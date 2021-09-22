@@ -7,7 +7,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
 
@@ -139,7 +138,7 @@ func MakeInstallIstio() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		file, err := ioutil.TempFile("", "istio")
+		file, err := os.CreateTemp("", "istio")
 		if err != nil {
 			return err
 		}
