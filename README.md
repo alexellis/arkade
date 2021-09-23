@@ -472,7 +472,7 @@ Current sponsored apps include:
     --set eula.accept=true \
     --set clusterName=my-k10 \
     --set prometheus.server.enabled=false
-  arkade kasten info --help
+  arkade kasten info k10
   ```
 
 [Contact us](mailto:contact@openfaas.com) to find out how you can have your Sponsored App added to arkade.
