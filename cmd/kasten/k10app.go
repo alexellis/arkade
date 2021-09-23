@@ -6,6 +6,7 @@ package kasten
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg"
@@ -38,17 +39,43 @@ https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-op
 
 	k10cmd.Flags().StringP("namespace", "n", "kasten-io", "The namespace used for installation")
 	k10cmd.Flags().Bool("update-repo", true, "Update the helm repo")
+	k10cmd.Flags().Bool("eula", false, "Accept the EULA")
+	k10cmd.Flags().Bool("prometheus", false, "Enable Prometheus server")
+
 	k10cmd.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
+
+	k10cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+		if _, err := cmd.Flags().GetBool("eula"); err != nil {
+			if err != nil {
+				return fmt.Errorf("error with \"eula\" flag %w", err)
+			}
+		}
+		if _, err := cmd.Flags().GetBool("prometheus"); err != nil {
+			if err != nil {
+				return fmt.Errorf("error with \"prometheus\" flag %w", err)
+			}
+		}
+		return nil
+	}
 
 	k10cmd.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
+		eula, _ := command.Flags().GetBool("eula")
+		prometheus, _ := command.Flags().GetBool("eula")
 
 		wait, _ := command.Flags().GetBool("wait")
 		namespace, _ := command.Flags().GetString("namespace")
-		overrides := map[string]string{}
+		overrides := map[string]string{
+			"prometheus.server.enabled": strconv.FormatBool(prometheus),
+			"eula.accept":               strconv.FormatBool(eula),
+		}
+		if command.Flags().Changed("cluster-name") {
+			v, _ := command.Flags().GetString("cluster-name")
+			overrides["clusterName"] = v
+		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
 
