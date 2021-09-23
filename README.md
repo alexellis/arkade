@@ -455,12 +455,25 @@ arkade VENDOR install PRODUCT
 arkade acmeco install dashboard
 ```
 
-Current sponsored apps include [Venafi](https://venafi.com) for Machine Identity:
+Current sponsored apps include:
 
-```bash
-arkade venafi install --help
-arkade venafi info --help
-```
+* [Venafi](https://venafi.com) for Machine Identity:
+
+  ```bash
+  arkade venafi install --help
+  arkade venafi info --help
+  ```
+
+* [Kasten (k10)](https://kasten.io) for Kubernetes backup and restore:
+
+  ```bash
+  arkade kasten install --help
+  arkade install k10 \
+    --set eula.accept=true \
+    --set clusterName=my-k10 \
+    --set prometheus.server.enabled=false
+  arkade kasten info --help
+  ```
 
 [Contact us](mailto:contact@openfaas.com) to find out how you can have your Sponsored App added to arkade.
 
