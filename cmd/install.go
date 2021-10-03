@@ -91,7 +91,7 @@ To request a new app, raise a GitHub issue at:
 			}
 		}
 		if app == nil {
-			return fmt.Errorf("cannot install app: %s", name)
+			return fmt.Errorf("no such app: %s, run \"arkade install --help\" for a list of apps", name)
 		}
 
 		return nil
