@@ -63,9 +63,9 @@ command.`,
 
 		if len(args) == 0 {
 			fmt.Printf(
-				`You can install %d apps to your Kubernetes cluster:
+				`You can install %d apps to your Kubernetes cluster.
 
-See the whole list of apps by typing in:
+Run the following to see a list of all available apps:
   arkade install --help
 
 To see options for a specific app before installing, run:
