@@ -19,6 +19,7 @@ type ArkadeApp struct {
 }
 
 func MakeInstall() *cobra.Command {
+	appList := GetApps()
 	var command = &cobra.Command{
 		Use:     "install",
 		Short:   "Install Kubernetes apps from helm charts or YAML files",
@@ -31,7 +32,7 @@ command.`,
 		Example: `  arkade install
   arkade install openfaas  --gateways=2
   arkade install inlets-operator --token-file $HOME/do-token`,
-		SilenceUsage: false,
+		SilenceUsage: true,
 	}
 
 	command.PersistentFlags().String("kubeconfig", "", "Local path for your kubeconfig file")
@@ -43,8 +44,6 @@ command.`,
 		printTable, _ := command.Flags().GetBool("print-table")
 
 		if printTable {
-			appList := GetApps()
-
 			table := tablewriter.NewWriter(os.Stdout)
 			table.SetHeader([]string{"Tool", "Description"})
 
@@ -54,7 +53,6 @@ command.`,
 
 			for k, v := range appList {
 				table.Append([]string{k, v.Installer().Short})
-
 			}
 
 			table.Render()
@@ -82,10 +80,23 @@ To request a new app, raise a GitHub issue at:
 			return nil
 		}
 
+		name := args[0]
+		var app *ArkadeApp
+		if len(args) == 1 {
+			for _, a := range appList {
+				if a.Name == name {
+					app = &a
+					break
+				}
+			}
+		}
+		if app == nil {
+			return fmt.Errorf("cannot install app: %s", name)
+		}
+
 		return nil
 	}
 
-	appList := GetApps()
 	for _, app := range appList {
 		command.AddCommand(app.Installer())
 	}
