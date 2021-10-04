@@ -112,10 +112,14 @@ const k10InfoMsg = `# The K10 app has been installed
 
 https://docs.kasten.io/latest/install/storage.html
 
-# The app may take a few moments to come up, then access the
-# dashboard via:
+# The app may take a few moments to come up, run the following to
+# wait for it:
 
-kubectl --namespace kasten-io port-forward service/gateway 8080:8000
+kubectl rollout status -n kasten-io deploy/frontend-svc
+
+# Then access the dashboard via:
+
+kubectl --n kasten-io port-forward service/gateway 8080:8000
 
 http://127.0.0.1:8080/k10/#/
 
