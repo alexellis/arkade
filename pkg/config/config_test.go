@@ -8,17 +8,13 @@ import (
 )
 
 func Test_MergeFlags(t *testing.T) {
-	var (
-		unexpectedErr         = "failed to merge err: %v, existing flags: %v, set overrides: %v"
-		unexpectedMergeErr    = "error merging flags, want: %v, got: %v"
-		inconsistentErrString = "inconsistent error return want: %v, got: %v"
-	)
+
 	tests := []struct {
-		title          string
-		flags          map[string]string
-		overrides      []string
-		resultExpected map[string]string
-		errExpected    error
+		title     string
+		flags     map[string]string
+		overrides []string
+		want      map[string]string
+		wantErr   error
 	}{
 		// positive cases:
 		{"Single key with numeric value and no flags",
@@ -86,17 +82,16 @@ func Test_MergeFlags(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(test.title, func(t *testing.T) {
-			err := MergeFlags(test.flags, test.overrides)
-			if err != nil {
-				if test.errExpected == nil {
-					t.Errorf(unexpectedErr, err, test.flags, test.overrides)
-				} else if !strings.EqualFold(err.Error(), test.errExpected.Error()) {
-					t.Errorf(inconsistentErrString, test.errExpected, err)
+			if err := MergeFlags(test.flags, test.overrides); err != nil {
+				if test.wantErr == nil {
+					t.Fatalf("failed to merge err: %v, existing flags: %v, set overrides: %v", err, test.flags, test.overrides)
+				} else if !strings.EqualFold(err.Error(), test.wantErr.Error()) {
+					t.Fatalf("inconsistent error return want: %v, got: %v", test.wantErr, err)
 				}
 				return
 			}
-			if !reflect.DeepEqual(test.resultExpected, test.flags) {
-				t.Errorf(unexpectedMergeErr, test.resultExpected, test.flags)
+			if !reflect.DeepEqual(test.want, test.flags) {
+				t.Fatalf("error merging flags, want: %v, got: %v", test.want, test.flags)
 			}
 		})
 	}
