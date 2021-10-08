@@ -75,7 +75,7 @@ and provides a fast and easy alternative to a package manager.`,
 			version, _ = command.Flags().GetString("version")
 		}
 
-		downloadList, err := get.DownloadList(tools, args, version)
+		downloadURLs, err := get.GetDownloadURLs(tools, args, version)
 		if err != nil {
 			return err
 		}
@@ -109,7 +109,7 @@ and provides a fast and easy alternative to a package manager.`,
 		var outFilePath string
 		var localToolsStore []get.ToolLocal
 
-		for _, tool := range downloadList {
+		for _, tool := range downloadURLs {
 			fmt.Printf("Downloading: %s\n", tool.Name)
 			outFilePath, _, err = get.Download(&tool,
 				arch,

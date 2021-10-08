@@ -290,36 +290,45 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 	return "", errors.New("BinaryTemplate is not set")
 }
 
-// DownloadList verifies tool exists and returns a download list
-func DownloadList(tools Tools, toolArgs []string, version string) (Tools, error) {
+// GetDownloadURLs generates a list of URL for each tool, for download
+func GetDownloadURLs(tools Tools, toolArgs []string, version string) (Tools, error) {
 	arkadeTools := []Tool{}
-outer:
+
 	for _, arg := range toolArgs {
 		name := arg
 
 		// Handle version specified tool name
 		if i := strings.LastIndex(arg, "@"); i > -1 {
-			if len(version) > 0 {
-				return nil, fmt.Errorf("cannot specify --version flag and @ syntax at the same time")
-			}
-
-			version = arg[i+1:]
 			name = arg[:i]
+			if len(version) > 0 {
+				return nil, fmt.Errorf("cannot specify --version flag and @ syntax at the same time for %s", name)
+			}
+			version = arg[i+1:]
 		}
 
-		// Handle adding specified tools to a slice
-		for _, tool := range tools {
-			if name == tool.Name {
-				tool.Version = version
-				arkadeTools = append(arkadeTools, tool)
-				version = ""
-				continue outer
-			}
+		err := toolExists(&arkadeTools, tools, name, version)
+		if err != nil {
+			return nil, err
 		}
-		return nil, fmt.Errorf("Tool %s not found", arg)
+
+		// unset value for the next iteration of versioned tool
+		version = ""
 	}
 
 	return arkadeTools, nil
+}
+
+// toolExists checks if user provided tool exists on arkade
+func toolExists(arkadeTools *[]Tool, tools Tools, name, version string) error {
+	for _, tool := range tools {
+		if name == tool.Name {
+			tool.Version = version
+			*arkadeTools = append(*arkadeTools, tool)
+
+			return nil
+		}
+	}
+	return fmt.Errorf("tool %s not found", name)
 }
 
 // PostInstallationMsg generates installation message after tool has been downloaded
