@@ -322,7 +322,9 @@ func GetDownloadURLs(tools Tools, toolArgs []string, version string) (Tools, err
 func toolExists(arkadeTools *[]Tool, tools Tools, name, version string) error {
 	for _, tool := range tools {
 		if name == tool.Name {
-			tool.Version = version
+			if len(version) > 0 {
+				tool.Version = version
+			}
 			*arkadeTools = append(*arkadeTools, tool)
 
 			return nil
