@@ -52,7 +52,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 	openfaasIngress.Flags().Bool("staging", false, "set --staging to true to use the staging Letsencrypt issuer")
 	openfaasIngress.Flags().String("issuer", "", "provide the name of a pre-existing issuer, rather than creating one for LetsEncrypt")
 	openfaasIngress.Flags().Bool("cluster-issuer", false, "set to true to create a clusterissuer rather than a namespaces issuer (default: false)")
-	openfaasIngress.Flags().String("oauth2-plugin-domain", "", "Set to the auth domain for openfaas OIDC installations")
+	openfaasIngress.Flags().String("oidc-plugin-domain", "", "Set to the auth domain for openfaas OIDC installations")
 
 	openfaasIngress.RunE = func(command *cobra.Command, args []string) error {
 
@@ -95,10 +95,10 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 			return err
 		}
 
-		oidcDomain, _ := command.Flags().GetString("oauth2-plugin-domain")
+		oidcDomain, _ := command.Flags().GetString("oidc-plugin-domain")
 
 		if len(oidcDomain) > 0 {
-			if err := createIngress(oidcDomain, email, ingressClass, "oauth2-plugin", staging, clusterIssuer, issuer, namespace, hasNetworking); err != nil {
+			if err := createIngress(oidcDomain, email, ingressClass, "oidc-plugin", staging, clusterIssuer, issuer, namespace, hasNetworking); err != nil {
 				return err
 			}
 		}
@@ -208,7 +208,7 @@ func buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName string, s
 	}
 
 	ingressService := "gateway"
-	if ingressName == "oauth2-plugin" {
+	if ingressName == "oidc-plugin" {
 		ingressService = ingressName
 	}
 
