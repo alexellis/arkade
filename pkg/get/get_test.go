@@ -182,10 +182,31 @@ func Test_GetDownloadURLs(t *testing.T) {
 	}{
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/linux/amd64/kubectl",
 			version: "",
 			os:      "linux",
 			arch:    "x86_64",
+		},
+		{
+			name:    "kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl",
+			version: "",
+			os:      "darwin",
+			arch:    "x86_64",
+		},
+		{
+			name:    "kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/linux/arm64/kubectl",
+			version: "v1.22.2",
+			os:      "linux",
+			arch:    "aarch64",
+		},
+		{
+			name:    "kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/arm64/kubectl",
+			version: "v1.22.2",
+			os:      "darwin",
+			arch:    "aarch64",
 		},
 		{
 			name:    "kubectl",
