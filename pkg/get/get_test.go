@@ -170,6 +170,66 @@ func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 	}
 }
 
+func Test_GetDownloadURLs(t *testing.T) {
+	tools := MakeTools()
+
+	tests := []struct {
+		name    string
+		url     string
+		version string
+		os      string
+		arch    string
+	}{
+		{
+			name:    "kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl",
+			version: "",
+			os:      "linux",
+			arch:    "x86_64",
+		},
+		{
+			name:    "kubectl",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.0/bin/linux/amd64/kubectl",
+			version: "v1.22.0",
+			os:      "linux",
+			arch:    "x86_64",
+		},
+		{
+			name:    "faas-cli",
+			url:     "https://github.com/openfaas/faas-cli/releases/download/0.13.14/faas-cli",
+			version: "0.13.14",
+			os:      "linux",
+			arch:    "x86_64",
+		},
+		{
+			name:    "terraform",
+			url:     "https://releases.hashicorp.com/terraform/1.0.0/terraform_1.0.0_linux_amd64.zip",
+			version: "1.0.0",
+			os:      "linux",
+			arch:    "x86_64",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			toolList, err := GetDownloadURLs(tools, []string{tc.name}, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			tool := toolList[0]
+			got, err := tool.GetURL(tc.os, tc.arch, tool.Version)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if got != tc.url {
+				t.Fatalf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
 func Test_DownloadKubectl(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectl"
