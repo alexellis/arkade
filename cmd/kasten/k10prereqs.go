@@ -28,9 +28,15 @@ func MakeInstallK10Preflight() *cobra.Command {
 		SilenceUsage: true,
 	}
 
+	k10cmd.Flags().Bool("dry-run", false, "Print the commands that would be run by the preflight script.")
+
 	k10cmd.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
+			return err
+		}
+		dryRun, err := command.Flags().GetBool("dry-run")
+		if err != nil {
 			return err
 		}
 
@@ -55,7 +61,14 @@ func MakeInstallK10Preflight() *cobra.Command {
 		if err := ioutil.WriteFile(outFile, body, 0755); err != nil {
 			return fmt.Errorf("error writing k10 preflight tool to: %s %w", outFile, err)
 		}
+
 		fmt.Printf("Downloaded %s to %s\n", primerURL, outFile)
+
+		if dryRun {
+			fmt.Printf("Preflight script contents:\n%s\n", string(body))
+			fmt.Printf("Run this command with --dry-run=false to execute the script.\n")
+			return nil
+		}
 
 		scriptRes, err := runScript(outFile)
 		if err != nil {
