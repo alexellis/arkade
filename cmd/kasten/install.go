@@ -23,6 +23,7 @@ func MakeInstall() *cobra.Command {
 	}
 
 	command.AddCommand(MakeInstallK10())
+	command.AddCommand(MakeInstallK10Preflight())
 
 	return command
 }
