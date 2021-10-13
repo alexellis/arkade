@@ -44,10 +44,13 @@ and provides a fast and easy alternative to a package manager.`,
 		ValidArgs:    validToolOptions,
 	}
 
+	clientArch, clientOS := env.GetClientArch()
 	command.Flags().Bool("progress", true, "Display a progress bar")
 	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
+	command.Flags().String("arch", clientArch, "CPU architecture for the tool")
+	command.Flags().String("os", clientOS, "Operating system for the tool")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -80,8 +83,6 @@ and provides a fast and easy alternative to a package manager.`,
 			return err
 		}
 
-		arch, operatingSystem := env.GetClientArch()
-
 		stash, _ := command.Flags().GetBool("stash")
 		progress, _ := command.Flags().GetBool("progress")
 		if p, ok := os.LookupEnv("ARKADE_PROGRESS"); ok {
@@ -108,6 +109,15 @@ and provides a fast and easy alternative to a package manager.`,
 
 		var outFilePath string
 		var localToolsStore []get.ToolLocal
+
+		arch, _ := command.Flags().GetString("arch")
+		if err := get.ValidateArch(arch); err != nil {
+			return err
+		}
+		operatingSystem, _ := command.Flags().GetString("os")
+		if err := get.ValidateOS(operatingSystem); err != nil {
+			return err
+		}
 
 		for _, tool := range downloadURLs {
 			fmt.Printf("Downloading: %s\n", tool.Name)

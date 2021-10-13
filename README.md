@@ -122,6 +122,9 @@ arkade get APP@VERSION
 arkade get APP1 APP2 APP3
 
 arkade get APP1 APP2@VERSION APP3
+
+# Override machine os/arch
+arkade get APP --arch ARCH --os OS
 ```
 
 |       TOOL       |                                                                DESCRIPTION                                                                |
