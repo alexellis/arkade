@@ -358,6 +358,7 @@ export PATH=$PATH:$HOME/.arkade/bin/
 # Or install with:
 {{- range . }}
 sudo mv {{.Path}} /usr/local/bin/
+
 {{- end}}`)
 	}
 
