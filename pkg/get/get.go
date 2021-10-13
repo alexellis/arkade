@@ -15,6 +15,9 @@ import (
 	"github.com/alexellis/arkade/pkg/env"
 )
 
+var supportedOS = [...]string{"linux", "darwin", "ming"}
+var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "aarch64"}
+
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
 type Tool struct {
@@ -370,4 +373,27 @@ sudo mv {{.Path}} /usr/local/bin/
 	}
 
 	return tpl.Bytes(), err
+}
+
+// ValidateOS returns whether a given operating system is supported
+func ValidateOS(name string) error {
+	for _, os := range supportedOS {
+		if strings.HasPrefix(strings.ToLower(name), os) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("operating system %q is not supported. Available prefixes: %s.",
+		name, strings.Join(supportedOS[:], ", "))
+}
+
+// ValidateArch returns whether a given cpu architecture is supported
+func ValidateArch(name string) error {
+	for _, arch := range supportedArchitectures {
+		if arch == strings.ToLower(name) {
+			return nil
+		}
+	}
+	return fmt.Errorf("cpu architecture %q is not supported. Available: %s.",
+		name, strings.Join(supportedArchitectures[:], ", "))
 }
