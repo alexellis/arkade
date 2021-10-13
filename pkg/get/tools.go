@@ -124,13 +124,13 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 {{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
 		})
 
-	// https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl
+	// https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:       "kubernetes",
 			Repo:        "kubernetes",
 			Name:        "kubectl",
-			Version:     "v1.20.0",
+			Version:     "v1.22.2",
 			Description: "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
