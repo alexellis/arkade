@@ -29,6 +29,8 @@ func MakeInfo() *cobra.Command {
 
 		if args[0] == "k10" {
 			info = k10InfoMsg
+		} else if args[0] == "preflight" {
+			info = k10preflightInfoMsg
 		}
 
 		fmt.Printf("Info for your app: %s\n\n%s\n\n", args[0], info)
