@@ -9,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/config"
@@ -31,16 +32,11 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	// Check user provided version is valid on dry run
-	if len(version) > 1 && dryRun {
-		res, err := http.Head(downloadURL)
+	if len(tool.Version) > 1 && dryRun {
+		err := URLExists(tool.Name, downloadURL, tool.Version)
 		if err != nil {
 			return "", "", err
 		}
-
-		if res.StatusCode != http.StatusOK {
-			return "", "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
-		}
-
 	}
 
 	if dryRun {
@@ -221,4 +217,28 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 	}
 
 	return outFilePath, nil
+}
+
+func URLExists(name, url, version string) error {
+	timeout := time.Second * 5
+	client := makeHTTPClient(&timeout, false)
+
+	req, err := http.NewRequest(http.MethodHead, url, nil)
+	if err != nil {
+		return err
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return fmt.Errorf("tool %s with version %s not found", name, version)
+	}
+	return nil
 }
