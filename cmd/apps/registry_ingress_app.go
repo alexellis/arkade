@@ -109,6 +109,9 @@ Have you got the Registry running and cert-manager 0.11.0 or higher installed? %
 
 func buildRegistryYAML(domain, email, ingressClass, namespace, maxSize string, staging, hasNetworking bool) ([]byte, error) {
 	tmplString := registryIngressExtensionsYamlTemplate
+	if hasNetworking {
+		tmplString = registryIngressNetworkingYamlTemplate
+	}
 	tmpl, err := template.New("yaml").Parse(tmplString)
 
 	if err != nil {
@@ -234,7 +237,7 @@ spec:
       - path: /
         pathType: ImplementationSpecific
         backend:
-          service
+          service:
             name: docker-registry
             port:
               number: 5000
