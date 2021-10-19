@@ -130,7 +130,7 @@ and provides a fast and easy alternative to a package manager.`,
 			return err
 		}
 
-		fmt.Printf("%s", msg)
+		fmt.Printf("%s\n", msg)
 
 		return err
 	}
