@@ -19,7 +19,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var istioVer = "1.10.0"
+const (
+	// A default Istio version, get the latest from:
+	// https://github.com/istio/istio/releases/latest
+	istioVer = "1.11.4"
+)
 
 func MakeInstallIstio() *cobra.Command {
 	var istio = &cobra.Command{
@@ -188,7 +192,7 @@ func downloadIstio(userPath, arch, clientOS, version string) error {
 		return fmt.Errorf("unable to find tool definition")
 	}
 
-	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(env.LocalBinary(tool.Name, "")); errors.Is(err, os.ErrNotExist) {
 
 		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false)
 		if err != nil {
@@ -205,7 +209,7 @@ func downloadIstio(userPath, arch, clientOS, version string) error {
 
 func istioCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("istioctl", "")),
+		Command:     env.LocalBinary("istioctl", ""),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,
