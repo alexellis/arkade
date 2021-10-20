@@ -145,7 +145,6 @@ arkade get faas-cli \
   --arch arm64 \
   --os darwin
 ```
-
 > This is a time saver compared to searching for download pages every time you need a tool.
 
 
@@ -610,6 +609,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
 | oh-my-posh       | A prompt theme engine for any shell that can display kubernetes information.                                                              |
 | opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
+| operator-sdk     | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                              |
 | osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
 | pack             | Build apps using Cloud Native Buildpacks.                                                                                                 |
 | packer           | Build identical machine images for multiple platforms from a single source configuration.                                                 |

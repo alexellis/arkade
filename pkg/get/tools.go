@@ -1917,6 +1917,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 		{{.Name}}-{{$osStr}}-latest`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:       "operator-framework",
+			Repo:        "operator-sdk",
+			Name:        "operator-sdk",
+			Description: "Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators",
+			BinaryTemplate: `{{$arch := "amd64"}}
+
+{{if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- else if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- end -}}
+
+{{$os := .OS}}
+
+{{- if eq .OS "darwin" -}}
+{{$os = "darwin"}}
+{{- end -}}
+
+{{.Version}}/{{.Name}}_{{$os}}_{{$arch}}`,
+		})
 
 	tools = append(tools,
 		Tool{

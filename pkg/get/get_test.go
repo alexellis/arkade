@@ -2564,6 +2564,45 @@ func Test_DownloadJq(t *testing.T) {
 
 }
 
+func Test_DownloadOperatorSDK(t *testing.T) {
+	tools := MakeTools()
+	tool := getTool("operator-sdk", tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v1.13.1",
+			url:     "https://github.com/operator-framework/operator-sdk/releases/download/v1.13.1/operator-sdk_darwin_amd64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v1.13.1",
+			url:     "https://github.com/operator-framework/operator-sdk/releases/download/v1.13.1/operator-sdk_linux_amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v1.13.1",
+			url:     "https://github.com/operator-framework/operator-sdk/releases/download/v1.13.1/operator-sdk_linux_arm64",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
+
 func Test_DownloadCosignCli(t *testing.T) {
 	tools := MakeTools()
 	name := "cosign"
