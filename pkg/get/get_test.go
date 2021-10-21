@@ -2393,7 +2393,7 @@ func Test_DownloadKanister(t *testing.T) {
 func Test_DownloadKubestr(t *testing.T) {
 	tools := MakeTools()
 	name := "kubestr"
-	v := "v0.4.17"
+	v := "0.4.17"
 	tool := getTool(name, tools)
 
 	tests := []test{
@@ -2401,13 +2401,13 @@ func Test_DownloadKubestr(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-darwin-amd64.tar.gz`,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr_0.4.17_Darwin_x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-linux-amd64.tar.gz`,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr_0.4.17_Linux_x86_64.tar.gz`,
 		},
 	}
 

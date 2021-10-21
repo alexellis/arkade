@@ -968,7 +968,6 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "aquasecurity",
 			Repo:        "kube-bench",
 			Name:        "kube-bench",
-			Version:     "0.4.0",
 			Description: "Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.",
 			BinaryTemplate: `
 {{$arch := "arm"}}
@@ -1600,19 +1599,19 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Repo:        "kubestr",
 			Name:        "kubestr",
 			Description: "Kubestr discovers, validates and evaluates your Kubernetes storage options.",
-
+			Version:     "0.4.29",
 			URLTemplate: `
 {{ $ext := "tar.gz" }}
-{{ $osStr := "linux" }}
+{{ $osStr := "Linux" }}
 
 {{- if eq .OS "darwin" -}}
-{{ $osStr = "darwin" }}
+{{ $osStr = "Darwin" }}
 {{- else if HasPrefix .OS "ming" -}}
-{{ $osStr = "windows" }}
+{{ $osStr = "Windows" }}
 {{ $ext = ".zip" }}
 {{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-amd64.{{$ext}}`,
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{.Arch}}.{{$ext}}`,
 			BinaryTemplate: `{{.Name}}`,
 		})
 
