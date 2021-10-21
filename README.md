@@ -129,6 +129,7 @@ arkade get APP1 APP2@VERSION APP3
 | argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
+| buildkit         | BuildKit is a toolkit for converting source code to build artifacts in an efficient, expressive and repeatable manner.                    |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |

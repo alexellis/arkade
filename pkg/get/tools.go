@@ -1768,5 +1768,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		{{.Name}}-{{$osStr}}-latest`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "moby",
+			Repo:        "buildkit",
+			Name:        "buildkit",
+			Version:     "v0.9.1",
+			Description: "BuildKit is a toolkit for converting source code to build artifacts in an efficient, expressive and repeatable manner.",
+			BinaryTemplate: `
+				{{$osStr := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osStr = "darwin"}}
+				{{- end -}}
+
+				{{$archStr := .Arch}}
+				{{- if eq .Arch "aarch64" -}}
+				{{$archStr = "arm64"}}
+				{{- else if eq .Arch "x86_64" -}}
+				{{$archStr = "amd64"}}
+				{{- end -}}
+
+				{{$archiveStr := "tar.gz"}}
+
+				{{.Version}}/{{.Name}}-{{.Version}}.{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
+		})
+
 	return tools
 }

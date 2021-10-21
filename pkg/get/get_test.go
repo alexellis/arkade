@@ -2687,3 +2687,63 @@ func Test_DownloadKubescape(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadBuildKit(t *testing.T) {
+	tools := MakeTools()
+	name := "buildkit"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.9.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.windows-amd64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/moby/buildkit/releases/download/v0.9.1/buildkit-v0.9.1.windows-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		// t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+		// })
+	}
+}
