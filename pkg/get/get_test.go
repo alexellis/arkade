@@ -2690,7 +2690,7 @@ func Test_DownloadKubescape(t *testing.T) {
 
 func Test_DownloadBuildKit(t *testing.T) {
 	tools := MakeTools()
-	name := "buildkit"
+	name := "buildctl"
 
 	tool := getTool(name, tools)
 
@@ -2736,14 +2736,14 @@ func Test_DownloadBuildKit(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		// t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
-		// })
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
 	}
 }
