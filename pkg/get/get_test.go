@@ -2687,3 +2687,60 @@ func Test_DownloadKubescape(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKrew(t *testing.T) {
+	tools := MakeTools()
+	name := "krew"
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:   "darwin",
+			arch: arch64bit,
+			url:  `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv7l",
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_arm.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-windows_amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
