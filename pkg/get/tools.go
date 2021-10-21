@@ -802,22 +802,53 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Name:        "krew",
 			Description: "Package manager for kubectl plugins.",
 			URLTemplate: `
-		https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}.tar.gz`,
+			{{$osStr := ""}}
+			{{- if eq .OS "linux" -}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$osStr = "linux_amd64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$osStr = "linux_arm"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$osStr = "linux_arm64"}}
+			{{- end -}}
+			{{- else if eq .OS "darwin" -}}
+			{{-  if eq .Arch "aarch64" -}}
+			{{$osStr = "darwin_arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+			{{$osStr = "darwin_amd64"}}
+			{{- end -}}
+			{{ else if HasPrefix .OS "ming" -}}
+			{{-  if eq .Arch "aarch64" -}}
+			{{$osStr = "darwin_arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+			{{$osStr ="windows_amd64"}}
+			{{- end -}}
+			{{- end -}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}.tar.gz`,
 			BinaryTemplate: `
-		{{$osStr := ""}}
-		{{- if eq .OS "linux" -}}
-		{{- if eq .Arch "x86_64" -}}
-		{{$osStr = "linux_amd64"}}
-		{{- else if eq .Arch "armv7l" -}}
-		{{$osStr = "linux_arm"}}
-		{{- end -}}
-		{{- else if eq .OS "darwin" -}}
-		{{$osStr = "darwin_amd64"}}
-		{{ else if HasPrefix .OS "ming" -}}
-		{{$osStr ="windows_amd64.exe"}}
-		{{- end -}}
-		{{.Name}}-{{$osStr}}
-	`,
+			{{$osStr := ""}}
+			{{- if eq .OS "linux" -}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$osStr = "linux_amd64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$osStr = "linux_arm"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$osStr = "linux_arm64"}}
+			{{- end -}}
+			{{- else if eq .OS "darwin" -}}
+			{{-  if eq .Arch "aarch64" -}}
+			{{$osStr = "darwin_arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+			{{$osStr = "darwin_amd64"}}
+			{{- end -}}
+			{{ else if HasPrefix .OS "ming" -}}
+			{{-  if eq .Arch "aarch64" -}}
+			{{$osStr = "darwin_arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+			{{$osStr ="windows_amd64"}}
+			{{- end -}}
+			{{- end -}}
+			{{.Name}}-{{$osStr}}`,
 		})
 
 	tools = append(tools,
