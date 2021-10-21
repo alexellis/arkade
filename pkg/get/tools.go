@@ -1772,7 +1772,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		Tool{
 			Owner:       "moby",
 			Repo:        "buildkit",
-			Name:        "buildkit",
+			Name:        "buildctl",
 			Version:     "v0.9.1",
 			Description: "BuildKit is a toolkit for converting source code to build artifacts in an efficient, expressive and repeatable manner.",
 			BinaryTemplate: `
@@ -1794,7 +1794,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 				{{$archiveStr := "tar.gz"}}
 
-				{{.Version}}/{{.Name}}-{{.Version}}.{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
+				{{.Version}}/buildkit-{{.Version}}.{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
 		})
 
 	return tools
