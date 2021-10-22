@@ -32,10 +32,18 @@ func MakeGet() *cobra.Command {
 releases or downloads page. The tool is usually downloaded in binary format
 and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
+
+  # Options for the download
   arkade get linkerd2 --stash=false
-  arkade get terraform --version=0.12.0
   arkade get kubectl --progress=false
+
+  # Override the version
+  arkade get terraform --version=0.12.0
   arkade get kubectl@v1.19.3
+
+  # Override the OS
+  arkade get helm --os darwin --arch aarch64 
+  arkade get helm --os linux --arch armv7l 
 
   # Get a complete list of CLIs to download:
   arkade get`,
