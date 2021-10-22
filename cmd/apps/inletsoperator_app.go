@@ -51,7 +51,9 @@ IngressController`,
 	inletsOperator.Flags().StringP("secret-key-file", "s", "", "Text file containing secret key, used for providers like ec2")
 	inletsOperator.Flags().Bool("update-repo", true, "Update the helm repo")
 
-	inletsOperator.Flags().String("pro-client-image", "", "Docker image for inlets-pro's client")
+	inletsOperator.Flags().String("client-image", "", "Container image for tunnel clients")
+	inletsOperator.Flags().String("inlets-release", "", "Specific version of inlets to use for tunnel servers")
+
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	inletsOperator.PreRunE = func(command *cobra.Command, args []string) error {
@@ -187,8 +189,11 @@ IngressController`,
 
 		overrides["inletsProLicense"] = license
 
-		if val, _ := command.Flags().GetString("pro-client-image"); len(val) > 0 {
-			overrides["proClientImage"] = val
+		if val, _ := command.Flags().GetString("client-image"); len(val) > 0 {
+			overrides["inletsClientImage"] = val
+		}
+		if val, _ := command.Flags().GetString("inlets-release"); len(val) > 0 {
+			overrides["inletsRelease"] = val
 		}
 
 		err = helm.Helm3Upgrade("inlets/inlets-operator",
