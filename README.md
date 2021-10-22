@@ -199,6 +199,7 @@ arkade get APP --arch ARCH --os OS
 | tkn              | A CLI for interacting with Tekton.                                                                                                        |
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
 | vagrant          | Tool for building and distributing development environments.                                                                              |
+| waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
 
 Note to contributors, run `arkade get --output markdown` to generate this list

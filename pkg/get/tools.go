@@ -665,6 +665,30 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 
 	tools = append(tools,
 		Tool{
+			Owner:       "hashicorp",
+			Repo:        "waypoint",
+			Name:        "waypoint",
+			Version:     "0.6.1",
+			Description: "Easy application deployment for Kubernetes and Amazon ECS",
+			URLTemplate: `
+			{{$arch := "386"}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+            {{$arch = "arm64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$arch = "arm"}}
+			{{- end -}}
+			
+			{{$os := .OS}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{- end -}}
+
+			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "cli",
 			Repo:        "cli",
 			Name:        "gh",

@@ -994,6 +994,63 @@ func Test_DownloadCivo(t *testing.T) {
 	}
 }
 
+func Test_DownloadWaypoint(t *testing.T) {
+	tools := MakeTools()
+	name := "waypoint"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.6.1"
+
+	tests := []test{
+		{os: "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_windows_amd64.zip`,
+		},
+		{os: "ming",
+			arch:    "386",
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_windows_386.zip`,
+		},
+		{os: "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_darwin_arm64.zip`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_darwin_amd64.zip`,
+		},
+		{os: "linux",
+			arch:    "386",
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_linux_386.zip`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_linux_arm.zip`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_linux_amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadTerraform(t *testing.T) {
 	tools := MakeTools()
 	name := "terraform"
