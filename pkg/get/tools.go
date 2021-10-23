@@ -671,7 +671,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Version:     "0.6.1",
 			Description: "Easy application deployment for Kubernetes and Amazon ECS",
 			URLTemplate: `
-			{{$arch := "386"}}
+			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "aarch64" -}}
