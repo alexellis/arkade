@@ -16,7 +16,7 @@ import (
 )
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
-var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "aarch64"}
+var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
 
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
