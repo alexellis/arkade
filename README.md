@@ -613,64 +613,65 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 
 |          TOOL           |                             DESCRIPTION                             |
 |-------------------------|---------------------------------------------------------------------|
-| docker-registry-ingress | Install registry ingress with TLS                                   |
-| inlets-operator         | Install inlets-operator                                             |
-| kuma                    | Install Kuma                                                        |
-| kube-state-metrics      | Install kube-state-metrics                                          |
-| cert-manager            | Install cert-manager                                                |
-| docker-registry         | Install a Docker registry                                           |
-| rabbitmq                | Install rabbitmq                                                    |
-| linkerd                 | Install linkerd                                                     |
-| redis                   | Install redis                                                       |
 | gitlab                  | Install GitLab                                                      |
-| falco                   | Install Falco                                                       |
-| registry-creds          | Install registry-creds                                              |
-| qemu-static             | Install qemu-user-static                                            |
-| metrics-server          | Install metrics-server                                              |
-| postgresql              | Install postgresql                                                  |
-| ingress-nginx           | Install ingress-nginx                                               |
-| jenkins                 | Install jenkins                                                     |
-| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
-| metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
-| loki                    | Install Loki for monitoring and tracing                             |
-| nfs-provisioner         | Install nfs subdir external provisioner                             |
-| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
-| kanister                | Install kanister for application-level data management              |
-| openfaas-ingress        | Install openfaas ingress with TLS                                   |
-| chart                   | Install the specified helm chart                                    |
-| cron-connector          | Install cron-connector for OpenFaaS                                 |
-| minio                   | Install minio                                                       |
-| openfaas                | Install openfaas                                                    |
 | kafka                   | Install Confluent Platform Kafka                                    |
-| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
-| OSM                     | Install osm                                                         |
 | inlets-tcp-client       | Install inlets PRO TCP client                                       |
-| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
-| sealed-secret           | Install sealed-secrets                                              |
-| cassandra               | Install cassandra                                                   |
-| waypoint                | Install Waypoint                                                    |
-| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
-| mongodb                 | Install mongodb                                                     |
-| grafana                 | Install grafana                                                     |
-| kube-image-prefetch     | Install kube-image-prefetch                                         |
-| consul-connect          | Install Consul Service Mesh                                         |
-| argocd                  | Install argocd                                                      |
-| prometheus              | Install Prometheus for monitoring                                   |
-| istio                   | Install istio                                                       |
+| nfs-provisioner         | Install nfs subdir external provisioner                             |
+| kube-prometheus-stack   | Install Kube Prometheus Stack for monitoring                        |
+| chart                   | Install the specified helm chart                                    |
 | crossplane              | Install Crossplane                                                  |
+| kube-image-prefetch     | Install kube-image-prefetch                                         |
+| registry-creds          | Install registry-creds                                              |
+| consul-connect          | Install Consul Service Mesh                                         |
+| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
+| inlets-operator         | Install inlets-operator                                             |
+| OSM                     | Install osm                                                         |
+| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
+| kube-state-metrics      | Install kube-state-metrics                                          |
+| grafana                 | Install grafana                                                     |
+| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
+| kyverno                 | Install Kyverno                                                     |
+| cassandra               | Install cassandra                                                   |
+| kanister                | Install kanister for application-level data management              |
+| qemu-static             | Install qemu-user-static                                            |
+| redis                   | Install redis                                                       |
+| openfaas                | Install openfaas                                                    |
+| loki                    | Install Loki for monitoring and tracing                             |
+| sealed-secret           | Install sealed-secrets                                              |
+| prometheus              | Install Prometheus for monitoring                                   |
+| minio                   | Install minio                                                       |
+| ingress-nginx           | Install ingress-nginx                                               |
+| argocd                  | Install argocd                                                      |
+| metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
+| kafka-connector         | Install kafka-connector for OpenFaaS                                |
+| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
+| vault                   | Install vault                                                       |
+| metrics-server          | Install metrics-server                                              |
+| istio                   | Install istio                                                       |
 | cockroachdb             | Install CockroachDB                                                 |
+| cron-connector          | Install cron-connector for OpenFaaS                                 |
+| rabbitmq                | Install rabbitmq                                                    |
+| docker-registry         | Install a community maintained Docker registry chart                |
+| cert-manager            | Install cert-manager                                                |
+| nats-connector          | Install OpenFaaS connector for NATS                                 |
+| gitea                   | Install gitea                                                       |
+| postgresql              | Install postgresql                                                  |
+| falco                   | Install Falco                                                       |
+| jenkins                 | Install jenkins                                                     |
+| openfaas-ingress        | Install openfaas ingress with TLS                                   |
 | openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
 | portainer               | Install portainer to visualise and manage containers                |
+| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
+| waypoint                | Install Waypoint                                                    |
+| kuma                    | Install Kuma                                                        |
+| linkerd                 | Install linkerd                                                     |
+| docker-registry-ingress | Install registry ingress with TLS                                   |
 | tekton                  | Install Tekton pipelines and dashboard                              |
 | traefik2                | Install traefik2                                                    |
-| kafka-connector         | Install kafka-connector for OpenFaaS                                |
-| gitea                   | Install gitea                                                       |
 | influxdb                | Install influxdb                                                    |
-| nats-connector          | Install OpenFaaS connector for NATS                                 |
-| kyverno                 | Install Kyverno                                                     |
-| vault                   | Install Vault                                                       |
+| mongodb                 | Install mongodb                                                     |
 
-There are 56 apps that you can install on your cluster.
+There are 57 apps that you can install on your cluster.
 
 > Note to contributors, run `arkade install --print-table` to generate this list
 

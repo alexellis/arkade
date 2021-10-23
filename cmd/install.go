@@ -164,6 +164,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["kuma"] = NewArkadeApp(apps.MakeInstallKuma, apps.KumaInfoMsg)
 	arkadeApps["qemu-static"] = NewArkadeApp(apps.MakeInstallQemuStatic, apps.QemuStaticInfoMsg)
 	arkadeApps["vault"] = NewArkadeApp(apps.MakeInstallVault, apps.VaultInfoMsg)
+	arkadeApps["kube-prometheus-stack"] = NewArkadeApp(apps.MakeInstallPrometheusOperator, apps.KubePromInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
