@@ -407,6 +407,7 @@ Apps:
 | chart                   | Install the specified helm chart                                    |
 | metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
 | cockroachdb             | Install CockroachDB                                                 |
+| prometheus              | Install Prometheus                                                  |
 
 There are 47 apps that you can install on your cluster.
 
