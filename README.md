@@ -431,8 +431,12 @@ Apps:
 | chart                   | Install the specified helm chart                                    |
 | metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
 | cockroachdb             | Install CockroachDB                                                 |
+<<<<<<< HEAD
 | prometheus              | Install Prometheus                                                  |
 | waypoint                | Install Waypoint                                                    |
+=======
+| kanister                | Install kanister for application-level data management              |
+>>>>>>> added kanister app
 
 There are 48 apps that you can install on your cluster.
 
