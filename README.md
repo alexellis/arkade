@@ -18,7 +18,10 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
   - [Should you try arkade?](#should-you-try-arkade)
   - [Get arkade](#get-arkade)
-  - [Usage](#usage)
+
+  <details>
+    <summary><a href="#usage">Usage</summary></a>
+
     - [Install a CLI tool](#install-a-cli-tool)
     - [Create a Kubernetes cluster](#create-a-kubernetes-cluster)
     - [Install an app](#install-an-app)
@@ -30,7 +33,11 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
       - [Get OpenFaaS with TLS](#get-openfaas-with-tls)
       - [Get a public IP for a private cluster and your IngressController](#get-a-public-ip-for-a-private-cluster-and-your-ingresscontroller)
       - [Explore the apps](#explore-the-apps)
-  - [Community & contributing](#community--contributing)
+
+  </details>
+  <details>
+    <summary><a href="#community--contributing">Community &amp; contributing</summary></a>
+
     - [Do you use this project? 👋](#do-you-use-this-project-)
     - [Tutorials & community blog posts](#tutorials--community-blog-posts)
       - [Video review from Rancher Labs](#video-review-from-rancher-labs)
@@ -53,6 +60,8 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
       - [Test other people's PRs](#test-other-peoples-prs)
     - [Join us on Slack](#join-us-on-slack)
     - [License](#license)
+
+  </summary>
 
 ## Should you try arkade?
 
