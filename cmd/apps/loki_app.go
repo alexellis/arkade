@@ -53,8 +53,8 @@ func MakeInstallLoki() *cobra.Command {
 
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("loki/loki-stack").
-			WithHelmURL("https://grafana.github.io/loki/charts").
+			WithHelmRepo("kanister/kanister-operator").
+			WithHelmURL("https://charts.kanister.io/").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
