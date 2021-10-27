@@ -29,7 +29,9 @@ Check at https://github.com/sponsors/alexellis
 4.
 
 ## Context
+
 <!--- How has this issue affected you? What are you trying to accomplish? -->
+<!--- What would happen if this issue was not resolved for you in some way? -->
 <!--- Providing context helps us come up with a solution that is most useful in the real world -->
 
 ## Your Environment
