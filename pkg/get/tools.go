@@ -604,10 +604,12 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:        "terraform",
 			Version:     "1.0.0",
 			Description: "Infrastructure as Code for major cloud providers.",
-			URLTemplate: `{{$arch := .Arch}}
-
+			URLTemplate: `
+			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+            {{$arch = "arm64"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- end -}}
@@ -617,7 +619,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{$os = "windows"}}
 			{{- end -}}
 
-			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
+		})
 
 	tools = append(tools,
 		Tool{
