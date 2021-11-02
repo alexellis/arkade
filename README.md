@@ -408,8 +408,9 @@ Apps:
 | metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
 | cockroachdb             | Install CockroachDB                                                 |
 | prometheus              | Install Prometheus                                                  |
+| waypoint                | Install Waypoint                                                    |
 
-There are 47 apps that you can install on your cluster.
+There are 48 apps that you can install on your cluster.
 
 Note to contributors, run `arkade install --print-table` to generate this list
 
