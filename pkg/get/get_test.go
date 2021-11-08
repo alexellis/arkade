@@ -1757,6 +1757,7 @@ func Test_DownloadInfluxCli(t *testing.T) {
 func Test_DownloadInletsProCli(t *testing.T) {
 	tools := MakeTools()
 	name := "inlets-pro"
+	const version = "0.9.1"
 
 	tool := getTool(name, tools)
 
@@ -1764,38 +1765,44 @@ func Test_DownloadInletsProCli(t *testing.T) {
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro.exe`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro.exe`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-arm64`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-armhf`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-armhf`,
 		},
 		{
 			os:      "linux",
 			arch:    "armv6l",
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-armhf`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-armhf`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "0.8.3",
-			url:     `https://github.com/inlets/inlets-pro/releases/download/0.8.3/inlets-pro-darwin`,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-darwin`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-darwin-arm64`,
 		},
 	}
 
