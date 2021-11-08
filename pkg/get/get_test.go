@@ -2865,3 +2865,41 @@ func Test_DownloadKrew(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKubeBench(t *testing.T) {
+	tools := MakeTools()
+	name := "kube-bench"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.6.5",
+			url:     "https://github.com/aquasecurity/kube-bench/releases/download/v0.6.5/kube-bench_0.6.5_linux_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.6.5",
+			url:     "https://github.com/aquasecurity/kube-bench/releases/download/v0.6.5/kube-bench_0.6.5_darwin_amd64.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
