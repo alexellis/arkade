@@ -487,6 +487,7 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | jenkins                 | Install jenkins                                                     |
 | tekton                  | Install Tekton pipelines and dashboard                              |
 | consul-connect          | Install Consul Service Mesh                                         |
+| inlets-tcp-client       | Install inlets PRO TCP client                                       |
 
 There are 52 apps that you can install on your cluster.
 
