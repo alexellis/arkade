@@ -1239,19 +1239,23 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Repo:        "inlets-pro",
 			Name:        "inlets-pro",
 			Description: "Cloud Native Tunnel for HTTP and TCP traffic.",
-			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-{{.Name}}.exe
-{{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin
-{{- else if eq .Arch "armv6l" -}}
-{{.Name}}-armhf
-{{- else if eq .Arch "armv7l" -}}
-{{.Name}}-armhf
-{{- else if eq .Arch "aarch64" -}}
-{{.Name}}-arm64
-{{- else -}}
-{{.Name}}
-{{- end -}}`,
+			BinaryTemplate: `
+			{{$arch := ""}}
+			{{$os := ""}}
+			{{$ext := ""}}
+
+			{{- if eq .Arch "aarch64" -}}
+            {{$arch = "-arm64"}}
+			{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+			{{$arch = "-armhf"}}
+			{{- end -}}
+
+			{{ if eq .OS "darwin" -}}
+			{{$os = "-darwin"}}
+			{{ else if HasPrefix .OS "ming" -}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+			{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
