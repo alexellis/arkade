@@ -160,6 +160,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["prometheus"] = NewArkadeApp(apps.MakeInstallPrometheus, apps.PrometheusInfoMsg)
 	arkadeApps["waypoint"] = NewArkadeApp(apps.MakeInstallWaypoint, apps.WaypointInfoMsg)
 	arkadeApps["kanister"] = NewArkadeApp(apps.MakeInstallKanister, apps.KanisterInfoMsg)
+	arkadeApps["inlets-tcp-client"] = NewArkadeApp(apps.MakeInstallInletsTcpClient, apps.InletsTcpClientInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
