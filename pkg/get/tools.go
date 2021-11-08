@@ -974,7 +974,6 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "aquasecurity",
 			Repo:        "kube-bench",
 			Name:        "kube-bench",
-			Version:     "0.4.0",
 			Description: "Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.",
 			BinaryTemplate: `
 {{$arch := "arm"}}
