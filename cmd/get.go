@@ -11,9 +11,10 @@ import (
 	"strconv"
 	"syscall"
 
+	"github.com/spf13/cobra"
+
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	"github.com/spf13/cobra"
 )
 
 // MakeGet creates the Get command to download software
@@ -42,8 +43,8 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get kubectl@v1.19.3
 
   # Override the OS
-  arkade get helm --os darwin --arch aarch64 
-  arkade get helm --os linux --arch armv7l 
+  arkade get helm --os darwin --arch aarch64
+  arkade get helm --os linux --arch armv7l
 
   # Get a complete list of CLIs to download:
   arkade get`,
