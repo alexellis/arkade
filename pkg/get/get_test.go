@@ -2910,3 +2910,53 @@ func Test_DownloadKubeBench(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadClusterctl(t *testing.T) {
+	tools := MakeTools()
+	name := "clusterctl"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v1.0.0",
+			url:     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v1.0.0",
+			url:     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v1.0.0",
+			url:     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v1.0.0",
+			url:     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-darwin-arm64",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

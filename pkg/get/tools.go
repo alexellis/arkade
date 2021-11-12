@@ -660,12 +660,12 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- end -}}
-			
+
 			{{$os := .OS}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$os = "windows"}}
 			{{- end -}}
-			
+
 			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
 		})
 
@@ -685,7 +685,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- end -}}
-			
+
 			{{$os := .OS}}
 			{{ if HasPrefix .OS "ming" -}}
 			{{$os = "windows"}}
@@ -1830,6 +1830,25 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 
 		{{.Name}}-{{$osStr}}-latest`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kubernetes-sigs",
+			Repo:        "cluster-api",
+			Name:        "clusterctl",
+			Description: "The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster",
+			BinaryTemplate: `{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{- if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+
+			{{ $archStr := "amd64" }}
+			{{- if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		})
 
 	return tools
