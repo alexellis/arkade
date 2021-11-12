@@ -135,6 +135,7 @@ arkade get APP --arch ARCH --os OS
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
+| clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
