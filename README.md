@@ -17,71 +17,56 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
 
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
   - [Should you try arkade?](#should-you-try-arkade)
-  - [Get arkade](#get-arkade)
-  - [Usage](#usage)
-    - [Install a CLI tool](#install-a-cli-tool)
-    - [Create a Kubernetes cluster](#create-a-kubernetes-cluster)
-    - [Install an app](#install-an-app)
-    - [Uninstall an app](#uninstall-an-app)
-      - [Reduce the repetition](#reduce-the-repetition)
-      - [Bye-bye values.yaml, hello flags](#bye-bye-valuesyaml-hello-flags)
-      - [Override with `--set`](#override-with---set)
-      - [Get a self-hosted TLS registry with authentication](#get-a-self-hosted-tls-registry-with-authentication)
-      - [Get OpenFaaS with TLS](#get-openfaas-with-tls)
-      - [Get a public IP for a private cluster and your IngressController](#get-a-public-ip-for-a-private-cluster-and-your-ingresscontroller)
-      - [Explore the apps](#explore-the-apps)
+  - [Getting arkade](#getting-arkade)
+  - [Usage overview](#usage-overview)
+  - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
+  - [Installing apps with arkade](#installing-apps-with-arkade)
   - [Community & contributing](#community--contributing)
-    - [Do you use this project? 👋](#do-you-use-this-project-)
-    - [Tutorials & community blog posts](#tutorials--community-blog-posts)
-      - [Video review from Rancher Labs](#video-review-from-rancher-labs)
-      - [Watch a video walk-through by Alex Ellis](#watch-a-video-walk-through-by-alex-ellis)
-      - [Featured tutorials](#featured-tutorials)
-      - [Community posts](#community-posts)
-    - [Suggest a new app](#suggest-a-new-app)
-    - [Sponsored apps](#sponsored-apps)
-    - [How does `arkade` compare to `helm`?](#how-does-arkade-compare-to-helm)
-    - [Is arkade suitable for production use?](#is-arkade-suitable-for-production-use)
-    - [What is in scope for `arkade get`?](#what-is-in-scope-for-arkade-get)
-    - [Automatic download of tools](#automatic-download-of-tools)
-    - [Improving the code or fixing an issue](#improving-the-code-or-fixing-an-issue)
-    - [Developer workflow](#developer-workflow)
-      - [Cloning](#cloning)
-      - [Adding your fork:](#adding-your-fork)
-      - [To verify changes:](#to-verify-changes)
-      - [Checkout a branch to start work](#checkout-a-branch-to-start-work)
-      - [Push up your changes for a PR](#push-up-your-changes-for-a-pr)
-      - [Test other people's PRs](#test-other-peoples-prs)
-    - [Join us on Slack](#join-us-on-slack)
-    - [License](#license)
+  - [Sponsored apps](#sponsored-apps)
+  - [FAQ](#faq)
 
 ## Should you try arkade?
-
-Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com has to say about arkade:
 
 > I was setting up a new dev environment yesterday. Kind, helm, kustomize, kubectl, all this stuff. My take is - arkade is highly underappreciated.
 > I'd spend an hour in the past to install such tools. With arkade it was under ten minutes.
 
-[Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer, he says:
+Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com has to say about arkade:
 
 > This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
 
-[@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20) says:
+[Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer, he says:
+
 
 > for getting the basics installed, nothing beats arkade
 > it can install commonly used cli tools like kubectl locally for you, as well as common k8s pkgs like ingress-nginx or portainer
 
-[@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
+[@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20) says:
+
 
 > It's hard to use K8s without Arkade these days.
 > My team at @lftechnology absolutely loves it.
 
-From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
+[@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
 
 > I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
 > also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
 
-## Get arkade
+From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
+
+> You've to install latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍
+
+From [Thorsten Hans](https://twitter.com/ThorstenHans/status/1457982292597608449?s=20) - Cloud Native consultant
+
+> If you want to install quickly a new tool in your dev env or in your k8s cluster you can use the Arkade (https://github.com/alexellis/arkade) easy and quick you should try out! Ps. I contribute to this project 🥰
+
+[Carlos Panato](https://twitter.com/comedordexis/status/1423339283713347587) - Staff engineer @ Mattermost
+
+> arkade is the 'brew install' of Kubernetes. You can install and run an application in a single command. Finally! https://github.com/alexellis/arkade /by Alex Ellis
+
+From [John Arundel](https://twitter.com/bitfield/status/1242385165445455872?s=20) - Cloud consultant, author
+
+## Getting arkade
 
 ```bash
 # Note: you can also run without `sudo` and move the binary yourself
@@ -94,38 +79,58 @@ ark --help  # a handy alias
 curl -sLS https://get.arkade.dev | sh
 ```
 
-> Windows users: arkade requires bash to be available, therefore Windows users can [install Git Bash](https://git-scm.com/downloads).
+> Windows users: arkade requires bash to be available, therefore Windows users should [install and use Git Bash](https://git-scm.com/downloads)
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
-## Usage
+## Usage overview
 
-Here's a few examples of apps you can install, for a complete list run: `arkade install --help`.
+Arkade can be used to install Kubernetes apps or to download CLI tools.
 
-* `arkade install` - install an app
-* `arkade info` - the post-install screen for an app
-* `arkade get` - install a CLI tools such as `kubectl` or `faas-cli`
-* `arkade update` - print instructions to update arkade itself
+* `arkade install` - install a Kubernetes app
+* `arkade info` - see the post installation screen for a Kubernetes app
+* `arkade get` - download a CLI tool
+* `arkade update` - update arkade itself
 
-### Install a CLI tool
+An arkade "app" could represent a helm chart such as `openfaas/faas-netes`, a custom CLI installer such as `istioctl` or a set of static manifests (i.e. MetalLB).
+
+An arkade "tool" is a CLI that can be downloaded for your operating system. Arkade downloads statically-linked binaries from their upstream locations on GitHub or a the vendor's chosen URL such as with `kubectl` and `terraform`.
+
+## Download CLI tools with arkade
 
 arkade downloads the correct version of a CLI for your OS and CPU.
 
 With automatic detection of: Windows / MacOS / Linux / Intel / ARM.
 
 ```bash
-arkade get APP
-arkade get APP --version VERSION
-arkade get APP@VERSION
+# Download a binary release of a tool
+
+arkade get kubectl
+
+# Download a specific version of that tool
+arkade get kubectl@v1.22.0
 
 # Download multiple tools at once
-arkade get APP1 APP2 APP3
+arkade get kubectl \
+  helm \
+  istioctl
 
-arkade get APP1 APP2@VERSION APP3
+# Download multiple specific versions
+arkade get faas-cli@0.13.15 \
+  kubectl@v1.22.0
 
 # Override machine os/arch
-arkade get APP --arch ARCH --os OS
+arkade get faas-cli \
+  --arch arm64 \
+  --os linux
+
+# Override machine os/arch
+arkade get faas-cli \
+  --arch arm64 \
+  --os darwin
 ```
+
+### Complete list of CLI tools
 
 |       TOOL       |                                                                DESCRIPTION                                                                |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
@@ -211,26 +216,38 @@ Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for h
 
 Adding a new tool for download is as simple as editing [tools.go](https://github.com/alexellis/arkade/blob/master/pkg/get/tools.go).
 
+## Installing apps with arkade
+
+You'll need a Kubernetes cluster to arkade. Unlike cloud-based marketplaces, arkade doesn't have any special pre-requirements and can be used with any private or public cluster.
+
 ### Create a Kubernetes cluster
 
 If you have Docker installed, then you can install Kubernetes using KinD in a matter of moments:
 
 ```bash
-arkade get kubectl
-arkade get kind
+arkade get kubectl@v1.22.0 \
+  kind@v0.11.1
 
 kind create cluster
 ```
 
 You can also download k3d [k3s](https://github.com/rancher/k3s) in the same way with `arkade get k3d`.
 
-### Install an app
+### Install a Kubernetes app
 
 No need to worry about whether you're installing to Intel or ARM architecture, the correct values will be set for you automatically.
 
 ```bash
-arkade install openfaas --gateways 2 --load-balancer false
+arkade install openfaas \
+  --gateways 2 \
+  --load-balancer false
 ```
+
+The post-installation message shows you how to connect. And whenever you want to see those details again, just run `arkade info openfaas`.
+
+There's even more options you can chose with `arkade install openfaas --help` - the various flags you see map to settings from the helm chart README, that you'd usually have to look up and set via a `values.yaml` file.
+
+If there's something missing from the list of flags that you need, arkade also supports `--set` for any arkade app that uses helm. Note that not every app uses helm.
 
 Remember how awkward it was last time you installed the [Kubernetes dashboard](https://github.com/kubernetes/dashboard)? And how you could never remember the command to get the token to log in?
 
@@ -240,13 +257,15 @@ arkade install kubernetes-dashboard
 
 Forgot your token? `arkade info kubernetes-dashboard`
 
+This is an example of an arkade app that uses static YAML manifests instead of helm.
+
 Prefer [Portainer](https://www.portainer.io)? Just run: `arkade install portainer`
 
 ### Uninstall an app
 
 Run `arkade uninstall` or `arkade delete` for more information on how to remove applications from a Kubernetes cluster.
 
-#### Reduce the repetition
+### Reduce the repetition
 
 [Normally up to a dozen commands](https://cert-manager.io/docs/installation/kubernetes/) (including finding and downloading helm), now just one. No searching for the correct CRD to apply, no trying to install helm, no trying to find the correct helm repo to add:
 
@@ -262,7 +281,7 @@ arkade install ingress-nginx
 arkade install metrics-server
 ```
 
-#### Bye-bye values.yaml, hello flags
+### Say goodbye to values.yaml and hello to flags
 
 We use strongly typed Go CLI flags, so that you can run `--help` instead of trawling through countless Helm chart README files to find the correct `--set` combination for what you want.
 
@@ -289,7 +308,7 @@ Flags:
       --update-repo        Update the helm repo (default true)
 ```
 
-#### Override with `--set`
+### Override with `--set`
 
 You can also set helm overrides, for apps which use helm via `--set`
 
@@ -303,22 +322,15 @@ After installation, an info message will be printed with help for usage, you can
 arkade info <NAME>
 ```
 
+### Compounding apps
+
+Apps are easier to discover and install than helm chart which involve many more manual steps, however when you compound apps together, they really save you time.
+
 #### Get a self-hosted TLS registry with authentication
 
 Here's how you can get a self-hosted Docker registry with TLS and authentication in just 5 commands on an empty cluster:
 
-```bash
-arkade install ingress-nginx
-arkade install cert-manager
-arkade install docker-registry
-arkade install docker-registry-ingress \
-  --email web@example.com \
-  --domain reg.example.com
-```
-
-#### Get OpenFaaS with TLS
-
-The same for OpenFaaS would look like this:
+Here's how you would bootstrap OpenFaaS with TLS:
 
 ```bash
 arkade install ingress-nginx
@@ -329,19 +341,31 @@ arkade install openfaas-ingress \
   --domain reg.example.com
 ```
 
+And here's what it looks like for a private Docker registry with authentication enabled:
+
+```bash
+arkade install ingress-nginx
+arkade install cert-manager
+arkade install docker-registry
+arkade install docker-registry-ingress \
+  --email web@example.com \
+  --domain reg.example.com
+```
+
 #### Get a public IP for a private cluster and your IngressController
 
-And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets PRO](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
+And if you're running on a private cloud, on-premises or on your laptop, you can simply add the [inlets-operator](https://github.com/inlets/inlets-operator/) using [inlets](https://docs.inlets.dev/) to get a secure TCP tunnel and a public IP address.
 
 ```bash
 arkade install inlets-operator \
   --access-token $HOME/digitalocean-token \
   --region lon1 \
-  --license $(cat $HOME/license.txt)
+  --provider digitalocean
 ```
 
+This makes your cluster behave like it was on a public cloud and LoadBalancer IPs go from Pending to a real, functioning IP.
 
-#### Explore the apps
+### Explore the apps
 
 You can view the various apps available with `arkade install / --help`, more are available when you run the command yourself.
 
@@ -419,7 +443,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 
 ### Do you use this project? 👋
 
-Alex created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
+<a href="https://github.com/sponsors/alexellis/">Alex</a> created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
 
 <a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
@@ -456,7 +480,7 @@ Alex created this project for developers just like yourself. If you use arkade, 
 
 To suggest a new app, please check past issues and [raise an issue for it](https://github.com/alexellis/arkade). Think also whether your app suggestion would be a good candidate for a Sponsored App.
 
-### Sponsored apps
+## Sponsored apps
 
 You can now propose your project or product as a Sponsored App. Sponsored Apps work just like any other app that we've curated, however they will have a note next to them in the app description `(sponsored)` and a link to your chosen site upon installation. An app sponsorship can be purchased for a minimum of 12 months and includes free development of the Sponsored App, with ongoing support via GitHub for the Sponsored App for the duration only. Ongoing support will be limited to a set amount of hours per month.
 
@@ -490,6 +514,8 @@ Current sponsored apps include:
   ```
 
 [Contact us](mailto:contact@openfaas.com) to find out how you can have your Sponsored App added to arkade.
+
+## FAQ
 
 ### How does `arkade` compare to `helm`?
 
