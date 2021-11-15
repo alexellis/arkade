@@ -29,42 +29,41 @@ With over 40 helm charts and apps available for Kubernetes, gone are the days of
 
 > I was setting up a new dev environment yesterday. Kind, helm, kustomize, kubectl, all this stuff. My take is - arkade is highly underappreciated.
 > I'd spend an hour in the past to install such tools. With arkade it was under ten minutes.
-
-Here's what [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com has to say about arkade:
+>
+> [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com
 
 > This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
-
-[Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer, he says:
-
+>
+> [Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer
 
 > for getting the basics installed, nothing beats arkade
 > it can install commonly used cli tools like kubectl locally for you, as well as common k8s pkgs like ingress-nginx or portainer
-
-[@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20) says:
+>
+> [@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20)
 
 
 > It's hard to use K8s without Arkade these days.
 > My team at @lftechnology absolutely loves it.
-
-[@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20) says:
+>
+> [@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20)
 
 > I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
 > also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
-
-From [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
+> 
+> [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
 
 > You've to install latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍
-
-From [Thorsten Hans](https://twitter.com/ThorstenHans/status/1457982292597608449?s=20) - Cloud Native consultant
+>
+> [Thorsten Hans](https://twitter.com/ThorstenHans/status/1457982292597608449?s=20) - Cloud Native consultant
 
 > If you want to install quickly a new tool in your dev env or in your k8s cluster you can use the Arkade (https://github.com/alexellis/arkade) easy and quick you should try out! Ps. I contribute to this project 🥰
-
-[Carlos Panato](https://twitter.com/comedordexis/status/1423339283713347587) - Staff engineer @ Mattermost
+>
+> [Carlos Panato](https://twitter.com/comedordexis/status/1423339283713347587) - Staff engineer @ Mattermost
 
 > arkade is the 'brew install' of Kubernetes. You can install and run an application in a single command. Finally! https://github.com/alexellis/arkade /by Alex Ellis
-
-From [John Arundel](https://twitter.com/bitfield/status/1242385165445455872?s=20) - Cloud consultant, author
+>
+> [John Arundel](https://twitter.com/bitfield/status/1242385165445455872?s=20) - Cloud consultant, author
 
 ## Getting arkade
 
