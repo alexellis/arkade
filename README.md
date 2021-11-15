@@ -13,7 +13,7 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 40 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
+With over 48 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
   - [Should you try arkade?](#should-you-try-arkade)
