@@ -4,11 +4,13 @@
 package apps
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -17,7 +19,7 @@ func MakeInstallkanister() *cobra.Command {
 	var kanisterApp = &cobra.Command{
 		Use:          "kanister",
 		Short:        "Install kanister for application-level data management",
-		Long:         "Install kanister, An extensible open-source framework for application-level data management on Kubernetes",
+		Long:         "Install kanister, an extensible open-source framework for application-level data management on Kubernetes",
 		Example:      "arkade install kanister",
 		SilenceUsage: true,
 	}
@@ -37,6 +39,13 @@ func MakeInstallkanister() *cobra.Command {
 
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
+		}
+
+		arch := k8s.GetNodeArchitecture()
+		fmt.Printf("Node architecture: %q\n", arch)
+
+		if arch != IntelArch {
+			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		kanisterOptions := types.DefaultInstallOptions().
