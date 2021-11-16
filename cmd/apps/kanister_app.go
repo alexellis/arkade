@@ -15,7 +15,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func MakeInstallkanister() *cobra.Command {
+// MakeInstallKanister to be removed when k10 sponsored app
+// expires.
+func MakeInstallKanister() *cobra.Command {
 	var kanisterApp = &cobra.Command{
 		Use:          "kanister",
 		Short:        "Install kanister for application-level data management",
@@ -73,13 +75,17 @@ const KanisterInfoMsg = `# Get started with kanister here:
 # See kanister docs here
 # https://docs.kanister.io/install.html
 
-# Once deployed use kanctl to create an S3 compliant kanister profile:
+# Download the Kanister CLI:
 
-kanctl create profile s3compliant --bucket <bucket> --access-key ${AWS_ACCESS_KEY_ID} \
-                                    --secret-key ${AWS_SECRET_ACCESS_KEY}               \
-                                    --region <region>                                   \
-                                    --namespace kanister
+arkade get kanctl
 
+# Once deployed use kanctl to create an S3 compliant kanister profile
+
+kanctl create profile s3compliant --bucket $S3_BUCKET \
+  --access-key $AWS_ACCESS_KEY_ID \
+  --secret-key $AWS_SECRET_ACCESS_KEY \
+  --region <region> \
+  --namespace kanister
 
 `
 
