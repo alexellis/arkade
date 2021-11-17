@@ -1644,7 +1644,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	{{ $osStr = "macOS" }}
 	{{- end -}}
 
-	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}`,
+	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
