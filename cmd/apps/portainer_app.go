@@ -86,11 +86,21 @@ func MakeInstallPortainer() *cobra.Command {
 const PortainerInfoMsg = `
 # Open the UI:
 
-kubectl port-forward -n portainer svc/portainer 9000:9000 &
+kubectl port-forward -n portainer svc/portainer 9000:9000 & 
 
 # http://127.0.0.1:9000
 
-# Or access via NodePort on http://node-ip:30777
+# OR
+
+# HTTPS access
+
+kubectl port-forward -n portainer svc/portainer 9443:9443 &
+
+# https://127.0.0.1:9443
+
+# OR
+
+# Access via NodePort on http://node-ip:30777 for HTTP or http://node-ip:30779 for HTTPS
 
 Find out more at https://www.portainer.io/
 `
