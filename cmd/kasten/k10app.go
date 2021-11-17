@@ -136,7 +136,7 @@ kubectl rollout status -n kasten-io deploy/frontend-svc
 
 # Then access the dashboard via:
 
-kubectl --n kasten-io port-forward service/gateway 8080:8000
+kubectl -n kasten-io port-forward service/gateway 8080:8000
 
 http://127.0.0.1:8080/k10/#/
 
