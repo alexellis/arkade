@@ -2516,13 +2516,13 @@ func Test_DownloadK10multicluster(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_macOS_amd64`,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_macOS_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_linux_amd64`,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_linux_amd64.tar.gz`,
 		},
 	}
 
