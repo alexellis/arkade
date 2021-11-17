@@ -40,7 +40,10 @@ https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-op
 	k10cmd.Flags().StringP("namespace", "n", "kasten-io", "The namespace used for installation")
 	k10cmd.Flags().Bool("update-repo", true, "Update the helm repo")
 	k10cmd.Flags().Bool("eula", false, "Accept the EULA")
-	k10cmd.Flags().Bool("prometheus", false, "Enable Prometheus server")
+	k10cmd.Flags().Bool("token-auth", false, "Change to token mode for authentication")
+
+	k10cmd.Flags().Bool("prometheus", true, "Enable Prometheus server")
+	k10cmd.Flags().Bool("grafana", true, "Enable Grafana server")
 
 	k10cmd.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
@@ -55,6 +58,16 @@ https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-op
 				return fmt.Errorf("error with \"prometheus\" flag %w", err)
 			}
 		}
+		if _, err := cmd.Flags().GetBool("grafana"); err != nil {
+			if err != nil {
+				return fmt.Errorf("error with \"grafana\" flag %w", err)
+			}
+		}
+		if _, err := cmd.Flags().GetBool("token-auth"); err != nil {
+			if err != nil {
+				return fmt.Errorf("error with \"token-auth\" flag %w", err)
+			}
+		}
 		return nil
 	}
 
@@ -64,13 +77,17 @@ https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-op
 			return err
 		}
 		eula, _ := command.Flags().GetBool("eula")
-		prometheus, _ := command.Flags().GetBool("eula")
+		tokenAuth, _ := command.Flags().GetBool("token-auth")
+		grafana, _ := command.Flags().GetBool("grafana")
+		prometheus, _ := command.Flags().GetBool("prometheus")
 
 		wait, _ := command.Flags().GetBool("wait")
 		namespace, _ := command.Flags().GetString("namespace")
 		overrides := map[string]string{
 			"prometheus.server.enabled": strconv.FormatBool(prometheus),
 			"eula.accept":               strconv.FormatBool(eula),
+			"auth.tokenAuth.enabled":    strconv.FormatBool(tokenAuth),
+			"grafana.enabled":           strconv.FormatBool(grafana),
 		}
 		if command.Flags().Changed("cluster-name") {
 			v, _ := command.Flags().GetString("cluster-name")
