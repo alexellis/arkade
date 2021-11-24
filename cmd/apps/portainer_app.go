@@ -5,22 +5,16 @@ package apps
 
 import (
 	"fmt"
-	"io"
-	"net/http"
-	"os"
-	"path"
-	"strings"
-
-	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/k8s"
-
 	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/config"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/spf13/cobra"
 )
 
 func MakeInstallPortainer() *cobra.Command {
-	var command = &cobra.Command{
+	var portainer = &cobra.Command{
 		Use:          "portainer",
 		Short:        "Install portainer to visualise and manage containers",
 		Long:         `Install portainer to visualise and manage containers, now in beta for Kubernetes.`,
@@ -28,74 +22,86 @@ func MakeInstallPortainer() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	command.RunE = func(command *cobra.Command, args []string) error {
+	portainer.Flags().String("namespace", "default", "Namespace for the app")
+	portainer.Flags().Bool("persistence", false, "Use a 10Gi Persistent Volume to store data")
+	portainer.Flags().String("service-type", "ClusterIP", "Service Type for the main Portainer Service; ClusterIP, NodePort or LoadBalancer")
+
+	portainer.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set tls.enabled=false)")
+
+	portainer.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
 
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
-
-		_, err := k8s.KubectlTask("create", "ns",
-			"portainer")
+		namespace, err := command.Flags().GetString("namespace")
 		if err != nil {
-			if !strings.Contains(err.Error(), "exists") {
-				return err
-			}
+			return err
 		}
 
-		req, err := http.NewRequest(http.MethodGet,
-			"https://raw.githubusercontent.com/portainer/k8s/master/deploy/manifests/portainer/portainer.yaml",
-			nil)
+		persistence, err := command.Flags().GetBool("persistence")
+		if err != nil {
+			return err
+		}
+
+		serviceType, err := command.Flags().GetString("service-type")
+		if err != nil {
+			return err
+		}
+
+		if serviceType != "ClusterIP" && serviceType != "NodePort" && serviceType != "LoadBalancer" {
+			return fmt.Errorf("the service-type must be one of: ClusterIP, NodePort or LoadBalancer")
+		}
+
+		overrides := map[string]string{}
+
+		overrides["service.type"] = serviceType
+
+		if persistence {
+			overrides["persistence.enabled"] = "true"
+		}
+
+		customFlags, err := command.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
+
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
+
+		portainerOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmRepo("portainer/portainer").
+			WithHelmURL("https://portainer.github.io/k8s/").
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
+
+		_, err = apps.MakeInstallChart(portainerOptions)
 
 		if err != nil {
 			return err
 		}
 
-		res, err := http.DefaultClient.Do(req)
-
-		if err != nil {
-			return err
-		}
-
-		defer res.Body.Close()
-		body, _ := io.ReadAll(res.Body)
-		manifest := string(body)
-
-		tmp := os.TempDir()
-		joined := path.Join(tmp, "portainer.yaml")
-		err = os.WriteFile(joined, []byte(manifest), 0644)
-		if err != nil {
-			return err
-		}
-
-		_, err = k8s.KubectlTask("apply", "-f", joined, "-n", "portainer")
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(PortainerInstallMsg)
-
+		println(portainerInstallMsg)
 		return nil
 	}
-
-	return command
+	return portainer
 }
 
 const PortainerInfoMsg = `
 # Open the UI:
 
-kubectl port-forward -n portainer svc/portainer 9000:9000 &
+kubectl port-forward -n default svc/portainer 9000:9000 &
 
 # http://127.0.0.1:9000
 
-# Or access via NodePort on http://node-ip:30777
+# If service type was NodePort, you can access it on http://node-ip:30777 as well
 
 Find out more at https://www.portainer.io/
 `
 
-const PortainerInstallMsg = `=======================================================================
+const portainerInstallMsg = `=======================================================================
 = Portainer has been installed                                        =
 =======================================================================` +
 	"\n\n" + PortainerInfoMsg + "\n\n" + pkg.ThanksForUsing
