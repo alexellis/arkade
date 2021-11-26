@@ -503,7 +503,7 @@ func Test_DownloadK3d(t *testing.T) {
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: "v3.0.0",
-			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-windows-amd64"},
+			url:     "https://github.com/rancher/k3d/releases/download/v3.0.0/k3d-windows-amd64.exe"},
 		{os: "linux",
 			arch:    arch64bit,
 			version: "v3.0.0",

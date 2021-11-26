@@ -282,7 +282,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Name:        "k3d",
 			Description: "Helper to run Rancher Lab's k3s in Docker.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-	{{.Name}}-windows-amd64
+	{{.Name}}-windows-amd64.exe
 	{{- else if eq .OS "darwin" -}}
 	{{.Name}}-darwin-amd64
 	{{- else if eq .Arch "armv6l" -}}
