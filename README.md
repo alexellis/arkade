@@ -337,7 +337,7 @@ arkade install cert-manager
 arkade install openfaas
 arkade install openfaas-ingress \
   --email web@example.com \
-  --domain reg.example.com
+  --domain openfaas.example.com
 ```
 
 And here's what it looks like for a private Docker registry with authentication enabled:
