@@ -3010,3 +3010,59 @@ func Test_DownloadClusterctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadvCluster(t *testing.T) {
+	tools := MakeTools()
+	name := "vcluster"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.4.5",
+			url:     `https://github.com/loft-sh/vcluster/releases/download/v0.4.5/vcluster-windows-amd64.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.4.5",
+			url:     "https://github.com/loft-sh/vcluster/releases/download/v0.4.5/vcluster-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.4.5",
+			url:     "https://github.com/loft-sh/vcluster/releases/download/v0.4.5/vcluster-linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.4.5",
+			url:     "https://github.com/loft-sh/vcluster/releases/download/v0.4.5/vcluster-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v0.4.5",
+			url:     "https://github.com/loft-sh/vcluster/releases/download/v0.4.5/vcluster-darwin-arm64",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
