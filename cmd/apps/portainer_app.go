@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
