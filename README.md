@@ -204,7 +204,8 @@ arkade get faas-cli \
 | tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
 | tkn              | A CLI for interacting with Tekton.                                                                                                        |
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
-| vagrant          | Tool for building and distributing development environments.                                                                              |
+| vagrant          | Tool for building and distributing development environments.  
+| vcluster          | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
 

@@ -1891,5 +1891,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "loft-sh",
+			Repo:        "vcluster",
+			Name:        "vcluster",
+			Description: "Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.",
+			BinaryTemplate: `{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{ if HasPrefix .OS "ming" -}}
+            {{ $osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+
+			{{ $archStr := "amd64" }}
+            {{- if eq .Arch "x86_64" -}}
+            {{ $archStr = "amd64" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		})
+
 	return tools
 }
