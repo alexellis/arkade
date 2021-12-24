@@ -839,23 +839,23 @@ func Test_DownloadKustomize(t *testing.T) {
 		}
 	}
 
-	ver := "v3.8.8"
+	ver := "4.4.1"
 
 	tests := []test{
 		{os: "linux",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.8/kustomize_v3.8.8_linux_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_amd64.tar.gz",
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.8/kustomize_v3.8.8_darwin_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_darwin_amd64.tar.gz",
 		},
 		{os: "linux",
 			arch:    archARM64,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv3.8.8/kustomize_v3.8.8_linux_arm64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_arm64.tar.gz",
 		},
 	}
 
