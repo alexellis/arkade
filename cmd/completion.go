@@ -14,32 +14,34 @@ import (
 const completionCmd = `Use "arkade completion SHELL" to generate SHELL completion for:
     - bash
     - zsh
+    - fish
+    - powershell
 `
 
 func MakeShellCompletion() *cobra.Command {
 
 	completion := &cobra.Command{
 		Use:   "completion SHELL",
-		Short: "Output shell completion for the given shell (bash or zsh)",
+		Short: "Output shell completion for the given shell (bash, zsh, fish or powershell)",
 		Long: `
-Outputs shell completion for the given shell (bash or zsh)
-This depends on the bash-completion binary.  Example installation instructions:
-OS X:
-	$ brew install bash-completion
-	$ source $(brew --prefix)/etc/bash_completion
+Outputs shell completion for the given shell (bash, zsh, fish or powershell)
+For bash, this depends on the bash-completion binary.  Example installation instructions:
+macOS:
+	$ brew install bash-completion                   # for bash users
+	$ source $(brew --prefix)/etc/bash_completion    # for bash users
 	$ arkade completion bash > ~/.arkade-completion  # for bash users
 	$ arkade completion zsh > ~/.arkade-completion   # for zsh users
 	$ source ~/.arkade-completion
 Ubuntu:
-	$ apt-get install bash-completion
-	$ source /etc/bash-completion
+	$ apt-get install bash-completion  # for bash users
+	$ source /etc/bash-completion      # for bash users
 	$ source <(arkade completion bash) # for bash users
 	$ source <(arkade completion zsh)  # for zsh users
-Additionally, you may want to output the completion to a file and source in your .bashrc
+Additionally, you may want to output the completion to a file and source in your .bashrc / .zshrc / config.fish / profile.ps1
 `,
 		Example:      completionCmd,
 		SilenceUsage: true,
-		ValidArgs:    []string{"bash", "zsh"},
+		ValidArgs:    []string{"bash", "zsh", "fish", "powershell"},
 	}
 
 	completion.RunE = func(cmd *cobra.Command, args []string) error {
