@@ -1113,7 +1113,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{$osStr = "darwin"}}
 			{{- end -}}
 
-			{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.zip`,
+			{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$osStr}}-{{$arch}}.zip`,
 		})
 
 	tools = append(tools,
