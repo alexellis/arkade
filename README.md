@@ -109,6 +109,9 @@ arkade get kubectl
 # Download a specific version of that tool
 arkade get kubectl@v1.22.0
 
+# Download last version of this tool
+arkade get kubectl@latest
+
 # Download multiple tools at once
 arkade get kubectl \
   helm \
@@ -117,6 +120,9 @@ arkade get kubectl \
 # Download multiple specific versions
 arkade get faas-cli@0.13.15 \
   kubectl@v1.22.0
+
+# Download last version of several tools at once
+arkage get helm kubectl --version latest
 
 # Override machine os/arch
 arkade get faas-cli \

@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"time"
 
 	"github.com/alexellis/arkade/pkg/env"
+	"github.com/tidwall/gjson"
 )
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
@@ -81,8 +83,10 @@ func (tool Tool) IsArchive() (bool, error) {
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
-	ver := getToolVersion(tool, version)
-
+	ver, err := getToolVersion(tool, version)
+	if err != nil {
+		return "", err
+	}
 	dlURL, err := tool.GetURL(os, arch, ver)
 	if err != nil {
 		return "", err
@@ -91,13 +95,20 @@ func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
 	return dlURL, nil
 }
 
-func getToolVersion(tool *Tool, version string) string {
+// Try to get the real value if version is set to latest
+func getToolVersion(tool *Tool, version string) (string, error) {
 	ver := tool.Version
 	if len(version) > 0 {
 		ver = version
 	}
-
-	return ver
+	if strings.Compare(ver, "latest") == 0 {
+		release, err := tool.findLastGitHubVersion()
+		if err != nil {
+			return ver, err
+		}
+		return release, nil
+	}
+	return ver, nil
 }
 
 func (tool Tool) GetURL(os, arch, version string) (string, error) {
@@ -105,7 +116,7 @@ func (tool Tool) GetURL(os, arch, version string) (string, error) {
 	if len(version) == 0 &&
 		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
 		log.Printf("Looking up version for %s", tool.Name)
-		v, err := findGitHubRelease(tool.Owner, tool.Repo)
+		v, err := tool.findLastGitHubVersion()
 		if err != nil {
 			return "", err
 		}
@@ -146,43 +157,38 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 
 	downloadName := strings.TrimSpace(buf.String())
 
+	version, err = getToolVersion(&tool, version)
+	if err != nil {
+		return "", err
+	}
 	return getBinaryURL(tool.Owner, tool.Repo, version, downloadName), nil
 }
 
-func findGitHubRelease(owner, repo string) (string, error) {
-	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
+func (tool Tool) findLastGitHubVersion() (string, error) {
+	fmt.Println("Retrieving last known version in Github for", tool.Name)
+	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/releases/latest", tool.Owner, tool.Repo)
 
 	timeout := time.Second * 5
 	client := makeHTTPClient(&timeout, false)
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return http.ErrUseLastResponse
+
+	r, err := client.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		return "", fmt.Errorf("incorrect status code: %d", r.StatusCode)
 	}
 
-	req, err := http.NewRequest(http.MethodHead, url, nil)
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return "", err
 	}
 
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
+	tagName := gjson.Get(string(body), "tag_name")
 
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-
-	if res.StatusCode != 302 {
-		return "", fmt.Errorf("incorrect status code: %d", res.StatusCode)
-	}
-
-	loc := res.Header.Get("Location")
-	if len(loc) == 0 {
-		return "", fmt.Errorf("unable to determine release of tool")
-	}
-
-	version := loc[strings.LastIndex(loc, "/")+1:]
-	return version, nil
+	return tagName.String(), nil
 }
 
 func getBinaryURL(owner, repo, version, downloadName string) string {
@@ -275,7 +281,10 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 		}
 
 		var buf bytes.Buffer
-		ver := getToolVersion(tool, version)
+		ver, err := getToolVersion(tool, version)
+		if err != nil {
+			return "", err
+		}
 		if err := t.Execute(&buf, map[string]string{
 			"OS":            os,
 			"Arch":          arch,
