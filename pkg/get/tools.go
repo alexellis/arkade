@@ -183,7 +183,13 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}-windows-amd64
 {{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin-amd64
+	{{- if eq .Arch "aarch64" -}}
+	{{.Name}}-darwin-arm64
+	{{- else if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64
+	{{- else -}}
+	{{.Name}}-darwin-amd64
+	{{- end -}}
 {{- else if eq .Arch "armv6l" -}}
 {{.Name}}-linux-arm
 {{- else if eq .Arch "armv7l" -}}

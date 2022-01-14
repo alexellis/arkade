@@ -54,6 +54,7 @@ and provides a fast and easy alternative to a package manager.`,
 	}
 
 	clientArch, clientOS := env.GetClientArch()
+
 	command.Flags().Bool("progress", true, "Display a progress bar")
 	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
