@@ -914,6 +914,52 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 	}
 }
 
+func Test_DownloadEKSCTL(t *testing.T) {
+	tools := MakeTools()
+	name := "eksctl"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.79.0"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Windows_amd64.zip"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Linux_amd64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Linux_arm64.tar.gz"},
+		{os: "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Darwin_arm64.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Darwin_amd64.tar.gz"},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Linux_armv7.tar.gz"},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadK9s(t *testing.T) {
 	tools := MakeTools()
 	name := "k9s"

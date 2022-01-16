@@ -145,6 +145,7 @@ arkade get faas-cli \
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
 | docker-compose   | Define and run multi-container applications with Docker.                                                                                  |
 | doctl            | Official command line interface for the DigitalOcean API.                                                                                 |
+| eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | gh               | GitHub’s official command line tool.                                                                                                      |

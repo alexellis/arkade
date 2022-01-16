@@ -521,6 +521,39 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "weaveworks",
+			Repo:        "eksctl",
+			Name:        "eksctl",
+			Version:     "v0.79.0",
+			Description: "Amazon EKS Kubernetes cluster management",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{$extStr := "tar.gz"}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$arch = "armv7"}}
+			{{- else if eq .Arch "armv6l" -}}
+			{{$arch = "armv6"}}
+			{{- end -}}
+
+			{{$os := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$os = "Windows"}}
+			{{$extStr = "zip"}}
+			{{- else if eq .OS "linux" -}}
+			{{$os = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "Darwin"}}
+			{{- end -}}
+
+			https://github.com/weaveworks/eksctl/releases/download/{{ .Version }}/{{.Name}}_{{$os}}_{{$arch}}.{{$extStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "derailed",
 			Repo:        "k9s",
 			Name:        "k9s",
