@@ -23,6 +23,7 @@ const (
 
 func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress bool) (string, string, error) {
 
+	version = getToolVersion(tool, version)
 	downloadURL, err := GetDownloadURL(tool,
 		strings.ToLower(operatingSystem),
 		strings.ToLower(arch),
@@ -35,15 +36,23 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 
 	outFilePath, err := downloadFile(downloadURL, displayProgress)
 	if err != nil {
-		return "", "", err
-	}
-	fmt.Printf("%s written.\n", outFilePath)
-
-	if isArchive, err := tool.IsArchive(); isArchive {
+		fmt.Printf("Error while downloading template URL (%s)\n", downloadURL)
+		fmt.Printf("Try to autodetect archive url in Github release\n")
+		downloadURL, err = tool.getGithubReleaseArchive(
+			strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+		if err != nil {
+			return "", "", fmt.Errorf("unknown version %s for %s in Github", version, tool.Name)
+		}
+		fmt.Printf("Autodetect archive name inside Github: %s\n", downloadURL)
+		// Try to download it
+		outFilePath, err = downloadFile(downloadURL, displayProgress)
 		if err != nil {
 			return "", "", err
 		}
+	}
+	fmt.Printf("%s written.\n", outFilePath)
 
+	if IsArchive(downloadURL) {
 		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version)
 		if err != nil {
 			return "", "", err
@@ -76,6 +85,12 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	return outFilePath, finalName, nil
+}
+
+func IsArchive(downloadURL string) bool {
+	return strings.HasSuffix(downloadURL, "tar.gz") ||
+		strings.HasSuffix(downloadURL, "zip") ||
+		strings.HasSuffix(downloadURL, "tgz")
 }
 
 func downloadFile(downloadURL string, displayProgress bool) (string, error) {

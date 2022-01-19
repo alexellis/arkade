@@ -1,6 +1,7 @@
 package get
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/tls"
 	"errors"
@@ -8,15 +9,26 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"regexp"
 	"strings"
 	"text/template"
 	"time"
-
-	"github.com/alexellis/arkade/pkg/env"
 )
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
+
+// Strings used to autodetect archive compatibility with os and arch
+// OS Strings
+var linuxStrings = []string{"linux"}
+var windowsStrings = []string{"windows", ".exe"}
+var macStrings = []string{"osx", "darwin", "mac"}
+
+// Arch strings
+var arch32bitStrings = []string{"linux32", "win32"}
+var arch64bitStrings = []string{"amd64", "linux64", "win64"}
+var archARMStrings = []string{"armv7", "arm-v7", "armv6"}
+var archARM64Strings = []string{"arm64"}
 
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
@@ -64,26 +76,128 @@ var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
 }
 
-func (tool Tool) IsArchive() (bool, error) {
-	arch, operatingSystem := env.GetClientArch()
-	version := ""
+func isOsCompatible(release, os string) bool {
+	var excludeList []string
+	var matchList []string
 
-	downloadURL, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
-	if err != nil {
-		return false, err
+	if strings.Contains(os, "linux") {
+		matchList = linuxStrings
+		excludeList = append(windowsStrings, macStrings...)
+	} else if strings.Contains(os, "darwin") {
+		matchList = macStrings
+		excludeList = append(linuxStrings, windowsStrings...)
+	} else if strings.Contains(os, "mingw") {
+		matchList = windowsStrings
+		excludeList = append(linuxStrings, macStrings...)
+	} else {
+		log.Printf("Cannot handle os %s", os)
+		return false
+	}
+	return _isCompatible(release, excludeList, matchList)
+}
+
+func isArchCompatible(release, arch string) bool {
+	var excludeList []string
+	var matchList []string
+
+	if strings.Contains(arch, "i686") {
+		matchList = arch32bitStrings
+		excludeList = append(arch64bitStrings, archARMStrings...)
+		excludeList = append(excludeList, archARM64Strings...)
+	} else if strings.Contains(arch, "x86_64") {
+		matchList = arch64bitStrings
+		excludeList = append(arch32bitStrings, archARMStrings...)
+		excludeList = append(excludeList, archARM64Strings...)
+	} else if strings.Contains(arch, "armv7l") {
+		matchList = archARMStrings
+		excludeList = append(arch32bitStrings, arch64bitStrings...)
+		excludeList = append(excludeList, archARM64Strings...)
+	} else if strings.Contains(arch, "aarch64") {
+		matchList = archARM64Strings
+		excludeList = append(arch32bitStrings, arch64bitStrings...)
+		excludeList = append(excludeList, archARMStrings...)
+	} else {
+		log.Printf("Cannot handle arch %s", arch)
+		return false
+	}
+	return _isCompatible(release, excludeList, matchList)
+}
+
+func _isCompatible(release string, excludeList, matchList []string) bool {
+	// Exclude release with exclude list keyword
+	for _, exclude := range excludeList {
+		if strings.Contains(release, exclude) {
+			return false
+		}
+	}
+	// Check if something is compatible for us
+	for _, match := range matchList {
+		if strings.Contains(release, match) {
+			return true
+		}
+	}
+	// If we are here, the release is incompatible ...
+	return false
+}
+
+func (tool Tool) getGithubReleaseArchive(os, arch, version string) (string, error) {
+
+	archives := make([]string, 0)
+
+	url := fmt.Sprintf("https://github.com/%s/%s/releases/tag/%s", tool.Owner, tool.Repo, version)
+
+	timeout := time.Second * 5
+	client := makeHTTPClient(&timeout, false)
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
 	}
 
-	return strings.HasSuffix(downloadURL, "tar.gz") ||
-		strings.HasSuffix(downloadURL, "zip") ||
-		strings.HasSuffix(downloadURL, "tgz"), nil
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
+	if res.StatusCode != 200 {
+		return "", fmt.Errorf("incorrect status code: %d", res.StatusCode)
+	}
+
+	expr := fmt.Sprintf(".*href=\"(/%s/%s/releases/download/[^\"]+)\".*", tool.Owner, tool.Repo)
+	re := regexp.MustCompile(expr)
+
+	buffer := bufio.NewScanner(res.Body)
+	for buffer.Scan() {
+		if re.Match(buffer.Bytes()) {
+			context := re.ReplaceAllString(buffer.Text(), "$1")
+			if !isOsCompatible(context, os) || !isArchCompatible(context, arch) {
+				continue
+			}
+			fmt.Printf("Archive %s seems to be compatible with %s/%s\n", context, os, arch)
+			archives = append(archives, fmt.Sprintf("https://github.com%s", context))
+		}
+	}
+	if len(archives) == 0 {
+		return "", fmt.Errorf(
+			"no release found for %s on os(%s)/arch(%s) using version %s", tool.Name, os, arch, version)
+	} else if len(archives) > 1 {
+		return "", fmt.Errorf(
+			"found multiple release for %s on os(%s)/arch(%s) using version %s", tool.Name, os, arch, version)
+	}
+	return archives[0], nil
 }
 
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
-	ver := getToolVersion(tool, version)
-
-	dlURL, err := tool.GetURL(os, arch, ver)
+	dlURL, err := tool.GetURL(os, arch, version)
 	if err != nil {
 		return "", err
 	}

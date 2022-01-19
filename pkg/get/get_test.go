@@ -25,6 +25,15 @@ type test struct {
 	url     string
 }
 
+type testArchive struct {
+	message        string
+	archive        string
+	os             string
+	arch           string
+	osCompatible   bool
+	archCompatible bool
+}
+
 func getTool(name string, tools []Tool) *Tool {
 	var tool *Tool
 	for _, target := range tools {
@@ -3063,6 +3072,170 @@ func Test_DownloadvCluster(t *testing.T) {
 		}
 		if got != tc.url {
 			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_AutodetectArchive(t *testing.T) {
+	tests := []testArchive{
+		{
+			message:        "Linux amd64 compatible",
+			os:             "linux",
+			arch:           arch64bit,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Linux arm64 both os and arch incompatibles",
+			os:             "linux",
+			arch:           arch64bit,
+			archive:        "mytool-darwin-arm64",
+			osCompatible:   false,
+			archCompatible: false,
+		},
+		{
+			message:        "Linux amd64 os incompatible",
+			os:             "linux",
+			arch:           arch64bit,
+			archive:        "mytool-darwin-amd64",
+			osCompatible:   false,
+			archCompatible: true,
+		},
+		{
+			message:        "Linux arm64 arch incompatible",
+			os:             "linux",
+			arch:           archARM64,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   true,
+			archCompatible: false,
+		},
+		{
+			message:        "Windows compatible",
+			os:             "mingw",
+			arch:           arch64bit,
+			archive:        "mytool-windows-amd64",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Windows compatible",
+			os:             "mingw",
+			arch:           arch64bit,
+			archive:        "mytool-win64.exe",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Windows incompatible os",
+			os:             "mingw",
+			arch:           arch64bit,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   false,
+			archCompatible: true,
+		},
+		{
+			message:        "Windows incompatible arch",
+			os:             "mingw",
+			arch:           arch64bit,
+			archive:        "mytool-win32.exe",
+			osCompatible:   true,
+			archCompatible: false,
+		},
+		{
+			message:        "Windows both incompatible",
+			os:             "mingw",
+			arch:           archARM64,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   false,
+			archCompatible: false,
+		},
+		{
+			message:        "Darwin compatible",
+			os:             "darwin",
+			arch:           arch64bit,
+			archive:        "mytool-darwin-amd64",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Darwin ARM64 compatible",
+			os:             "darwin",
+			arch:           archARM64,
+			archive:        "mytool-darwin-arm64",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Darwin os incompatible",
+			os:             "darwin",
+			arch:           arch64bit,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   false,
+			archCompatible: true,
+		},
+		{
+			message:        "Darwin both incompatible",
+			os:             "darwin",
+			arch:           arch64bit,
+			archive:        "mytool-linux-arm64",
+			osCompatible:   false,
+			archCompatible: false,
+		},
+		{
+			message:        "Arm compatible",
+			os:             "linux",
+			arch:           archARM7,
+			archive:        "mytool-linux-armv7",
+			osCompatible:   true,
+			archCompatible: true,
+		},
+		{
+			message:        "Arm os incompatible",
+			os:             "darwin",
+			arch:           archARM7,
+			archive:        "mytool-linux-armv7",
+			osCompatible:   false,
+			archCompatible: true,
+		},
+		{
+			message:        "Arm both incompatible",
+			os:             "darwin",
+			arch:           archARM7,
+			archive:        "mytool-linux-arm64",
+			osCompatible:   false,
+			archCompatible: false,
+		},
+		{
+			message:        "Invalid os foo",
+			os:             "foo",
+			arch:           arch64bit,
+			archive:        "mytool-linux-amd64",
+			osCompatible:   false,
+			archCompatible: true,
+		},
+		{
+			message:        "Invalid arch foo",
+			os:             "linux",
+			arch:           "foo",
+			archive:        "mytool-linux-amd64",
+			osCompatible:   true,
+			archCompatible: false,
+		},
+	}
+	for _, tc := range tests {
+		println(tc.message, tc.os, tc.arch, tc.archive, tc.osCompatible, tc.archCompatible)
+		osComp := isOsCompatible(tc.archive, tc.os)
+		archComp := isArchCompatible(tc.archive, tc.arch)
+		if osComp != tc.osCompatible {
+			println("Expected compatibility:", tc.osCompatible)
+			println("Observed compatibility:", osComp)
+			t.Fatal("Error while testing isOsCompatible:", tc.message)
+		}
+		if archComp != tc.archCompatible {
+			println("Expected arch compatibility:", tc.archCompatible)
+			println("Observed arch compatibility:", archComp)
+			t.Fatal("Error while testing isArchCompatible:", tc.message)
 		}
 	}
 }
