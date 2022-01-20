@@ -352,28 +352,26 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:       "bitnami-labs",
 			Repo:        "sealed-secrets",
 			Name:        "kubeseal",
-			Version:     "v0.14.1",
 			Description: "A Kubernetes controller and tool for one-way encrypted Secrets",
-			URLTemplate: `{{$arch := "arm"}}
-{{- if eq .Arch "armv7l" -}}
-https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{$arch}}
-{{- end -}}
+			BinaryTemplate: `{{$arch := ""}}
+		{{- if eq .Arch "aarch64" -}}
+		{{$arch = "arm64"}}
+		{{- else if eq .Arch "x86_64" -}}
+		{{$arch = "amd64"}}
+		{{- else if eq .Arch "armv7l" -}}
+		{{$arch = "arm"}}
+		{{- end -}}
 
-{{- if eq .Arch "arm64" -}}
-https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{.Arch}}
-{{- end -}}
+		{{$osStr := ""}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$osStr = "windows"}}
+		{{- else if eq .OS "linux" -}}
+		{{$osStr = "linux"}}
+		{{- else if eq .OS "darwin" -}}
+		{{$osStr = "darwin"}}
+		{{- end -}}
 
-{{- if HasPrefix .OS "ming" -}}
-https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal.exe
-{{- end -}}
-
-{{- if eq .Arch "x86_64" -}}
-{{$arch = "amd64"}}
-{{- end -}}
-
-{{- if and ( not ( or ( eq $arch "arm") ( eq $arch "arm64")) ) ( or ( eq .OS "darwin" ) ( eq .OS "linux" )) -}}
-https://github.com/bitnami-labs/sealed-secrets/releases/download/{{.Version}}/kubeseal-{{.OS}}-{{$arch}}
-{{- end -}}`,
+		{{.Version}}/{{.Name}}-{{.VersionNumber}}-{{$osStr}}-{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
