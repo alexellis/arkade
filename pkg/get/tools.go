@@ -161,7 +161,6 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:          "ahmetb",
 			Repo:           "kubectx",
 			Name:           "kubectx",
-			Version:        "v0.9.1",
 			Description:    "Faster way to switch between clusters.",
 			BinaryTemplate: `kubectx`,
 			NoExtension:    true,
