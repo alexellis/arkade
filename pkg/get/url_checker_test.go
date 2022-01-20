@@ -12,12 +12,27 @@ import (
 
 func Test_CheckTools(t *testing.T) {
 	tools := MakeTools()
+	toolsToSkip := []string{
+		"kumactl", // S3 bucket disallow HEAD requests
+	}
 
 	os := "linux"
 	arch := "x86_64"
 
 	for _, toolV := range tools {
 		tool := toolV
+		skip := false
+
+		for _, cli := range toolsToSkip {
+			if tool.Name == cli {
+				skip = true
+			}
+		}
+
+		if skip {
+			continue
+		}
+
 		t.Run("Download of "+tool.Name, func(t *testing.T) {
 			t.Parallel()
 			quiet := true
