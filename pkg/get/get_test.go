@@ -304,11 +304,11 @@ func Test_DownloadKubectx(t *testing.T) {
 		}
 	}
 
-	got, err := tool.GetURL("linux", arch64bit, tool.Version)
+	got, err := tool.GetURL("linux", arch64bit, "v0.9.4")
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubectx"
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubectx"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
