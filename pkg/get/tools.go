@@ -142,6 +142,10 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 {{$arch = "arm64"}}
 {{- end -}}
 
+{{- if eq .Arch "arm64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+
 {{$ext := ""}}
 {{$os := .OS}}
 
