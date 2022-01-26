@@ -5,6 +5,7 @@ curators:
  - yankeexe
  - dirien
  - Shikachuu
+ - welteki
 
 features:
  - dco_check
@@ -15,15 +16,6 @@ features:
 # - no_newbies
 
 custom_messages:
-  - name: slack
-    value: |
-           --
-           The arkade project uses the #contributors channel in the OpenFaaS
-           Slack community.
-
-           Join Slack to connect with the community
-           https://docs.openfaas.com/community
-
   - name: template
     value: |
            This project uses Issue and PR templates and requires that all
