@@ -53,8 +53,8 @@ func MakeInstallLoki() *cobra.Command {
 
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("loki/loki-stack").
-			WithHelmURL("https://grafana.github.io/loki/charts").
+			WithHelmRepo("grafana/loki-stack").
+			WithHelmURL("https://grafana.github.io/helm-charts").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
@@ -71,10 +71,10 @@ func MakeInstallLoki() *cobra.Command {
 }
 
 const LokiInfoMsg = `# Get started with loki here:
-# https://github.com/grafana/loki/blob/master/docs/README.md
+# https://grafana.com/docs/loki/latest
 
 # See how to integrate loki with Grafana here
-# https://github.com/grafana/loki/blob/master/docs/getting-started/grafana.md
+# https://grafana.com/docs/loki/latest/getting-started/grafana
 
 # Check loki's logs with:
 
@@ -86,7 +86,7 @@ kubectl logs svc/loki-stack-headless
 # If you installed with Grafana you can access the dashboard with the username "admin" and password shown below
  # To get password
  kubectl get secret loki-stack-grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
- 
+
  # Forward traffic to your localhost
  kubectl port-forward service/loki-stack-grafana 3000:80
 
