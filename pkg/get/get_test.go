@@ -2877,9 +2877,10 @@ func Test_DownloadKrew(t *testing.T) {
 
 	tests := []test{
 		{
-			os:   "darwin",
-			arch: arch64bit,
-			url:  `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_amd64.tar.gz`,
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.4.2",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_amd64.tar.gz`,
 		},
 		{
 			os:      "darwin",
