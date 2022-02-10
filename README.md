@@ -95,6 +95,8 @@ An arkade "app" could represent a helm chart such as `openfaas/faas-netes`, a cu
 
 An arkade "tool" is a CLI that can be downloaded for your operating system. Arkade downloads statically-linked binaries from their upstream locations on GitHub or a the vendor's chosen URL such as with `kubectl` and `terraform`.
 
+> Did you know? Arkade users run `arkade get` both on their local workstations, and on their CI runners such as GitHub Actions or Jenkins.
+
 ## Download CLI tools with arkade
 
 arkade downloads the correct version of a CLI for your OS and CPU.
@@ -129,93 +131,14 @@ arkade get faas-cli \
   --os darwin
 ```
 
-### Complete list of CLI tools
-
-|       TOOL       |                                                                DESCRIPTION                                                                |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
-| argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
-| arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
-| autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
-| buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
-| civo             | CLI for interacting with your Civo resources.                                                                                             |
-| clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
-| cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
-| devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
-| dive             | A tool for exploring each layer in a docker image                                                                                         |
-| docker-compose   | Define and run multi-container applications with Docker.                                                                                  |
-| doctl            | Official command line interface for the DigitalOcean API.                                                                                 |
-| eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
-| faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
-| flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
-| gh               | GitHub’s official command line tool.                                                                                                      |
-| goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
-| helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
-| helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
-| hugo             | Static HTML and CSS website generator.                                                                                                    |
-| influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
-| inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
-| inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
-| istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
-| jq               | jq is a lightweight and flexible command-line JSON processor                                                                              |
-| k0s              | Zero Friction Kubernetes                                                                                                                  |
-| k0sctl           | A bootstrapping and management tool for k0s clusters                                                                                      |
-| k10multicluster  | Multi-cluster support for K10.                                                                                                            |
-| k10tools         | Tools for evaluating and debugging K10.                                                                                                   |
-| k3d              | Helper to run Rancher Lab's k3s in Docker.                                                                                                |
-| k3s              | Lightweight Kubernetes                                                                                                                    |
-| k3sup            | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                           |
-| k9s              | Provides a terminal UI to interact with your Kubernetes clusters.                                                                         |
-| kail             | Kubernetes log viewer.                                                                                                                    |
-| kanctl           | Framework for application-level data management on Kubernetes.                                                                            |
-| kgctl            | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                       |
-| kim              | Build container images inside of Kubernetes. (Experimental)                                                                               |
-| kind             | Run local Kubernetes clusters using Docker container nodes.                                                                               |
-| kops             | Production Grade K8s Installation, Upgrades, and Management.                                                                              |
-| krew             | Package manager for kubectl plugins.                                                                                                      |
-| kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
-| kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
-| kubectl          | Run commands against Kubernetes clusters                                                                                                  |
-| kubectx          | Faster way to switch between clusters.                                                                                                    |
-| kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |
-| kubescape        | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
-| kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
-| kubestr          | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
-| kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
-| kustomize        | Customization of kubernetes YAML configurations                                                                                           |
-| linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
-| mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
-| metal            | Official Equinix Metal CLI                                                                                                                |
-| minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
-| nats             | Utility to interact with and manage NATS.                                                                                                 |
-| nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
-| nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
-| opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
-| osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
-| pack             | Build apps using Cloud Native Buildpacks.                                                                                                 |
-| packer           | Build identical machine images for multiple platforms from a single source configuration.                                                 |
-| polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                                                 |
-| popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
-| porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
-| rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
-| stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
-| terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
-| tfsec            | Security scanner for your Terraform code                                                                                                  |
-| tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
-| tkn              | A CLI for interacting with Tekton.                                                                                                        |
-| trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
-| vagrant          | Tool for building and distributing development environments.  
-| vcluster          | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.
-| waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
-| yq               | Portable command-line YAML processor.                                                                                                     |
-
-Note to contributors, run `arkade get --output markdown` to generate this list
-
 > This is a time saver compared to searching for download pages every time you need a tool.
+
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
 
 Adding a new tool for download is as simple as editing [tools.go](https://github.com/alexellis/arkade/blob/master/pkg/get/tools.go).
+
+[Click here for the full catalog of CLIs](#catalog-of-apps)
 
 ## Installing apps with arkade
 
@@ -380,66 +303,7 @@ Examples:
   arkade install inlets-operator --token-file $HOME/do-token
 ```
 
-Apps:
-
-|          TOOL           |                             DESCRIPTION                             |
-|-------------------------|---------------------------------------------------------------------|
-| istio                   | Install istio                                                       |
-| docker-registry-ingress | Install registry ingress with TLS                                   |
-| ingress-nginx           | Install ingress-nginx                                               |
-| openfaas-ingress        | Install openfaas ingress with TLS                                   |
-| docker-registry         | Install a Docker registry                                           |
-| registry-creds          | Install registry-creds                                              |
-| sealed-secret           | Install sealed-secrets                                              |
-| influxdb                | Install influxdb                                                    |
-| mongodb                 | Install mongodb                                                     |
-| kube-image-prefetch     | Install kube-image-prefetch                                         |
-| gitea                   | Install gitea                                                       |
-| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
-| kafka                   | Install Confluent Platform Kafka                                    |
-| cert-manager            | Install cert-manager                                                |
-| loki                    | Install Loki for monitoring and tracing                             |
-| redis                   | Install redis                                                       |
-| argocd                  | Install argocd                                                      |
-| falco                   | Install Falco                                                       |
-| rabbitmq                | Install rabbitmq                                                    |
-| waypoint                | Install Waypoint                                                    |
-| chart                   | Install the specified helm chart                                    |
-| metrics-server          | Install metrics-server                                              |
-| linkerd                 | Install linkerd                                                     |
-| cron-connector          | Install cron-connector for OpenFaaS                                 |
-| kafka-connector         | Install kafka-connector for OpenFaaS                                |
-| crossplane              | Install Crossplane                                                  |
-| minio                   | Install minio                                                       |
-| openfaas                | Install openfaas                                                    |
-| portainer               | Install portainer to visualise and manage containers                |
-| OSM                     | Install osm                                                         |
-| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
-| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
-| cockroachdb             | Install CockroachDB                                                 |
-| prometheus              | Install Prometheus for monitoring                                   |
-| kanister                | Install kanister for application-level data management              |
-| kube-state-metrics      | Install kube-state-metrics                                          |
-| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
-| postgresql              | Install postgresql                                                  |
-| kyverno                 | Install Kyverno                                                     |
-| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
-| traefik2                | Install traefik2                                                    |
-| inlets-operator         | Install inlets-operator                                             |
-| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
-| cassandra               | Install cassandra                                                   |
-| metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
-| grafana                 | Install grafana                                                     |
-| nfs-provisioner         | Install nfs client provisioner                                      |
-| gitlab                  | Install GitLab                                                      |
-| nats-connector          | Install OpenFaaS connector for NATS                                 |
-| jenkins                 | Install jenkins                                                     |
-| tekton                  | Install Tekton pipelines and dashboard                              |
-| consul-connect          | Install Consul Service Mesh                                         |
-
-There are 52 apps that you can install on your cluster.
-
-Note to contributors, run `arkade install --print-table` to generate this list
+See the full catalog of apps: [See all apps](#catalog-of-apps)
 
 ## Community & contributing
 
@@ -467,6 +331,11 @@ Note to contributors, run `arkade install --print-table` to generate this list
 * [Walk-through — install Kubernetes to your Raspberry Pi in 15 minutes](https://medium.com/@alexellisuk/walk-through-install-kubernetes-to-your-raspberry-pi-in-15-minutes-84a8492dc95a)
 * [Get a TLS-enabled Docker registry in 5 minutes](https://blog.alexellis.io/get-a-tls-enabled-docker-registry-in-5-minutes/) - Alex Ellis
 * [Get TLS for OpenFaaS the easy way with arkade](https://blog.alexellis.io/tls-the-easy-way-with-openfaas-and-k3sup/) - Alex Ellis
+
+#### Official blog posts
+
+* [Two year update: Building an Open Source Marketplace for Kubernetes](https://blog.alexellis.io/kubernetes-marketplace-two-year-update/)
+* [Why did the OpenFaaS community build arkade and what's in it for you?](https://www.openfaas.com/blog/openfaas-arkade/) - Alex Ellis
 
 #### Community posts
 
@@ -558,3 +427,153 @@ Join `#contributors` at [slack.openfaas.io](https://slack.openfaas.io)
 ### License
 
 MIT
+
+## Catalog of apps and CLIs
+
+An app is software or an add-on for your Kubernetes cluster.
+
+A CLI or "tool" is a command line tool that you run directly on your own workstation or a CI runner.
+
+### Catalog of Apps
+
+|          TOOL           |                             DESCRIPTION                             |
+|-------------------------|---------------------------------------------------------------------|
+| istio                   | Install istio                                                       |
+| docker-registry-ingress | Install registry ingress with TLS                                   |
+| ingress-nginx           | Install ingress-nginx                                               |
+| openfaas-ingress        | Install openfaas ingress with TLS                                   |
+| docker-registry         | Install a Docker registry                                           |
+| registry-creds          | Install registry-creds                                              |
+| sealed-secret           | Install sealed-secrets                                              |
+| influxdb                | Install influxdb                                                    |
+| mongodb                 | Install mongodb                                                     |
+| kube-image-prefetch     | Install kube-image-prefetch                                         |
+| gitea                   | Install gitea                                                       |
+| mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
+| kafka                   | Install Confluent Platform Kafka                                    |
+| cert-manager            | Install cert-manager                                                |
+| loki                    | Install Loki for monitoring and tracing                             |
+| redis                   | Install redis                                                       |
+| argocd                  | Install argocd                                                      |
+| falco                   | Install Falco                                                       |
+| rabbitmq                | Install rabbitmq                                                    |
+| waypoint                | Install Waypoint                                                    |
+| chart                   | Install the specified helm chart                                    |
+| metrics-server          | Install metrics-server                                              |
+| linkerd                 | Install linkerd                                                     |
+| cron-connector          | Install cron-connector for OpenFaaS                                 |
+| kafka-connector         | Install kafka-connector for OpenFaaS                                |
+| crossplane              | Install Crossplane                                                  |
+| minio                   | Install minio                                                       |
+| openfaas                | Install openfaas                                                    |
+| portainer               | Install portainer to visualise and manage containers                |
+| OSM                     | Install osm                                                         |
+| kong-ingress            | Install kong-ingress for OpenFaaS                                   |
+| opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
+| cockroachdb             | Install CockroachDB                                                 |
+| prometheus              | Install Prometheus for monitoring                                   |
+| kanister                | Install kanister for application-level data management              |
+| kube-state-metrics      | Install kube-state-metrics                                          |
+| kubernetes-dashboard    | Install kubernetes-dashboard                                        |
+| postgresql              | Install postgresql                                                  |
+| kyverno                 | Install Kyverno                                                     |
+| openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
+| traefik2                | Install traefik2                                                    |
+| inlets-operator         | Install inlets-operator                                             |
+| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
+| cassandra               | Install cassandra                                                   |
+| metallb-arp             | Install MetalLB in L2 (ARP) mode                                    |
+| grafana                 | Install grafana                                                     |
+| nfs-provisioner         | Install nfs client provisioner                                      |
+| gitlab                  | Install GitLab                                                      |
+| nats-connector          | Install OpenFaaS connector for NATS                                 |
+| jenkins                 | Install jenkins                                                     |
+| tekton                  | Install Tekton pipelines and dashboard                              |
+| consul-connect          | Install Consul Service Mesh                                         |
+
+There are 52 apps that you can install on your cluster.
+
+Note to contributors, run `arkade install --print-table` to generate this list
+
+### Catalog of CLIs
+
+
+|       TOOL       |                                                                DESCRIPTION                                                                |
+|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
+| argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
+| arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
+| autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
+| buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
+| civo             | CLI for interacting with your Civo resources.                                                                                             |
+| clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
+| cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
+| devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
+| dive             | A tool for exploring each layer in a docker image                                                                                         |
+| docker-compose   | Define and run multi-container applications with Docker.                                                                                  |
+| doctl            | Official command line interface for the DigitalOcean API.                                                                                 |
+| eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
+| faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
+| flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
+| gh               | GitHub’s official command line tool.                                                                                                      |
+| goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
+| helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
+| helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
+| hugo             | Static HTML and CSS website generator.                                                                                                    |
+| influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
+| inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
+| inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
+| istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
+| jq               | jq is a lightweight and flexible command-line JSON processor                                                                              |
+| k0s              | Zero Friction Kubernetes                                                                                                                  |
+| k0sctl           | A bootstrapping and management tool for k0s clusters                                                                                      |
+| k10multicluster  | Multi-cluster support for K10.                                                                                                            |
+| k10tools         | Tools for evaluating and debugging K10.                                                                                                   |
+| k3d              | Helper to run Rancher Lab's k3s in Docker.                                                                                                |
+| k3s              | Lightweight Kubernetes                                                                                                                    |
+| k3sup            | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                           |
+| k9s              | Provides a terminal UI to interact with your Kubernetes clusters.                                                                         |
+| kail             | Kubernetes log viewer.                                                                                                                    |
+| kanctl           | Framework for application-level data management on Kubernetes.                                                                            |
+| kgctl            | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                       |
+| kim              | Build container images inside of Kubernetes. (Experimental)                                                                               |
+| kind             | Run local Kubernetes clusters using Docker container nodes.                                                                               |
+| kops             | Production Grade K8s Installation, Upgrades, and Management.                                                                              |
+| krew             | Package manager for kubectl plugins.                                                                                                      |
+| kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
+| kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
+| kubectl          | Run commands against Kubernetes clusters                                                                                                  |
+| kubectx          | Faster way to switch between clusters.                                                                                                    |
+| kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |
+| kubescape        | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
+| kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
+| kubestr          | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
+| kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
+| kustomize        | Customization of kubernetes YAML configurations                                                                                           |
+| linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
+| mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
+| metal            | Official Equinix Metal CLI                                                                                                                |
+| minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
+| nats             | Utility to interact with and manage NATS.                                                                                                 |
+| nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
+| nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
+| opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
+| osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
+| pack             | Build apps using Cloud Native Buildpacks.                                                                                                 |
+| packer           | Build identical machine images for multiple platforms from a single source configuration.                                                 |
+| polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                                                 |
+| popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
+| porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
+| rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
+| stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
+| terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
+| tfsec            | Security scanner for your Terraform code                                                                                                  |
+| tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
+| tkn              | A CLI for interacting with Tekton.                                                                                                        |
+| trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
+| vagrant          | Tool for building and distributing development environments.  
+| vcluster          | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.
+| waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
+| yq               | Portable command-line YAML processor.                                                                                                     |
+Note to contributors, run `arkade get --output markdown` to generate this list
+
