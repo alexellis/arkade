@@ -317,13 +317,9 @@ See the full catalog of apps: [See all apps](#catalog-of-apps)
 
 ### Tutorials & community blog posts
 
-#### Video review from Rancher Labs
-
-* [Tool of the Day with Adrian from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
-
 #### Watch a video walk-through by Alex Ellis
 
-[![](http://img.youtube.com/vi/8wU9s_mua8M/hqdefault.jpg)](https://www.youtube.com/watch?v=8wU9s_mua8M)
+[![Install Apps and CLIs to Kubernetes](http://img.youtube.com/vi/8wU9s_mua8M/hqdefault.jpg)](https://www.youtube.com/watch?v=8wU9s_mua8M)
 
 #### Featured tutorials
 
@@ -346,6 +342,7 @@ See the full catalog of apps: [See all apps](#catalog-of-apps)
 * [Video walk-through with DJ Adams - Pi & Kubernetes with k3s, k3sup, arkade and OpenFaaS](https://www.youtube.com/watch?v=ZiR3QEfBivk)
 * [Coffee chat: Easy way to install Kubernetes Apps - arkade (ark)](https://sachcode.com/tech/coffee-chat-easy-way-install-kubernetes-apps/) by Sachin Jha
 * [Arkade & OpenFaaS: serverless on the spot](https://zero2datadog.readthedocs.io/en/latest/faas.html) by Blaise Pabon
+* ["Tool of the Day" with Adrian Goins from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
 
 ### Suggest a new app
 
