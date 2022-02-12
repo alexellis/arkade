@@ -1917,5 +1917,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "guumaster",
+			Repo:        "hostctl",
+			Name:        "hostctl",
+			Description: "Dev tool to manage /etc/hosts like a pro!",
+			BinaryTemplate: `
+			{{ $osStr := "" }}
+			{{ $archStr := "" }}
+			{{ $extStr := ".tar.gz" }}
+
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $osStr = "windows" }}
+			{{ $extStr = ".zip" }}
+			{{- else if eq .OS "linux" -}}
+			{{ $osStr = "linux" }}
+			{{- else if eq .OS "darwin" -}}
+			{{ $osStr = "macOS" }}
+			{{- end -}}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{ $archStr = "64-bit" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+
+			{{ .Name }}_{{ .VersionNumber }}_{{ $osStr }}_{{ $archStr }}{{ $extStr }}
+			`,
+		})
 	return tools
 }
