@@ -22,7 +22,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var linkerdVersion = "stable-2.9.1"
+var linkerdVersion = "stable-2.11.1"
 
 func MakeInstallLinkerd() *cobra.Command {
 	var linkerd = &cobra.Command{
@@ -47,6 +47,10 @@ func MakeInstallLinkerd() *cobra.Command {
 		}
 		if command.Flags().Changed("version") {
 			linkerdVersion = version
+		}
+
+		if len(version) == 0 {
+			return fmt.Errorf("you must give a value for the --version flag")
 		}
 
 		arch := k8s.GetNodeArchitecture()
