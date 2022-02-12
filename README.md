@@ -516,6 +516,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
+| hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
 | hugo             | Static HTML and CSS website generator.                                                                                                    |
 | influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
 | inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
@@ -568,9 +569,10 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
 | tkn              | A CLI for interacting with Tekton.                                                                                                        |
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
-| vagrant          | Tool for building and distributing development environments.  
-| vcluster          | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.
+| vagrant          | Tool for building and distributing development environments.                                                                              |
+| vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
+
 Note to contributors, run `arkade get --output markdown` to generate this list
 
