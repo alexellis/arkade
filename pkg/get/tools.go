@@ -286,7 +286,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
-			Owner:       "rancher",
+			Owner:       "k3d-io",
 			Repo:        "k3d",
 			Name:        "k3d",
 			Description: "Helper to run Rancher Lab's k3s in Docker.",
