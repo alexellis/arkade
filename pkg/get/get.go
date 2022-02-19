@@ -153,7 +153,7 @@ func findGitHubRelease(owner, repo string) (string, error) {
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
 
 	timeout := time.Second * 5
-	client := makeHTTPClient(&timeout, false)
+	client := MakeHTTPClient(&timeout, false)
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	}
@@ -224,8 +224,8 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 	return res, nil
 }
 
-// makeHTTPClient makes a HTTP client with good defaults for timeouts.
-func makeHTTPClient(timeout *time.Duration, tlsInsecure bool) http.Client {
+// MakeHTTPClient makes a HTTP client with good defaults for timeouts.
+func MakeHTTPClient(timeout *time.Duration, tlsInsecure bool) http.Client {
 	return makeHTTPClientWithDisableKeepAlives(timeout, tlsInsecure, false)
 }
 
