@@ -12,11 +12,7 @@ import (
 	"github.com/alexellis/arkade/pkg/get"
 )
 
-func URLExists(name, url, version string) error {
-	fmt.Println("--------------->>>>>>>>>>>>>>>>>>>>>>>>>", name)
-	timeout := time.Second * 10
-	client := get.MakeHTTPClient(&timeout, false)
-
+func URLExists(client http.Client, name, url, version string) error {
 	req, err := http.NewRequest(http.MethodHead, url, nil)
 	if err != nil {
 		return err
@@ -42,13 +38,17 @@ func main() {
 	sort.Sort(tools)
 	var errorTools []string
 
+	timeout := time.Second * 5
+	client := get.MakeHTTPClient(&timeout, false)
+
 	for _, tool := range tools {
+		fmt.Println("--------------->>>>>>>>>>>>>>>>>>>>>>>>>", tool.Name)
 		url, err := get.GetDownloadURL(&tool, "linux", "x86_64", "")
 		if err != nil {
 			errorTools = append(errorTools, tool.Name)
 			continue
 		}
-		err = URLExists(tool.Name, url, "")
+		err = URLExists(client, tool.Name, url, "")
 		if err != nil {
 			errorTools = append(errorTools, tool.Name)
 		}
