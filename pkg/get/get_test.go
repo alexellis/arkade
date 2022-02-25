@@ -2596,7 +2596,7 @@ func Test_DownloadK10multicluster(t *testing.T) {
 func Test_DownloadK10tools(t *testing.T) {
 	tools := MakeTools()
 	name := "k10tools"
-	v := "4.0.6"
+	v := "4.5.9"
 	tool := getTool(name, tools)
 
 	tests := []test{
@@ -2604,13 +2604,25 @@ func Test_DownloadK10tools(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10tools_4.0.6_macOS_amd64`,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_macOS_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    "arm64",
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_macOS_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10tools_4.0.6_linux_amd64`,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: v,
+			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_linux_arm64.tar.gz`,
 		},
 	}
 
