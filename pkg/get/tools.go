@@ -1653,16 +1653,24 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 			URLTemplate: `
 {{ $ext := "tar.gz" }}
-{{ $osStr := "linux" }}
+{{ $osStr := "Linux" }}
+{{ $arch := .Arch }}
 
-{{- if eq .OS "darwin" -}}
-{{ $osStr = "darwin" }}
-{{- else if HasPrefix .OS "ming" -}}
-{{ $osStr = "windows" }}
-{{ $ext = ".zip" }}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
 {{- end -}}
 
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-amd64.{{$ext}}`,
+{{- if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+
+{{- if eq .OS "darwin" -}}
+{{ $osStr = "MacOS" }}
+{{- else if HasPrefix .OS "ming" -}}
+{{ $osStr = "Windows" }}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
 			BinaryTemplate: `{{.Name}}`,
 		})
 
