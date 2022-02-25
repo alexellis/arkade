@@ -2528,7 +2528,7 @@ func Test_DownloadKanister(t *testing.T) {
 func Test_DownloadKubestr(t *testing.T) {
 	tools := MakeTools()
 	name := "kubestr"
-	v := "v0.4.17"
+	v := "v0.4.31"
 	tool := getTool(name, tools)
 
 	tests := []test{
@@ -2536,13 +2536,31 @@ func Test_DownloadKubestr(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-darwin-amd64.tar.gz`,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_MacOS_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    "arm64",
+			version: v,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_MacOS_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.17/kubestr-v0.4.17-linux-amd64.tar.gz`,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: v,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Linux_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: v,
+			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Windows_amd64.tar.gz`,
 		},
 	}
 
