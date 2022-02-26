@@ -540,6 +540,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | krew             | Package manager for kubectl plugins.                                                                                                      |
 | kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
 | kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
+| kubecm           | Easier management of kubeconfig.                                                                                                          |
 | kubectl          | Run commands against Kubernetes clusters                                                                                                  |
 | kubectx          | Faster way to switch between clusters.                                                                                                    |
 | kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |

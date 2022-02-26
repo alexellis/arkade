@@ -1945,5 +1945,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ .Name }}_{{ .VersionNumber }}_{{ $osStr }}_{{ $archStr }}{{ $extStr }}
 			`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "sunny0826",
+			Repo:        "kubecm",
+			Name:        "kubecm",
+			Description: "Easier management of kubeconfig. ",
+			BinaryTemplate: `
+			{{ $osStr := "" }}
+			{{ $archStr := "" }}
+			{{ $extStr := ".tar.gz" }}
+
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $osStr = "Windows" }}
+			{{- else if eq .OS "linux" -}}
+			{{ $osStr = "Linux" }}
+			{{- else if eq .OS "darwin" -}}
+			{{ $osStr = "Darwin" }}
+			{{- end -}}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{ $archStr = "x86_64" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+
+			{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}{{$extStr}}`,
+		})
 	return tools
 }
