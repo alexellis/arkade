@@ -59,6 +59,18 @@ func Test_MergeFlags(t *testing.T) {
 			map[string]string{"a": "2", "b": "3"},
 			nil,
 		},
+		{"Multiple = in value",
+			map[string]string{},
+			[]string{"a=b=3=c=1=y=5"},
+			map[string]string{"a": "b=3=c=1=y=5"},
+			nil,
+		},
+		{"Quote the value string using '",
+			map[string]string{},
+			[]string{"a='b=3 c=1 y=5'"},
+			map[string]string{"a": "b=3 c=1 y=5"},
+			nil,
+		},
 
 		// check errors
 		{"Incorrect flag format, providing : as a delimiter",
