@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
@@ -86,7 +87,7 @@ func MakeInstallGrafana() *cobra.Command {
 		}
 
 		// set custom flags
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

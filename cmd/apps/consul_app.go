@@ -7,6 +7,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 	"strings"
 
@@ -95,7 +96,7 @@ func MakeInstallConsul() *cobra.Command {
 
 		customFlags, _ := command.Flags().GetStringArray("set")
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

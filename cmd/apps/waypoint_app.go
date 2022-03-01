@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/types"
@@ -44,7 +45,7 @@ func MakeInstallWaypoint() *cobra.Command {
 
 		customFlags, _ := command.Flags().GetStringArray("set")
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

@@ -57,7 +57,7 @@ flag and the ingress-nginx docs for more info`,
 
 		customFlags, _ := command.Flags().GetStringArray("set")
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

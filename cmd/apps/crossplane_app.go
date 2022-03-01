@@ -63,7 +63,7 @@ schedule workloads to any Kubernetes cluster`,
 			return err
 		}
 		values := make(map[string]string)
-		if err := mergeFlags(values, overrideValues); err != nil {
+		if err := config.MergeFlags(values, overrideValues); err != nil {
 			return err
 		}
 

@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 	"strings"
 
@@ -77,7 +78,7 @@ func MakeInstallJenkins() *cobra.Command {
 		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
 
 		// set custom flags
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
