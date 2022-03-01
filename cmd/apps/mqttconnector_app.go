@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 
 	"github.com/alexellis/arkade/pkg/apps"
@@ -66,7 +67,7 @@ messages are received on a given topic on an MQTT broker.`,
 			return fmt.Errorf("error with --set usage: %s", err)
 		}
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

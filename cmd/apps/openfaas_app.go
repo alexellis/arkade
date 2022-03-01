@@ -5,11 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"strconv"
-	"strings"
-
 	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/types"
+	"strconv"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -183,7 +182,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
@@ -225,17 +224,6 @@ func getValuesSuffix(arch string) string {
 		valuesSuffix = ""
 	}
 	return valuesSuffix
-}
-
-func mergeFlags(existingMap map[string]string, setOverrides []string) error {
-	for _, setOverride := range setOverrides {
-		flag := strings.Split(setOverride, "=")
-		if len(flag) != 2 {
-			return fmt.Errorf("incorrect format for custom flag `%s`", setOverride)
-		}
-		existingMap[flag[0]] = flag[1]
-	}
-	return nil
 }
 
 const OpenFaaSInfoMsg = `# Get the faas-cli

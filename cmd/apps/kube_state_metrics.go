@@ -53,7 +53,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			return err
 		}
 
-		if err := mergeFlags(overrides, setVals); err != nil {
+		if err := config.MergeFlags(overrides, setVals); err != nil {
 			return err
 		}
 

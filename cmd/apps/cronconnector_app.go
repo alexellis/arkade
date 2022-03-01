@@ -2,6 +2,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -38,7 +39,7 @@ func MakeInstallCronConnector() *cobra.Command {
 			return fmt.Errorf("error with --set usage: %s", err)
 		}
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
