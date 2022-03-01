@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 	"strings"
 
@@ -61,7 +62,7 @@ func MakeInstallPostgresql() *cobra.Command {
 			return fmt.Errorf("error with --set usage: %s", err)
 		}
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 

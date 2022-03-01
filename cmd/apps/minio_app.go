@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 	"strings"
 
@@ -123,7 +124,7 @@ func MakeInstallMinio() *cobra.Command {
 			overrides["mode"] = "distributed"
 		}
 
-		if err := mergeFlags(overrides, customFlags); err != nil {
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
