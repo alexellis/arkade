@@ -22,7 +22,7 @@ test:
 
 .PHONY: e2e
 e2e:
-	CGO_ENABLED=0 go test github.com/alexellis/arkade/pkg/get -cover  --tags e2e
+	CGO_ENABLED=0 go test github.com/alexellis/arkade/pkg/get -cover --tags e2e -v
 
 .PHONY: dist
 dist:
