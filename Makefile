@@ -14,11 +14,15 @@ build:
 
 .PHONY: gofmt
 gofmt:
-	@test -z $(shell gofmt -l -s $(SOURCE_DIRS) ./ | tee /dev/stderr) || (echo "[WARN] Fix formatting issues with 'make fmt'" && exit 1)
+	@test -z $(shell gofmt -l -s $(SOURCE_DIRS) ./ | tee /dev/stderr) || (echo "[WARN] Fix formatting issues with 'make gofmt'" && exit 1)
 
 .PHONY: test
 test:
 	CGO_ENABLED=0 go test $(shell go list ./... | grep -v /vendor/|xargs echo) -cover
+
+.PHONY: e2e
+e2e:
+	CGO_ENABLED=0 go test github.com/alexellis/arkade/pkg/get -cover  --tags e2e
 
 .PHONY: dist
 dist:
