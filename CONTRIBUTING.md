@@ -52,7 +52,12 @@ git remote add fork https://github.com/NAME/arkade
 ```bash
 gofmt -w -s ./pkg
 gofmt -w -s ./cmd
-go test ./...
+
+# Run all the unit tests
+make test
+
+# Use e2e tests ot check that URLs can be downloaded for all tools
+make e2e
 ```
 
 #### Checkout a branch to start work
