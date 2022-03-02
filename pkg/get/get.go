@@ -5,6 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -98,6 +99,26 @@ func getToolVersion(tool *Tool, version string) string {
 	}
 
 	return ver
+}
+
+func (tool Tool) Head(uri string) (int, string, http.Header, error) {
+	req, err := http.NewRequest(http.MethodHead, uri, nil)
+	if err != nil {
+		return http.StatusBadRequest, "", nil, err
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return http.StatusBadRequest, "", nil, err
+	}
+
+	var body string
+	if res.Body != nil {
+		b, _ := ioutil.ReadAll(res.Body)
+		body = string(b)
+	}
+
+	return res.StatusCode, body, res.Header, nil
 }
 
 func (tool Tool) GetURL(os, arch, version string) (string, error) {
