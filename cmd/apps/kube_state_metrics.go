@@ -5,17 +5,13 @@ package apps
 
 import (
 	"fmt"
-	"log"
-	"os"
-	"path"
-	"strings"
-
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
+	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 )
 
@@ -38,10 +34,6 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			return err
 		}
 
-		userPath, err := config.InitUserDir()
-		if err != nil {
-			return err
-		}
 		namespace, _ := command.Flags().GetString("namespace")
 
 		arch := k8s.GetNodeArchitecture()
@@ -53,53 +45,31 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
-		log.Printf("User dir established as: %s\n", userPath)
-		os.Setenv("HELM_HOME", path.Join(userPath, ".helm"))
 
-		_, err = helm.TryDownloadHelm(userPath, clientArch, clientOS)
+		overrides := map[string]string{}
+		setVals, err := kubeStateMetrics.Flags().GetStringArray("set")
 		if err != nil {
 			return err
 		}
 
-		err = helm.UpdateHelmRepos(true)
+		if err := mergeFlags(overrides, setVals); err != nil {
+			return err
+		}
+
+		kubeStateMetricsOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmRepo("prometheus-community/kube-state-metrics").
+			WithHelmURL("https://prometheus-community.github.io/helm-charts").
+			WithOverrides(overrides).
+			WithWait(wait).
+			WithKubeconfigPath(kubeConfigPath)
+
+		_, err = apps.MakeInstallChart(kubeStateMetricsOptions)
 		if err != nil {
 			return err
 		}
 
-		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/kube-state-metrics", defaultVersion)
-
-		if err != nil {
-			return err
-		}
-
-		setMap := map[string]string{}
-		setVals, _ := kubeStateMetrics.Flags().GetStringArray("set")
-
-		for _, setV := range setVals {
-			var k string
-			var v string
-
-			if index := strings.Index(setV, "="); index > -1 {
-				k = setV[:index]
-				v = setV[index+1:]
-				setMap[k] = v
-			}
-		}
-
-		fmt.Println("Chart path: ", chartPath)
-
-		err = helm.Helm3Upgrade("stable/kube-state-metrics", namespace,
-			"values.yaml",
-			defaultVersion,
-			setMap,
-			wait)
-
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(`=======================================================================
+		println(`=======================================================================
 =             kube-state-metrics has been installed.                  =
 =======================================================================
 
