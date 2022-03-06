@@ -26,8 +26,7 @@ func MakeInstallTraefik2() *cobra.Command {
 	traefik2.Flags().Bool("update-repo", true, "Update the helm repo")
 	traefik2.Flags().Bool("load-balancer", true, "Use a load-balancer for the IngressController")
 	traefik2.Flags().Bool("dashboard", false, "Expose dashboard if you want access to dashboard from the browser")
-	traefik2.Flags().StringArray("set", []string{},
-		"Use custom flags or override existing flags \n(example --set key=value)")
+	traefik2.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set key=value)")
 	traefik2.Flags().Bool("wait", false, "Wait for the chart to be installed")
 	traefik2.Flags().Bool("ingress-provider", true, "Add Traefik's ingressprovider along with the CRD provider")
 
@@ -53,7 +52,7 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		err = helm.AddHelmRepo("traefik", "https://containous.github.io/traefik-helm-chart", updateRepo)
+		err = helm.AddHelmRepo("traefik", "https://helm.traefik.io/traefik", updateRepo)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
@@ -112,7 +111,7 @@ func MakeInstallTraefik2() *cobra.Command {
 	return traefik2
 }
 
-const Traefik2InfoMsg = `# Get started at: https://docs.traefik.io/v2.0/
+const Traefik2InfoMsg = `# Get started at: https://doc.traefik.io/traefik/
 
 # Install with an optional dashboard
 
