@@ -3195,3 +3195,56 @@ func Test_DownloadKubecm(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadMkcert(t *testing.T) {
+	tools := MakeTools()
+	name := "mkcert"
+	version := "v1.4.2"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-darwin-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-linux-arm`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/FiloSottile/mkcert/releases/download/v1.4.2/mkcert-v1.4.2-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

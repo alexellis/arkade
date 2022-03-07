@@ -1985,5 +1985,40 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 			{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "FiloSottile",
+			Repo:        "mkcert",
+			Name:        "mkcert",
+			Description: "A simple zero-config tool to make locally trusted development certificates with any names you'd like.",
+			BinaryTemplate: `
+				{{ $osStr := "" }}
+				{{ $archStr := "" }}
+				{{$archiveStr := ""}}
+				{{- if HasPrefix .OS "ming" -}}
+				{{$archiveStr = ".exe"}}
+				{{- else -}}
+				{{$archiveStr = ""}}
+				{{- end -}}
+	
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $osStr = "windows" }}
+				{{- else if eq .OS "linux" -}}
+				{{ $osStr = "linux" }}
+				{{- else if eq .OS "darwin" -}}
+				{{ $osStr = "darwin" }}
+				{{- end -}}
+	
+				{{- if eq .Arch "x86_64" -}}
+				{{ $archStr = "amd64" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "arm" }}
+				{{- end -}}
+	
+				{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
+		})
 	return tools
 }
