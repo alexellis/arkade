@@ -553,6 +553,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
 | metal            | Official Equinix Metal CLI                                                                                                                |
 | minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
+| mkcert           | A simple zero-config tool to make locally trusted development certificates with any names you'd like.                                     |
 | nats             | Utility to interact with and manage NATS.                                                                                                 |
 | nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
 | nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
