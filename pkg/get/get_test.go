@@ -3248,3 +3248,56 @@ func Test_DownloadMkcert(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadGucci(t *testing.T) {
+	tools := MakeTools()
+	name := "gucci"
+	version := "v1.5.3"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/noqcks/gucci/releases/download/1.5.3/gucci-v1.5.3-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/noqcks/gucci/releases/download/1.5.3/gucci-v1.5.3-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/noqcks/gucci/releases/download/1.5.3/gucci-v1.5.3-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/noqcks/gucci/releases/download/1.5.3/gucci-v1.5.3-linux-arm64`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/noqcks/gucci/releases/download/1.5.3/gucci-v1.5.3-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

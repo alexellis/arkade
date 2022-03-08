@@ -515,6 +515,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | gh               | GitHub’s official command line tool.                                                                                                      |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
+| gucci            | Templating on the command line with sprig.                                                                                                |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
 | hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |

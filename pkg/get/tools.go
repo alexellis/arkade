@@ -2020,5 +2020,38 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	
 				{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "noqcks",
+			Repo:        "gucci",
+			Name:        "gucci",
+			Description: "Templating on the command line with sprig.",
+			BinaryTemplate: `
+				{{ $osStr := "" }}
+				{{ $archStr := "" }}
+				{{$archiveStr := ""}}
+				{{- if HasPrefix .OS "ming" -}}
+				{{$archiveStr = ".exe"}}
+				{{- else -}}
+				{{$archiveStr = ""}}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $osStr = "windows" }}
+				{{- else if eq .OS "linux" -}}
+				{{ $osStr = "linux" }}
+				{{- else if eq .OS "darwin" -}}
+				{{ $osStr = "darwin" }}
+				{{- end -}}
+	
+				{{- if eq .Arch "x86_64" -}}
+				{{ $archStr = "amd64" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+	
+				{{.VersionNumber}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
+		})
 	return tools
 }
