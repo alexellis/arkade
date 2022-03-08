@@ -116,16 +116,17 @@ func MakeInstallGrafana() *cobra.Command {
 const GrafanaInfoMsg = `
 # Get the admin password:
 
-  kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+kubectl get secret --namespace grafana grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 
 # Expose the service via port-forward:
 
-  kubectl --namespace grafana port-forward service/grafana 3000:80
+kubectl --namespace grafana port-forward service/grafana 3000:80
 
-# Enable persistence:
+# Access via http://127.0.0.1:3000
 
-  arkade install grafana --persistence
+# Optionally, enable persistence if required:
 
+arkade install grafana --persistence
 `
 
 var grafanaInstallMsg = `=======================================================================
