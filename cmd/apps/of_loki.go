@@ -50,7 +50,7 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
 			WithHelmRepo("lucas/openfaas-loki").
-			WithHelmURL("https://lucasroesler.com/openfaas-loki").
+			WithHelmURL("https://lucasroesler.com/helm-charts").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
@@ -78,7 +78,7 @@ const LokiOFInfoMsg = `# Get started with openfaas-loki here:
 faas-cli logs
 
 # If you installed loki with grafana, with 'arkade install loki --grafana'
-# You can use the grafana dashboard to see the OpenFaaS Logs, you can see 
+# You can use the grafana dashboard to see the OpenFaaS Logs, you can see
 # how to get your grafana password with 'arkade info loki'
 
 # We have automatically configured OpenFaaS to use the Loki logs URL, you can set 'gateway.logsProviderURL'
