@@ -69,6 +69,7 @@ With over 52 helm charts and apps available for Kubernetes, gone are the days of
 
 ```bash
 # Note: you can also run without `sudo` and move the binary yourself
+# or set BINLOCATION environment variable to a location with user write permissions
 curl -sLS https://get.arkade.dev | sudo sh
 
 arkade --help

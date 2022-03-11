@@ -5,12 +5,16 @@
 # Repo specific content #
 #########################
 
+# Allow BINLOCATION to be optionally overridden by user,
+# for example to place into $HOME/bin to prevent need for running with sudo
+: ${BINLOCATION:="/usr/local/bin"}
+
 export VERIFY_CHECKSUM=0
 export ALIAS_NAME="ark"
 export OWNER=alexellis
 export REPO=arkade
 export SUCCESS_CMD="$REPO version"
-export BINLOCATION="/usr/local/bin"
+export BINLOCATION="$BINLOCATION"
 
 ###############################
 # Content common across repos #
@@ -128,6 +132,7 @@ getPackage() {
 
     echo "Download complete."
 
+    mkdir -p "$BINLOCATION" 2>/dev/null  # quietly try to ensure $BINLOCATION directory is available
     if [ ! -w "$BINLOCATION" ]; then
 
             echo
@@ -137,10 +142,15 @@ getPackage() {
             echo "  following commands may need to be run manually."
             echo "============================================================"
             echo
-            echo "  sudo cp $REPO$suffix $BINLOCATION/$REPO"
+
+            if [ ! -d "$BINLOCATION" ]; then 
+                echo "  sudo mkdir -p \"$BINLOCATION\""
+            fi
+
+            echo "  sudo cp $REPO$suffix \"$BINLOCATION/$REPO\""
 
             if [ -n "$ALIAS_NAME" ]; then
-                echo "  sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
+                echo "  sudo ln -sf \"$BINLOCATION/$REPO\" \"$BINLOCATION/$ALIAS_NAME\""
             fi
 
             echo
@@ -163,7 +173,7 @@ getPackage() {
 
             fi
 
-            mv "$targetFile" $BINLOCATION/$REPO
+            mv "$targetFile" "$BINLOCATION/$REPO"
 
             if [ "$?" = "0" ]; then
                 echo "New version of $REPO installed to $BINLOCATION"
@@ -173,12 +183,12 @@ getPackage() {
                 rm "$targetFile"
             fi
 
-            if [ $(which $ALIAS_NAME) ]; then
+            if [ $(which "$ALIAS_NAME") ]; then
                 echo "There is already a command '$ALIAS_NAME' in the path, NOT creating alias"
             else
                 if [ -n "$ALIAS_NAME" ]; then
-                    if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
-                        ln -s $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME
+                    if [ ! -L "$BINLOCATION/$ALIAS_NAME" ]; then
+                        ln -s "$BINLOCATION/$REPO" "$BINLOCATION/$ALIAS_NAME"
                         echo "Creating alias '$ALIAS_NAME' for '$REPO'."
                     fi
                 fi
