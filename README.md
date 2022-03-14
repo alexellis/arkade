@@ -82,6 +82,18 @@ curl -sLS https://get.arkade.dev | sh
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
 
+## Help fund arkade 👋
+
+<a href="https://github.com/sponsors/alexellis/">Alex</a> made this project open source and free, so everyone can benefit from it, including you.
+
+The project is funded through <a href="https://github.com/sponsors/alexellis/">GitHub Sponsors</a>, and you can join today.
+
+<a href="https://github.com/sponsors/alexellis/">
+<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
+</a>
+
+Which tier or option is right for you? [Find out now](https://github.com/sponsors/alexellis/)
+
 ## Usage overview
 
 Arkade can be used to install Kubernetes apps or to download CLI tools.
@@ -306,14 +318,6 @@ Examples:
 See the full catalog of apps: [See all apps](#catalog-of-apps)
 
 ## Community & contributing
-
-### Do you use this project? 👋
-
-<a href="https://github.com/sponsors/alexellis/">Alex</a> created this project for developers just like yourself. If you use arkade, become a sponsor so that he can continue to grow and improve it for your future use.
-
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
 
 ### Tutorials & community blog posts
 
