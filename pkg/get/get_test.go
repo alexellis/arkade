@@ -3105,6 +3105,7 @@ func Test_DownloadvCluster(t *testing.T) {
 func Test_DownloadHostcl(t *testing.T) {
 	tools := MakeTools()
 	name := "hostctl"
+	version := "v1.1.1"
 
 	var tool *Tool
 	for _, target := range tools {
@@ -3116,25 +3117,29 @@ func Test_DownloadHostcl(t *testing.T) {
 
 	tests := []test{
 		{
-			os:   "linux",
-			arch: arch64bit,
-			url:  "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_64-bit.tar.gz",
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_64-bit.tar.gz",
 		},
 		{
-			os:   "darwin",
-			arch: arch64bit,
-			url:  "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_macOS_64-bit.tar.gz",
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_macOS_64-bit.tar.gz",
 		},
 
 		{
-			os:   "mingw64_nt-10.0-18362",
-			arch: arch64bit,
-			url:  "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_windows_64-bit.zip",
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_windows_64-bit.zip",
 		},
 		{
-			os:   "linux",
-			arch: archARM64,
-			url:  "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_arm64.tar.gz",
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_arm64.tar.gz",
 		},
 	}
 
