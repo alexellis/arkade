@@ -570,6 +570,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
 | porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
+| sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
 | tfsec            | Security scanner for your Terraform code                                                                                                  |
