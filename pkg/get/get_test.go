@@ -3306,3 +3306,57 @@ func Test_DownloadGucci(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadSOPS(t *testing.T) {
+	tools := MakeTools()
+	name := "sops"
+	version := "v3.7.2"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.linux.amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.linux.arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
+		},
+
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
