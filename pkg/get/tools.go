@@ -2020,5 +2020,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	
 				{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:       "mozilla",
+			Repo:        "sops",
+			Name:        "sops",
+			Description: "Simple and flexible tool for managing secrets",
+			BinaryTemplate: `
+			{{ $archStr := "" }}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{ $archStr = "amd64" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+
+			{{- if HasPrefix .OS "ming" -}}
+			{{ .Name }}-{{ .Version }}.exe
+			{{- else -}}
+			{{ .Name }}-{{ .Version }}.{{ .OS }}.{{ $archStr }}
+			{{- end -}}
+			`,
+		})
 	return tools
 }
