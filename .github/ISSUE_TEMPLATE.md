@@ -34,6 +34,12 @@ Check at https://github.com/sponsors/alexellis
 <!--- What would happen if this issue was not resolved for you in some way? -->
 <!--- Providing context helps us come up with a solution that is most useful in the real world -->
 
+## If requesting a CLI for "arkade get"
+
+How many downloads does this tool have? Check at: 
+
+https://somsubhra.github.io/github-release-stats/
+
 ## Your Environment
 
 * What Kubernetes distribution are you using?
