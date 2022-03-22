@@ -26,6 +26,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	metricsServer.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
+	metricsServer.Flags().StringP("tag", "t", "v0.6.1", "The tag or version of the metrics-server to install")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -36,24 +37,20 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 		overrides := map[string]string{}
 		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
-		switch arch {
-		case "arm":
-			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm`
-			break
-		case "arm64", "aarch64":
-			overrides["image.repository"] = `gcr.io/google_containers/metrics-server-arm64`
-			break
-		}
-		customFlags, _ := command.Flags().GetStringArray("set")
 
+		tag, _ := command.Flags().GetString("tag")
+
+		overrides["image.tag"] = tag
+
+		customFlags, _ := command.Flags().GetStringArray("set")
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
 
 		nfsProvisionerOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("stable/metrics-server").
-			WithHelmURL("https://charts.helm.sh/stable").
+			WithHelmRepo("metrics-server/metrics-server").
+			WithHelmURL("https://kubernetes-sigs.github.io/metrics-server").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
@@ -80,4 +77,5 @@ kubectl top pod
 kubectl top node
 
 # Find out more at:
-# https://github.com/helm/charts/tree/master/stable/metrics-server`
+# https://artifacthub.io/packages/helm/metrics-server/metrics-server
+`
