@@ -63,7 +63,7 @@ func MakeInstallGrafana() *cobra.Command {
 
 	grafana.RunE = func(command *cobra.Command, args []string) error {
 
-		const chartVersion = "5.0.4"
+		const chartVersion = "6.24.1"
 
 		// Get all flags
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
