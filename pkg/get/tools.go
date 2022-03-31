@@ -1062,16 +1062,15 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "docker",
 			Repo:        "compose",
 			Name:        "docker-compose",
-			Version:     "1.29.1",
 			Description: "Define and run multi-container applications with Docker.",
 			BinaryTemplate: `
 {{$osStr := ""}}
 {{ if HasPrefix .OS "ming" -}}
-{{$osStr = "Windows"}}
+{{$osStr = "windows"}}
 {{- else if eq .OS "linux" -}}
-{{$osStr = "Linux"}}
+{{$osStr = "linux"}}
 {{- else if eq .OS "darwin" -}}
-{{$osStr = "Darwin"}}
+{{$osStr = "darwin"}}
 {{- end -}}
 {{$ext := ""}}
 {{ if HasPrefix .OS "ming" -}}
