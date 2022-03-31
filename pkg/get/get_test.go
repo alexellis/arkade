@@ -1329,6 +1329,53 @@ func Test_DownloadBuildx(t *testing.T) {
 	}
 }
 
+func Test_DownloadDockerCompose(t *testing.T) {
+	tools := MakeTools()
+	name := "docker-compose"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.3.4"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-windows-x86_64.exe`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-x86_64`,
+		},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-aarch64`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-darwin-x86_64`,
+		},
+		{os: "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/docker/compose/releases/download/v2.3.4/docker-compose-linux-armv7`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadHelmfile(t *testing.T) {
 	tools := MakeTools()
 	name := "helmfile"
