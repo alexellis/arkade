@@ -1064,20 +1064,25 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Name:        "docker-compose",
 			Description: "Define and run multi-container applications with Docker.",
 			BinaryTemplate: `
+{{$arch := .Arch}}
+
 {{$osStr := ""}}
 {{ if HasPrefix .OS "ming" -}}
 {{$osStr = "windows"}}
 {{- else if eq .OS "linux" -}}
 {{$osStr = "linux"}}
+  {{- if eq .Arch "armv7l" -}}
+  {{ $arch = "armv7"}}
+  {{- end }}
 {{- else if eq .OS "darwin" -}}
 {{$osStr = "darwin"}}
 {{- end -}}
 {{$ext := ""}}
 {{ if HasPrefix .OS "ming" -}}
-{{$ext = "exe"}}
+{{$ext = ".exe"}}
 {{- end -}}
 
-{{.Version}}/{{.Name}}-{{$osStr}}-{{.Arch}}{{$ext}}`,
+{{.Version}}/{{.Name}}-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
