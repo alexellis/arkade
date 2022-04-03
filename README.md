@@ -16,6 +16,7 @@ You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster t
 With over 52 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
+  - [Help fund arkade](#help-fund-arkade-)
   - [Should you try arkade?](#should-you-try-arkade)
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
@@ -24,6 +25,19 @@ With over 52 helm charts and apps available for Kubernetes, gone are the days of
   - [Community & contributing](#community--contributing)
   - [Sponsored apps](#sponsored-apps)
   - [FAQ](#faq)
+
+
+## Help fund arkade 👋
+
+<a href="https://github.com/sponsors/alexellis/">Alex</a> made this project open source and free, so everyone can benefit from it, including you.
+
+The project is funded through <a href="https://github.com/sponsors/alexellis/">GitHub Sponsors</a>, and you can join today.
+
+<a href="https://github.com/sponsors/alexellis/">
+<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
+</a>
+
+Which tier or option is right for you? [Find out now](https://github.com/sponsors/alexellis/)
 
 ## Should you try arkade?
 
@@ -81,18 +95,6 @@ curl -sLS https://get.arkade.dev | sh
 > Windows users: arkade requires bash to be available, therefore Windows users should [install and use Git Bash](https://git-scm.com/downloads)
 
 An alias of `ark` is created at installation time, so you can also run `ark install APP`
-
-## Help fund arkade 👋
-
-<a href="https://github.com/sponsors/alexellis/">Alex</a> made this project open source and free, so everyone can benefit from it, including you.
-
-The project is funded through <a href="https://github.com/sponsors/alexellis/">GitHub Sponsors</a>, and you can join today.
-
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
-
-Which tier or option is right for you? [Find out now](https://github.com/sponsors/alexellis/)
 
 ## Usage overview
 
