@@ -144,9 +144,14 @@ func downloadLinkerd(userPath, arch, clientOS, version string) error {
 		return fmt.Errorf("unable to find tool definition")
 	}
 
-	if _, err := os.Stat(fmt.Sprintf("%s", env.LocalBinary(tool.Name, ""))); errors.Is(err, os.ErrNotExist) {
+	if _, err := os.Stat(env.LocalBinary(tool.Name, "")); errors.Is(err, os.ErrNotExist) {
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, false)
+		var (
+			progress bool
+			quiet    bool
+		)
+
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, get.DownloadArkadeDir, progress, quiet)
 		if err != nil {
 			return err
 		}

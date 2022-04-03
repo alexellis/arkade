@@ -21,36 +21,42 @@ const (
 	DownloadArkadeDir = iota
 )
 
-func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress bool) (string, string, error) {
+func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress, quiet bool) (string, string, error) {
 
 	downloadURL, err := GetDownloadURL(tool,
 		strings.ToLower(operatingSystem),
 		strings.ToLower(arch),
-		version)
+		version, quiet)
 	if err != nil {
 		return "", "", err
 	}
 
-	fmt.Printf("Downloading: %s\n", downloadURL)
+	if !quiet {
+		fmt.Printf("Downloading: %s\n", downloadURL)
+	}
 
 	outFilePath, err := downloadFile(downloadURL, displayProgress)
 	if err != nil {
 		return "", "", err
 	}
-	fmt.Printf("%s written.\n", outFilePath)
+	if !quiet {
+		fmt.Printf("%s written.\n", outFilePath)
+	}
 
-	if isArchive, err := tool.IsArchive(); isArchive {
+	if isArchive, err := tool.IsArchive(quiet); isArchive {
 		if err != nil {
 			return "", "", err
 		}
 
-		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version)
+		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version, quiet)
 		if err != nil {
 			return "", "", err
 		}
 
 		outFilePath = outPath
-		log.Printf("Extracted: %s", outFilePath)
+		if !quiet {
+			log.Printf("Extracted: %s", outFilePath)
+		}
 	}
 
 	finalName := tool.Name
@@ -66,7 +72,9 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 
 		localPath := env.LocalBinary(finalName, "")
 
-		log.Printf("Copying %s to %s\n", outFilePath, localPath)
+		if !quiet {
+			log.Printf("Copying %s to %s\n", outFilePath, localPath)
+		}
 		_, err = copyFile(outFilePath, localPath)
 		if err != nil {
 			return "", "", err
@@ -146,7 +154,7 @@ func withProgressBar(r io.ReadCloser, length int, displayProgress bool) io.ReadC
 	return bar.NewProxyReader(r)
 }
 
-func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, version string) (string, error) {
+func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, version string, quiet bool) (string, error) {
 
 	archiveFile, err := os.Open(outFilePath)
 	if err != nil {
@@ -187,8 +195,10 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		outFilePath += ".exe"
 	}
 
+	forceQuiet := true
+
 	if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-		if err := archive.Untar(archiveFile, outFilePathDir); err != nil {
+		if err := archive.Untar(archiveFile, outFilePathDir, forceQuiet); err != nil {
 			return "", err
 		}
 	} else if strings.HasSuffix(downloadURL, "zip") {
@@ -197,8 +207,11 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 			return "", err
 		}
 
-		fmt.Printf("Name: %s, size: %d", fInfo.Name(), fInfo.Size())
-		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir); err != nil {
+		if !quiet {
+			fmt.Printf("Name: %s, size: %d", fInfo.Name(), fInfo.Size())
+		}
+
+		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir, forceQuiet); err != nil {
 			return "", err
 		}
 	}
