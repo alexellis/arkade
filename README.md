@@ -501,7 +501,6 @@ Note to contributors, run `arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
 
-
 |       TOOL       |                                                                DESCRIPTION                                                                |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
@@ -512,6 +511,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
+| dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
 | devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
 | docker-compose   | Define and run multi-container applications with Docker.                                                                                  |
