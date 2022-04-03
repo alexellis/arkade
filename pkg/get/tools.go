@@ -2058,6 +2058,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Name:        "dagger",
 			Description: "A portable devkit for CI/CD pipelines.",
 			URLTemplate: `
+	{{ $ext := ".tar.gz"}}
+	{{- if HasPrefix .OS "ming" -}}
+	{{ $ext = ".zip"}}
+	{{- end -}}
+
 	{{ $os := .OS }}
 	{{- if HasPrefix .OS "ming" -}}
 	{{ $os = "windows" }}
@@ -2070,8 +2075,17 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	{{ $arch = "arm64" }}
 	{{- end -}}
 
-	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dagger_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
-		})
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dagger_{{.Version}}_{{$os}}_{{$arch}}{{$ext}}`,
+			BinaryTemplate: `
+			{{ $name := "dagger" }}
+
+			{{ $os := .OS }}
+			{{- if HasPrefix .OS "ming" -}}
+			{{ $name = "dagger.exe" }}
+			{{- end -}}
+
+			{{$name}}
+	`})
 
 	return tools
 }
