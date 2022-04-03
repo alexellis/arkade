@@ -20,8 +20,8 @@ func Test_CheckTools(t *testing.T) {
 		tool := toolV
 		t.Run("Download of "+tool.Name, func(t *testing.T) {
 			t.Parallel()
-
-			url, err := tool.GetURL(os, arch, tool.Version)
+			quiet := true
+			url, err := tool.GetURL(os, arch, tool.Version, quiet)
 			if err != nil {
 				t.Fatalf("Error getting url for %s: %s", tool.Name, err)
 			}
