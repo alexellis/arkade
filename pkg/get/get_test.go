@@ -3362,3 +3362,59 @@ func Test_DownloadSOPS(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadDagger(t *testing.T) {
+	tools := MakeTools()
+	name := "dagger"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+	version := "v0.2.4"
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_linux_amd64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_windows_amd64.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want:\n%s\ngot:\n%s", tc.url, got)
+		}
+	}
+}

@@ -2048,5 +2048,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}
 			`,
 		})
+
+	// 	https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_linux_amd64.tar.gz
+
+	tools = append(tools,
+		Tool{
+			Owner:       "dagger",
+			Repo:        "dagger",
+			Name:        "dagger",
+			Description: "A portable devkit for CI/CD pipelines.",
+			URLTemplate: `
+	{{ $os := .OS }}
+	{{- if HasPrefix .OS "ming" -}}
+	{{ $os = "windows" }}
+	{{- end -}}
+
+	{{ $arch := .Arch }}
+	{{- if eq .Arch "x86_64" -}}
+	{{ $arch = "amd64" }}
+	{{- else if eq .Arch "aarch64" -}}
+	{{ $arch = "arm64" }}
+	{{- end -}}
+
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dagger_{{.Version}}_{{$os}}_{{$arch}}.tar.gz`,
+		})
+
 	return tools
 }
