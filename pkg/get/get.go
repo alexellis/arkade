@@ -65,11 +65,11 @@ var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
 }
 
-func (tool Tool) IsArchive() (bool, error) {
+func (tool Tool) IsArchive(quiet bool) (bool, error) {
 	arch, operatingSystem := env.GetClientArch()
 	version := ""
 
-	downloadURL, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version)
+	downloadURL, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version, quiet)
 	if err != nil {
 		return false, err
 	}
@@ -81,10 +81,10 @@ func (tool Tool) IsArchive() (bool, error) {
 
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
-func GetDownloadURL(tool *Tool, os, arch, version string) (string, error) {
+func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, error) {
 	ver := getToolVersion(tool, version)
 
-	dlURL, err := tool.GetURL(os, arch, ver)
+	dlURL, err := tool.GetURL(os, arch, ver, quiet)
 	if err != nil {
 		return "", err
 	}
@@ -121,16 +121,21 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 	return res.StatusCode, body, res.Header, nil
 }
 
-func (tool Tool) GetURL(os, arch, version string) (string, error) {
+func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
 	if len(version) == 0 &&
 		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
-		log.Printf("Looking up version for %s", tool.Name)
+		if !quiet {
+			log.Printf("Looking up version for %s", tool.Name)
+		}
+
 		v, err := findGitHubRelease(tool.Owner, tool.Repo)
 		if err != nil {
 			return "", err
 		}
-		log.Printf("Found: %s", v)
+		if !quiet {
+			log.Printf("Found: %s", v)
+		}
 		version = v
 	}
 

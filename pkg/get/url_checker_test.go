@@ -25,7 +25,7 @@ func Test_CheckTools(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Error getting url for %s: %s", tool.Name, err)
 			}
-			t.Logf("Checking %s via %s", tool.Name, url)
+			// t.Logf("Checking %s via %s", tool.Name, url)
 
 			status, body, headers, err := tool.Head(url)
 			if err != nil {
