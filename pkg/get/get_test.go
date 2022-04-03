@@ -3450,5 +3450,73 @@ func Test_DownloadKumactl(t *testing.T) {
 				t.Errorf("want: %s, got: %s", tc.url, got)
 			}
 		})
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadOhMyPosh(t *testing.T) {
+	tools := MakeTools()
+	name := "oh-my-posh"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v7.55.2"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-windows-amd64.exe`,
+		},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-windows-arm64.exe`,
+		},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-linux-amd64`,
+		},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-linux-arm64`,
+		},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-darwin-amd64`,
+		},
+		{os: "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/jandedobbeleer/oh-my-posh/releases/download/v7.55.2/posh-darwin-arm64`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
 	}
 }
