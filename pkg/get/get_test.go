@@ -3404,7 +3404,7 @@ func Test_DownloadDagger(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_windows_amd64.tar.gz",
+			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_windows_amd64.zip",
 		},
 	}
 
