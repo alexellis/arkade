@@ -355,6 +355,8 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			BinaryTemplate: `{{$arch := ""}}
 		{{- if eq .Arch "aarch64" -}}
 		{{$arch = "arm64"}}
+                {{- else if eq .Arch "arm64" -}}
+                {{$arch = "arm64"}}
 		{{- else if eq .Arch "x86_64" -}}
 		{{$arch = "amd64"}}
 		{{- else if eq .Arch "armv7l" -}}
