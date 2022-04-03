@@ -61,6 +61,7 @@ and provides a fast and easy alternative to a package manager.`,
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 	command.Flags().String("arch", clientArch, "CPU architecture for the tool")
 	command.Flags().String("os", clientOS, "Operating system for the tool")
+	command.Flags().Bool("quiet", false, "Suppress most additional output")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
@@ -95,6 +96,12 @@ and provides a fast and easy alternative to a package manager.`,
 
 		stash, _ := command.Flags().GetBool("stash")
 		progress, _ := command.Flags().GetBool("progress")
+		quiet, _ := command.Flags().GetBool("quiet")
+
+		if quiet && command.Flags().Changed("progress") == false {
+			progress = false
+		}
+
 		if p, ok := os.LookupEnv("ARKADE_PROGRESS"); ok {
 			b, err := strconv.ParseBool(p)
 			if err != nil {
@@ -130,27 +137,33 @@ and provides a fast and easy alternative to a package manager.`,
 		}
 
 		for _, tool := range downloadURLs {
-			fmt.Printf("Downloading: %s\n", tool.Name)
+			if !quiet {
+				fmt.Printf("Downloading: %s\n", tool.Name)
+			}
 			outFilePath, _, err = get.Download(&tool,
 				arch,
 				operatingSystem,
 				version,
 				dlMode,
-				progress)
+				progress,
+				quiet)
 			if err != nil {
 				return err
 			}
 
 			localToolsStore = append(localToolsStore, get.ToolLocal{Name: tool.Name, Path: outFilePath})
-			fmt.Printf("\nTool written to: %s\n\n", outFilePath)
+			if !quiet {
+				fmt.Printf("\nTool written to: %s\n\n", outFilePath)
+			}
 		}
 
-		msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
-		if err != nil {
-			return err
+		if !quiet {
+			msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
+			if err != nil {
+				return err
+			}
+			fmt.Printf("%s\n", msg)
 		}
-
-		fmt.Printf("%s\n", msg)
 
 		return err
 	}
