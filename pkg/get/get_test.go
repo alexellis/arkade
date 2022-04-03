@@ -2461,6 +2461,11 @@ func Test_DownloadJq(t *testing.T) {
 			url:  prefix + "jq-osx-amd64",
 		},
 		{
+			os:   "darwin",
+			arch: "arm64",
+			url:  prefix + "jq-osx-amd64",
+		},
+		{
 			os:   "linux",
 			arch: arch64bit,
 			url:  prefix + "jq-linux64",

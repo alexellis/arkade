@@ -107,6 +107,8 @@ helmfile_{{$os}}_{{$arch}}{{$ext}}`,
 
 {{- if eq .Arch "x86_64" -}}
 {{$arch = "64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "64"}}
 {{- else -}}
 {{$arch = "32"}}
 {{- end -}}
