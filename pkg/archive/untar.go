@@ -25,21 +25,25 @@ import (
 //
 // Edited on 2019-10-11 to remove support for nested folders when un-taring
 // so that all files are placed in the same target directory
-func Untar(r io.Reader, dir string) error {
-	return untar(r, dir)
+func Untar(r io.Reader, dir string, quiet bool) error {
+	return untar(r, dir, quiet)
 }
 
-func untar(r io.Reader, dir string) (err error) {
+func untar(r io.Reader, dir string, quiet bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
 	defer func() {
 		td := time.Since(t0)
+
 		if err == nil {
-			log.Printf("extracted tarball into %s: %d files, %d dirs (%v)", dir, nFiles, len(madeDir), td)
+			if !quiet {
+				log.Printf("extracted tarball into %s: %d files, %d dirs (%v)", dir, nFiles, len(madeDir), td)
+			}
 		} else {
 			log.Printf("error extracting tarball into %s after %d files, %d dirs, %v: %v", dir, nFiles, len(madeDir), td, err)
 		}
+
 	}()
 	zr, err := gzip.NewReader(r)
 	if err != nil {
@@ -61,7 +65,9 @@ func untar(r io.Reader, dir string) (err error) {
 		}
 		baseFile := filepath.Base(f.Name)
 		abs := path.Join(dir, baseFile)
-		fmt.Println(abs, f.Name)
+		if !quiet {
+			fmt.Printf("Extracting: %s to\t%s\n", f.Name, abs)
+		}
 
 		fi := f.FileInfo()
 		mode := fi.Mode()
