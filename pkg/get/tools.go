@@ -2049,8 +2049,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		})
 
-	// 	https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_linux_amd64.tar.gz
-
 	tools = append(tools,
 		Tool{
 			Owner:       "dagger",
@@ -2111,5 +2109,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			https://download.konghq.com/mesh-alpine/{{.Repo}}-{{.Version}}-{{$osStr}}-{{$archStr}}.tar.gz`,
 			BinaryTemplate: `{{.Name}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "jandedobbeleer",
+			Repo:        "oh-my-posh",
+			Name:        "oh-my-posh",
+			Description: "A prompt theme engine for any shell that can display kubernetes information.",
+			BinaryTemplate: `{{ $ext := "" }}
+			{{ $osStr := "linux" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $osStr = "darwin" }}
+			{{- end -}}
+
+			{{ $archStr := "amd64" }}
+
+			{{- if eq .Arch "armv6l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $archStr = "arm" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
+
+			posh-{{$osStr}}-{{$archStr}}{{$ext}}`,
+		})
+
 	return tools
 }

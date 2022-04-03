@@ -564,6 +564,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | nats             | Utility to interact with and manage NATS.                                                                                                 |
 | nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
 | nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
+| oh-my-posh       | A prompt theme engine for any shell that can display kubernetes information.                                                              |
 | opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
 | osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
 | pack             | Build apps using Cloud Native Buildpacks.                                                                                                 |
