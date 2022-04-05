@@ -11,7 +11,10 @@ import (
 	"time"
 )
 
-// Untar reads the gzip-compressed tar file from r and writes it into dir.
+// UntarNested reads the gzip-compressed tar file from r and writes it into dir.
+// Copyright 2017 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
 func UntarNested(r io.Reader, dir string) error {
 	return untarNested(r, dir)
 }
@@ -109,21 +112,3 @@ func untarNested(r io.Reader, dir string) (err error) {
 	}
 	return nil
 }
-
-// func validRelativeDir(dir string) bool {
-// 	if strings.Contains(dir, `\`) || path.IsAbs(dir) {
-// 		return false
-// 	}
-// 	dir = path.Clean(dir)
-// 	if strings.HasPrefix(dir, "../") || strings.HasSuffix(dir, "/..") || dir == ".." {
-// 		return false
-// 	}
-// 	return true
-// }
-
-// func validRelPath(p string) bool {
-// 	if p == "" || strings.Contains(p, `\`) || strings.HasPrefix(p, "/") || strings.Contains(p, "../") {
-// 		return false
-// 	}
-// 	return true
-// }
