@@ -544,6 +544,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
+| hey              | Load testing tool                                                                                                                         |
 | hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
 | hugo             | Static HTML and CSS website generator.                                                                                                    |
 | influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
@@ -576,6 +577,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
 | kubestr          | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
 | kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
+| kumactl          | kumactl is a CLI to interact with Kuma and its data                                                                                       |
 | kustomize        | Customization of kubernetes YAML configurations                                                                                           |
 | linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
 | mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
