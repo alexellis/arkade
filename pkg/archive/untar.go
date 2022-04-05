@@ -13,17 +13,12 @@ import (
 	"time"
 )
 
-// TODO(bradfitz): this was copied from x/build/cmd/buildlet/buildlet.go
-// but there were some buildlet-specific bits in there, so the code is
-// forked for now. Unfork and add some opts arguments here, so the
-// buildlet can use this code somehow.
-
 // Untar reads the gzip-compressed tar file from r and writes it into dir.
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 //
-// Edited on 2019-10-11 to remove support for nested folders when un-taring
+// AE: Edited on 2019-10-11 to remove support for nested folders when un-taring
 // so that all files are placed in the same target directory
 func Untar(r io.Reader, dir string, quiet bool) error {
 	return untar(r, dir, quiet)
