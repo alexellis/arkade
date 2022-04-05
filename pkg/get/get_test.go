@@ -3564,21 +3564,76 @@ func Test_DownloadDagger(t *testing.T) {
 			version: version,
 			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_linux_amd64.tar.gz",
 		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Fatalf("want:\n%s\ngot:\n%s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadHey(t *testing.T) {
+	tools := MakeTools()
+	name := "hey"
+	version := "v0.0.1-rc1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-linux-armv7`,
+		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/dagger/dagger/releases/download/v0.2.4/dagger_v0.2.4_windows_amd64.zip",
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey.exe`,
 		},
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Fatalf("want:\n%s\ngot:\n%s", tc.url, got)
-		}
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Fatalf("want:\n%s\ngot:\n%s", tc.url, got)
+			}
+		})
 	}
 }
