@@ -847,7 +847,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{- else if eq .OS "darwin" -}}
 				{{- if eq .Arch "x86_64" -}}
 					{{$osStr = "-darwin-amd64"}}
-				{{- else if eq .Arch "aarch64" -}}
+				{{- else if eq .Arch "arm64" -}}
 					{{$osStr = "-darwin-arm64"}}
 				{{- end -}}
 			{{ else if HasPrefix .OS "ming" -}}
