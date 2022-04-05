@@ -86,6 +86,10 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	return outFilePath, finalName, nil
 }
 
+func DownloadFileP(downloadURL string, displayProgress bool) (string, error) {
+	return downloadFile(downloadURL, displayProgress)
+}
+
 func downloadFile(downloadURL string, displayProgress bool) (string, error) {
 	res, err := http.DefaultClient.Get(downloadURL)
 	if err != nil {
