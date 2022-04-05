@@ -3533,3 +3533,62 @@ func Test_DownloadKumactl(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadHey(t *testing.T) {
+	tools := MakeTools()
+	name := "hey"
+	version := "v0.0.1-rc1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-linux-armv7`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

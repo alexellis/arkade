@@ -828,24 +828,34 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 				{{.Version}}/{{.Name}}-{{.Version}}.{{$osStr}}-{{$archStr}}{{$extStr}}`,
 		})
 
-	// See issue: https://github.com/rakyll/hey/issues/229
-	// 	tools = append(tools,
-	// 		Tool{
-	// 			Owner:   "rakyll",
-	// 			Repo:    "hey",
-	// 			Name:    "hey",
-	// 			Version: "v0.1.2",
-	// 			URLTemplate: `{{$arch := "amd64"}}
-	// {{$ext := ""}}
-	// {{$os := .OS}}
-
-	// {{ if HasPrefix .OS "ming" -}}
-	// {{$os = "windows"}}
-	// {{$ext = ".exe"}}
-	// {{$ext := ""}}
-	// {{- end -}}
-
-	// 	https://storage.googleapis.com/jblabs/dist/hey_{{$os}}_{{$.Version}}{{$ext}}`})
+	tools = append(tools,
+		Tool{
+			Owner:       "alexellis",
+			Repo:        "hey",
+			Name:        "hey",
+			Description: "Load testing tool",
+			BinaryTemplate: `
+			{{$osStr := ""}}
+			{{- if eq .OS "linux" -}}
+				{{- if eq .Arch "x86_64" -}}
+					{{$osStr = ""}}
+				{{- else if eq .Arch "aarch64" -}}
+					{{$osStr = "-linux-arm64"}}
+				{{- else if eq .Arch "armv7l" -}}
+					{{$osStr = "-linux-armv7"}}
+				{{- end -}}
+			{{- else if eq .OS "darwin" -}}
+				{{- if eq .Arch "x86_64" -}}
+					{{$osStr = "-darwin-amd64"}}
+				{{- else if eq .Arch "aarch64" -}}
+					{{$osStr = "-darwin-arm64"}}
+				{{- end -}}
+			{{ else if HasPrefix .OS "ming" -}}
+				{{$osStr =".exe"}}
+			{{- end -}}
+			
+			{{.Name}}{{$osStr}}`,
+		})
 
 	tools = append(tools,
 		Tool{
