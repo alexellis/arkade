@@ -25,6 +25,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallFirecracker())
 	command.AddCommand(MakeInstallPrometheus())
 	command.AddCommand(MakeInstallCNI())
+	command.AddCommand(MakeInstallContainerd())
 
 	return command
 }
