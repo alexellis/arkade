@@ -1,7 +1,7 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-// system contains a suite of Sponsored Apps for arkade
+// system contains packages for Linux servers and workstations
 package system
 
 import (
