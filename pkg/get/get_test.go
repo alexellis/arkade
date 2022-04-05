@@ -3550,7 +3550,7 @@ func Test_DownloadHey(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    archARM64,
+			arch:    "arm64",
 			version: version,
 			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-arm64`,
 		},
