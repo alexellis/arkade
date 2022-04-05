@@ -21,6 +21,7 @@ With over 52 helm charts and apps available for Kubernetes, gone are the days of
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
+  - [Install System packages](#install-system-packages)
   - [Installing apps with arkade](#installing-apps-with-arkade)
   - [Community & contributing](#community--contributing)
   - [Sponsored apps](#sponsored-apps)
@@ -153,6 +154,26 @@ Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for h
 Adding a new tool for download is as simple as editing [tools.go](https://github.com/alexellis/arkade/blob/master/pkg/get/tools.go).
 
 [Click here for the full catalog of CLIs](#catalog-of-apps)
+
+## Install System packages
+
+System packages, or "system apps" are tools designed for installation on a Linux workstation, server or CI runner.
+
+These are a more limited group of applications designed for quick setup, scripting and CI, and generally do not fit into the `arkade get` pattern, due to additional installation steps or system configuration.
+
+```bash
+arkade system install --help
+
+# Install latest version of Go to /usr/local/bin/go
+arkade system install go
+
+# Install Go 1.18 to /tmp/go
+arkade system install go \
+  --version 1.18 \
+  --path /tmp/
+```
+
+System apps are in preview, see more details in the proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
 
 ## Installing apps with arkade
 
