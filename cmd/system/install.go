@@ -22,6 +22,7 @@ func MakeInstall() *cobra.Command {
 	}
 
 	command.AddCommand(MakeInstallGo())
+	command.AddCommand(MakeInstallFirecracker())
 
 	return command
 }

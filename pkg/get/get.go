@@ -129,7 +129,7 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 			log.Printf("Looking up version for %s", tool.Name)
 		}
 
-		v, err := findGitHubRelease(tool.Owner, tool.Repo)
+		v, err := FindGitHubRelease(tool.Owner, tool.Repo)
 		if err != nil {
 			return "", err
 		}
@@ -175,7 +175,7 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 	return getBinaryURL(tool.Owner, tool.Repo, version, downloadName), nil
 }
 
-func findGitHubRelease(owner, repo string) (string, error) {
+func FindGitHubRelease(owner, repo string) (string, error) {
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
 
 	timeout := time.Second * 5
