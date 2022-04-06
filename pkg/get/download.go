@@ -75,7 +75,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 		if !quiet {
 			log.Printf("Copying %s to %s\n", outFilePath, localPath)
 		}
-		_, err = copyFile(outFilePath, localPath)
+		_, err = CopyFile(outFilePath, localPath)
 		if err != nil {
 			return "", "", err
 		}
@@ -123,7 +123,7 @@ func downloadFile(downloadURL string, displayProgress bool) (string, error) {
 	return outFilePath, nil
 }
 
-func copyFile(src, dst string) (int64, error) {
+func CopyFile(src, dst string) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return 0, err
