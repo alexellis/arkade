@@ -647,14 +647,16 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "terraform",
 			Name:        "terraform",
-			Version:     "1.0.0",
+			Version:     "1.1.7",
 			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
+			{{- else if eq .Arch "arm64" -}}
+			{{$arch = "arm64"}}
 			{{- else if eq .Arch "aarch64" -}}
-            {{$arch = "arm64"}}
+			{{$arch = "arm64"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
 			{{- end -}}
