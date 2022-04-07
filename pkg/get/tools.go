@@ -2160,27 +2160,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kumahq",
-			Repo:        "kuma",
-			Name:        "kumactl",
-			Version:     "1.4.1",
-			Description: "kumactl is a CLI to interact with Kuma and its data",
-			URLTemplate: `
-			{{$osStr := ""}}
-			{{$archStr := ""}}
-			{{- if HasPrefix .OS "linux" -}}
-			{{$osStr = "ubuntu"}}
+			Owner:       "junegunn",
+			Repo:        "fzf",
+			Name:        "fzf",
+			Description: "General-purpose command-line fuzzy finder",
+			BinaryTemplate: `
+			{{ $osStr := "linux" }}
+			{{ $ext := ".tar.gz" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $osStr = "windows" }}
+			{{ $ext = ".zip" }}
 			{{- else if eq .OS "darwin" -}}
-			{{$osStr = "darwin"}}
+			{{  $osStr = "darwin" }}
+			{{ $ext = ".zip" }}
 			{{- end -}}
 
-			{{- if eq .Arch "x86_64" -}}
-			{{$archStr = "amd64"}}
-			{{- else -}}
-			{{$archStr = .Arch}}
+			{{ $archStr := "amd64" }}
+			{{- if eq .Arch "armv6l" -}}
+			{{ $archStr = "armv6" }}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $archStr = "armv7" }}
+			{{- else if eq .Arch "arm64" -}}
+			{{ $archStr = "arm64" }}
+			{{- else if eq .Arch "aarch64" -}}
+			{{ $archStr = "arm64" }}
 			{{- end -}}
-			https://download.konghq.com/mesh-alpine/{{.Repo}}-{{.Version}}-{{$osStr}}-{{$archStr}}.tar.gz`,
-			BinaryTemplate: `{{.Name}}`,
+			{{.Name}}-{{.VersionNumber}}-{{$osStr}}_{{$archStr}}{{$ext}}
+			`,
 		})
 
 	tools = append(tools,
