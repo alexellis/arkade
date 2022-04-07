@@ -944,7 +944,7 @@ func Test_DownloadEKSCTL(t *testing.T) {
 			version: toolVersion,
 			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Linux_arm64.tar.gz"},
 		{os: "darwin",
-			arch:    archARM64,
+			arch:    "arm64",
 			version: toolVersion,
 			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Darwin_arm64.tar.gz"},
 		{os: "darwin",

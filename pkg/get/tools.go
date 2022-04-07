@@ -529,14 +529,15 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "weaveworks",
 			Repo:        "eksctl",
 			Name:        "eksctl",
-			Version:     "v0.79.0",
 			Description: "Amazon EKS Kubernetes cluster management",
-			URLTemplate: `
+			BinaryTemplate: `
 			{{$arch := ""}}
 			{{$extStr := "tar.gz"}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "arm64" -}}
 			{{$arch = "arm64"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "armv7"}}
@@ -553,8 +554,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- else if eq .OS "darwin" -}}
 			{{$os = "Darwin"}}
 			{{- end -}}
-
-			https://github.com/weaveworks/eksctl/releases/download/{{ .Version }}/{{.Name}}_{{$os}}_{{$arch}}.{{$extStr}}`,
+			{{.Name}}_{{$os}}_{{$arch}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,
