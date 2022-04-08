@@ -17,6 +17,7 @@ const arch32bit = "i686"
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
 const archARM64 = "aarch64"
+const archDarwinARM64 = "arm64"
 
 type test struct {
 	os      string
@@ -206,7 +207,7 @@ func Test_GetDownloadURLs(t *testing.T) {
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/arm64/kubectl",
 			version: "v1.22.2",
 			os:      "darwin",
-			arch:    "aarch64",
+			arch:    archDarwinARM64,
 		},
 		{
 			name:    "kubectl",
@@ -269,7 +270,7 @@ func Test_DownloadKubectl(t *testing.T) {
 			version: "v1.20.0",
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"},
 		{os: "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: "v1.20.0",
 			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/arm64/kubectl"},
 		{os: "linux",
@@ -346,7 +347,7 @@ func Test_DownloadFaaSCLIArmhf(t *testing.T) {
 		}
 	}
 
-	gotURL, err := tool.GetURL("Linux", "armv7l", "", false)
+	gotURL, err := tool.GetURL("Linux", archARM7, "", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -423,7 +424,7 @@ func Test_DownloadKubeseal(t *testing.T) {
 			version: "v0.17.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-amd64.tar.gz"},
 		{os: "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: "v0.17.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-arm64.tar.gz"},
 		{os: "darwin",
@@ -431,7 +432,7 @@ func Test_DownloadKubeseal(t *testing.T) {
 			version: "v0.17.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-amd64.tar.gz"},
 		{os: "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v0.17.4",
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm.tar.gz"},
 		{os: "linux",
@@ -476,11 +477,11 @@ func Test_DownloadKind(t *testing.T) {
 			version: "v0.11.0",
 			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.11.0/kind-darwin-amd64"},
 		{os: "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: "v0.11.0",
 			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.11.0/kind-darwin-arm64"},
 		{os: "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v0.11.0",
 			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.11.0/kind-linux-arm"},
 		{os: "linux",
@@ -525,7 +526,7 @@ func Test_DownloadK3d(t *testing.T) {
 			version: "v3.0.0",
 			url:     "https://github.com/k3d-io/k3d/releases/download/v3.0.0/k3d-darwin-amd64"},
 		{os: "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v3.0.0",
 			url:     "https://github.com/k3d-io/k3d/releases/download/v3.0.0/k3d-linux-arm"},
 		{os: "linux",
@@ -693,7 +694,7 @@ func Test_DownloadK3sup(t *testing.T) {
 			version: "0.9.2",
 			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-darwin"},
 		{os: "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "0.9.2",
 			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-armhf"},
 		{os: "linux",
@@ -737,7 +738,7 @@ func Test_DownloadAutok3s(t *testing.T) {
 			version: "v0.4.4",
 			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_darwin_amd64"},
 		{os: "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v0.4.4",
 			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_linux_arm"},
 		{os: "linux",
@@ -944,7 +945,7 @@ func Test_DownloadEKSCTL(t *testing.T) {
 			version: toolVersion,
 			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Linux_arm64.tar.gz"},
 		{os: "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: toolVersion,
 			url:     "https://github.com/weaveworks/eksctl/releases/download/v0.79.0/eksctl_Darwin_arm64.tar.gz"},
 		{os: "darwin",
@@ -1136,7 +1137,7 @@ func Test_DownloadTerraform(t *testing.T) {
 			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_darwin_arm64.zip",
 			version: toolVersion,
 			os:      "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 		},
 		{
 			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_darwin_amd64.zip",
@@ -1496,7 +1497,7 @@ func Test_DownloadMinio(t *testing.T) {
 		},
 		{
 			os:   "linux",
-			arch: "armv7l",
+			arch: archARM7,
 			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
 		},
 		{
@@ -1558,7 +1559,7 @@ func Test_DownloadNats(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v0.0.28",
 			url:     `https://github.com/nats-io/natscli/releases/download/v0.0.28/nats-0.0.28-linux-arm7.zip`,
 		},
@@ -2375,7 +2376,7 @@ func Test_DownloadEquinixMetalCli(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "0.6.0-alpha2",
 			url:     `https://github.com/equinix/metal-cli/releases/download/0.6.0-alpha2/metal-linux-armv7`,
 		},
@@ -2462,7 +2463,7 @@ func Test_DownloadJq(t *testing.T) {
 		},
 		{
 			os:   "darwin",
-			arch: "arm64",
+			arch: archDarwinARM64,
 			url:  prefix + "jq-osx-amd64",
 		},
 		{
@@ -2596,7 +2597,7 @@ func Test_DownloadKubestr(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: v,
 			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_MacOS_arm64.tar.gz`,
 		},
@@ -2682,7 +2683,7 @@ func Test_DownloadK10tools(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: v,
 			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_macOS_arm64.tar.gz`,
 		},
@@ -2988,7 +2989,7 @@ func Test_DownloadKrew(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    "armv7l",
+			arch:    archARM7,
 			version: "v0.4.2",
 			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_arm.tar.gz`,
 		},
@@ -3550,7 +3551,7 @@ func Test_DownloadHey(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    "arm64",
+			arch:    archDarwinARM64,
 			version: version,
 			url:     `https://github.com/alexellis/hey/releases/download/v0.0.1-rc1/hey-darwin-arm64`,
 		},
