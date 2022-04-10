@@ -14,14 +14,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	githubDownloadTemplate = "https://github.com/%s/%s/releases/download/%s/%s"
-	githubLatest           = "latest"
-
-	firecrackerOwner = "firecracker-microvm"
-	firecrackerRepo  = "firecracker"
-)
-
 func MakeInstallFirecracker() *cobra.Command {
 
 	command := &cobra.Command{
@@ -42,6 +34,9 @@ func MakeInstallFirecracker() *cobra.Command {
 		version, _ := cmd.Flags().GetString("version")
 		progress, _ := cmd.Flags().GetBool("progress")
 
+		owner := "firecracker-microvm"
+		repo := "firecracker"
+
 		fmt.Printf("Installing Firecracker to %s\n", installPath)
 
 		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
@@ -59,7 +54,7 @@ func MakeInstallFirecracker() *cobra.Command {
 		}
 
 		if version == githubLatest {
-			v, err := get.FindGitHubRelease(firecrackerOwner, firecrackerRepo)
+			v, err := get.FindGitHubRelease(owner, repo)
 			if err != nil {
 				return err
 			}
@@ -72,13 +67,15 @@ func MakeInstallFirecracker() *cobra.Command {
 		fmt.Printf("Installing version: %s for: %s\n", version, arch)
 
 		filename := fmt.Sprintf("firecracker-%s-%s.tgz", version, arch)
-		dlURL := fmt.Sprintf(githubDownloadTemplate, firecrackerOwner, firecrackerRepo, version, filename)
+		dlURL := fmt.Sprintf(githubDownloadTemplate, owner, repo, version, filename)
 
 		fmt.Printf("Downloading from: %s\n", dlURL)
 		outPath, err := get.DownloadFileP(dlURL, progress)
 		if err != nil {
 			return err
 		}
+		defer os.Remove(outPath)
+
 		fmt.Printf("Downloaded to: %s\n", outPath)
 
 		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
