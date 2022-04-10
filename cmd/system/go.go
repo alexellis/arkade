@@ -82,6 +82,8 @@ func MakeInstallGo() *cobra.Command {
 		if err != nil {
 			return err
 		}
+		defer os.Remove(outPath)
+
 		fmt.Printf("Downloaded to: %s\n", outPath)
 
 		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
