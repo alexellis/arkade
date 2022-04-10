@@ -99,7 +99,7 @@ func MakeInstallFirecracker() *cobra.Command {
 			fmt.Sprintf("%s/jailer-%s-%s", tempUnpackPath, version, arch):      fmt.Sprintf("%s/jailer", installPath),
 		}
 		for src, dst := range filesToCopy {
-			if _, err := get.CopyFile(src, dst); err != nil {
+			if _, err := get.CopyFileP(src, dst, readWriteExecuteEveryone); err != nil {
 				return err
 			}
 		}
