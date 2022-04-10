@@ -114,7 +114,7 @@ func MakeInstallCNI() *cobra.Command {
 				dst := path.Join(installPath, dir.Name())
 				fmt.Printf("Copying %s to: %s\n", src, dst)
 
-				if _, err := get.CopyFile(src, dst); err != nil {
+				if _, err := get.CopyFileP(src, dst, readWriteExecuteEveryone); err != nil {
 					return fmt.Errorf("unable to copy %s to %s, error: %s", src, dst, err)
 				}
 			}
