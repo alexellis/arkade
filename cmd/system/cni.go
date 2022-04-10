@@ -6,6 +6,7 @@ package system
 import (
 	"fmt"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/archive"
@@ -14,27 +15,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	githubDownloadTemplate = "https://github.com/%s/%s/releases/download/%s/%s"
-	githubLatest           = "latest"
-
-	firecrackerOwner = "firecracker-microvm"
-	firecrackerRepo  = "firecracker"
-)
-
-func MakeInstallFirecracker() *cobra.Command {
+func MakeInstallCNI() *cobra.Command {
 
 	command := &cobra.Command{
-		Use:   "firecracker",
-		Short: "Install Firecracker",
-		Long:  `Install Firecracker and its Jailer.`,
-		Example: `  arkade system install firecracker
-  arkade system install firecracker --version v1.0.0`,
+		Use:   "cni",
+		Short: "Install CNI plugins",
+		Long:  `Install CNI plugins for use with faasd, CNI, Kubernetes, etc.`,
+		Example: `  arkade system install cni
+  arkade system install cni --version v1.0.0`,
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP("version", "v", githubLatest, "The version for Firecracker to install")
-	command.Flags().StringP("path", "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
+	command.Flags().StringP("version", "v", "v0.8.5", "The version for CNI to install")
+	command.Flags().StringP("path", "p", "/opt/cni/bin/", "Installation path, where a go subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
@@ -42,7 +35,10 @@ func MakeInstallFirecracker() *cobra.Command {
 		version, _ := cmd.Flags().GetString("version")
 		progress, _ := cmd.Flags().GetBool("progress")
 
-		fmt.Printf("Installing Firecracker to %s\n", installPath)
+		owner := "containernetworking"
+		repo := "plugins"
+
+		fmt.Printf("Installing CNI to %s\n", installPath)
 
 		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
 			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
@@ -57,9 +53,16 @@ func MakeInstallFirecracker() *cobra.Command {
 		if arch != "x86_64" && arch != "aarch64" {
 			return fmt.Errorf("this app only supports x86_64 and aarch64 and not %s", arch)
 		}
-
+		dlArch := arch
+		if arch == "x86_64" {
+			dlArch = "amd64"
+		} else if arch == "aarch64" {
+			dlArch = "arm64"
+		} else if arch == "armv7" || arch == "armv7l" {
+			dlArch = "armv6l"
+		}
 		if version == githubLatest {
-			v, err := get.FindGitHubRelease(firecrackerOwner, firecrackerRepo)
+			v, err := get.FindGitHubRelease(owner, repo)
 			if err != nil {
 				return err
 			}
@@ -69,10 +72,10 @@ func MakeInstallFirecracker() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, arch)
+		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
 
-		filename := fmt.Sprintf("firecracker-%s-%s.tgz", version, arch)
-		dlURL := fmt.Sprintf(githubDownloadTemplate, firecrackerOwner, firecrackerRepo, version, filename)
+		filename := fmt.Sprintf("cni-plugins-linux-%s-%s.tgz", dlArch, version)
+		dlURL := fmt.Sprintf(githubDownloadTemplate, owner, repo, version, filename)
 
 		fmt.Printf("Downloading from: %s\n", dlURL)
 		outPath, err := get.DownloadFileP(dlURL, progress)
@@ -87,23 +90,31 @@ func MakeInstallFirecracker() *cobra.Command {
 		}
 		defer f.Close()
 
-		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "firecracker*")
+		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "cni-plugins*")
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Unpacking Firecracker to: %s\n", tempUnpackPath)
+		defer os.RemoveAll(tempUnpackPath)
+
+		fmt.Printf("Unpacking CNI Plugins to: %s\n", tempUnpackPath)
 		if err := archive.Untar(f, tempUnpackPath, true); err != nil {
 			return err
 		}
 
-		fmt.Printf("Copying Firecracker binaries to: %s\n", installPath)
-		filesToCopy := map[string]string{
-			fmt.Sprintf("%s/firecracker-%s-%s", tempUnpackPath, version, arch): fmt.Sprintf("%s/firecracker", installPath),
-			fmt.Sprintf("%s/jailer-%s-%s", tempUnpackPath, version, arch):      fmt.Sprintf("%s/jailer", installPath),
+		dirs, err := os.ReadDir(tempUnpackPath)
+		if err != nil {
+			return err
 		}
-		for src, dst := range filesToCopy {
-			if _, err := get.CopyFile(src, dst); err != nil {
-				return err
+
+		for _, dir := range dirs {
+			if !dir.IsDir() {
+				src := path.Join(tempUnpackPath, dir.Name())
+				dst := path.Join(installPath, dir.Name())
+				fmt.Printf("Copying %s to: %s\n", src, dst)
+
+				if _, err := get.CopyFile(src, dst); err != nil {
+					return fmt.Errorf("unable to copy %s to %s, error: %s", src, dst, err)
+				}
 			}
 		}
 
