@@ -100,7 +100,7 @@ func MakeInstallPrometheus() *cobra.Command {
 			fmt.Sprintf("%s/%s", tempUnpackPath, "promtool"):   fmt.Sprintf("%s/%s", installPath, "promtool"),
 		}
 		for src, dst := range filesToCopy {
-			if _, err := get.CopyFile(src, dst); err != nil {
+			if _, err := get.CopyFileP(src, dst, readWriteExecuteEveryone); err != nil {
 				return err
 			}
 		}

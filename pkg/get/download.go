@@ -124,6 +124,10 @@ func downloadFile(downloadURL string, displayProgress bool) (string, error) {
 }
 
 func CopyFile(src, dst string) (int64, error) {
+	return CopyFileP(src, dst, 0700)
+}
+
+func CopyFileP(src, dst string, permMode int) (int64, error) {
 	sourceFileStat, err := os.Stat(src)
 	if err != nil {
 		return 0, err
@@ -139,8 +143,7 @@ func CopyFile(src, dst string) (int64, error) {
 	}
 	defer source.Close()
 
-	userReadWriteExecute := 0700
-	destination, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(userReadWriteExecute))
+	destination, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, os.FileMode(permMode))
 	if err != nil {
 		return 0, err
 	}
