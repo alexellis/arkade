@@ -11,20 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const (
-	prometheus            = "prometheus"
-	promtool              = "promtool"
-	pathFlag              = "path"
-	versionFlag           = "version"
-	progressFlag          = "progress"
-	archFlag              = "arch"
-	prometheusArchive     = "prometheus-%s.linux-%s.tar.gz"
-	githubDownloadBaseURL = "https://github.com/%s/%s/releases/download/%s/%s"
-)
-
 func MakeInstallPrometheus() *cobra.Command {
 	command := &cobra.Command{
-		Use:   prometheus,
+		Use:   "prometheus",
 		Short: "Install Prometheus",
 		Long:  `Install the Prometheus monitoring system and time series database.`,
 		Example: `  arkade system install prometheus
@@ -32,15 +21,15 @@ func MakeInstallPrometheus() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP(versionFlag, "v", "latest", "The version for Prometheus to install")
-	command.Flags().StringP(pathFlag, "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
-	command.Flags().Bool(progressFlag, true, "Show download progress")
-	command.Flags().String(archFlag, "", "CPU architecture for Prometheus, eg: amd64")
+	command.Flags().StringP("version", "v", "latest", "The version for Prometheus to install")
+	command.Flags().StringP("path", "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
+	command.Flags().Bool("progress", true, "Show download progress")
+	command.Flags().String("arch", "", "CPU architecture for Prometheus, eg: amd64")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
-		installPath, _ := cmd.Flags().GetString(pathFlag)
-		version, _ := cmd.Flags().GetString(versionFlag)
-		progress, _ := cmd.Flags().GetBool(progressFlag)
+		installPath, _ := cmd.Flags().GetString("path")
+		version, _ := cmd.Flags().GetString("version")
+		progress, _ := cmd.Flags().GetBool("progress")
 
 		fmt.Printf("Installing Prometheus to %s\n", installPath)
 
@@ -53,8 +42,8 @@ func MakeInstallPrometheus() *cobra.Command {
 		if strings.ToLower(osVer) != "linux" {
 			return fmt.Errorf("this app only supports Linux")
 		}
-		if cmd.Flags().Changed(archFlag) {
-			arch, _ = cmd.Flags().GetString(archFlag)
+		if cmd.Flags().Changed("arch") {
+			arch, _ = cmd.Flags().GetString("arch")
 		}
 
 		dlArch := arch
@@ -65,7 +54,7 @@ func MakeInstallPrometheus() *cobra.Command {
 		}
 
 		if version == "latest" {
-			v, err := get.FindGitHubRelease(prometheus, prometheus)
+			v, err := get.FindGitHubRelease("prometheus", "prometheus")
 			if err != nil {
 				return err
 			}
@@ -75,14 +64,17 @@ func MakeInstallPrometheus() *cobra.Command {
 		}
 
 		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-		filename := fmt.Sprintf(prometheusArchive, strings.TrimPrefix(version, "v"), dlArch)
-		dlURL := fmt.Sprintf(githubDownloadBaseURL, prometheus, prometheus, version, filename)
+
+		filename := fmt.Sprintf("prometheus-%s.linux-%s.tar.gz", strings.TrimPrefix(version, "v"), dlArch)
+		dlURL := fmt.Sprintf(githubDownloadTemplate, "prometheus", "prometheus", version, filename)
 
 		fmt.Printf("Downloading from: %s\n", dlURL)
 		outPath, err := get.DownloadFileP(dlURL, progress)
 		if err != nil {
 			return err
 		}
+		defer os.Remove(outPath)
+
 		fmt.Printf("Downloaded to: %s\n", outPath)
 
 		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
@@ -91,7 +83,7 @@ func MakeInstallPrometheus() *cobra.Command {
 		}
 		defer f.Close()
 
-		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), fmt.Sprintf("%s*", prometheus))
+		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "prometheus*")
 		if err != nil {
 			return err
 		}
@@ -104,8 +96,8 @@ func MakeInstallPrometheus() *cobra.Command {
 
 		fmt.Printf("Copying binaries to: %s\n", installPath)
 		filesToCopy := map[string]string{
-			fmt.Sprintf("%s/%s", tempUnpackPath, prometheus): fmt.Sprintf("%s/%s", installPath, prometheus),
-			fmt.Sprintf("%s/%s", tempUnpackPath, promtool):   fmt.Sprintf("%s/%s", installPath, promtool),
+			fmt.Sprintf("%s/%s", tempUnpackPath, "prometheus"): fmt.Sprintf("%s/%s", installPath, "prometheus"),
+			fmt.Sprintf("%s/%s", tempUnpackPath, "promtool"):   fmt.Sprintf("%s/%s", installPath, "promtool"),
 		}
 		for src, dst := range filesToCopy {
 			if _, err := get.CopyFile(src, dst); err != nil {
