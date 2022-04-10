@@ -16,6 +16,7 @@ const (
 	pathFlag              = "path"
 	versionFlag           = "version"
 	progressFlag          = "progress"
+	archFlag              = "arch"
 	prometheusArchive     = "prometheus-%s.linux-%s.tar.gz"
 	githubDownloadBaseURL = "https://github.com/%s/%s/releases/download/%s/%s"
 )
@@ -33,6 +34,7 @@ func MakeInstallPrometheus() *cobra.Command {
 	command.Flags().StringP(versionFlag, "v", "latest", "The version for Prometheus to install")
 	command.Flags().StringP(pathFlag, "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
 	command.Flags().Bool(progressFlag, true, "Show download progress")
+	command.Flags().String(archFlag, "", "CPU architecture for Prometheus, eg: amd64")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString(pathFlag)
@@ -49,6 +51,9 @@ func MakeInstallPrometheus() *cobra.Command {
 
 		if strings.ToLower(osVer) != "linux" {
 			return fmt.Errorf("this app only supports Linux")
+		}
+		if cmd.Flags().Changed(archFlag) {
+			arch, _ = cmd.Flags().GetString(archFlag)
 		}
 
 		dlArch := arch
