@@ -2,12 +2,13 @@ package system
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/spf13/cobra"
-	"os"
-	"strings"
 )
 
 const (
@@ -95,6 +96,7 @@ func MakeInstallPrometheus() *cobra.Command {
 			return err
 		}
 		defer os.RemoveAll(tempUnpackPath)
+
 		fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
 		if err := archive.Untar(f, tempUnpackPath, true); err != nil {
 			return err
@@ -106,7 +108,7 @@ func MakeInstallPrometheus() *cobra.Command {
 			fmt.Sprintf("%s/%s", tempUnpackPath, promtool):   fmt.Sprintf("%s/%s", installPath, promtool),
 		}
 		for src, dst := range filesToCopy {
-			if _, copyErr := get.CopyFile(src, dst); copyErr != nil {
+			if _, err := get.CopyFile(src, dst); err != nil {
 				return err
 			}
 		}
