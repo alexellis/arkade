@@ -27,6 +27,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallCNI())
 	command.AddCommand(MakeInstallContainerd())
 	command.AddCommand(MakeInstallActionsRunner())
+	command.AddCommand(MakeInstallNode())
 
 	return command
 }

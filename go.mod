@@ -11,6 +11,7 @@ require (
 	github.com/mattn/go-colorable v0.1.12 // indirect
 	github.com/morikuni/aec v1.0.0
 	github.com/olekukonko/tablewriter v0.0.5
+	github.com/otiai10/copy v1.7.0
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.2.0
 	github.com/spf13/cobra v1.5.0
