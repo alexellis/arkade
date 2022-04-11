@@ -21,7 +21,7 @@ With over 52 helm charts and apps available for Kubernetes, gone are the days of
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
-  - [Install System packages](#install-system-packages)
+  - [Install System Packages](#install-system-packages)
   - [Installing apps with arkade](#installing-apps-with-arkade)
   - [Community & contributing](#community--contributing)
   - [Sponsored apps](#sponsored-apps)
@@ -155,14 +155,18 @@ Adding a new tool for download is as simple as editing [tools.go](https://github
 
 [Click here for the full catalog of CLIs](#catalog-of-apps)
 
-## Install System packages
+## Install System Packages
 
-System packages, or "system apps" are tools designed for installation on a Linux workstation, server or CI runner.
+System packages are tools designed for installation on a Linux workstation, server or CI runner.
 
 These are a more limited group of applications designed for quick setup, scripting and CI, and generally do not fit into the `arkade get` pattern, due to additional installation steps or system configuration.
 
 ```bash
-arkade system install --help
+# Show packages
+arkade system install
+
+# Show package flags
+arkade system install go --help
 
 # Install latest version of Go to /usr/local/bin/go
 arkade system install go
@@ -171,9 +175,24 @@ arkade system install go
 arkade system install go \
   --version 1.18 \
   --path /tmp/
+
+# Install containerd for ARM64, 32-bit ARM or x86_64
+# with systemd enabled
+arkade install system containerd \
+  --systemd
 ```
 
-System apps are in preview, see more details in the proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
+Run the following to see what's available `arkade system install`:
+
+```bash
+  cni         Install CNI plugins
+  containerd  Install containerd
+  firecracker Install Firecracker
+  go          Install Go
+  prometheus  Install Prometheus
+```
+
+> System apps are in preview, see more details in the proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
 
 ## Installing apps with arkade
 
