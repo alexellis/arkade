@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Install Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
           go-version: ${{ matrix.go-version }}
       - name: Run URL checker tests
