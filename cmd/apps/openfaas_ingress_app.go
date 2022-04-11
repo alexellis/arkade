@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -292,7 +292,7 @@ kubectl describe -n openfaas Certificate openfaas-gateway
 const openfaasIngressInstallMsg = `=======================================================================
 = OpenFaaS Ingress and cert-manager ClusterIssuer have been installed =
 =======================================================================` +
-	"\n\n" + OpenfaasIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + OpenfaasIngressInfoMsg + "\n\n" + pkg.SupportMessageShort
 
 // Ingress in extensions/v1beta1 are removed in k8s 1.22+, July 2021
 var openfaasIngressExtensionTemplate = `

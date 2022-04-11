@@ -127,4 +127,4 @@ const NginxIncIngressInfoMsg = `# If you're using a local environment such as "m
 const NginxIncIngressInstallMsg = `=======================================================================
 = nginx-inc has been installed.                                  =
 =======================================================================` +
-	"\n\n" + NginxIncIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + NginxIncIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

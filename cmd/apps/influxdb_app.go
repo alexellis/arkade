@@ -82,4 +82,4 @@ To view the logs for the InfluxDB pod, run the following:
 const influxdbInstallMsg = `=======================================================================
 = influxdb has been installed.                                   =
 =======================================================================` +
-	"\n\n" + InfluxdbInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + InfluxdbInfoMsg + "\n\n" + pkg.SupportMessageShort

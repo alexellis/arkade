@@ -2,6 +2,7 @@ package apps
 
 import (
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
@@ -147,4 +148,4 @@ kubectl port-forward svc/kuma-control-plane -n kuma-system 5681:5681
 const kumaInstallMsg = `=======================================================================
 =                      Kuma has been installed                        =
 =======================================================================
- ` + pkg.ThanksForUsing + KumaInfoMsg
+ ` + pkg.SupportMessageShort + KumaInfoMsg

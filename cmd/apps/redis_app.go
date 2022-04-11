@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -81,7 +81,7 @@ func MakeInstallRedis() *cobra.Command {
 const redisInstallMsg = `=======================================================================
 =                       redis has been installed                      =
 =======================================================================
-` + RedisInfoMsg + pkg.ThanksForUsing
+` + RedisInfoMsg + pkg.SupportMessageShort
 
 const RedisInfoMsg = `
 # Redis can be accessed via port 6379 on the following DNS names from within your cluster:

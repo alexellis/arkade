@@ -1,10 +1,11 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
 
 import (
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
@@ -79,7 +80,7 @@ kubectl port-forward -n ` + namespace + ` service/kube-state-metrics 9000:8080 &
 # Then access via:
 http://localhost:9000/metrics
 ` + KubeStateMetricsInfoMsg + `
-` + pkg.ThanksForUsing)
+` + pkg.SupportMessageShort)
 
 		return nil
 	}

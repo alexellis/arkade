@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -81,7 +81,7 @@ service mesh created by Microsoft Azure.`,
 = OSM has been installed.                                             =
 =======================================================================
 ` +
-			OSMInfoMsg + pkg.ThanksForUsing)
+			OSMInfoMsg + pkg.SupportMessageShort)
 		return nil
 	}
 
@@ -163,4 +163,4 @@ osm --help
 var osmInstallMsg = `=======================================================================
 = Open Service Mesh (OSM) has been installed.                                         =
 =======================================================================` +
-	"\n\n" + OSMInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + OSMInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package cmd
@@ -6,6 +6,8 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/alexellis/arkade/pkg"
+	"github.com/morikuni/aec"
 	"github.com/spf13/cobra"
 )
 
@@ -19,6 +21,8 @@ func MakeUpdate() *cobra.Command {
 	}
 	command.Run = func(cmd *cobra.Command, args []string) {
 		fmt.Println(arkadeUpdate)
+
+		fmt.Println("\n", aec.Bold.Apply(pkg.SupportMessageShort))
 	}
 	return command
 }

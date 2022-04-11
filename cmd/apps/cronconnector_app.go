@@ -83,4 +83,4 @@ kubectl logs deploy/cron-connector -n openfaas -f
 const cronConnectorInstallMsg = `=======================================================================
 = cron-connector has been installed.                                  =
 =======================================================================` +
-	"\n\n" + CronConnectorInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + CronConnectorInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -106,4 +106,4 @@ https://github.com/open-policy-agent/gatekeeper#how-to-use-gatekeeper
 var opaGatekeeperInstallMsg = `=======================================================================
 = Open Policy Agent Gatekeeper has been installed.                                           =
 =======================================================================` +
-	"\n\n" + OPAGatekeeperInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + OPAGatekeeperInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -175,7 +175,7 @@ const IstioInfoMsg = `# Find out more at:
 const istioPostInstallMsg = `=======================================================================
 = Istio has been installed.                                        =
 =======================================================================` +
-	"\n\n" + IstioInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + IstioInfoMsg + "\n\n" + pkg.SupportMessageShort
 
 func downloadIstio(userPath, arch, clientOS, version string) error {
 

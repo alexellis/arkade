@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -92,4 +92,4 @@ kanctl create profile s3compliant --bucket $S3_BUCKET \
 const KanisterInstallMsg = `=======================================================================
 = kanister has been installed.                                   =
 =======================================================================` +
-	"\n\n" + KanisterInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + KanisterInfoMsg + "\n\n" + pkg.SupportMessageShort
