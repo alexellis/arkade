@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -97,4 +97,4 @@ kubectl get svc ingress-nginx-controller
 const nginxIngressInstallMsg = `=======================================================================
 = ingress-nginx has been installed.                                   =
 =======================================================================` +
-	"\n\n" + NginxIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + NginxIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

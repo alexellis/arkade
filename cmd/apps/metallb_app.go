@@ -127,7 +127,7 @@ kubectl get configmap -n metallb-system config --template={{.data.config}}
 const MetalLBInstallMsg = `=======================================================================
 = MetalLB has been installed.                                         =
 =======================================================================` +
-	"\n\n" + MetalLBInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + MetalLBInfoMsg + "\n\n" + pkg.SupportMessageShort
 
 const metalLBConfigMap = `
 apiVersion: v1

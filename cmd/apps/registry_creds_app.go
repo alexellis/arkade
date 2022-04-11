@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -150,7 +150,7 @@ kubectl get serviceaccount default -o yaml
 		fmt.Println(`=======================================================================
 = registry-creds has been installed.                                  =
 =======================================================================` +
-			"\n\n" + RegistryCredsOperatorInfoMsg + "\n\n" + pkg.ThanksForUsing)
+			"\n\n" + RegistryCredsOperatorInfoMsg + "\n\n" + pkg.SupportMessageShort)
 
 		return nil
 	}

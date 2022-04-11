@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -95,4 +95,4 @@ kubectl logs svc/loki-stack-headless
 const lokiInstallMsg = `=======================================================================
 = loki has been installed.                                   =
 =======================================================================` +
-	"\n\n" + LokiInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + LokiInfoMsg + "\n\n" + pkg.SupportMessageShort

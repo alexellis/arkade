@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -174,7 +174,7 @@ kubectl describe -n <installed-namespace> Certificate docker-registry
 const RegistryIngressInstallMsg = `=======================================================================
 = Docker Registry Ingress and cert-manager Issuer have been installed =
 =======================================================================` +
-	"\n\n" + RegistryIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + RegistryIngressInfoMsg + "\n\n" + pkg.SupportMessageShort
 
 // Ingress in extensions/v1beta1 are removed in k8s 1.22+, July 2021
 var registryIngressExtensionsYamlTemplate = `

@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -137,4 +137,4 @@ kubectl delete -f deploy/test-pod.yaml -f deploy/test-claim.yaml
 const nfsClientInstallMsg = `=======================================================================
 = nfs-client-provisioner has been installed.                                   =
 =======================================================================` +
-	"\n\n" + NfsClientProvisioneriInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + NfsClientProvisioneriInfoMsg + "\n\n" + pkg.SupportMessageShort

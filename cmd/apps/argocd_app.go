@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -86,4 +86,4 @@ https://127.0.0.1:8443
 const ArgoCDInfoMsgInstallMsg = `=======================================================================
 = ArgoCD has been installed                                           =
 =======================================================================` +
-	"\n\n" + ArgoCDInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + ArgoCDInfoMsg + "\n\n" + pkg.SupportMessageShort

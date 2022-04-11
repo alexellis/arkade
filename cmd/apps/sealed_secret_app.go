@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -69,7 +69,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 const SealedSecretsPostInstallMsg = `=======================================================================
 =                 The SealedSecrets app has been installed.           =
 =======================================================================` +
-	"\n\n" + pkg.ThanksForUsing
+	"\n\n" + pkg.SupportMessageShort
 
 var SealedSecretsInfoMsg = `# Find out more on the project homepage:
 # https://github.com/bitnami-labs/sealed-secrets#usage

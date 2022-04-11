@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package cmd
@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/alexellis/arkade/pkg"
 	"github.com/morikuni/aec"
 	"github.com/spf13/cobra"
 )
@@ -36,6 +37,8 @@ func MakeVersion() *cobra.Command {
 			fmt.Println("Version:", Version)
 		}
 		fmt.Println("Git Commit:", GitCommit)
+
+		fmt.Println("\n", aec.Bold.Apply(pkg.SupportMessageShort))
 	}
 	return command
 }
@@ -46,6 +49,6 @@ const arkadeFigletStr = `            _             _
 | (_| | |  |   < (_| | (_| |  __/
  \__,_|_|  |_|\_\__,_|\__,_|\___|
 
-Get Kubernetes apps the easy way
+Open Source Marketplace For Developer Tools
 
 `

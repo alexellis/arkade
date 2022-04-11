@@ -139,4 +139,4 @@ https://github.com/confluentinc/cp-helm-charts
 const kafkaPostInstallMsg = `=======================================================================
 = Kafka has been installed.                                        =
 =======================================================================` +
-	"\n\n" + KafkaInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + KafkaInfoMsg + "\n\n" + pkg.SupportMessageShort

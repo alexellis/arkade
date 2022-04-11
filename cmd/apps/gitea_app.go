@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -117,4 +117,4 @@ kubectl --namespace {{ namespace }} port-forward svc/gitea-http 3000:3000
 var giteaInstallMsg = `=======================================================================
 =                    Gitea has been installed.                      =
 =======================================================================` +
-	"\n\n" + GiteaInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + GiteaInfoMsg + "\n\n" + pkg.SupportMessageShort

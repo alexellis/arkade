@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package cmd
@@ -11,8 +11,11 @@ import (
 	"strconv"
 	"syscall"
 
+	units "github.com/docker/go-units"
+	"github.com/morikuni/aec"
 	"github.com/spf13/cobra"
 
+	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 )
@@ -39,8 +42,8 @@ and provides a fast and easy alternative to a package manager.`,
   arkade get kubectl --progress=false
 
   # Override the version
-  arkade get terraform --version=0.12.0
   arkade get kubectl@v1.19.3
+  arkade get terraform --version=0.12.0
 
   # Override the OS
   arkade get helm --os darwin --arch aarch64
@@ -98,7 +101,7 @@ and provides a fast and easy alternative to a package manager.`,
 		progress, _ := command.Flags().GetBool("progress")
 		quiet, _ := command.Flags().GetBool("quiet")
 
-		if quiet && command.Flags().Changed("progress") == false {
+		if quiet && !command.Flags().Changed("progress") {
 			progress = false
 		}
 
@@ -153,17 +156,27 @@ and provides a fast and easy alternative to a package manager.`,
 
 			localToolsStore = append(localToolsStore, get.ToolLocal{Name: tool.Name, Path: outFilePath})
 			if !quiet {
-				fmt.Printf("\nTool written to: %s\n\n", outFilePath)
+				size := ""
+				stat, err := os.Stat(outFilePath)
+				if err == nil {
+					size = "(" + units.HumanSize(float64(stat.Size())) + ")"
+				}
+
+				fmt.Printf("\nWrote: %s %s\n\n", outFilePath, size)
 			}
 		}
 
+		nl := ""
 		if !quiet {
+			nl = "\n"
 			msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
 			if err != nil {
 				return err
 			}
 			fmt.Printf("%s\n", msg)
 		}
+
+		fmt.Printf("%s%s\n", nl, aec.Bold.Apply(pkg.SupportMessageShort))
 
 		return err
 	}

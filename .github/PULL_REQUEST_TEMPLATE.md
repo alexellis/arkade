@@ -14,10 +14,10 @@
 <!--- Include details of your testing environment, and the tests you ran to -->
 <!--- see how your change affects other areas of the code, etc. -->
 
-## Are you a GitHub Sponsor (Yes/No?)
+## Are you a GitHub Sponsor yet (Yes/No?)
 
+<!-- Requests from sponsors take priority -->
 <!--- Check at https://github.com/sponsors/alexellis         -->
-<!--- Sponsors get priority because they support the project -->
 
 - [ ] Yes
 - [ ] No
