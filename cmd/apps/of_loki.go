@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -89,4 +89,4 @@ faas-cli logs
 const lokiOFInstallMsg = `=======================================================================
 = OpenFaaS loki has been installed.                                   =
 =======================================================================` +
-	"\n\n" + LokiOFInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + LokiOFInfoMsg + "\n\n" + pkg.SupportMessageShort

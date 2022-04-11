@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 // kasten contains a suite of Sponsored Apps for arkade
@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/types"
@@ -147,7 +146,7 @@ https://docs.kasten.io/latest/install/install.html`
 const k10InstallCmd = `=======================================================================
 = k10 has been installed.                                   =
 =======================================================================` +
-	"\n\n" + k10InfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + k10InfoMsg + "\n\n"
 
 func mergeFlags(existingMap map[string]string, setOverrides []string) error {
 	for _, setOverride := range setOverrides {

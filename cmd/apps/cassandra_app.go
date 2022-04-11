@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -138,4 +138,4 @@ const CassandraInfoMsg = `
 var cassandraInstallMsg = `=======================================================================
 =                      cassandra has been installed                     =
 =======================================================================` +
-	"\n\n" + CassandraInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + CassandraInfoMsg + "\n\n" + pkg.SupportMessageShort

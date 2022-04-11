@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -177,4 +177,4 @@ docker push $IP:5000/alpine:3.11
 const registryInstallMsg = `=======================================================================
 = docker-registry has been installed.                                 =
 =======================================================================` +
-	"\n\n" + RegistryInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + RegistryInfoMsg + "\n\n" + pkg.SupportMessageShort

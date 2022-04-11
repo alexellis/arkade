@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -108,7 +108,7 @@ func MakeInstallMongoDB() *cobra.Command {
 const mongoDBPostInstallMsg = `=======================================================================
 =                  MongoDB has been installed.                        =
 =======================================================================` +
-	"\n\n" + pkg.ThanksForUsing
+	"\n\n" + pkg.SupportMessageShort
 
 var MongoDBInfoMsg = `
 # MongoDB can be accessed via port 27017 on the following DNS name from within your cluster:

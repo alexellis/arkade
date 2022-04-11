@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -39,7 +39,7 @@ func MakeInstallKubeImagePrefetch() *cobra.Command {
 		fmt.Println(`=======================================================================
 = kube-image-prefetch has been installed.                             =
 =======================================================================` +
-			"\n\n" + KubeImagePrefetchInfoMsg + "\n\n" + pkg.ThanksForUsing)
+			"\n\n" + KubeImagePrefetchInfoMsg + "\n\n" + pkg.SupportMessageShort)
 
 		return nil
 	}

@@ -75,4 +75,4 @@ const KongIngressInfoMsg = `# If you're using a local environment such as "minik
 const kongIngressInstallMsg = `=======================================================================
 = kong-ingress has been installed.                                  =
 =======================================================================` +
-	"\n\n" + KongIngressInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + KongIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

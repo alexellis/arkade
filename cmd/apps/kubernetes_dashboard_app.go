@@ -1,4 +1,4 @@
-// Copyright (c) arkade author(s) 2020. All rights reserved.
+// Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 package apps
@@ -84,4 +84,4 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 const KubernetesDashboardInstallMsg = `=======================================================================
 = Kubernetes Dashboard has been installed.                            =
 =======================================================================` +
-	"\n\n" + KubernetesDashboardInfoMsg + "\n\n" + pkg.ThanksForUsing
+	"\n\n" + KubernetesDashboardInfoMsg + "\n\n" + pkg.SupportMessageShort
