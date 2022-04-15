@@ -2242,5 +2242,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "nats-io",
+			Repo:        "nats-server",
+			Name:        "nats-server",
+			Description: "Cloud native message bus and queue server",
+			BinaryTemplate: `
+				{{ $archStr := "" }}
+				{{ $osStr := "linux" }}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $osStr = "windows" }}
+				{{- else if eq .OS "darwin" -}}
+				{{ $osStr = "darwin" }}
+				{{- end -}}
+
+				{{- if eq .Arch "x86_64" -}}
+				{{ $archStr = "amd64" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- else if eq .Arch "arm64" -}}
+				{{ $archStr = "arm64" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "arm7" }}
+				{{- end -}}
+	
+				{{ .Name }}-{{ .Version }}-{{ $osStr }}-{{ $archStr }}.zip
+				`,
+		})
+
 	return tools
 }
