@@ -606,6 +606,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
 | mkcert           | A simple zero-config tool to make locally trusted development certificates with any names you'd like.                                     |
 | nats             | Utility to interact with and manage NATS.                                                                                                 |
+| nats-server      | Cloud native message bus and queue server                                                                                                 |
 | nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
 | nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
 | oh-my-posh       | A prompt theme engine for any shell that can display kubernetes information.                                                              |
