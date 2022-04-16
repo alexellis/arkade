@@ -1,8 +1,8 @@
-# arkade - The Open Source Kubernetes Marketplace
+# arkade - The Open Source Marketplace For Developers
 
-arkade provides a portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.
+arkade is how developers install the latest versions of their favourite tools and Kubernetes apps.
 
-You can also download CLIs like `kubectl`, `kind`, `kubectx` and `helm` faster than you can type "apt-get/brew update".
+With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your machine faster than you can type `apt-get install/brew update`.
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
