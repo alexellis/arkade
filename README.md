@@ -178,7 +178,7 @@ arkade system install go \
 
 # Install containerd for ARM64, 32-bit ARM or x86_64
 # with systemd enabled
-arkade install system containerd \
+arkade system install containerd \
   --systemd
 ```
 
