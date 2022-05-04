@@ -2177,5 +2177,45 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `{{.Name}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "caddyserver",
+			Repo:        "caddy",
+			Name:        "caddy",
+			Description: "Caddy is an extensible server platform that uses TLS by default",
+			URLTemplate: `
+			{{ $os := "linux" }}
+			{{ $arch := "amd64" }}
+			{{ $ext := "tar.gz" }}
+
+			{{- if eq .Arch "aarch64" -}}
+			{{ $arch = "arm64" }}
+			{{- else if eq .Arch "arm64" -}}
+			{{ $arch = "arm64" }}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $arch = "armv7" }}
+			{{- else if eq .Arch "armv6l" -}}
+			{{ $arch = "armv6" }}
+			{{- end -}}
+
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $os = "windows" }}
+			{{ $ext = "zip" }}
+			{{- else if eq .OS "darwin" -}}
+			{{  $os = "mac" }}
+			{{- end -}}
+
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{ .Version }}/{{ .Name }}_{{ .VersionNumber }}_{{ $os }}_{{ $arch }}.{{ $ext }}
+			`,
+			BinaryTemplate: `
+			{{ if HasPrefix .OS "ming" -}}
+			{{ .Name }}.exe
+			{{- else -}}
+			{{ .Name }}
+			{{- end -}}
+			`,
+		},
+	)
+
 	return tools
 }
