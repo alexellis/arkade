@@ -9,8 +9,8 @@ export VERIFY_CHECKSUM=0
 export ALIAS_NAME="ark"
 export OWNER=alexellis
 export REPO=arkade
-export SUCCESS_CMD="$REPO version"
 export BINLOCATION="/usr/local/bin"
+export SUCCESS_CMD="$BINLOCATION/$REPO version"
 
 ###############################
 # Content common across repos #
