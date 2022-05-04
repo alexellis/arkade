@@ -548,6 +548,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
+| caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
