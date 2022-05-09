@@ -659,7 +659,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "terraform",
 			Name:        "terraform",
-			Version:     "1.1.7",
+			Version:     "1.1.9",
 			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
@@ -686,7 +686,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "vagrant",
 			Name:        "vagrant",
-			Version:     "2.2.14",
+			Version:     "2.2.19",
 			Description: "Tool for building and distributing development environments.",
 			URLTemplate: `{{$arch := .Arch}}
 
@@ -708,7 +708,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "hashicorp",
 			Repo:        "packer",
 			Name:        "packer",
-			Version:     "1.6.5",
+			Version:     "1.8.0",
 			Description: "Build identical machine images for multiple platforms from a single source configuration.",
 			URLTemplate: `
 			{{$arch := ""}}
@@ -733,7 +733,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "hashicorp",
 			Repo:        "waypoint",
 			Name:        "waypoint",
-			Version:     "0.6.1",
+			Version:     "0.8.1",
 			Description: "Easy application deployment for Kubernetes and Amazon ECS",
 			URLTemplate: `
 			{{$arch := ""}}
