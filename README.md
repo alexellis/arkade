@@ -622,6 +622,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
+| terragrunt       | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
 | tfsec            | Security scanner for your Terraform code                                                                                                  |
 | tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
 | tkn              | A CLI for interacting with Tekton.                                                                                                        |

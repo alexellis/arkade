@@ -3893,3 +3893,56 @@ func Test_DownloadCilium(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadTerragrunt(t *testing.T) {
+	tools := MakeTools()
+	name := "terragrunt"
+	version := "v0.37.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_darwin_amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_darwin_arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_linux_amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_linux_arm64`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gruntwork-io/terragrunt/releases/download/v0.37.1/terragrunt_windows_amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
