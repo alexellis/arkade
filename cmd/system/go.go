@@ -77,7 +77,7 @@ func MakeInstallGo() *cobra.Command {
 		dlURL := fmt.Sprintf("https://go.dev/dl/%s.%s-%s.tar.gz", version, strings.ToLower(osVer), dlArch)
 		fmt.Printf("Downloading from: %s\n", dlURL)
 
-		progress := true
+		progress, _ := cmd.Flags().GetBool("progress")
 		outPath, err := get.DownloadFileP(dlURL, progress)
 		if err != nil {
 			return err
