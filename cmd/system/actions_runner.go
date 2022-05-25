@@ -83,7 +83,7 @@ func MakeInstallActionsRunner() *cobra.Command {
 		dlURL := fmt.Sprintf(githubDownloadTemplate, "actions", "runner", version, filename)
 		fmt.Printf("Downloading from: %s\n", dlURL)
 
-		progress := true
+		progress, _ := cmd.Flags().GetBool("progress")
 		outPath, err := get.DownloadFileP(dlURL, progress)
 		if err != nil {
 			return err
