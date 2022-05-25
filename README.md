@@ -185,11 +185,12 @@ arkade install system containerd \
 Run the following to see what's available `arkade system install`:
 
 ```bash
-  cni         Install CNI plugins
-  containerd  Install containerd
-  firecracker Install Firecracker
-  go          Install Go
-  prometheus  Install Prometheus
+  actions-runner Install GitHub Actions Runner
+  cni            Install CNI plugins
+  containerd     Install containerd
+  firecracker    Install Firecracker
+  go             Install Go
+  prometheus     Install Prometheus
 ```
 
 > System apps are in preview, see more details in the proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
