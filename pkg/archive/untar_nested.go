@@ -106,6 +106,12 @@ func untarNested(r io.Reader, dir string) (err error) {
 				return err
 			}
 			madeDir[abs] = true
+			// Introduced via
+			// https://github.com/alexellis/arkade/pull/675/files
+		case os.ModeSymlink != 0:
+			if err := os.Symlink(f.Linkname, abs); err != nil {
+				return err
+			}
 		default:
 			return fmt.Errorf("tar file entry %s contained unsupported file type %v", f.Name, mode)
 		}
