@@ -944,19 +944,32 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Repo:        "minikube",
 			Name:        "minikube",
 			Description: "Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.",
-			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-	{{.Name}}-windows-amd64.exe
-	{{- else if eq .OS "darwin" -}}
-	{{.Name}}-darwin-amd64
-	{{- else if eq .Arch "armv6l" -}}
-	{{.Name}}-linux-arm
-	{{- else if eq .Arch "armv7l" -}}
-	{{.Name}}-linux-arm
-	{{- else if eq .Arch "aarch64" -}}
-	{{.Name}}-linux-arm64
-	{{- else -}}
-	{{.Name}}-linux-amd64
-	{{- end -}}`,
+			BinaryTemplate: `{{$arch := .Arch}}
+			{{ if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "armv6l" -}}
+			{{$arch = "armv6"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$arch = "arm"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$ext := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+
+			{{.Version}}/{{.Name}}-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,

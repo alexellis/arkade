@@ -1468,6 +1468,68 @@ func Test_getBinaryURL_NoSlashInDownloadPath(t *testing.T) {
 	}
 }
 
+func Test_DownloadMinikube(t *testing.T) {
+	tools := MakeTools()
+	name := "minikube"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    "amd64",
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-windows-amd64.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    "amd64",
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-linux-armv6`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-linux-arm`,
+		},
+		{
+			os:      "darwin",
+			arch:    "amd64",
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v1.25.2",
+			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-darwin-arm64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadMinio(t *testing.T) {
 	tools := MakeTools()
 	name := "mc"
