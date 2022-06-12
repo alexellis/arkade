@@ -686,7 +686,6 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "gruntwork-io",
 			Repo:        "terragrunt",
 			Name:        "terragrunt",
-			Version:     "v0.37.1",
 			Description: "Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules",
 			BinaryTemplate: `
 			{{$extStr := ""}}
