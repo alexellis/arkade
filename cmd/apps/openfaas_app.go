@@ -128,7 +128,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			return err
 		}
 		if len(licenseFile) != 0 {
-			overrides["openfaasPRO"] = "true"
+			overrides["openfaasPro"] = "true"
 			secretData := []types.SecretsData{
 				{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
 			}
