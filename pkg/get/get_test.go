@@ -252,6 +252,59 @@ func Test_GetDownloadURLs(t *testing.T) {
 	}
 }
 
+func Test_DownloadArkade(t *testing.T) {
+	tools := MakeTools()
+	name := "arkade"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade.exe"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-darwin"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-darwin-arm64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade"},
+		{os: "linux",
+			arch:    "armv6l",
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-armhf"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-armhf"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadKubectl(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectl"
@@ -772,24 +825,32 @@ func Test_DownloadInletsctl(t *testing.T) {
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
-			version: "0.5.4",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl.exe.tgz"},
-		{os: "linux",
-			arch:    arch64bit,
-			version: "0.5.4",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl.tgz"},
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.exe.tgz"},
 		{os: "darwin",
 			arch:    arch64bit,
-			version: "0.5.4",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-darwin.tgz"},
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin.tgz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin-arm64.tgz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.tgz"},
 		{os: "linux",
 			arch:    "armv6l",
-			version: "0.5.4",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-armhf.tgz"},
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz"},
 		{os: "linux",
-			arch:    "arm64",
-			version: "0.5.4",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.5.4/inletsctl-arm64.tgz"},
+			arch:    "armv7l",
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-arm64.tgz"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
@@ -1513,7 +1574,7 @@ func Test_DownloadMinikube(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    archARM64,
+			arch:    archDarwinARM64,
 			version: "v1.25.2",
 			url:     `https://github.com/kubernetes/minikube/releases/download/v1.25.2/minikube-darwin-arm64`,
 		},
