@@ -334,18 +334,22 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Name:        "arkade",
 			Description: "Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-		{{.Name}}.exe
-		{{- else if eq .OS "darwin" -}}
-		{{.Name}}-darwin
-		{{- else if eq .Arch "armv6l" -}}
-		{{.Name}}-armhf
-		{{- else if eq .Arch "armv7l" -}}
-		{{.Name}}-armhf
-		{{- else if eq .Arch "aarch64" -}}
-		{{.Name}}-arm64
-		{{- else -}}
-		{{.Name}}
-		{{- end -}}`,
+			{{.Name}}.exe
+			{{- else if eq .OS "darwin" -}}
+				{{ if eq .Arch "arm64" -}}
+				{{.Name}}-darwin-arm64
+				{{- else -}}
+				{{.Name}}-darwin
+				{{- end -}}
+			{{- else if eq .Arch "armv6l" -}}
+			{{.Name}}-armhf
+			{{- else if eq .Arch "armv7l" -}}
+			{{.Name}}-armhf
+			{{- else if eq .Arch "aarch64" -}}
+			{{.Name}}-arm64
+			{{- else -}}
+			{{.Name}}
+			{{- end -}}`,
 		})
 
 	tools = append(tools,
@@ -389,20 +393,28 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 {{$fileName = "inletsctl-armhf.tgz"}}
 {{- else if eq .Arch "armv7l" }}
 {{$fileName = "inletsctl-armhf.tgz"}}
-{{- else if eq .Arch "arm64" -}}
+{{- else if eq .Arch "aarch64" -}}
 {{$fileName = "inletsctl-arm64.tgz"}}
 {{ else if HasPrefix .OS "ming" -}}
 {{$fileName = "inletsctl.exe.tgz"}}
 {{- else if eq .OS "linux" -}}
 {{$fileName = "inletsctl.tgz"}}
 {{- else if eq .OS "darwin" -}}
-{{$fileName = "inletsctl-darwin.tgz"}}
+	{{- if eq .Arch "arm64" -}}
+	{{$fileName = "inletsctl-darwin-arm64.tgz"}}
+	{{- else }}
+	{{$fileName = "inletsctl-darwin.tgz"}}
+	{{- end -}}
 {{- end -}}
 https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}`,
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}.exe
 {{- else if eq .OS "darwin" -}}
-{{.Name}}-darwin
+	{{- if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64
+	{{- else if eq .Arch "x86_64" -}}
+	{{.Name}}-darwin
+	{{- end -}}
 {{- else if eq .OS "linux" -}}
 {{.Name}}
 {{- else if eq .Arch "armv6l" -}}
