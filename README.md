@@ -550,6 +550,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
 | caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
+| cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
@@ -567,6 +568,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
 | hey              | Load testing tool                                                                                                                         |
 | hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
+| hubble           | Hubble - Network, Service & Security Observability for Kubernetes using eBPF                                                              |
 | hugo             | Static HTML and CSS website generator.                                                                                                    |
 | influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
 | inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
