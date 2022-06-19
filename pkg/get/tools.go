@@ -2242,5 +2242,59 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		},
 	)
 
+	tools = append(tools,
+		Tool{
+			Owner:       "cilium",
+			Repo:        "cilium-cli",
+			Name:        "cilium",
+			Description: "CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "aarch64" -}}
+	{{.Name}}-darwin-arm64.tar.gz
+	{{- else if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64.tar.gz
+	{{- else -}}
+	{{.Name}}-darwin-amd64.tar.gz
+	{{- end -}}
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-linux-arm.tar.gz
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-linux-arm.tar.gz
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-linux-arm64.tar.gz
+{{- else -}}
+{{.Name}}-linux-amd64.tar.gz
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cilium",
+			Repo:        "hubble",
+			Name:        "hubble",
+			Description: "Hubble - Network, Service & Security Observability for Kubernetes using eBPF",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "aarch64" -}}
+	{{.Name}}-darwin-arm64.tar.gz
+	{{- else if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64.tar.gz
+	{{- else -}}
+	{{.Name}}-darwin-amd64.tar.gz
+	{{- end -}}
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-linux-arm.tar.gz
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-linux-arm.tar.gz
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-linux-arm64.tar.gz
+{{- else -}}
+{{.Name}}-linux-amd64.tar.gz
+{{- end -}}`,
+		})
+
 	return tools
 }
