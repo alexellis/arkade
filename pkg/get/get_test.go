@@ -2668,7 +2668,7 @@ func Test_DownloadOperatorSDK(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version)
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
