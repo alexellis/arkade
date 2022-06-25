@@ -2179,31 +2179,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kumahq",
-			Repo:        "kuma",
-			Name:        "kumactl",
-			Version:     "1.4.1",
-			Description: "kumactl is a CLI to interact with Kuma and its data",
-			URLTemplate: `
-			{{$osStr := ""}}
-			{{$archStr := ""}}
-			{{- if HasPrefix .OS "linux" -}}
-			{{$osStr = "ubuntu"}}
-			{{- else if eq .OS "darwin" -}}
-			{{$osStr = "darwin"}}
-			{{- end -}}
-
-			{{- if eq .Arch "x86_64" -}}
-			{{$archStr = "amd64"}}
-			{{- else -}}
-			{{$archStr = .Arch}}
-			{{- end -}}
-			https://download.konghq.com/mesh-alpine/{{.Repo}}-{{.Version}}-{{$osStr}}-{{$archStr}}.tar.gz`,
-			BinaryTemplate: `{{.Name}}`,
-		})
-
-	tools = append(tools,
-		Tool{
 			Owner:       "caddyserver",
 			Repo:        "caddy",
 			Name:        "caddy",
