@@ -233,6 +233,10 @@ func mergeFlags(existingMap map[string]string, setOverrides []string) error {
 		if len(flag) != 2 {
 			return fmt.Errorf("incorrect format for custom flag `%s`", setOverride)
 		}
+
+		if strings.ContainsAny(flag[1], ",") {
+			flag[1] = strings.ReplaceAll(flag[1], ",", "\\,")
+		}
 		existingMap[flag[0]] = flag[1]
 	}
 	return nil
