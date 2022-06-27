@@ -2376,5 +2376,42 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "hairyhenderson",
+			Repo:        "gomplate",
+			Name:        "gomplate",
+			Description: "A flexible commandline tool for template rendering. Supports lots of local and remote datasources.",
+			URLTemplate: `
+				{{ $os := "linux" }}
+				{{ $arch := "amd64" }}
+				{{ $ext := "" }}
+	
+				{{- if eq .Arch "aarch64" -}}
+				{{ $arch = "arm64" }}
+				{{- else if eq .Arch "arm64" -}}
+				{{ $arch = "arm64" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $arch = "armv7" }}
+				{{- end -}}
+	
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $os = "windows" }}
+				{{ $ext = ".exe" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $os = "darwin" }}
+				{{- end -}}
+	
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{ .Version }}/{{ .Name }}_{{ $os }}-{{ $arch }}{{ $ext }}
+				`,
+			BinaryTemplate: `
+				{{ if HasPrefix .OS "ming" -}}
+				{{ .Name }}.exe
+				{{- else -}}
+				{{ .Name }}
+				{{- end -}}
+				`,
+		})
+
 	return tools
 }
