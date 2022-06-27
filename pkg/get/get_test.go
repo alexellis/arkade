@@ -4064,3 +4064,62 @@ func Test_DownloadHubble(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadGomplate(t *testing.T) {
+	tools := MakeTools()
+	name := "gomplate"
+	version := "v3.11.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_linux-armv7`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/hairyhenderson/gomplate/releases/download/v3.11.1/gomplate_windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
