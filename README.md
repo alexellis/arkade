@@ -565,6 +565,7 @@ There are 54 apps that you can install on your cluster.
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
+| gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
