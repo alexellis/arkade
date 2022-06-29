@@ -2312,5 +2312,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "junegunn",
+			Repo:        "fzf",
+			Name:        "fzf",
+			Description: "General-purpose command-line fuzzy finder",
+			BinaryTemplate: `
+				{{ $osStr := "linux" }}
+				{{ $ext := ".tar.gz" }}
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $osStr = "windows" }}
+				{{ $ext = ".zip" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $osStr = "darwin" }}
+				{{ $ext = ".zip" }}
+				{{- end -}}
+				{{ $archStr := "amd64" }}
+				{{- if eq .Arch "armv6l" -}}
+				{{ $archStr = "armv6" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $archStr = "armv7" }}
+				{{- else if eq .Arch "arm64" -}}
+				{{ $archStr = "arm64" }}
+				{{- else if eq .Arch "aarch64" -}}
+				{{ $archStr = "arm64" }}
+				{{- end -}}
+				{{.Name}}-{{.VersionNumber}}-{{$osStr}}_{{$archStr}}{{$ext}}
+				`,
+		})
+
 	return tools
 }
