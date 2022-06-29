@@ -4011,3 +4011,56 @@ func Test_DownloadFzf(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadHubble(t *testing.T) {
+	tools := MakeTools()
+	name := "hubble"
+	version := "v0.10.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/cilium/hubble/releases/download/v0.10.0/hubble-darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/cilium/hubble/releases/download/v0.10.0/hubble-darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/cilium/hubble/releases/download/v0.10.0/hubble-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/cilium/hubble/releases/download/v0.10.0/hubble-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/cilium/hubble/releases/download/v0.10.0/hubble-windows-amd64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

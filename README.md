@@ -570,6 +570,7 @@ There are 54 apps that you can install on your cluster.
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
 | hey              | Load testing tool                                                                                                                         |
 | hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
+| hubble           | CLI for network, service & security observability for Kubernetes clusters running Cilium.
 | hugo             | Static HTML and CSS website generator.                                                                                                    |
 | influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
 | inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
