@@ -19,6 +19,9 @@ import (
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
 
+// githubTimeout expanded from the original 5 seconds due to #693
+var githubTimeout = time.Second * 10
+
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
 type Tool struct {
@@ -178,8 +181,7 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 func FindGitHubRelease(owner, repo string) (string, error) {
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
 
-	timeout := time.Second * 5
-	client := makeHTTPClient(&timeout, false)
+	client := makeHTTPClient(&githubTimeout, false)
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	}
