@@ -113,7 +113,7 @@ https://docs.kasten.io/latest/install/advanced.html#complete-list-of-k10-helm-op
 			return err
 		}
 
-		fmt.Println(k10InstallCmd)
+		fmt.Printf("\n\n%s\n\n\n", k10InfoMsg)
 
 		return nil
 	}
