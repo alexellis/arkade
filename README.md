@@ -562,6 +562,7 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
+| fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
@@ -631,6 +632,6 @@ Note to contributors, run `arkade install --print-table` to generate this list
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
+There are 88 tools, use 'arkade get NAME' to download one.                                                                          |
 
-Note to contributors, run `arkade get --output markdown` to generate this list
-
+> Note to contributors, run `arkade get --output markdown` to generate this list

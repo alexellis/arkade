@@ -20,9 +20,9 @@ func CreateToolsTable(tools Tools, format TableFormat) {
 	table := tablewriter.NewWriter(os.Stdout)
 	table.SetHeader([]string{"Tool", "Description"})
 	table.SetCaption(true,
-		fmt.Sprintf("There are %d apps, use 'arkade get NAME' to download one.", len(tools)))
+		fmt.Sprintf("There are %d tools, use 'arkade get NAME' to download one.", len(tools)))
 	if format == MarkdownStyle {
-		table.SetCaption(false)
+		table.SetCaption(true)
 		table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
 		table.SetCenterSeparator("|")
 		table.SetAutoWrapText(false)
