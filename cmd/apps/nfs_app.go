@@ -9,16 +9,16 @@ import (
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
 
 func MakeInstallNfsProvisioner() *cobra.Command {
 	var nfsProvisionerApp = &cobra.Command{
-		Use:          "nfs-client-provisioner",
-		Short:        "Install nfs client provisioner",
-		Long:         "Install nfs client provisioner to create dynamic persistent volumes",
+		Use:          "nfs-subdir-external-provisioner",
+		Aliases:      []string{"nfs-client-provisioner", "nfs-provisioner"},
+		Short:        "Install nfs subdir external provisioner",
+		Long:         "Install nfs subdir external provisioner that uses and already configured nfs to back your PVs and PVCS.",
 		Example:      "arkade install nfs-client-provisioner --nfs-server=x.x.x.x --nfs-path=/exported/path",
 		SilenceUsage: true,
 	}
@@ -50,13 +50,6 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 		overrides["nfs.server"] = nfsServer
 		overrides["nfs.path"] = nfsPath
 
-		arch := k8s.GetNodeArchitecture()
-		fmt.Printf("Node architecture: %q\n", arch)
-
-		if suffix := getValuesSuffix(arch); suffix == "-armhf" || suffix == "-arm64" {
-			overrides["image.repository"] = "quay.io/external_storage/nfs-client-provisioner-arm:latest"
-		}
-
 		customFlags, _ := command.Flags().GetStringArray("set")
 
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
@@ -65,8 +58,8 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 
 		nfsProvisionerOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("stable/nfs-client-provisioner").
-			WithHelmURL("https://charts.helm.sh/stable").
+			WithHelmRepo("nfs-client-provisioner/nfs-subdir-external-provisioner").
+			WithHelmURL("https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/").
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
@@ -89,9 +82,8 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: test-claim
-  annotations:
-    volume.beta.kubernetes.io/storage-class: "nfs-client"
 spec:
+  storageClassName: nfs-client
   accessModes:
     - ReadWriteMany
   resources:
@@ -99,7 +91,7 @@ spec:
       storage: 1Mi
 EOF
 
-# Create pod:
+# Create a test pod:
 
 cat <<EOF | kubectl apply -f -
 kind: Pod
@@ -109,7 +101,7 @@ metadata:
 spec:
   containers:
   - name: test-pod
-    image: gcr.io/google_containers/busybox:1.24
+    image: busybox:stable
     command:
       - "/bin/sh"
     args:
@@ -125,16 +117,15 @@ spec:
         claimName: test-claim
 EOF
 
-# Now check your NFS Server for the file SUCCESS.
+# Now check your NFS Server for the file SUCCESS then clean up your resources.
 
 kubectl delete -f deploy/test-pod.yaml -f deploy/test-claim.yaml
 
 # Now check the folder has been deleted.
 
-
 `
 
 const nfsClientInstallMsg = `=======================================================================
-= nfs-client-provisioner has been installed.                                   =
+= NFS Subdir External Provisioner has been installed.                                   =
 =======================================================================` +
 	"\n\n" + NfsClientProvisioneriInfoMsg + "\n\n" + pkg.SupportMessageShort
