@@ -5,12 +5,11 @@ package apps
 
 import (
 	"fmt"
-
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/k8s"
-
-	"github.com/alexellis/arkade/pkg"
-
+	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
 
@@ -23,8 +22,25 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 		SilenceUsage: true,
 	}
 
-	kubeDashboard.RunE = func(command *cobra.Command, args []string) error {
-		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
+	kubeDashboard.Flags().StringP("namespace", "n", "kubernetes-dashboard", "The namespace to install the chart")
+	kubeDashboard.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image.tag=v2.5.0)")
+
+	kubeDashboard.PreRunE = func(cmd *cobra.Command, args []string) error {
+		_, err := cmd.Flags().GetString("namespace")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetStringArray("set")
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	kubeDashboard.RunE = func(cmd *cobra.Command, args []string) error {
+		kubeConfigPath, _ := cmd.Flags().GetString("kubeconfig")
 		if err := config.SetKubeconfig(kubeConfigPath); err != nil {
 			return err
 		}
@@ -32,8 +48,22 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		_, err := k8s.KubectlTask("apply", "-f",
-			"https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-rc5/aio/deploy/recommended.yaml")
+		customFlags, _ := cmd.Flags().GetStringArray("set")
+		namespace, _ := cmd.Flags().GetString("namespace")
+
+		overrides := map[string]string{}
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
+
+		k8sDashboardOptions := types.DefaultInstallOptions().
+			WithNamespace(namespace).
+			WithHelmRepo("kubernetes-dashboard/kubernetes-dashboard").
+			WithHelmURL("https://kubernetes.github.io/dashboard/").
+			WithOverrides(overrides).
+			WithKubeconfigPath(kubeConfigPath)
+
+		_, err := apps.MakeInstallChart(k8sDashboardOptions)
 		if err != nil {
 			return err
 		}
@@ -72,14 +102,23 @@ subjects:
 ---
 EOF
 
-#To forward the dashboard to your local machine 
-kubectl proxy
+# To forward the dashboard to your local machine 
+kubectl -n kubernetes-dashboard port-forward services/kubernetes-dashboard 8443:443
 
-#To get your Token for logging in
+# To get your Token for logging in
+
+## K8s v1.24 or above
+### Generate token without storing it
+kubectl -n kubernetes-dashboard create token admin-user
+
+### Generate a token and store it in a secret
+kubectl -n kubernetes-dashboard create token admin-user --bound-object-kind Secret --bound-object-name admin-user-token
+
+## K8s v1.23 or below
 kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboard get secret | grep admin-user-token | awk '{print $1}')
 
 # Once Proxying you can navigate to the below
-http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login`
+https://127.0.0.1:8443/#/login`
 
 const KubernetesDashboardInstallMsg = `=======================================================================
 = Kubernetes Dashboard has been installed.                            =
