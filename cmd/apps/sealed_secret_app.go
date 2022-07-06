@@ -49,8 +49,8 @@ func MakeInstallSealedSecrets() *cobra.Command {
 
 		sealedSecretAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("stable/sealed-secrets").
-			WithHelmURL("https://charts.helm.sh/stable").
+			WithHelmRepo("sealed-secrets/sealed-secrets").
+			WithHelmURL("https://bitnami-labs.github.io/sealed-secrets").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithWait(wait).
