@@ -23,9 +23,11 @@ import (
 
 func MakeInstallRegistry() *cobra.Command {
 	var registry = &cobra.Command{
-		Use:          "docker-registry",
-		Short:        "Install a Docker registry",
-		Long:         `Install a Docker registry`,
+		Use:   "docker-registry",
+		Short: "Install a community maintained Docker registry chart",
+		Long: `Install a community maintained Docker registry chart for more info
+Check out the project's repo https://github.com/twuni/docker-registry.helm
+Or the Open Source Docker registry https://github.com/distribution/distribution`,
 		Example:      `  arkade install registry --namespace default`,
 		SilenceUsage: true,
 	}
@@ -92,13 +94,13 @@ func MakeInstallRegistry() *cobra.Command {
 
 		htPasswd := fmt.Sprintf("%s:%s\n", username, string(val))
 
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable", updateRepo)
+		err = helm.AddHelmRepo("twuni", "https://twuni.github.io/docker-registry.helm", updateRepo)
 		if err != nil {
 			return err
 		}
 
 		chartPath := path.Join(os.TempDir(), "charts")
-		err = helm.FetchChart("stable/docker-registry", defaultVersion)
+		err = helm.FetchChart("twuni/docker-registry", defaultVersion)
 
 		if err != nil {
 			return err
@@ -130,7 +132,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 		ns := "default"
 
-		err = helm.Helm3Upgrade("stable/docker-registry", ns,
+		err = helm.Helm3Upgrade("twuni/docker-registry", ns,
 			"values.yaml",
 			defaultVersion,
 			overrides,
@@ -171,8 +173,10 @@ docker login $IP:5000 --username admin --password $PASSWORD
 docker tag alpine:3.11 $IP:5000/alpine:3.11
 docker push $IP:5000/alpine:3.11
 
+# This chart is community maintained.
 # Find out more at:
-# https://github.com/helm/charts/tree/master/stable/registry`
+# https://github.com/twuni/docker-registry.helm
+# https://github.com/distribution/distribution`
 
 const registryInstallMsg = `=======================================================================
 = docker-registry has been installed.                                 =
