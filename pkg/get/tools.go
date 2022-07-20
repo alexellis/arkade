@@ -2451,5 +2451,40 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "prometheus",
+			Repo:        "prometheus",
+			Name:        "promtool",
+			Description: "Prometheus rule tester and debugging utility",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "arm64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{ $arch = "armv7" }}
+			{{- end -}}
+
+			{{$os := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$os = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "darwin"}}
+			{{- end -}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}-{{.VersionNumber}}.{{$os}}-{{$arch}}.tar.gz`,
+			BinaryTemplate: `
+			{{ if HasPrefix .OS "ming" -}}
+			{{ .Name }}.exe
+			{{- else -}}
+			{{ .Name }}
+			{{- end -}}
+			`,
+		})
 	return tools
 }
