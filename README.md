@@ -623,6 +623,7 @@ There are 54 apps that you can install on your cluster.
 | polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                                                 |
 | popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
 | porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
+| promtool         | Prometheus rule tester and debugging utility                                                                                              |
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
