@@ -4182,3 +4182,68 @@ func Test_DownloadJust(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadPromtool(t *testing.T) {
+	tools := MakeTools()
+	name := "promtool"
+	version := "v2.37.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    "arm64",
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.linux-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.linux-armv7.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.windows-amd64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/prometheus/prometheus/releases/download/v2.37.0/prometheus-2.37.0.windows-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
