@@ -70,12 +70,12 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		updateRepo, _ := command.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("stable", "https://charts.helm.sh/stable/", updateRepo)
+		err = helm.AddHelmRepo("bitnami", "https://charts.bitnami.com/bitnami", updateRepo)
 		if err != nil {
 			return fmt.Errorf("unable to add repo %s", err)
 		}
 
-		err = helm.FetchChart("stable/mongodb", defaultVersion)
+		err = helm.FetchChart("bitnami/mongodb", defaultVersion)
 
 		if err != nil {
 			return fmt.Errorf("unable fetch chart %s", err)
@@ -94,7 +94,7 @@ func MakeInstallMongoDB() *cobra.Command {
 			return err
 		}
 
-		err = helm.Helm3Upgrade("stable/mongodb",
+		err = helm.Helm3Upgrade("bitnami/mongodb",
 			namespace, "values.yaml", defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
