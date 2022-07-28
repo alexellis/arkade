@@ -2486,5 +2486,40 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}
 			`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "siderolabs",
+			Repo:        "talos",
+			Name:        "talosctl",
+			Description: "The command-line tool for managing Talos Linux OS.",
+			URLTemplate: `
+					{{ $os := "linux" }}
+					{{ $arch := "amd64" }}
+					{{ $ext := "" }}
+					{{- if eq .Arch "aarch64" -}}
+					{{ $arch = "arm64" }}
+					{{- else if eq .Arch "arm64" -}}
+					{{ $arch = "arm64" }}
+					{{- else if eq .Arch "armv7l" -}}
+					{{ $arch = "armv7" }}
+					{{- end -}}
+					{{ if HasPrefix .OS "ming" -}}
+					{{ $os = "windows" }}
+					{{ $ext = ".exe" }}
+					{{- else if eq .OS "darwin" -}}
+					{{  $os = "darwin" }}
+					{{- end -}}
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{ .Version }}/{{ .Name }}-{{ $os }}-{{ $arch }}{{ $ext }}
+						`,
+			BinaryTemplate: `
+					{{ if HasPrefix .OS "ming" -}}
+					{{ .Name }}.exe
+					{{- else -}}
+					{{ .Name }}
+					{{- end -}}
+					`,
+		})
+
 	return tools
 }
