@@ -4247,3 +4247,62 @@ func Test_DownloadPromtool(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadTalosctl(t *testing.T) {
+	tools := MakeTools()
+	name := "talosctl"
+	version := "v1.1.2"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-darwin-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-linux-armv7`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/siderolabs/talos/releases/download/v1.1.2/talosctl-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

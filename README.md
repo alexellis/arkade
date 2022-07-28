@@ -628,6 +628,7 @@ There are 55 apps that you can install on your cluster.
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
+| talosctl         | The cli tool for managing Talos Linux OS.                                                                                                 |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
 | terragrunt       | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
 | tfsec            | Security scanner for your Terraform code                                                                                                  |
