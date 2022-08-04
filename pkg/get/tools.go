@@ -2413,5 +2413,43 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Name:        "just",
+			Owner:       "casey",
+			Repo:        "just",
+			Description: "Just a command runner",
+			URLTemplate: `
+				{{ $os := "unknown-linux" }}
+				{{ $arch := "x86_64" }}
+				{{ $ext := "-musl.tar.gz" }}
+
+				{{- if eq .Arch "aarch64" -}}
+				{{ $arch = "aarch64" }}
+				{{- else if eq .Arch "arm64" -}}
+				{{ $arch = "aarch64" }}
+				{{- else if eq .Arch "armv7l" -}}
+				{{ $arch = "armv7" }}
+				{{ $ext = "-musleabihf.tar.gz" }}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{ $os = "pc-windows" }}
+				{{ $ext = "-msvc.zip" }}
+				{{- else if eq .OS "darwin" -}}
+				{{  $os = "apple-darwin" }}
+				{{ $ext = ".tar.gz" }}
+				{{- end -}}
+			https://github.com/{{ .Owner }}/{{ .Repo }}/releases/download/{{ .VersionNumber }}/{{ .Name }}-{{ .VersionNumber }}-{{ $arch }}-{{ $os }}{{ $ext }}
+			`,
+			BinaryTemplate: `
+			{{- if HasPrefix .OS "ming" -}}
+			{{ .Name }}.exe
+			{{- else -}}
+			{{ .Name }}
+			{{- end -}}
+			`,
+		})
+
 	return tools
 }
