@@ -578,6 +578,7 @@ There are 54 apps that you can install on your cluster.
 | inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
 | istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
 | jq               | jq is a lightweight and flexible command-line JSON processor                                                                              |
+| just             | Just a command runner                                                                                                                     |
 | k0s              | Zero Friction Kubernetes                                                                                                                  |
 | k0sctl           | A bootstrapping and management tool for k0s clusters                                                                                      |
 | k10multicluster  | Multi-cluster support for K10.                                                                                                            |
@@ -635,6 +636,6 @@ There are 54 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 88 tools, use 'arkade get NAME' to download one.                                                                          |
+There are 91 tools, use 'arkade get NAME' to download one.                                                                                                     |
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
