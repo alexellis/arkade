@@ -72,7 +72,7 @@ Additionally, you may want to output the completion to a file and source in your
 }
 
 func runCompletionZsh(cmd *cobra.Command, out io.Writer) {
-	var zshCompdef = "\ncompdef _arkade arkade\n"
+	var zshCompdef = "\ncompdef arkade\n"
 
 	rootCmd(cmd).GenZshCompletion(out)
 	io.WriteString(out, zshCompdef)
