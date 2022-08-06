@@ -36,7 +36,7 @@ https://github.com/multiarch/qemu-user-static`,
 			return fmt.Errorf(`qemu-user-static is only supported on the AMD64 architecture, found: %s`, arch)
 		}
 
-		fmt.Printf("Running \"docker run --rm --privileged multiarch/qemu-user-static --reset -p yes\"\n")
+		fmt.Printf("Running \"docker run --rm --privileged multiarch/qemu-user-static --reset -p yes\"\n\n")
 
 		if err := runQemuStaticContainer(); err != nil {
 			return err
