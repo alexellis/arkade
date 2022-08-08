@@ -47,6 +47,10 @@ Which tier or option is right for you? [Find out now](https://github.com/sponsor
 >
 > [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com
 
+> Before arkade whenever I used to spin up an instance, I used to go to multiple sites and download the binary. Arkade is one of my favourite tools.
+
+[Kiran Satya Raj](https://kubesimplify.com/arkade) - Cloud Native Enthusiast
+
 > This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
 >
 > [Greg](https://twitter.com/cactusanddove) runs Fullstack JS and is a JavaScript developer
