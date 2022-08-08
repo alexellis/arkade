@@ -13,7 +13,7 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 [![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 52 helm charts and apps available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
+With over 90 CLIs and 55 apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
   - [Help fund arkade](#help-fund-arkade-)
