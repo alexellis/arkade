@@ -2521,5 +2521,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "tenable",
+			Repo:        "terrascan",
+			Name:        "terrascan",
+			Description: "Detect compliance and security violations across Infrastructure as Code.",
+			BinaryTemplate: `
+						{{$osStr := ""}}
+						{{ if HasPrefix .OS "ming" -}}
+						{{$osStr = "Windows"}}
+						{{- else if eq .OS "linux" -}}
+						{{$osStr = "Linux"}}
+						{{- else if eq .OS "darwin" -}}
+						{{$osStr = "Darwin"}}
+						{{- end -}}
+						{{$archStr := .Arch}}
+						{{- if eq .Arch "aarch64" -}}
+						{{$archStr = "arm64"}}
+						{{- else if eq .Arch "x86_64" -}}
+						{{$archStr = "x86_64"}}
+						{{- end -}}
+						{{.Name}}_{{slice .Version 1}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+		})
+
 	return tools
 }

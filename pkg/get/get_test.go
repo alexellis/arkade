@@ -4306,3 +4306,56 @@ func Test_DownloadTalosctl(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadTerrascan(t *testing.T) {
+	tools := MakeTools()
+	name := "terrascan"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v1.11.0",
+			url:     `https://github.com/tenable/terrascan/releases/download/v1.11.0/terrascan_1.11.0_Darwin_x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: "v1.11.0",
+			url:     `https://github.com/tenable/terrascan/releases/download/v1.11.0/terrascan_1.11.0_Darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v1.11.0",
+			url:     `https://github.com/tenable/terrascan/releases/download/v1.11.0/terrascan_1.11.0_Linux_x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v1.11.0",
+			url:     `https://github.com/tenable/terrascan/releases/download/v1.11.0/terrascan_1.11.0_Linux_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v1.11.0",
+			url:     `https://github.com/tenable/terrascan/releases/download/v1.11.0/terrascan_1.11.0_Windows_x86_64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}

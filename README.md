@@ -572,7 +572,7 @@ There are 55 apps that you can install on your cluster.
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
 | hey              | Load testing tool                                                                                                                         |
 | hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
-| hubble           | CLI for network, service & security observability for Kubernetes clusters running Cilium.
+| hubble           | CLI for network, service & security observability for Kubernetes clusters running Cilium.                                                 |
 | hugo             | Static HTML and CSS website generator.                                                                                                    |
 | influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
 | inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
@@ -628,9 +628,10 @@ There are 55 apps that you can install on your cluster.
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
-| talosctl         | The cli tool for managing Talos Linux OS.                                                                                                 |
+| talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
 | terragrunt       | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
+| terrascan        | Detect compliance and security violations across Infrastructure as Code.                                                                  |
 | tfsec            | Security scanner for your Terraform code                                                                                                  |
 | tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
 | tkn              | A CLI for interacting with Tekton.                                                                                                        |
@@ -639,6 +640,6 @@ There are 55 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 91 tools, use 'arkade get NAME' to download one.                                                                                                     |
+There are 94 tools, use 'arkade get NAME' to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
