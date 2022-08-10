@@ -48,8 +48,17 @@ Which tier or option is right for you? [Find out now](https://github.com/sponsor
 > [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com
 
 > Before arkade whenever I used to spin up an instance, I used to go to multiple sites and download the binary. Arkade is one of my favourite tools.
+> 
+> [Kumar Anurag](https://kubesimplify.com/arkade) - Cloud Native Enthusiast
 
-[Kiran Satya Raj](https://kubesimplify.com/arkade) - Cloud Native Enthusiast
+> It's hard to use K8s without Arkade these days.
+> My team at @lftechnology absolutely loves it.
+>
+> [@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20)
+
+> arkade is really a great tool to install CLI tools, and system packages, check this blog on how to get started with arkade it's a time saver.
+> 
+> [Kiran Satya Raj](https://twitter.com/jksrtwt/status/1556592117627047936?s=20&t=g0gnSP98jg3ZwU7sQqUrLw)
 
 > This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
 >
@@ -59,12 +68,6 @@ Which tier or option is right for you? [Find out now](https://github.com/sponsor
 > it can install commonly used cli tools like kubectl locally for you, as well as common k8s pkgs like ingress-nginx or portainer
 >
 > [@arghzero](https://twitter.com/ArghZero/status/1346097288851070983?s=20)
-
-
-> It's hard to use K8s without Arkade these days.
-> My team at @lftechnology absolutely loves it.
->
-> [@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20)
 
 > I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
@@ -80,7 +83,7 @@ Which tier or option is right for you? [Find out now](https://github.com/sponsor
 >
 > [Carlos Panato](https://twitter.com/comedordexis/status/1423339283713347587) - Staff engineer @ Mattermost
 
-> arkade is the 'brew install' of Kubernetes. You can install and run an application in a single command. Finally! https://github.com/alexellis/arkade /by Alex Ellis
+> arkade is the 'brew install' of Kubernetes. You can install and run an application in a single command. Finally! https://github.com/alexellis/arkade / by Alex Ellis
 >
 > [John Arundel](https://twitter.com/bitfield/status/1242385165445455872?s=20) - Cloud consultant, author
 
