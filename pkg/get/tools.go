@@ -2614,5 +2614,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "redpanda-data",
+			Repo:        "redpanda",
+			Name:        "rpk",
+			Description: "Kafka compatible streaming platform for mission critical workloads.",
+			BinaryTemplate: `
+			{{$os := ""}}
+			{{$arch := ""}}
+			{{- if eq .OS "linux" -}}
+			{{$os = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "darwin"}}
+			{{- end -}}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{.Name}}-{{$os}}-{{$arch}}.zip
+			`,
+		})
+
 	return tools
 }

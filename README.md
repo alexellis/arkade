@@ -575,7 +575,6 @@ There are 55 apps that you can install on your cluster.
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
-| golangci-lint    | Go linters aggregator.                                                                                                                    |
 | gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
 | golangci-lint    | Go linters aggregator.                                                                                                                    |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
@@ -638,6 +637,7 @@ There are 55 apps that you can install on your cluster.
 | porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
 | promtool         | Prometheus rule tester and debugging utility                                                                                              |
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
+| rpk              | Kafka compatible streaming platform for mission critical workloads.                                                                       |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
@@ -652,6 +652,6 @@ There are 55 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 97 tools, use 'arkade get NAME' to download one.
+There are 98 tools, use 'arkade get NAME' to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
