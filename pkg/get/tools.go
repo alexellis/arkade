@@ -2545,5 +2545,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{.Name}}_{{slice .Version 1}}_{{$osStr}}_{{$archStr}}.tar.gz`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "golangci",
+			Repo:        "golangci-lint",
+			Name:        "golangci-lint",
+			Description: "Go linters aggregator.",
+			BinaryTemplate: `
+							{{$os := ""}}
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{- else if eq .OS "linux" -}}
+							{{$os = "linux"}}
+							{{- else if eq .OS "darwin" -}}
+							{{$os = "darwin"}}
+							{{- end -}}
+							{{$arch := .Arch}}
+							{{- if eq .Arch "x86_64" -}}
+							{{$arch = "amd64"}}
+							{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+							{{$arch = "arm64"}}
+							{{- else if eq .Arch "armv7l" -}}
+							{{$arch = "armv7"}}
+							{{- end -}}
+							{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.tar.gz`,
+		})
+
 	return tools
 }

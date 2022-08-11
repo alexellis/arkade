@@ -574,6 +574,7 @@ There are 55 apps that you can install on your cluster.
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
 | gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
+| golangci-lint    | Go linters aggregator.                                                                                                                   |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
@@ -647,6 +648,6 @@ There are 55 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 94 tools, use 'arkade get NAME' to download one.
+There are 95 tools, use 'arkade get NAME' to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
