@@ -27,7 +27,46 @@ git commit -s / --signoff
 
 This is not cryptography, does not require any keys and does not take any longer than typing in the above three commands.
 
-### Developer workflow
+### Recommended settings for apps for `arkade install`
+
+`arkade install` is primarily meant for use during development and experimentation, however most apps should also have options available to make them suitable for production.
+
+By default, turn off:
+* persistence and volumes
+* multiple replicas or HA
+* clustering
+* additional sidecars and components
+
+But make them configurable, so `--persistence` would be `false` by default for an app like Postgresql, but easy to enable.
+
+### Recommended architectures for binaries in `arkade get`
+
+For installable CLIs, add the following architectures when available:
+
+For Darwin (MacOS):
+
+* AMD64 / `x86_64` (Intel)
+* ARM64 / `aarch64` (M1)
+
+For Linux:
+
+* AMD64 / `x86_64` (Intel/AMD)
+* ARM64 / `aarch64` (64-bit Raspberry Pi OS, AWS Graviton and commercial 64-bit ARM servers)
+* ARMv7 / `armhf` (32-bit Raspberry Pi OS)
+
+Do not add ARMv6 support, or 32-bit Intel.
+
+For Windows:
+
+* AMD64 (Intel/AMD)
+
+Do not add ARM support or 32-bit Intel.
+
+FreeBSD and other operating systems are not supported at this time.
+
+Binaries that are packaged as `.zip`, `.tgz` or `.tar.gz` are also supported, look at previous apps to find an example to copy.
+
+### Workflow for a first-time contributing
 
 Here's the basics for contributing:
 
