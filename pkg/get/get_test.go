@@ -4418,3 +4418,50 @@ func Test_DownloadGolangciLint(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadBun(t *testing.T) {
+	tools := MakeTools()
+	name := "bun"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v0.1.8",
+			url:     `https://github.com/oven-sh/bun/releases/download/v0.1.8/bun-darwin-x64.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: "v0.1.8",
+			url:     `https://github.com/oven-sh/bun/releases/download/v0.1.8/bun-darwin-aarch64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v0.1.8",
+			url:     `https://github.com/oven-sh/bun/releases/download/v0.1.8/bun-linux-x64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v0.1.8",
+			url:     `https://github.com/oven-sh/bun/releases/download/v0.1.8/bun-linux-aarch64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}

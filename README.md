@@ -197,6 +197,7 @@ Run the following to see what's available `arkade system install`:
   containerd     Install containerd
   firecracker    Install Firecracker
   go             Install Go
+  node           Install Node.js
   prometheus     Install Prometheus
 ```
 
@@ -551,13 +552,14 @@ There are 55 apps that you can install on your cluster.
 
 ### Catalog of CLIs
 
-|       TOOL       |                                                                DESCRIPTION                                                                |
+| TOOL             | DESCRIPTION                                                                                                                               |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
+| bun              | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
 | caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
 | cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
@@ -574,7 +576,7 @@ There are 55 apps that you can install on your cluster.
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
 | gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
-| golangci-lint    | Go linters aggregator.                                                                                                                   |
+| golangci-lint    | Go linters aggregator.                                                                                                                    |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
