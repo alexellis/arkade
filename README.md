@@ -193,10 +193,12 @@ Run the following to see what's available `arkade system install`:
 
 ```bash
   actions-runner Install GitHub Actions Runner
+  bun            Install Bun
   cni            Install CNI plugins
   containerd     Install containerd
   firecracker    Install Firecracker
   go             Install Go
+  node           Install Node.js
   prometheus     Install Prometheus
 ```
 
