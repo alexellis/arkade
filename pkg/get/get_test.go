@@ -4518,3 +4518,50 @@ func Test_DownloadLazygit(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadRpk(t *testing.T) {
+	tools := MakeTools()
+	name := "rpk"
+	version := "v22.1.7"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/redpanda-data/redpanda/releases/download/v22.1.7/rpk-darwin-amd64.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/redpanda-data/redpanda/releases/download/v22.1.7/rpk-darwin-arm64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/redpanda-data/redpanda/releases/download/v22.1.7/rpk-linux-amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/redpanda-data/redpanda/releases/download/v22.1.7/rpk-linux-arm64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
