@@ -2571,5 +2571,21 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.tar.gz`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "oven-sh",
+			Repo:        "bun",
+			Name:        "bun",
+			Description: "Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.",
+			BinaryTemplate: `
+							{{$arch := .Arch}}
+							{{- if eq .Arch "x86_64" -}}
+							{{$arch = "x64"}}
+							{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+							{{$arch = "aarch64"}}
+							{{- end -}}
+							{{.Name}}-{{ .OS }}-{{$arch}}.zip`,
+		})
+
 	return tools
 }
