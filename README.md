@@ -575,6 +575,7 @@ There are 55 apps that you can install on your cluster.
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
+| golangci-lint    | Go linters aggregator.                                                                                                                    |
 | gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
 | golangci-lint    | Go linters aggregator.                                                                                                                    |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
@@ -617,6 +618,7 @@ There are 55 apps that you can install on your cluster.
 | kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
 | kumactl          | kumactl is a CLI to interact with Kuma and its data                                                                                       |
 | kustomize        | Customization of kubernetes YAML configurations                                                                                           |
+| lazygit          | A simple terminal UI for git commands.                                                                                                    |
 | linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
 | mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
 | metal            | Official Equinix Metal CLI                                                                                                                |
@@ -650,6 +652,6 @@ There are 55 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 95 tools, use 'arkade get NAME' to download one.
+There are 97 tools, use 'arkade get NAME' to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
