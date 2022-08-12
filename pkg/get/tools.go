@@ -2563,7 +2563,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$arch := .Arch}}
 							{{- if eq .Arch "x86_64" -}}
 							{{$arch = "amd64"}}
-							{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+							{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 							{{$arch = "arm64"}}
 							{{- else if eq .Arch "armv7l" -}}
 							{{$arch = "armv7"}}
@@ -2585,6 +2585,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$arch = "aarch64"}}
 							{{- end -}}
 							{{.Name}}-{{ .OS }}-{{$arch}}.zip`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "jesseduffield",
+			Repo:        "lazygit",
+			Name:        "lazygit",
+			Description: "A simple terminal UI for git commands.",
+			BinaryTemplate: `
+								{{$os := ""}}
+								{{$ext := "tar.gz" }}
+								{{ if HasPrefix .OS "ming" -}}
+								{{$os = "Windows"}}
+								{{$ext = "zip" }}
+								{{- else if eq .OS "linux" -}}
+								{{$os = "Linux"}}
+								{{- else if eq .OS "darwin" -}}
+								{{$os = "Darwin"}}
+								{{- end -}}
+
+								{{$arch := .Arch}}
+								{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+								{{$arch = "x86_64"}}
+								{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+								{{$arch = "arm64"}}
+								{{- end -}}
+								{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
 	return tools
