@@ -4565,3 +4565,61 @@ func Test_DownloadRpk(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadVault(t *testing.T) {
+	tools := MakeTools()
+	name := "vault"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.11.2"
+
+	tests := []test{
+		{
+			url:     `https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_windows_amd64.zip`,
+			version: toolVersion,
+			os:      "ming",
+			arch:    arch64bit,
+		},
+		{
+			url:     "https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_linux_amd64.zip",
+			version: toolVersion,
+			os:      "linux",
+			arch:    arch64bit,
+		},
+		{
+			url:     "https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_linux_arm.zip",
+			version: toolVersion,
+			os:      "linux",
+			arch:    archARM7,
+		},
+		{
+			url:     "https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_linux_arm64.zip",
+			version: toolVersion,
+			os:      "linux",
+			arch:    archARM64,
+		},
+		{
+			url:     "https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_darwin_arm64.zip",
+			version: toolVersion,
+			os:      "darwin",
+			arch:    archDarwinARM64,
+		},
+		{
+			url:     "https://releases.hashicorp.com/vault/1.11.2/vault_1.11.2_darwin_amd64.zip",
+			version: toolVersion,
+			os:      "darwin",
+			arch:    arch64bit,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
