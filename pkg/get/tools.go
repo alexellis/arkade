@@ -866,6 +866,8 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 				{{$archStr = "arm-v6"}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{$archStr = "arm-v7"}}
+			    {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$archStr = "arm64"}}
 				{{- else if eq .Arch "x86_64" -}}
 				{{$archStr = "amd64"}}
 				{{- end -}}
