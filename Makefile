@@ -4,9 +4,11 @@ LDFLAGS := "-s -w -X github.com/alexellis/arkade/cmd.Version=$(Version) -X githu
 PLATFORM := $(shell ./hack/platform-tag.sh)
 SOURCE_DIRS = cmd pkg main.go
 export GO111MODULE=on
+BIN := bin
+export PATH := ${PWD}/${BIN}:${PATH}
 
 .PHONY: all
-all: gofmt test build dist hash
+all: gofmt test build dist hash lint
 
 .PHONY: build
 build:
@@ -26,14 +28,22 @@ e2e:
 
 .PHONY: dist
 dist:
-	mkdir -p bin
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/arkade
-	CGO_ENABLED=0 GOOS=darwin go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/arkade-darwin
-	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -a -ldflags $(LDFLAGS) -installsuffix cgo -o bin/arkade-darwin-arm64
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/arkade-armhf
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/arkade-arm64
-	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o bin/arkade.exe
+	mkdir -p ${BIN}
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o ${BIN}/arkade
+	CGO_ENABLED=0 GOOS=darwin go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o ${BIN}/arkade-darwin
+	CGO_ENABLED=0 GOOS=darwin GOARCH=arm64 go build -a -ldflags $(LDFLAGS) -installsuffix cgo -o ${BIN}/arkade-darwin-arm64
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm GOARM=6 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o ${BIN}/arkade-armhf
+	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o ${BIN}/arkade-arm64
+	CGO_ENABLED=0 GOOS=windows GOARCH=amd64 go build -ldflags $(LDFLAGS) -a -installsuffix cgo -o ${BIN}/arkade.exe
 
 .PHONY: hash
 hash:
 	rm -rf bin/*.sha256 && ./hack/hashgen.sh
+
+.PHONY: lint
+lint: docs
+	git diff --exit-code  # fail if generation caused any diff
+
+.PHONY: docs
+docs:
+	cog -r README.md

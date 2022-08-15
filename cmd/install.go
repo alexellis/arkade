@@ -6,6 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 
 	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/olekukonko/tablewriter"
@@ -51,8 +52,14 @@ command.`,
 			table.SetCenterSeparator("|")
 			table.SetAutoWrapText(false)
 
-			for k, v := range appList {
-				table.Append([]string{k, v.Installer().Short})
+			keys := make([]string, 0)
+			for k := range appList {
+				keys = append(keys, k)
+			}
+			sort.Strings(keys)
+
+			for _, key := range keys {
+				table.Append([]string{key, appList[key].Installer().Short})
 			}
 
 			table.Render()
