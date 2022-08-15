@@ -4,17 +4,24 @@
 
 Here are a few guidelines for contributing:
 
-* If you would like to contribute to the codebase then please raise an issue to propose the change or feature
-* Do not work on an issue / PR until it gets a `design/approved` label from a maintainer
-* Do not mix feature changes or fixes with refactoring - it makes the code harder to review and means there is more for the maintainers (with limited time) to test
+* If you would like to contribute to the codebase then please raise an issue to propose the change or feature.
+* Do not work on an issue / PR until it gets a `design/approved` label from a maintainer.
+* Do not mix feature changes or fixes with refactoring - it makes the code harder to review and means there is more for
+  the maintainers (with limited time) to test.
 
 * If you have found a bug please raise an issue and fill out the whole template.
-* Don't raise PRs for typos, these aren't necessary - just raise an Issue
-* If the documentation can be improved / translated etc please raise an issue to discuss. 
+* Don't raise PRs for typos, these aren't necessary - just raise an Issue.
+* If the documentation can be improved / translated etc. please raise an issue to discuss.
 
 * Please always provide a summary of what you changed, how you did it and how it can be tested.
+* Most of the time we like to keep one commit per PR or if you have more you should have a perfect reason for it.
+  (That's why we like to amend to a commit and commonly require rebase a multiple commit PR, before we approve/merge
+  it.)
+* If the Issue involves adding multiple features, like both a Helm chart and a CLI tool, create a PR per tool/chart, to
+  cleanly separate them.
 
-All commits must have a `Signed-off-by:` line in accordance with the Developer Certificate of Origin, which you can read about at the end of this document.
+All commits must have a `Signed-off-by:` line in accordance with the Developer Certificate of Origin, which you can read
+about at the end of this document.
 
 To add the sign-off, simply run:
 
@@ -25,46 +32,102 @@ git commit --global user.email "you@example.com"
 git commit -s / --signoff
 ```
 
-This is not cryptography, does not require any keys and does not take any longer than typing in the above three commands.
+This is not cryptography, does not require any keys and does not take any longer than typing in the above three
+commands.
 
 ### Recommended settings for apps for `arkade install`
 
-`arkade install` is primarily meant for use during development and experimentation, however most apps should also have options available to make them suitable for production.
+`arkade install` is primarily meant for use during development and experimentation, however most apps should also have
+options available to make them suitable for production.
 
 By default, turn off:
+
 * persistence and volumes
 * multiple replicas or HA
 * clustering
 * additional sidecars and components
 
-But make them configurable, so `--persistence` would be `false` by default for an app like Postgresql, but easy to enable.
+But make them configurable, so `--persistence` would be `false` by default for an app like Postgresql, but easy to
+enable.
 
-### Recommended architectures for binaries in `arkade get`
+### Recommended way for adding binaries to `arkade get`
 
 For installable CLIs, add the following architectures when available:
 
-For Darwin (MacOS):
+**For Darwin (MacOS):**
 
 * AMD64 / `x86_64` (Intel)
-* ARM64 / `aarch64` (M1)
+* ARM64 / `arm64` (M1)
 
-For Linux:
+**For Linux:**
 
 * AMD64 / `x86_64` (Intel/AMD)
 * ARM64 / `aarch64` (64-bit Raspberry Pi OS, AWS Graviton and commercial 64-bit ARM servers)
 * ARMv7 / `armhf` (32-bit Raspberry Pi OS)
 
-Do not add ARMv6 support, or 32-bit Intel.
-
-For Windows:
+**For Windows:**
 
 * AMD64 (Intel/AMD)
 
-Do not add ARM support or 32-bit Intel.
+Do not add ARMv6 support, or 32-bit architecture.
 
 FreeBSD and other operating systems are not supported at this time.
 
-Binaries that are packaged as `.zip`, `.tgz` or `.tar.gz` are also supported, look at previous apps to find an example to copy.
+Binaries that are packaged as `.zip`, `.tgz` or `.tar.gz` are also supported, look at previous apps to find an example
+to copy.
+
+Always write a unit tests for your tool in the `pkg/get/get_test.go`.
+
+In the unit tests always pin an exact version and write a test case for that version.
+
+You can try different architectures and OSes with `arkade get` via `--arch` and `--os` flags, to try out arm64 binaries
+for example.
+
+Please always test your tools manually (`hack/test-tool.sh`) and with the end-to-end test tool (`make e2e`).
+
+**Available variables in the `URLTemplate`:**
+
+* `OS` (current OS or value of the `--os` flag)
+* `Arch` (current architecture or value of the `--arch` flag)
+* `Name` (name of the tool)
+* `Version` (version of the tool)
+* `VersionNumber` (version of the tool with the `v` removed)
+
+Example:
+
+```json
+{
+  "OS": "darwin",
+  "Arch": "arm64",
+  "Name": "gh",
+  "Version": "v2.14.7",
+  "VersionNumber": "2.14.7"
+}
+```
+
+**Available variables in the `BinaryTemplate`:**
+
+* `OS` (current OS or value of the `--os` flag)
+* `Arch` (current architecture or value of the `--arch` flag)
+* `Name` (name of the tool)
+* `Version` (version of the tool)
+* `VersionNumber` (version of the tool with the `v` removed)
+* `Repo` (name of the GitHub repository)
+* `Owner` (owner of the GitHub repository)
+
+Example:
+
+```json
+{
+  "OS": "darwin",
+  "Arch": "arm64",
+  "Name": "gh",
+  "Version": "v2.14.7",
+  "VersionNumber": "2.14.7",
+  "Repo": "cli",
+  "Owner": "cli"
+}
+```
 
 ### Workflow for a first-time contributing
 
@@ -151,7 +214,9 @@ This project is licensed under the MIT License.
 
 ### Reporting a suspected vulnerability / security issue
 
-If you would like to report a suspected vulnerability / security issue, please email alex@openfaas.com. Bear in mind that this is a community project, and it may take a few days to get back to you. If you have a working code sample in a private GitHub repo, please feel free to give access to that also.
+If you would like to report a suspected vulnerability / security issue, please email alex@openfaas.com. Bear in mind
+that this is a community project, and it may take a few days to get back to you. If you have a working code sample in a
+private GitHub repo, please feel free to give access to that also.
 
 #### Sign-off your work
 
