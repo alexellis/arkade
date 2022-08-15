@@ -1359,28 +1359,44 @@ func Test_DownloadBuildx(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v0.4.2"
+	const toolVersion = "v0.8.2"
 
 	tests := []test{
-		{os: "mingw64_nt-10.0-18362",
+		{
+			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.windows-amd64.exe`,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.windows-amd64.exe`,
 		},
-		{os: "linux",
+		{
+			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-amd64`,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.darwin-amd64`,
 		},
-		{os: "darwin",
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.darwin-arm64`,
+		},
+		{
+			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.darwin-amd64`,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.linux-amd64`,
 		},
-		{os: "linux",
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.linux-arm64`,
+		},
+		{
+			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/docker/buildx/releases/download/v0.4.2/buildx-v0.4.2.linux-arm-v7`,
+			url:     `https://github.com/docker/buildx/releases/download/v0.8.2/buildx-v0.8.2.linux-arm-v7`,
 		},
 	}
 
