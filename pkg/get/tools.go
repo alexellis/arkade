@@ -2641,5 +2641,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "hashicorp",
+			Repo:        "vault",
+			Name:        "vault",
+			Version:     "1.11.2",
+			Description: "A tool for secrets management, encryption as a service, and privileged access management.",
+			URLTemplate: `
+			{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if eq .Arch "arm64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$arch = "arm"}}
+			{{- end -}}
+
+			{{$os := .OS}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{- end -}}
+
+			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
+		})
+
 	return tools
 }
