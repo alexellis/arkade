@@ -545,8 +545,9 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | influxdb                | Install influxdb                                                    |
 | nats-connector          | Install OpenFaaS connector for NATS                                 |
 | kyverno                 | Install Kyverno                                                     |
+| vault                   | Install Vault                                                       |
 
-There are 55 apps that you can install on your cluster.
+There are 56 apps that you can install on your cluster.
 
 > Note to contributors, run `arkade install --print-table` to generate this list
 

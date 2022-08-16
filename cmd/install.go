@@ -163,6 +163,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["inlets-tcp-client"] = NewArkadeApp(apps.MakeInstallInletsTcpClient, apps.InletsTcpClientInfoMsg)
 	arkadeApps["kuma"] = NewArkadeApp(apps.MakeInstallKuma, apps.KumaInfoMsg)
 	arkadeApps["qemu-static"] = NewArkadeApp(apps.MakeInstallQemuStatic, apps.QemuStaticInfoMsg)
+	arkadeApps["vault"] = NewArkadeApp(apps.MakeInstallVault, apps.VaultInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
