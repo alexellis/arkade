@@ -50,16 +50,17 @@ func MakeInstallCNI() *cobra.Command {
 			return fmt.Errorf("this app only supports Linux")
 		}
 
-		if arch != "x86_64" && arch != "aarch64" {
-			return fmt.Errorf("this app only supports x86_64 and aarch64 and not %s", arch)
+		if strings.ToLower(osVer) != "linux" {
+			return fmt.Errorf("this app only supports Linux")
 		}
+
 		dlArch := arch
 		if arch == "x86_64" {
 			dlArch = "amd64"
 		} else if arch == "aarch64" {
 			dlArch = "arm64"
 		} else if arch == "armv7" || arch == "armv7l" {
-			dlArch = "armv6l"
+			dlArch = "arm"
 		}
 		if version == githubLatest {
 			v, err := get.FindGitHubRelease(owner, repo)
