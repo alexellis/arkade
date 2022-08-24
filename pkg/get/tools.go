@@ -50,7 +50,7 @@ func MakeTools() Tools {
 			Owner:       "helm",
 			Repo:        "helm",
 			Name:        "helm",
-			Version:     "v3.5.2",
+			Version:     "v3.9.3",
 			Description: "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `{{$arch := "amd64"}}
 
@@ -1945,7 +1945,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "armosec",
+			Owner:       "kubescape",
 			Repo:        "kubescape",
 			Name:        "kubescape",
 			Description: "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA",

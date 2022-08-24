@@ -16,8 +16,6 @@ import (
 	execute "github.com/alexellis/go-execute/pkg/v1"
 )
 
-const helmVersion = "v3.1.2"
-
 func TryDownloadHelm(userPath, clientArch, clientOS string) (string, error) {
 	helmVal := "helm"
 	subdir := ""

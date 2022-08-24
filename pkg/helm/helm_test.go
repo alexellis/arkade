@@ -8,9 +8,10 @@ import "testing"
 func Test_GetHelmURL_GitBash(t *testing.T) {
 	arch := "amd64"
 	os := "mingw64_nt-10.0-18362"
+	helmVersion := "v3.9.3"
 
 	got := GetHelmURL(arch, os, helmVersion)
-	want := "https://get.helm.sh/helm-v3.1.2-windows-amd64.tar.gz"
+	want := "https://get.helm.sh/helm-v3.9.3-windows-amd64.tar.gz"
 	if got != want {
 		t.Fatalf("want: %s, but got: %s", want, got)
 	}
