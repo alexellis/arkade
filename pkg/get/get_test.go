@@ -3068,17 +3068,17 @@ func Test_DownloadKubescape(t *testing.T) {
 		{
 			os:      "darwin",
 			version: "v1.0.69",
-			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-macos-latest`,
+			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-macos-latest`,
 		},
 		{
 			os:      "linux",
 			version: "v1.0.69",
-			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-ubuntu-latest`,
+			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-ubuntu-latest`,
 		},
 		{
 			os:      "ming",
 			version: "v1.0.69",
-			url:     `https://github.com/armosec/kubescape/releases/download/v1.0.69/kubescape-windows-latest`,
+			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-windows-latest`,
 		},
 	}
 
