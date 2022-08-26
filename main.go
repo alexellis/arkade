@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/alexellis/arkade/cmd"
+	"github.com/alexellis/arkade/cmd/chart"
 	"github.com/alexellis/arkade/cmd/kasten"
 	"github.com/alexellis/arkade/cmd/system"
 	"github.com/alexellis/arkade/cmd/venafi"
@@ -31,6 +32,8 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeGet())
 	rootCmd.AddCommand(cmd.MakeUninstall())
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
+
+	rootCmd.AddCommand(chart.MakeChart())
 
 	rootCmd.AddCommand(venafi.MakeVenafi())
 	rootCmd.AddCommand(kasten.MakeK10())
