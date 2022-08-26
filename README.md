@@ -201,7 +201,50 @@ Run the following to see what's available `arkade system install`:
   prometheus     Install Prometheus
 ```
 
-> System apps are in preview, see more details in the proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
+The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
+
+## Validate Helm chart images from within a values.yaml file
+
+The `arkade chart validate` command validates that all images specified are accessible on a remote registry and takes a values.yaml file as its input.
+
+Successful checking of a chart with `image: ghcr.io/openfaas/cron-connector:TAG`:
+
+```bash
+arkade chart verify  -f ~/go/src/github.com/openfaas/faas-netes/chart/cron-connector/values.yaml
+
+echo $?
+0
+```
+
+There is an exit code of zero and no output when the check passed.
+
+You can pass `--verbose` to see a detailed view of what's happening.
+
+Checking of nested components, where two of the images do not exist `autoscaler.image` and `dashboard.image`:
+
+```bash
+arkade chart verify  -f ~/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yamlecho $?
+2 images are missing in /Users/alex/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yaml
+
+COMPONENT           IMAGE
+dashboard           ghcr.io/openfaasltd/openfaas-dashboard:0.9.8
+autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
+
+Error: verifying failed
+
+echo $?
+1
+```
+
+Supported:
+
+* `image:` - at the top level
+* `component.image:` i.e. one level of nesting
+
+Not supported yet:
+* Custom strings that don't match the word "image": `clientImage: `
+* Split fields for the image and tag name i.e. `image.name` and `image.tag`
+* Third-level nesting `openfaas.gateway.image`
 
 ## Installing apps with arkade
 
