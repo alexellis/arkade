@@ -4678,3 +4678,62 @@ func Test_DownloadVault(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadCr(t *testing.T) {
+	tools := MakeTools()
+	name := "cr"
+	version := "v1.4.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_linux_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_linux_armv7.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/helm/chart-releaser/releases/download/v1.4.0/chart-releaser_1.4.0_windows_amd64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
