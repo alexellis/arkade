@@ -2690,5 +2690,42 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "helm",
+			Repo:        "chart-releaser",
+			Name:        "cr",
+			Description: "Hosting Helm Charts via GitHub Pages and Releases",
+			URLTemplate: `
+			{{$os := ""}}
+			{{$arch := ""}}
+			{{$ext := ".tar.gz"}}
+			{{- if eq .OS "linux" -}}
+			{{$os = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "darwin"}}
+			{{- else if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{$ext = ".zip"}}
+			{{- end -}}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "armv7l" -}}
+			{{$arch = "armv7"}}
+			{{- end -}}
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}
+			`,
+			BinaryTemplate: `
+			{{ if HasPrefix .OS "ming" -}}
+			{{ .Name }}.exe
+			{{- else -}}
+			{{ .Name }}
+			{{- end -}}
+			`,
+		})
+
 	return tools
 }
