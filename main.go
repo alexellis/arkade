@@ -8,9 +8,7 @@ import (
 
 	"github.com/alexellis/arkade/cmd"
 	"github.com/alexellis/arkade/cmd/chart"
-	"github.com/alexellis/arkade/cmd/kasten"
 	"github.com/alexellis/arkade/cmd/system"
-	"github.com/alexellis/arkade/cmd/venafi"
 	"github.com/spf13/cobra"
 )
 
@@ -34,9 +32,6 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
 
 	rootCmd.AddCommand(chart.MakeChart())
-
-	rootCmd.AddCommand(venafi.MakeVenafi())
-	rootCmd.AddCommand(kasten.MakeK10())
 	rootCmd.AddCommand(system.MakeSystem())
 
 	if err := rootCmd.Execute(); err != nil {
