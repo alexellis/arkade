@@ -588,6 +588,7 @@ There are 56 apps that you can install on your cluster.
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
+| cr               | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
 | dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
 | devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
@@ -677,6 +678,7 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 99 tools, use 'arkade get NAME' to download one.
+
+There are 101 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
