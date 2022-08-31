@@ -2727,5 +2727,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "hadolint",
+			Repo:        "hadolint",
+			Name:        "hadolint",
+			Description: "A smarter Dockerfile linter that helps you build best practice Docker images",
+			BinaryTemplate: `
+			{{$os := ""}}
+			{{$arch := .Arch}}
+			{{$ext := ""}}
+			{{- if eq .OS "linux" -}}
+			{{$os = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "Darwin"}}
+			{{- else if HasPrefix .OS "ming" -}}
+			{{$os = "Windows"}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+
+			{{- if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+			{{.Name}}-{{$os}}-{{$arch}}{{$ext}}
+			`,
+		})
+
 	return tools
 }

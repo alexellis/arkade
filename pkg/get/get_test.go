@@ -4737,3 +4737,50 @@ func Test_DownloadCr(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadHadolint(t *testing.T) {
+	tools := MakeTools()
+	name := "hadolint"
+	version := "v2.10.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Darwin-x86_64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Linux-x86_64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Linux-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/hadolint/hadolint/releases/download/v2.10.0/hadolint-Windows-x86_64.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
