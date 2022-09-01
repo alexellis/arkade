@@ -4,11 +4,18 @@
 package apps
 
 import (
+	"bytes"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"crypto/rand"
+	"crypto/x509"
+	"encoding/pem"
 	"fmt"
+	"strconv"
+
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/types"
-	"strconv"
 
 	"github.com/alexellis/arkade/pkg/k8s"
 
@@ -38,6 +45,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("operator", false, "Create OpenFaaS Operator")
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
 	openfaas.Flags().Bool("direct-functions", false, "Invoke functions directly from the gateway, or load-balance via endpoint IPs when set to false")
+	openfaas.Flags().Bool("autoscaler", false, "Deploy OpenFaaS with the autoscaler enabled")
+	openfaas.Flags().Bool("dashboard", false, "Deploy OpenFaaS with the dashboard enabled")
 
 	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
 	openfaas.Flags().Int("max-inflight", 1, "Max tasks for queue-worker to process in parallel")
@@ -148,6 +157,36 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		if err != nil {
 			return err
 		}
+		autoscaler, err := command.Flags().GetBool("autoscaler")
+		if err != nil {
+			return err
+		}
+		dashboard, err := command.Flags().GetBool("dashboard")
+		if err != nil {
+			return err
+		}
+
+		if dashboard {
+			// Private key
+			priv, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+			ecder, _ := x509.MarshalECPrivateKey(priv)
+			privOut := bytes.Buffer{}
+			pem.Encode(&privOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: ecder})
+
+			// Public key
+			pub := &priv.PublicKey
+			pubder, _ := x509.MarshalPKIXPublicKey(pub)
+			pubOut := bytes.Buffer{}
+			pem.Encode(&pubOut, &pem.Block{Type: "PUBLIC KEY", Bytes: pubder})
+
+			secretData := []types.SecretsData{
+				{Type: types.StringLiteralSecret, Key: "key", Value: privOut.String()},
+				{Type: types.StringLiteralSecret, Key: "key.pub", Value: pubOut.String()},
+			}
+
+			dashboardJWT := types.NewGenericSecret("dashboard-jwt", namespace, secretData)
+			appOpts.WithSecret(dashboardJWT)
+		}
 
 		gateways, _ := command.Flags().GetInt("gateways")
 		maxInflight, _ := command.Flags().GetInt("max-inflight")
@@ -168,6 +207,9 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
 		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
 		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
+		overrides["autoscaler.enabled"] = strconv.FormatBool(autoscaler)
+		overrides["dashboard.enabled"] = strconv.FormatBool(autoscaler)
+		overrides["dashboard.publicURL"] = "http://127.0.0.1:8080"
 
 		// the value in the template is "basic_auth" not the more usual basicAuth
 		overrides["basic_auth"] = strconv.FormatBool(basicAuthEnabled)
