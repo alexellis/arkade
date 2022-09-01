@@ -8,7 +8,7 @@ import (
 )
 
 // ValuesMap is an alias for map[string]interface{}
-type ValuesMap map[string]interface{}
+type ValuesMap map[interface{}]interface{}
 
 // Load a values.yaml file and return a ValuesMap with the keys
 // and values from the YAML file as a map[string]interface{}
@@ -28,28 +28,27 @@ func Load(yamlPath string) (ValuesMap, error) {
 	return values, nil
 }
 
-// FilterImages takes a ValuesMap and returns a map of images that
-// were found at the top level, or one level down with keys of
-// "image: "
-func FilterImages(values ValuesMap) map[string]string {
+// FilterImagesUptoDepth takes a ValuesMap and returns a map of images that
+// were found upto max level
+func FilterImagesUptoDepth(values ValuesMap, depth int) map[string]string {
 	images := map[string]string{}
 
 	for k, v := range values {
-
-		// Match anything at the top level called "image: ..."
 		if k == "image" {
-			images[k] = v.(string)
+			imageUrl := v.(string)
+			images[imageUrl] = imageUrl
 		}
 
-		// Match anything at one level down i.e. "gateway.image: ..."
-		if c, ok := v.(map[interface{}]interface{}); ok && c != nil {
-			for kk, vv := range c {
-				if kk == "image" {
-					images[k] = vv.(string)
-				}
-			}
+		if c, ok := v.(ValuesMap); ok && depth > 0 {
+			images = mergeMaps(images, FilterImagesUptoDepth(c, depth-1))
 		}
 	}
-
 	return images
+}
+
+func mergeMaps(original, latest map[string]string) map[string]string {
+	for k, v := range latest {
+		original[k] = v
+	}
+	return original
 }
