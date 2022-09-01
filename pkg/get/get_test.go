@@ -3401,25 +3401,25 @@ func Test_DownloadKubecm(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_0.16.2_Darwin_x86_64.tar.gz`,
+			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_v0.16.2_Darwin_x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_0.16.2_Linux_x86_64.tar.gz`,
+			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_v0.16.2_Linux_x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_0.16.2_Linux_arm64.tar.gz`,
+			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_v0.16.2_Linux_arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_0.16.2_Windows_x86_64.tar.gz`,
+			url:     `https://github.com/sunny0826/kubecm/releases/download/v0.16.2/kubecm_v0.16.2_Windows_x86_64.tar.gz`,
 		},
 	}
 

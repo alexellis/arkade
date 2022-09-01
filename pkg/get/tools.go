@@ -2083,7 +2083,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
 
-			{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}{{$extStr}}`,
+			{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}{{$extStr}}`,
 		})
 
 	tools = append(tools,
