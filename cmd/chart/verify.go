@@ -36,6 +36,15 @@ autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
 
 	command.Flags().StringP("file", "f", "", "Path to values.yaml file")
 	command.Flags().BoolP("verbose", "v", false, "Verbose output")
+	command.Flags().IntP("depth", "d", 3, "how many levels deep into the YAML structure to walk looking for image: tags")
+
+	command.PreRunE = func(cmd *cobra.Command, args []string) error {
+		_, err := cmd.Flags().GetInt("depth")
+		if err != nil {
+			return fmt.Errorf("error with --depth usage: %s", err)
+		}
+		return nil
+	}
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		file, err := cmd.Flags().GetString("file")
@@ -44,6 +53,7 @@ autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
 		}
 
 		verbose, _ := cmd.Flags().GetBool("verbose")
+		depth, _ := cmd.Flags().GetInt("depth")
 
 		if len(file) == 0 {
 			return fmt.Errorf("flag --file is required")
@@ -62,7 +72,7 @@ autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
 			return err
 		}
 
-		filtered := helm.FilterImages(values)
+		filtered := helm.FilterImagesUptoDepth(values, depth)
 		if len(filtered) == 0 {
 			return fmt.Errorf("no images found in %s", file)
 		}
