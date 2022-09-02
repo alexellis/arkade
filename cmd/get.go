@@ -176,7 +176,9 @@ and provides a fast and easy alternative to a package manager.`,
 			fmt.Printf("%s\n", msg)
 		}
 
-		fmt.Printf("%s%s\n", nl, aec.Bold.Apply(pkg.SupportMessageShort))
+		if !quiet {
+			fmt.Printf("%s%s\n", nl, aec.Bold.Apply(pkg.SupportMessageShort))
+		}
 
 		return err
 	}
