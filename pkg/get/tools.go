@@ -2131,7 +2131,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 			{{- if eq .Arch "x86_64" -}}
 			{{ $archStr = "amd64" }}
-			{{- else if eq .Arch "aarch64" -}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{ $archStr = "arm64" }}
 			{{- end -}}
 
