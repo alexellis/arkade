@@ -583,6 +583,7 @@ There are 56 apps that you can install on your cluster.
 | autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
 | bun              | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
+| butane           | Translates human readable Butane Configs into machine readable Ignition Configs                                                           |
 | caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
 | cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
@@ -680,6 +681,6 @@ There are 56 apps that you can install on your cluster.
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
 
-There are 102 tools, use `arkade get NAME` to download one.
+There are 103 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
