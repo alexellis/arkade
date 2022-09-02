@@ -2752,5 +2752,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "coreos",
+			Repo:        "butane",
+			Name:        "butane",
+			Description: "Translates human readable Butane Configs into machine readable Ignition Configs",
+			BinaryTemplate: `
+			{{$os := ""}}
+			{{$ext := ""}}
+			{{$arch := .Arch}}
+			{{- if eq .OS "linux" -}}
+			{{$os = "unknown-linux-gnu"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$os = "apple-darwin"}}
+			{{- else if HasPrefix .OS "ming" -}}
+			{{$os = "pc-windows-gnu"}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+
+			{{- if eq .Arch "arm64" -}}
+			{{$arch = "aarch64"}}
+			{{- end -}}
+			{{.Name}}-{{$arch}}-{{$os}}{{$ext}}
+			`,
+		})
+
 	return tools
 }
