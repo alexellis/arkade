@@ -77,24 +77,23 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 
 	tools = append(tools,
 		Tool{
-			Owner:       "roboll",
+			Owner:       "helmfile",
 			Repo:        "helmfile",
 			Name:        "helmfile",
 			Description: "Deploy Kubernetes Helm Charts",
 			BinaryTemplate: `{{$arch := "386"}}
-	{{- if eq .Arch "x86_64" -}}
-	{{$arch = "amd64"}}
-	{{- end -}}
+						{{- if eq .Arch "x86_64" -}}
+						{{$arch = "amd64"}}
+						{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+						{{$arch = "arm64"}}
+						{{- end -}}
 
-	{{$os := .OS}}
-	{{$ext := ""}}
+						{{$os := .OS}}
+						{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{- end -}}
 
-	{{ if HasPrefix .OS "ming" -}}
-	{{$os = "windows"}}
-	{{$ext = ".exe"}}
-	{{- end -}}
-
-helmfile_{{$os}}_{{$arch}}{{$ext}}`,
+					helmfile_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
