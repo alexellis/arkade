@@ -63,30 +63,32 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
 
-		wait, err := command.Flags().GetBool("wait")
-		if err != nil {
-			return err
-		}
-
+		wait, _ := command.Flags().GetBool("wait")
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		namespace, _ := command.Flags().GetString("namespace")
+		basicAuthEnabled, _ := command.Flags().GetBool("basic-auth")
+		updateRepo, _ := openfaas.Flags().GetBool("update-repo")
+		logUrl, _ := command.Flags().GetString("log-provider-url")
+		licenseFile, _ := command.Flags().GetString("license-file")
+		pullPolicy, _ := command.Flags().GetString("pull-policy")
+		functionPullPolicy, _ := command.Flags().GetString("function-pull-policy")
+		createOperator, _ := command.Flags().GetBool("operator")
+		clusterRole, _ := command.Flags().GetBool("clusterrole")
+		directFunctions, _ := command.Flags().GetBool("direct-functions")
+		autoscaler, _ := command.Flags().GetBool("autoscaler")
+		dashboard, _ := command.Flags().GetBool("dashboard")
+		gateways, _ := command.Flags().GetInt("gateways")
+		maxInflight, _ := command.Flags().GetInt("max-inflight")
+		queueWorkers, _ := command.Flags().GetInt("queue-workers")
+		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
+		lb, _ := command.Flags().GetBool("load-balancer")
 
-		basicAuthEnabled, err := command.Flags().GetBool("basic-auth")
-		if err != nil {
-			return err
-		}
+		overrides := map[string]string{}
 
 		arch := k8s.GetNodeArchitecture()
-
 		valuesSuffix := getValuesSuffix(arch)
 
-		updateRepo, err := openfaas.Flags().GetBool("update-repo")
-		if err != nil {
-			return err
-		}
-		appOpts.WithHelmUpdateRepo(updateRepo)
-
-		_, err = k8s.KubectlTask("apply", "-f",
+		_, err := k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml")
 
 		if err != nil {
@@ -112,29 +114,11 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			appOpts.WithSecret(basicAuthSecret)
 		}
 
-		overrides := map[string]string{}
-
-		pullPolicy, _ := command.Flags().GetString("pull-policy")
-		if len(pullPolicy) == 0 {
-			return fmt.Errorf("you must give a value for pull-policy such as IfNotPresent or Always")
-		}
-
-		functionPullPolicy, _ := command.Flags().GetString("function-pull-policy")
-		if len(functionPullPolicy) == 0 {
-			return fmt.Errorf("you must give a value for function-pull-policy such as IfNotPresent or Always")
-		}
-
-		logUrl, _ := command.Flags().GetString("log-provider-url")
-
 		if logUrl != "" {
 			overrides["gateway.logsProviderURL"] = logUrl
 		}
 
 		// If license file is sent, then we assume to set the --pro flag and create the secret
-		licenseFile, err := command.Flags().GetString("license-file")
-		if err != nil {
-			return err
-		}
 		if len(licenseFile) != 0 {
 			overrides["openfaasPro"] = "true"
 			secretData := []types.SecretsData{
@@ -143,27 +127,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 			proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
 			appOpts.WithSecret(proLicense)
-		}
-
-		createOperator, err := command.Flags().GetBool("operator")
-		if err != nil {
-			return err
-		}
-		clusterRole, err := command.Flags().GetBool("clusterrole")
-		if err != nil {
-			return err
-		}
-		directFunctions, err := command.Flags().GetBool("direct-functions")
-		if err != nil {
-			return err
-		}
-		autoscaler, err := command.Flags().GetBool("autoscaler")
-		if err != nil {
-			return err
-		}
-		dashboard, err := command.Flags().GetBool("dashboard")
-		if err != nil {
-			return err
 		}
 
 		if dashboard {
@@ -188,15 +151,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			appOpts.WithSecret(dashboardJWT)
 		}
 
-		gateways, _ := command.Flags().GetInt("gateways")
-		maxInflight, _ := command.Flags().GetInt("max-inflight")
-		queueWorkers, _ := command.Flags().GetInt("queue-workers")
-
-		ingressOperator, err := command.Flags().GetBool("ingress-operator")
-		if err != nil {
-			return err
-		}
-
 		overrides["clusterRole"] = strconv.FormatBool(clusterRole)
 		overrides["gateway.directFunctions"] = strconv.FormatBool(directFunctions)
 		overrides["operator.create"] = strconv.FormatBool(createOperator)
@@ -215,10 +169,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["basic_auth"] = strconv.FormatBool(basicAuthEnabled)
 
 		overrides["serviceType"] = "NodePort"
-		lb, err := command.Flags().GetBool("load-balancer")
-		if err != nil {
-			return err
-		}
+
 		if lb {
 			overrides["serviceType"] = "LoadBalancer"
 		}
@@ -234,6 +185,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			WithValuesFile(fmt.Sprintf("values%s.yaml", valuesSuffix)).
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithHelmRepo("openfaas/openfaas").
+			WithHelmUpdateRepo(updateRepo).
 			WithNamespace(namespace).
 			WithInstallNamespace(false).
 			WithWait(wait)
@@ -250,6 +202,76 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 		return nil
 	}
+
+	openfaas.PreRunE = func(cmd *cobra.Command, args []string) error {
+		_, err := cmd.Flags().GetBool("wait")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("basic-auth")
+		if err != nil {
+			return err
+		}
+
+		_, err = openfaas.Flags().GetBool("update-repo")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("operator")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("clusterrole")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("direct-functions")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("autoscaler")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("dashboard")
+		if err != nil {
+			return err
+		}
+
+		pullPolicy, _ := cmd.Flags().GetString("pull-policy")
+		if len(pullPolicy) == 0 {
+			return fmt.Errorf("you must give a value for pull-policy such as IfNotPresent or Always")
+		}
+
+		functionPullPolicy, _ := cmd.Flags().GetString("function-pull-policy")
+		if len(functionPullPolicy) == 0 {
+			return fmt.Errorf("you must give a value for function-pull-policy such as IfNotPresent or Always")
+		}
+
+		_, err = cmd.Flags().GetString("license-file")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("ingress-operator")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("load-balancer")
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
 	return openfaas
 }
 
