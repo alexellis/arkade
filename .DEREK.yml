@@ -10,7 +10,6 @@ features:
  - comments
  - pr_description_required
  - release_notes
- - hacktoberfest
 
 custom_messages:
   - name: template
