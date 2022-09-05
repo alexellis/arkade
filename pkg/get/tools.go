@@ -353,6 +353,31 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner:       "alexellis",
+			Repo:        "run-job",
+			Name:        "run-job",
+			Description: "Run a Kubernetes Job and get the logs when it's done.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+			{{.Name}}.exe
+			{{- else if eq .OS "darwin" -}}
+				{{ if eq .Arch "arm64" -}}
+				{{.Name}}-darwin-arm64
+				{{- else -}}
+				{{.Name}}-darwin
+				{{- end -}}
+			{{- else if eq .Arch "armv6l" -}}
+			{{.Name}}-armhf
+			{{- else if eq .Arch "armv7l" -}}
+			{{.Name}}-armhf
+			{{- else if eq .Arch "aarch64" -}}
+			{{.Name}}-arm64
+			{{- else -}}
+			{{.Name}}
+			{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "bitnami-labs",
 			Repo:        "sealed-secrets",
 			Name:        "kubeseal",
