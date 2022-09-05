@@ -130,21 +130,14 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		if dashboard {
-			// Private key
-			priv, _ := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-			ecder, _ := x509.MarshalECPrivateKey(priv)
-			privOut := bytes.Buffer{}
-			pem.Encode(&privOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: ecder})
-
-			// Public key
-			pub := &priv.PublicKey
-			pubder, _ := x509.MarshalPKIXPublicKey(pub)
-			pubOut := bytes.Buffer{}
-			pem.Encode(&pubOut, &pem.Block{Type: "PUBLIC KEY", Bytes: pubder})
+			privateKey, publicKey, err := generateJWTKeyPair()
+			if err != nil {
+				return fmt.Errorf("failed to create JWT key-pair: %s", err)
+			}
 
 			secretData := []types.SecretsData{
-				{Type: types.StringLiteralSecret, Key: "key", Value: privOut.String()},
-				{Type: types.StringLiteralSecret, Key: "key.pub", Value: pubOut.String()},
+				{Type: types.StringLiteralSecret, Key: "key", Value: string(privateKey)},
+				{Type: types.StringLiteralSecret, Key: "key.pub", Value: string(publicKey)},
 			}
 
 			dashboardJWT := types.NewGenericSecret("dashboard-jwt", namespace, secretData)
@@ -288,6 +281,31 @@ func getValuesSuffix(arch string) string {
 		valuesSuffix = ""
 	}
 	return valuesSuffix
+}
+
+func generateJWTKeyPair() ([]byte, []byte, error) {
+	// Private key
+	priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		return nil, nil, err
+	}
+	ecder, err := x509.MarshalECPrivateKey(priv)
+	if err != nil {
+		return nil, nil, err
+	}
+	privOut := bytes.Buffer{}
+	pem.Encode(&privOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: ecder})
+
+	// Public key
+	pub := &priv.PublicKey
+	pubder, err := x509.MarshalPKIXPublicKey(pub)
+	if err != nil {
+		return nil, nil, err
+	}
+	pubOut := bytes.Buffer{}
+	pem.Encode(&pubOut, &pem.Block{Type: "PUBLIC KEY", Bytes: pubder})
+
+	return privOut.Bytes(), pubOut.Bytes(), nil
 }
 
 const OpenFaaSInfoMsg = `# Get the faas-cli
