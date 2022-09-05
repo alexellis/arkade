@@ -1,11 +1,9 @@
 curators:
  - alexellis
- - Waterdrips
- - utsavanand2
- - yankeexe
- - dirien
  - Shikachuu
  - welteki
+ - nitishkumar71
+ - Jasstkn
 
 features:
  - dco_check
@@ -13,7 +11,6 @@ features:
  - pr_description_required
  - release_notes
  - hacktoberfest
-# - no_newbies
 
 custom_messages:
   - name: template
@@ -49,4 +46,4 @@ custom_messages:
 
            Thank you for your contribution.
 
-contributing_url: https://github.com/openfaas/faas/blob/master/CONTRIBUTING.md
+contributing_url: https://github.com/alexellis/arkade/blob/master/CONTRIBUTING.md
