@@ -575,7 +575,7 @@ There are 56 apps that you can install on your cluster.
 
 ### Catalog of CLIs
 
-| TOOL             | DESCRIPTION                                                                                                                               |
+|       TOOL       |                                                                DESCRIPTION                                                                |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
@@ -598,6 +598,7 @@ There are 56 apps that you can install on your cluster.
 | eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
+| flyctl           | Command line tools for fly.io services                                                                                                    |
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
 | gh               | GitHub’s official command line tool.                                                                                                      |
 | golangci-lint    | Go linters aggregator.                                                                                                                    |
@@ -681,7 +682,6 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-
-There are 104 tools, use `arkade get NAME` to download one.
+There are 105 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
