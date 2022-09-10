@@ -649,6 +649,7 @@ There are 56 apps that you can install on your cluster.
 | mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
 | metal            | Official Equinix Metal CLI                                                                                                                |
 | minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
+| mixctl           | A tiny TCP load-balancer.                                                                                                                 |
 | mkcert           | A simple zero-config tool to make locally trusted development certificates with any names you'd like.                                     |
 | nats             | Utility to interact with and manage NATS.                                                                                                 |
 | nats-server      | Cloud native message bus and queue server                                                                                                 |
@@ -682,6 +683,7 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 105 tools, use `arkade get NAME` to download one.
+There are 106 tools, use `arkade get NAME` to download one.
+
 
 > Note to contributors, run `arkade get --output markdown` to generate this list

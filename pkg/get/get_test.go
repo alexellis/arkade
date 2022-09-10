@@ -306,7 +306,7 @@ func Test_DownloadArkade(t *testing.T) {
 	}
 }
 
-func Test_DownloadRunJob(t *testing.T) {
+func Test_Download_RunJob(t *testing.T) {
 	tools := MakeTools()
 	name := "run-job"
 
@@ -347,6 +347,59 @@ func Test_DownloadRunJob(t *testing.T) {
 			arch:    archARM64,
 			version: "0.0.1",
 			url:     "https://github.com/alexellis/run-job/releases/download/0.0.1/run-job-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download_mixctl(t *testing.T) {
+	tools := MakeTools()
+	name := "mixctl"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl.exe"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-darwin"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-darwin-arm64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl"},
+		{os: "linux",
+			arch:    "armv6l",
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-armhf"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-armhf"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "0.0.1",
+			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
