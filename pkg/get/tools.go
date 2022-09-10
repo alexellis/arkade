@@ -131,7 +131,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 			Owner:       "kubernetes",
 			Repo:        "kubernetes",
 			Name:        "kubectl",
-			Version:     "v1.22.2",
+			Version:     "v1.24.2",
 			Description: "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 

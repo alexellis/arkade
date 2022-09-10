@@ -173,6 +173,7 @@ func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
+	kubectlVersion := "v1.24.2"
 
 	tests := []struct {
 		name    string
@@ -183,36 +184,36 @@ func Test_GetDownloadURLs(t *testing.T) {
 	}{
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/linux/amd64/kubectl",
-			version: "",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/" + kubectlVersion + "/bin/linux/amd64/kubectl",
+			version: kubectlVersion,
 			os:      "linux",
 			arch:    "x86_64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl",
-			version: "",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/" + kubectlVersion + "/bin/darwin/amd64/kubectl",
+			version: kubectlVersion,
 			os:      "darwin",
 			arch:    "x86_64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/linux/arm64/kubectl",
-			version: "v1.22.2",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/" + kubectlVersion + "/bin/linux/arm64/kubectl",
+			version: kubectlVersion,
 			os:      "linux",
 			arch:    "aarch64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/arm64/kubectl",
-			version: "v1.22.2",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/" + kubectlVersion + "/bin/darwin/arm64/kubectl",
+			version: kubectlVersion,
 			os:      "darwin",
 			arch:    archDarwinARM64,
 		},
 		{
 			name:    "kubectl",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.22.0/bin/linux/amd64/kubectl",
-			version: "v1.22.0",
+			url:     "https://storage.googleapis.com/kubernetes-release/release/" + kubectlVersion + "/bin/linux/amd64/kubectl",
+			version: kubectlVersion,
 			os:      "linux",
 			arch:    "x86_64",
 		},
