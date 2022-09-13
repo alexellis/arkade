@@ -60,6 +60,7 @@ and provides a fast and easy alternative to a package manager.`,
 
 	command.Flags().Bool("progress", true, "Display a progress bar")
 	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
+	command.Flags().Bool("matrix", false, "Output compatibility matrix")
 	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 	command.Flags().String("arch", clientArch, "CPU architecture for the tool")
@@ -67,6 +68,11 @@ and provides a fast and easy alternative to a package manager.`,
 	command.Flags().Bool("quiet", false, "Suppress most additional output")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
+		matrix, _ := command.Flags().GetBool("matrix")
+		if matrix {
+			get.CreateCompatibilityToolsTable()
+			return nil
+		}
 		if len(args) == 0 {
 			output, _ := command.Flags().GetString("output")
 
