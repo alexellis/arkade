@@ -10,7 +10,6 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 [![build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Go Report Card](https://goreportcard.com/badge/github.com/alexellis/arkade)](https://goreportcard.com/report/github.com/alexellis/arkade)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
 With over 90 CLIs and 55 apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
