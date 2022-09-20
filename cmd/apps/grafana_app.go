@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg"
@@ -12,6 +13,12 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
+
+// Note: update periodically, or set to latest if possible to avoid issues
+// such as:
+//
+// https://github.com/grafana/helm-charts/issues/1826
+const grafanaChartVersion = "6.36.1"
 
 func MakeInstallGrafana() *cobra.Command {
 	var grafana = &cobra.Command{
@@ -64,8 +71,6 @@ func MakeInstallGrafana() *cobra.Command {
 
 	grafana.RunE = func(command *cobra.Command, args []string) error {
 
-		const chartVersion = "6.24.1"
-
 		// Get all flags
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		wait, _ := command.Flags().GetBool("wait")
@@ -95,7 +100,7 @@ func MakeInstallGrafana() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("grafana/grafana").
 			WithHelmURL("https://grafana.github.io/helm-charts/").
-			WithHelmRepoVersion(chartVersion).
+			WithHelmRepoVersion(grafanaChartVersion).
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath).
