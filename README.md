@@ -190,13 +190,14 @@ arkade install system containerd \
 Run the following to see what's available `arkade system install`:
 
 ```bash
-  actions-runner Install GitHub Actions Runner
-  cni            Install CNI plugins
-  containerd     Install containerd
-  firecracker    Install Firecracker
-  go             Install Go
-  node           Install Node.js
-  prometheus     Install Prometheus
+  actions-runner  Install GitHub Actions Runner
+  cni             Install CNI plugins
+  containerd      Install containerd
+  firecracker     Install Firecracker
+  go              Install Go
+  node            Install Node.js
+  prometheus      Install Prometheus
+  tc-redirect-tap Install tc-redirect-tap
 ```
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
