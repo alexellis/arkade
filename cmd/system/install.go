@@ -28,6 +28,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallContainerd())
 	command.AddCommand(MakeInstallActionsRunner())
 	command.AddCommand(MakeInstallNode())
+	command.AddCommand(MakeInstallTCRedirectTap())
 
 	return command
 }
