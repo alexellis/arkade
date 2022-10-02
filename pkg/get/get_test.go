@@ -4988,7 +4988,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 
 func Test_DownloadAkash(t *testing.T) {
 	tools := MakeTools()
-	name := "flyctl"
+	name := "akash"
 	version := "v0.0.388"
 
 	tool := getTool(name, tools)
