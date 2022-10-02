@@ -5012,6 +5012,12 @@ func Test_DownloadAkash(t *testing.T) {
 			version: version,
 			url:     "https://github.com/ovrclk/akash/releases/download/v0.16.6/akash_0.16.6_linux_arm64.zip",
 		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/ovrclk/akash/releases/download/v0.16.6/akash_0.16.6_windows_amd64.zip",
+		},
 	}
 
 	for _, tc := range tests {
