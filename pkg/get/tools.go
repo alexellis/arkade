@@ -2856,5 +2856,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "akash",
+			Repo:        "akash",
+			Name:        "akash",
+			Description: "Command line tools for Akash Network",
+			URLTemplate: `
+				{{$os := ""}}
+				{{$arch := .Arch}}
+				{{$ext := ".tar.gz"}}
+
+				{{- if eq .OS "linux" -}}
+				{{$os = "Linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$os = "macOS"}}
+				{{- else if HasPrefix .OS "ming" -}}
+				{{$os = "Windows"}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+	
+				{{- if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}
+				`,
+		})
+	
+	
 	return tools
 }
