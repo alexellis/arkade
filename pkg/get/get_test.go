@@ -4985,3 +4985,44 @@ func Test_DownloadFlyctl(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadAkash(t *testing.T) {
+	tools := MakeTools()
+	name := "flyctl"
+	version := "v0.0.388"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/ovrclk/akash/releases/download/v0.16.6/akash_0.16.6_darwin_amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/ovrclk/akash/releases/download/v0.16.6/akash_0.16.6_linux_amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/ovrclk/akash/releases/download/v0.16.6/akash_0.16.6_linux_arm64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
