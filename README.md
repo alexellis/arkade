@@ -568,7 +568,6 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | nats-connector          | Install OpenFaaS connector for NATS                                 |
 | kyverno                 | Install Kyverno                                                     |
 | vault                   | Install Vault                                                       |
-| akash                   | Install Akash                                                       |
 
 There are 56 apps that you can install on your cluster.
 
@@ -685,7 +684,7 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 106 tools, use `arkade get NAME` to download one.
+There are 107 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
