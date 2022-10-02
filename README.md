@@ -568,6 +568,7 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | nats-connector          | Install OpenFaaS connector for NATS                                 |
 | kyverno                 | Install Kyverno                                                     |
 | vault                   | Install Vault                                                       |
+| akash                   | Install Akash                                                       |
 
 There are 56 apps that you can install on your cluster.
 
@@ -577,6 +578,7 @@ There are 56 apps that you can install on your cluster.
 
 |       TOOL       |                                                                DESCRIPTION                                                                |
 |------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| akash            | The Akash Network is a permissionless peer-to-peer marketplace for Cloud Compute similiar to EKS/GKE/AKS.  Deploy in seconds for a fraction of the cost.                                        |
 | argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
