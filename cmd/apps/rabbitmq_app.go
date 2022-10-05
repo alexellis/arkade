@@ -114,7 +114,7 @@ const RabbitmqInfoMsg = `
 # By default the "user" username is used
 # To get your password run:
 
-  export RABBITMQ_PASSWORD=$(kubectl get secret --namespace rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 --decode)
+  export RABBITMQ_PASSWORD=$(kubectl get secret --namespace rabbitmq rabbitmq -o jsonpath="{.data.rabbitmq-password}" | base64 -d)
 
 # To Access the RabbitMQ Management interface:
 
