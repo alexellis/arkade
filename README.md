@@ -20,6 +20,7 @@ With over 90 CLIs and 55 apps (charts, manifests, installers) available for Kube
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
+  - [Use arkade for GitHub Actions](#use-arkade-for-github-actions)
   - [Install System Packages](#install-system-packages)
   - [Installing apps with arkade](#installing-apps-with-arkade)
   - [Community & contributing](#community--contributing)
@@ -201,6 +202,14 @@ Run the following to see what's available `arkade system install`:
 ```
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
+
+## Use arkade for GitHub Actions
+
+arkade works well for CI, to get system-level packages or CLIs that you need.
+
+There are no special steps required, just install the binary and run the commands you see in this README file. However, a GitHub Action exists for arkade along with a few examples:
+
+See also: [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
 
 ## Validate Helm chart images from within a values.yaml file
 
