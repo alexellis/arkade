@@ -597,6 +597,7 @@ There are 56 apps that you can install on your cluster.
 | cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
+| conftest         | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | cr               | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
 | dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
@@ -644,6 +645,7 @@ There are 56 apps that you can install on your cluster.
 | kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
 | kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
 | kubecm           | Easier management of kubeconfig.                                                                                                          |
+| kubeconform      | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
 | kubectl          | Run commands against Kubernetes clusters                                                                                                  |
 | kubectx          | Faster way to switch between clusters.                                                                                                    |
 | kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |
@@ -651,6 +653,7 @@ There are 56 apps that you can install on your cluster.
 | kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
 | kubestr          | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
 | kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
+| kubeval          | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                       |
 | kumactl          | kumactl is a CLI to interact with Kuma and its data                                                                                       |
 | kustomize        | Customization of kubernetes YAML configurations                                                                                           |
 | lazygit          | A simple terminal UI for git commands.                                                                                                    |
@@ -692,7 +695,7 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 106 tools, use `arkade get NAME` to download one.
+There are 109 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list

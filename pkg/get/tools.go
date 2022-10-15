@@ -2856,5 +2856,87 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "yannh",
+			Repo:        "kubeconform",
+			Name:        "kubeconform",
+			Description: "A FAST Kubernetes manifests validator, with support for Custom Resources",
+			BinaryTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := ".tar.gz"}}
+				{{- if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+	
+				{{$arch := .Arch}}
+				{{- if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				kubeconform-{{$os}}-{{$arch}}{{$ext}}
+				`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "open-policy-agent",
+			Repo:        "conftest",
+			Name:        "conftest",
+			Description: "Write tests against structured configuration data using the Open Policy Agent Rego query language",
+			BinaryTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := "tar.gz"}}
+
+				{{$arch := .Arch}}
+				{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "Windows"}}
+				{{$ext = "zip"}}
+				{{- else if eq .OS "linux" -}}
+				{{$os = "Linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$os = "Darwin"}}
+				{{- end -}}
+
+				conftest_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+				`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "instrumenta",
+			Repo:        "kubeval",
+			Name:        "kubeval",
+			Description: "Validate your Kubernetes configuration files, supports multiple Kubernetes versions",
+			BinaryTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := "tar.gz"}}
+
+				{{$arch := .Arch}}
+				{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$arch = "arm64"}}
+				{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "Windows"}}
+				{{$ext = "zip"}}
+				{{- end -}}
+
+				kubeval-{{$os}}-{{$arch}}.{{$ext}}
+				`,
+		})
+
 	return tools
 }
