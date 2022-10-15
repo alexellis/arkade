@@ -1290,9 +1290,11 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Name:        "argocd",
 			Description: "Declarative, GitOps continuous delivery tool for Kubernetes.",
 			BinaryTemplate: `
-			{{$arch := ""}}
+			{{$arch := .Arch}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
 			{{- end -}}
 
 			{{$osStr := ""}}

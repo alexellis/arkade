@@ -1872,6 +1872,7 @@ func Test_DownloadLinkerd(t *testing.T) {
 func Test_DownloadArgocd(t *testing.T) {
 	tools := MakeTools()
 	name := "argocd"
+	version := "v2.4.14"
 
 	var tool *Tool
 	for _, target := range tools {
@@ -1882,18 +1883,30 @@ func Test_DownloadArgocd(t *testing.T) {
 	}
 
 	tests := []test{
-		{os: "mingw64_nt-10.0-18362",
+		{
+			os:      "ming",
 			arch:    arch64bit,
-			version: "v1.8.6",
-			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-windows-amd64.exe"},
-		{os: "linux",
+			version: version,
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v2.4.14/argocd-windows-amd64.exe",
+		},
+		{
+			os:      "linux",
 			arch:    arch64bit,
-			version: "v1.8.6",
-			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-linux-amd64"},
-		{os: "darwin",
+			version: version,
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v2.4.14/argocd-linux-amd64",
+		},
+		{
+			os:      "darwin",
 			arch:    arch64bit,
-			version: "v1.8.6",
-			url:     "https://github.com/argoproj/argo-cd/releases/download/v1.8.6/argocd-darwin-amd64"},
+			version: version,
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v2.4.14/argocd-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/argoproj/argo-cd/releases/download/v2.4.14/argocd-darwin-arm64",
+		},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
