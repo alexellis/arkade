@@ -644,6 +644,7 @@ There are 56 apps that you can install on your cluster.
 | kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
 | kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
 | kubecm           | Easier management of kubeconfig.                                                                                                          |
+| kubeconform      | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
 | kubectl          | Run commands against Kubernetes clusters                                                                                                  |
 | kubectx          | Faster way to switch between clusters.                                                                                                    |
 | kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |
@@ -692,7 +693,7 @@ There are 56 apps that you can install on your cluster.
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 106 tools, use `arkade get NAME` to download one.
+There are 107 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list

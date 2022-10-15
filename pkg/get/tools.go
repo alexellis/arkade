@@ -2856,5 +2856,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "yannh",
+			Repo:        "kubeconform",
+			Name:        "kubeconform",
+			Description: "A FAST Kubernetes manifests validator, with support for Custom Resources",
+			URLTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := ".tar.gz"}}
+				{{- if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+	
+				{{$arch := .Arch}}
+				{{- if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}-{{$os}}-{{$arch}}{{$ext}}
+				`,
+		})
+
 	return tools
 }
