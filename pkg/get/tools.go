@@ -555,6 +555,35 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "google",
+			Repo:        "go-containerregistry",
+			Name:        "crane",
+			Description: "crane is a tool for interacting with remote images and registries",
+			BinaryTemplate: `{{$arch := ""}}
+			{{- if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+			{{- else if eq .Arch "arm64" -}}
+				{{$arch = "arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+				{{$arch = "x86_64"}}
+			{{- else if eq .Arch "armv7l" -}}
+				{{$arch = "armv6"}}
+			{{- end -}}
+	
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "Windows"}}
+			{{- else if eq .OS "linux" -}}
+				{{$osStr = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+				{{$osStr = "Darwin"}}
+			{{- end -}}
+	
+			{{.Version}}/go-containerregistry_{{$osStr}}_{{$arch}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "digitalocean",
 			Repo:        "doctl",
 			Name:        "doctl",

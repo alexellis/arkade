@@ -600,6 +600,7 @@ There are 56 apps that you can install on your cluster.
 | conftest         | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | cr               | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
+| crane            | A tool for interacting with remote images and registries.                                                                                 |
 | dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
 | devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
