@@ -1051,6 +1051,54 @@ func Test_DownloadKustomize(t *testing.T) {
 	}
 }
 
+func Test_DownloadCrane(t *testing.T) {
+	tools := MakeTools()
+	name := "crane"
+
+	const toolVersion = "v0.11.0"
+
+	var tool *Tool
+	for _, target := range tools {
+		if name == target.Name {
+			tool = &target
+			break
+		}
+	}
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/google/go-containerregistry/releases/download/v0.11.0/go-containerregistry_Windows_x86_64.tar.gz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/google/go-containerregistry/releases/download/v0.11.0/go-containerregistry_Linux_x86_64.tar.gz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/google/go-containerregistry/releases/download/v0.11.0/go-containerregistry_Darwin_arm64.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/google/go-containerregistry/releases/download/v0.11.0/go-containerregistry_Darwin_x86_64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/google/go-containerregistry/releases/download/v0.11.0/go-containerregistry_Linux_arm64.tar.gz"},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadDigitalOcean(t *testing.T) {
 	tools := MakeTools()
 	name := "doctl"
