@@ -79,7 +79,7 @@ func MakeInstallTCRedirectTap() *cobra.Command {
 
 		fmt.Printf("Downloaded to: %s\n", outPath)
 
-		dst := fmt.Sprintf("%s/%s", installPath, filename)
+		dst := fmt.Sprintf("%s/%s", installPath, "tc-redirect-tap")
 		fmt.Printf("Copying binary to: %s\n", installPath)
 		if _, err := get.CopyFileP(outPath, dst, readWriteExecuteEveryone); err != nil {
 			return err
