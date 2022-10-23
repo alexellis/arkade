@@ -693,10 +693,11 @@ There are 56 apps that you can install on your cluster.
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
 | vagrant          | Tool for building and distributing development environments.                                                                              |
 | vault            | A tool for secrets management, encryption as a service, and privileged access management.                                                 |
+| viddy            | Modern watch command.                                                 |
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 109 tools, use `arkade get NAME` to download one.
+There are 111 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
