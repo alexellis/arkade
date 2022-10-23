@@ -2967,5 +2967,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "sachaos",
+			Repo:        "viddy",
+			Name:        "viddy",
+			Description: "A modern watch command. Time machine and pager etc.",
+			BinaryTemplate: `
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+	
+					{{$arch := .Arch}}
+					{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+					{{$arch = "arm64"}}
+					{{- end -}}
+
+					{{$osStr := ""}}
+					{{ if HasPrefix .OS "ming" -}}
+						{{$osStr = "Windows"}}
+					{{- else if eq .OS "linux" -}}
+						{{$osStr = "Linux"}}
+					{{- else if eq .OS "darwin" -}}
+						{{$osStr = "Darwin"}}
+					{{- end -}}
+
+					viddy_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}
+					`,
+		})
+
 	return tools
 }
