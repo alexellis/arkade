@@ -21,6 +21,7 @@ func MakeInstallKuma() *cobra.Command {
 	}
 
 	kuma.Flags().String("namespace", "kuma-system", "Namespace for the app")
+	kuma.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	kuma.Flags().String("control-plane-mode", "standalone", "Kuma CP modes: one of standalone,zone,global")
 	kuma.Flags().Bool("auto-scale", false, "Enable Horizontal Pod Autoscaling (requires the Metrics Server)")
@@ -87,6 +88,8 @@ func MakeInstallKuma() *cobra.Command {
 		ingress, _ := command.Flags().GetBool("ingress")
 		customFlags, _ := command.Flags().GetStringArray("set")
 
+		updateRepo, _ := kuma.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		overrides["controlPlane.mode"] = controlPlaneMode
@@ -111,6 +114,7 @@ func MakeInstallKuma() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("kuma/kuma").
 			WithHelmURL("https://kumahq.github.io/charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

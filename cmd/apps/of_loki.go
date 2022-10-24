@@ -38,6 +38,8 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 		openfaasNamespace, _ := OpenFaaSlokiApp.Flags().GetString("openfaas-namespace")
 		lokiURL, _ := OpenFaaSlokiApp.Flags().GetString("loki-url")
 
+		updateRepo, _ := OpenFaaSlokiApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 		overrides["lokiURL"] = lokiURL
 
@@ -51,6 +53,7 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("lucas/openfaas-loki").
 			WithHelmURL("https://lucasroesler.com/helm-charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

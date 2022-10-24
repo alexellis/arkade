@@ -40,6 +40,8 @@ flag and the ingress-nginx docs for more info`,
 
 		namespace, _ := command.Flags().GetString("namespace")
 
+		updateRepo, _ := nginx.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		hostMode, flagErr := command.Flags().GetBool("host-mode")
@@ -65,6 +67,7 @@ flag and the ingress-nginx docs for more info`,
 			WithNamespace(namespace).
 			WithHelmRepo("ingress-nginx/ingress-nginx").
 			WithHelmURL("https://kubernetes.github.io/ingress-nginx").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithWait(wait).
 			WithKubeconfigPath(kubeConfigPath)

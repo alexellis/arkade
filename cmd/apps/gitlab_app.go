@@ -41,6 +41,8 @@ func MakeInstallGitLab() *cobra.Command {
 		namespace, _ := cmd.Flags().GetString("namespace")
 		kubeConfigPath, _ := cmd.Flags().GetString("kubeconfig")
 
+		updateRepo, _ := gitlabApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 		overrides["global.hosts.domain"], _ = cmd.Flags().GetString("domain")
 		overrides["global.hosts.externalIP"], _ = cmd.Flags().GetString("external-ip")
@@ -76,6 +78,7 @@ func MakeInstallGitLab() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("gitlab/gitlab").
 			WithHelmURL("https://charts.gitlab.io").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

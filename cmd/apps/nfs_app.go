@@ -45,6 +45,8 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 			return fmt.Errorf("--nfs-path required")
 		}
 
+		updateRepo, _ := nfsProvisionerApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		overrides["nfs.server"] = nfsServer
@@ -60,6 +62,7 @@ func MakeInstallNfsProvisioner() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("nfs-client-provisioner/nfs-subdir-external-provisioner").
 			WithHelmURL("https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

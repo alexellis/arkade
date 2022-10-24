@@ -35,6 +35,8 @@ func MakeInstallKanister() *cobra.Command {
 		log.Println(kubeConfigPath)
 		namespace, _ := kanisterApp.Flags().GetString("namespace")
 
+		updateRepo, _ := kanisterApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
@@ -54,6 +56,7 @@ func MakeInstallKanister() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("kanister/kanister-operator").
 			WithHelmURL("https://charts.kanister.io/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

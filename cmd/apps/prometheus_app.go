@@ -42,6 +42,8 @@ func MakeInstallPrometheus() *cobra.Command {
 		installPushGateway, _ := kubePrometheusApp.Flags().GetBool("pushgateway")
 		installPrometheus, _ := kubePrometheusApp.Flags().GetBool("prometheus")
 
+		updateRepo, _ := kubePrometheusApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		if !installAlertManager {
@@ -74,6 +76,7 @@ func MakeInstallPrometheus() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("prometheus-community/prometheus").
 			WithHelmURL("https://prometheus-community.github.io/helm-charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
