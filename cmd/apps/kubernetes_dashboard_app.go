@@ -24,6 +24,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 
 	kubeDashboard.Flags().StringP("namespace", "n", "kubernetes-dashboard", "The namespace to install the chart")
 	kubeDashboard.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image.tag=v2.5.0)")
+	kubeDashboard.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	kubeDashboard.PreRunE = func(cmd *cobra.Command, args []string) error {
 		_, err := cmd.Flags().GetString("namespace")
@@ -51,6 +52,8 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 		customFlags, _ := cmd.Flags().GetStringArray("set")
 		namespace, _ := cmd.Flags().GetString("namespace")
 
+		updateRepo, _ := kubeDashboard.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
@@ -60,6 +63,7 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("kubernetes-dashboard/kubernetes-dashboard").
 			WithHelmURL("https://kubernetes.github.io/dashboard/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

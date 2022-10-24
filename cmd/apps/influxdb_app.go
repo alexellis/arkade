@@ -45,9 +45,9 @@ func MakeInstallinfluxdb() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("influxdata/influxdb").
 			WithHelmURL("https://helm.influxdata.com/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
-			WithKubeconfigPath(kubeConfigPath).
-			WithHelmUpdateRepo(updateRepo)
+			WithKubeconfigPath(kubeConfigPath)
 
 		_, err := apps.MakeInstallChart(influxdbOptions)
 		if err != nil {

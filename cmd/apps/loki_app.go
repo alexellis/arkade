@@ -36,6 +36,8 @@ func MakeInstallLoki() *cobra.Command {
 		persistence, _ := lokiApp.Flags().GetBool("persistence")
 		installGrafana, _ := lokiApp.Flags().GetBool("grafana")
 
+		updateRepo, _ := lokiApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		if installGrafana {
@@ -55,6 +57,7 @@ func MakeInstallLoki() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("grafana/loki-stack").
 			WithHelmURL("https://grafana.github.io/helm-charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

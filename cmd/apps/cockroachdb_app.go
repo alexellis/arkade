@@ -23,6 +23,7 @@ func MakeInstallCockroachdb() *cobra.Command {
 		SilenceUsage: true,
 	}
 	cockroachdb.Flags().String("namespace", "default", "Namespace for the app")
+	cockroachdb.Flags().Bool("update-repo", true, "Update the helm repo")
 	cockroachdb.Flags().Bool("persistence", false, "Use a 100Gi Persistent Volume to store data")
 
 	cockroachdb.Flags().Bool("single-node", false, "Run CockroachDB instances in standalone mode with replication disabled, so the StatefulSet does NOT FORM A CLUSTER")
@@ -51,6 +52,8 @@ func MakeInstallCockroachdb() *cobra.Command {
 			return fmt.Errorf(`CockroachDB is currently not supported on armhf architectures`)
 		}
 
+		updateRepo, _ := cockroachdb.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		if singleNode {
@@ -74,6 +77,7 @@ func MakeInstallCockroachdb() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("cockroachdb/cockroachdb").
 			WithHelmURL("https://charts.cockroachdb.com/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

@@ -52,7 +52,6 @@ func MakeInstallConfluentPlatformKafka() *cobra.Command {
 		if err != nil {
 			return err
 		}
-		appOpts.WithHelmUpdateRepo(updateRepo)
 
 		overrides := map[string]string{}
 
@@ -116,6 +115,7 @@ func MakeInstallConfluentPlatformKafka() *cobra.Command {
 			WithValuesFile("values.yaml").
 			WithHelmURL("https://confluentinc.github.io/cp-helm-charts/").
 			WithHelmRepo("confluentinc/cp-helm-charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithNamespace(namespace).
 			WithInstallNamespace(false).
 			WithWait(wait)
