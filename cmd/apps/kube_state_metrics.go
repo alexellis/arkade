@@ -27,6 +27,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 
 	kubeStateMetrics.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	kubeStateMetrics.Flags().StringArray("set", []string{}, "Set individual values in the helm chart")
+	kubeStateMetrics.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	kubeStateMetrics.RunE = func(command *cobra.Command, args []string) error {
 		wait, _ := command.Flags().GetBool("wait")
@@ -47,6 +48,8 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
 
+		updateRepo, _ := kubeStateMetrics.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 		setVals, err := kubeStateMetrics.Flags().GetStringArray("set")
 		if err != nil {
@@ -61,6 +64,7 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("prometheus-community/kube-state-metrics").
 			WithHelmURL("https://prometheus-community.github.io/helm-charts").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithWait(wait).
 			WithKubeconfigPath(kubeConfigPath)

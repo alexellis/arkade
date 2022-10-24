@@ -26,6 +26,7 @@ func MakeInstallPortainer() *cobra.Command {
 	portainer.Flags().String("namespace", "default", "Namespace for the app")
 	portainer.Flags().Bool("persistence", false, "Use a 10Gi Persistent Volume to store data")
 	portainer.Flags().String("service-type", "ClusterIP", "Service Type for the main Portainer Service; ClusterIP, NodePort or LoadBalancer")
+	portainer.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	portainer.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set tls.enabled=false)")
 
@@ -54,6 +55,8 @@ func MakeInstallPortainer() *cobra.Command {
 			return fmt.Errorf("the service-type must be one of: ClusterIP, NodePort or LoadBalancer")
 		}
 
+		updateRepo, _ := portainer.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		overrides["service.type"] = serviceType
@@ -75,6 +78,7 @@ func MakeInstallPortainer() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("portainer/portainer").
 			WithHelmURL("https://portainer.github.io/k8s/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

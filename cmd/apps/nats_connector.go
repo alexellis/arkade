@@ -29,6 +29,8 @@ func MakeInstallNATSConnector() *cobra.Command {
 
 		namespace, _ := natsConnectorApp.Flags().GetString("namespace")
 
+		updateRepo, _ := natsConnectorApp.Flags().GetBool("update-repo")
+
 		overrides := map[string]string{}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
@@ -41,6 +43,7 @@ func MakeInstallNATSConnector() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("openfaas/nats-connector").
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 

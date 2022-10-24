@@ -27,6 +27,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 	metricsServer.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 	metricsServer.Flags().StringP("tag", "t", "v0.6.1", "The tag or version of the metrics-server to install")
+	metricsServer.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -34,6 +35,8 @@ func MakeInstallMetricsServer() *cobra.Command {
 
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
+
+		updateRepo, _ := metricsServer.Flags().GetBool("update-repo")
 
 		overrides := map[string]string{}
 		overrides["args"] = `{--kubelet-insecure-tls,--kubelet-preferred-address-types=InternalIP\,ExternalIP\,Hostname}`
@@ -51,6 +54,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 			WithNamespace(namespace).
 			WithHelmRepo("metrics-server/metrics-server").
 			WithHelmURL("https://kubernetes-sigs.github.io/metrics-server").
+			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
 
