@@ -2995,5 +2995,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "temporalio",
+			Repo:        "tctl",
+			Name:        "tctl",
+			Description: "Temporal CLI.",
+			BinaryTemplate: `
+						{{$os := .OS}}
+						{{$arch := .Arch}}
+						{{$ext := "tar.gz"}}
+
+						{{$arch := .Arch}}
+						{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+						{{$arch = "arm64"}}
+						{{- else if eq .Arch "x86_64" -}}
+						{{ $arch = "amd64" }}
+						{{- end -}}
+
+						{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = "zip"}}
+						{{- end -}}
+
+						tctl_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+						`,
+		})
+
 	return tools
 }
