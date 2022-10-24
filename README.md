@@ -600,7 +600,7 @@ There are 56 apps that you can install on your cluster.
 | conftest         | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | cr               | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
-| crane            | A tool for interacting with remote images and registries.                                                                                 |
+| crane            | crane is a tool for interacting with remote images and registries                                                                         |
 | dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
 | devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | dive             | A tool for exploring each layer in a docker image                                                                                         |
@@ -684,6 +684,7 @@ There are 56 apps that you can install on your cluster.
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
+| tctl             | Temporal CLI.                                                                                                                             |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
 | terragrunt       | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
 | terrascan        | Detect compliance and security violations across Infrastructure as Code.                                                                  |
@@ -693,11 +694,11 @@ There are 56 apps that you can install on your cluster.
 | trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
 | vagrant          | Tool for building and distributing development environments.                                                                              |
 | vault            | A tool for secrets management, encryption as a service, and privileged access management.                                                 |
-| viddy            | Modern watch command.                                                 |
 | vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
+| viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 111 tools, use `arkade get NAME` to download one.
+There are 112 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
