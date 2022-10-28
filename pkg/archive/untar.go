@@ -2,7 +2,7 @@ package archive
 
 import (
 	"archive/tar"
-	"compress/gzip"
+	gzipc "compress/gzip"
 	"fmt"
 	"io"
 	"log"
@@ -13,18 +13,18 @@ import (
 	"time"
 )
 
-// Untar reads the gzip-compressed tar file from r and writes it into dir.
+// Untar reads the (gzip-compressed) tar file from r and writes it into dir.
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 //
 // AE: Edited on 2019-10-11 to remove support for nested folders when un-taring
 // so that all files are placed in the same target directory
-func Untar(r io.Reader, dir string, quiet bool) error {
-	return untar(r, dir, quiet)
+func Untar(r io.Reader, dir string, gzip bool, quiet bool) error {
+	return untar(r, dir, gzip, quiet)
 }
 
-func untar(r io.Reader, dir string, quiet bool) (err error) {
+func untar(r io.Reader, dir string, gzip bool, quiet bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
@@ -40,11 +40,15 @@ func untar(r io.Reader, dir string, quiet bool) (err error) {
 		}
 
 	}()
-	zr, err := gzip.NewReader(r)
-	if err != nil {
-		return fmt.Errorf("requires gzip-compressed body: %v", err)
+
+	if gzip {
+		r, err = gzipc.NewReader(r)
+		if err != nil {
+			return fmt.Errorf("requires gzip-compressed body: %v", err)
+		}
 	}
-	tr := tar.NewReader(zr)
+
+	tr := tar.NewReader(r)
 	loggedChtimesError := false
 	for {
 		f, err := tr.Next()
