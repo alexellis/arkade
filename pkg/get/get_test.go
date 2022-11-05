@@ -5286,3 +5286,32 @@ func Test_DownloadTctl(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadFirectl(t *testing.T) {
+	tools := MakeTools()
+	name := "firectl"
+	version := "v0.2.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/firecracker-microvm/firectl/releases/download/v0.2.0/firectl-v0.2.0",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}

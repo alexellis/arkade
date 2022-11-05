@@ -3024,5 +3024,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:          "firecracker-microvm",
+			Repo:           "firectl",
+			Name:           "firectl",
+			Description:    "Command-line tool that lets you run arbitrary Firecracker MicroVMs",
+			BinaryTemplate: `firectl-{{.Version}}`,
+		})
+
 	return tools
 }
