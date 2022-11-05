@@ -608,6 +608,7 @@ There are 56 apps that you can install on your cluster.
 | doctl            | Official command line interface for the DigitalOcean API.                                                                                 |
 | eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
 | faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
+| firectl          | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                        |
 | flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | flyctl           | Command line tools for fly.io services                                                                                                    |
 | fzf              | General-purpose command-line fuzzy finder                                                                                                 |
@@ -698,7 +699,7 @@ There are 56 apps that you can install on your cluster.
 | viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 112 tools, use `arkade get NAME` to download one.
+There are 113 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
