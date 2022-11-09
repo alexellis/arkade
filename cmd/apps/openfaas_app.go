@@ -157,7 +157,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
 		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
 		overrides["autoscaler.enabled"] = strconv.FormatBool(autoscaler)
-		overrides["dashboard.enabled"] = strconv.FormatBool(autoscaler)
+		overrides["dashboard.enabled"] = strconv.FormatBool(dashboard)
 		overrides["dashboard.publicURL"] = "http://127.0.0.1:8080"
 
 		// the value in the template is "basic_auth" not the more usual basicAuth
