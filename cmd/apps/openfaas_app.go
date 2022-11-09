@@ -46,6 +46,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
 	openfaas.Flags().Bool("direct-functions", false, "Invoke functions directly from the gateway, or load-balance via endpoint IPs when set to false")
 	openfaas.Flags().Bool("autoscaler", false, "Deploy OpenFaaS with the autoscaler enabled")
+	openfaas.Flags().Bool("jetstream", false, "Deploy OpenFaaS with jetstream queue mode")
 	openfaas.Flags().Bool("dashboard", false, "Deploy OpenFaaS with the dashboard enabled")
 
 	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
@@ -76,6 +77,7 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		clusterRole, _ := command.Flags().GetBool("clusterrole")
 		directFunctions, _ := command.Flags().GetBool("direct-functions")
 		autoscaler, _ := command.Flags().GetBool("autoscaler")
+		jetstream, _ := command.Flags().GetBool("jetstream")
 		dashboard, _ := command.Flags().GetBool("dashboard")
 		gateways, _ := command.Flags().GetInt("gateways")
 		maxInflight, _ := command.Flags().GetInt("max-inflight")
@@ -167,6 +169,10 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			overrides["serviceType"] = "LoadBalancer"
 		}
 
+		if jetstream {
+			overrides["queueMode"] = "jetstream"
+		}
+
 		customFlags, _ := command.Flags().GetStringArray("set")
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
@@ -228,6 +234,11 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		_, err = cmd.Flags().GetBool("autoscaler")
+		if err != nil {
+			return err
+		}
+
+		_, err = cmd.Flags().GetBool("jetstream")
 		if err != nil {
 			return err
 		}
