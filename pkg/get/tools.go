@@ -3158,5 +3158,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "kubernetes-sigs",
+			Repo:        "cluster-api-provider-aws",
+			Name:        "clusterawsadm",
+			Description: "Kubernetes Cluster API Provider AWS Management Utility",
+			BinaryTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := ""}}
+
+				{{- if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{$ext = ".exe"}}
+				{{- end -}}
+
+
+				clusterawsadm-{{$os}}-{{$arch}}{{$ext}}
+				`,
+		})
+
 	return tools
 }

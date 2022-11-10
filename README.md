@@ -684,6 +684,7 @@ There are 56 apps that you can install on your cluster.
 | caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
 | cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | civo             | CLI for interacting with your Civo resources.                                                                                             |
+| clusterawsadm    | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
 | clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
 | conftest         | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
@@ -791,7 +792,7 @@ There are 56 apps that you can install on your cluster.
 | viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 117 tools, use `arkade get NAME` to download one.
+There are 118 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
