@@ -1185,6 +1185,36 @@ func Test_DownloadEKSCTL(t *testing.T) {
 	}
 }
 
+func Test_DownloadEKSCTLANYWHERE(t *testing.T) {
+	tools := MakeTools()
+	name := "eksctl-anywhere"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.12.1"
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/aws/eks-anywhere/releases/download/v0.12.1/eksctl-anywhere-v0.12.1-linux-amd64.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/aws/eks-anywhere/releases/download/v0.12.1/eksctl-anywhere-v0.12.1-darwin-amd64.tar.gz"},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadK9s(t *testing.T) {
 	tools := MakeTools()
 	name := "k9s"

@@ -649,6 +649,24 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "aws",
+			Repo:        "eks-anywhere",
+			Name:        "eksctl-anywhere",
+			Description: "Run Amazon EKS on your own infrastructure",
+			BinaryTemplate: `
+			{{$os := .OS}}
+			{{$ext := "tar.gz"}}
+			{{$arch := .Arch}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- end -}}
+
+			{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
+			`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "derailed",
 			Repo:        "k9s",
 			Name:        "k9s",
