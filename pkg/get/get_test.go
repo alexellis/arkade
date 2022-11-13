@@ -5315,3 +5315,57 @@ func Test_DownloadFirectl(t *testing.T) {
 		})
 	}
 }
+
+func Test_GrafanaAgent(t *testing.T) {
+	tools := MakeTools()
+	name := "grafana-agent"
+	version := "v0.29.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-linux-amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-linux-arm64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-darwin-amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-darwin-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-windows-amd64.exe.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			fmt.Println(tc)
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
