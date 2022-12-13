@@ -3531,7 +3531,12 @@ func Test_DownloadHostcl(t *testing.T) {
 			version: version,
 			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_macOS_64-bit.tar.gz",
 		},
-
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_macOS_arm64.tar.gz",
+		},
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
@@ -3692,6 +3697,12 @@ func Test_DownloadSOPS(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    "arm64",
 			version: version,
 			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
 		},
