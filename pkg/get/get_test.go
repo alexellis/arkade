@@ -3508,7 +3508,7 @@ func Test_DownloadvCluster(t *testing.T) {
 func Test_DownloadHostcl(t *testing.T) {
 	tools := MakeTools()
 	name := "hostctl"
-	version := "v1.1.1"
+	version := "v1.1.3"
 
 	var tool *Tool
 	for _, target := range tools {
@@ -3523,26 +3523,37 @@ func Test_DownloadHostcl(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_64-bit.tar.gz",
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_linux_64-bit.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_macOS_64-bit.tar.gz",
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_macOS_64-bit.tar.gz",
 		},
-
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_macOS_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    "arm64",
+			version: version,
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_macOS_arm64.tar.gz",
+		},
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_windows_64-bit.zip",
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_windows_64-bit.zip",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.1/hostctl_1.1.1_linux_arm64.tar.gz",
+			url:     "https://github.com/guumaster/hostctl/releases/download/v1.1.3/hostctl_1.1.3_linux_arm64.tar.gz",
 		},
 	}
 
@@ -3695,7 +3706,6 @@ func Test_DownloadSOPS(t *testing.T) {
 			version: version,
 			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
 		},
-
 		{
 			os:      "ming",
 			arch:    arch64bit,
