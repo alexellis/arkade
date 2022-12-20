@@ -190,7 +190,7 @@ arkade install system containerd \
 
 Run the following to see what's available `arkade system install`:
 
-```bash
+```
   actions-runner  Install GitHub Actions Runner
   cni             Install CNI plugins
   containerd      Install containerd
