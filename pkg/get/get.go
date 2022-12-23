@@ -3,8 +3,10 @@ package get
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -21,6 +23,11 @@ var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "ar
 
 // githubTimeout expanded from the original 5 seconds due to #693
 var githubTimeout = time.Second * 10
+
+type HashiCorpProductRelease struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+}
 
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
@@ -126,20 +133,34 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 
 func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
-	if len(version) == 0 &&
-		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
-		if !quiet {
-			log.Printf("Looking up version for %s", tool.Name)
-		}
+	if len(version) == 0 {
+		if len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/") {
+			if !quiet {
+				log.Printf("Looking up version for %s on GitHub", tool.Name)
+			}
 
-		v, err := FindGitHubRelease(tool.Owner, tool.Repo)
-		if err != nil {
-			return "", err
+			v, err := FindGitHubRelease(tool.Owner, tool.Repo)
+			if err != nil {
+				return "", err
+			}
+			if !quiet {
+				log.Printf("Found: %s", v)
+			}
+			version = v
+		} else if strings.Contains(tool.URLTemplate, "https://releases.hashicorp.com") {
+			if !quiet {
+				log.Printf("Looking up version for %s on HashiCorp", tool.Name)
+			}
+
+			v, err := FindHashiCorpRelease(tool.Name)
+			if err != nil {
+				return "", err
+			}
+			if !quiet {
+				log.Printf("Found: %s", v)
+			}
+			version = v
 		}
-		if !quiet {
-			log.Printf("Found: %s", v)
-		}
-		version = v
 	}
 
 	if len(tool.URLTemplate) > 0 {
@@ -211,6 +232,38 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 
 	version := loc[strings.LastIndex(loc, "/")+1:]
 	return version, nil
+}
+
+func FindHashiCorpRelease(name string) (string, error) {
+	// https://releases.hashicorp.com/docs/api/v1/#operation/listReleasesV1
+	url := fmt.Sprintf("https://api.releases.hashicorp.com/v1/releases/%s?license_class=oss", name)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code: %d", res.StatusCode)
+	}
+	if res.Body == nil {
+		return "", fmt.Errorf("unexpected empty body")
+	}
+
+	defer res.Body.Close()
+	body, _ := io.ReadAll(res.Body)
+
+	var releases []HashiCorpProductRelease
+	if err = json.Unmarshal(body, &releases); err != nil {
+		return "", err
+	}
+
+	// Results are ordered by release creation time from newest to oldest
+	return releases[0].Version, nil
 }
 
 func getBinaryURL(owner, repo, version, downloadName string) string {
