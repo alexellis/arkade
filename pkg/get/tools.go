@@ -3083,5 +3083,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "scaleway",
+			Repo:        "scaleway-cli",
+			Name:        "scaleway-cli",
+			Description: "Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.",
+			BinaryTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := ""}}
+	
+							{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+							{{$arch = "arm64"}}
+							{{- else if eq .Arch "x86_64" -}}
+							{{ $arch = "amd64" }}
+							{{- end -}}
+	
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = ".exe"}}
+							{{- end -}}
+							scaleway-cli_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}
+							`,
+		})
 	return tools
 }

@@ -684,6 +684,7 @@ There are 56 apps that you can install on your cluster.
 | rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
 | rpk              | Kafka compatible streaming platform for mission critical workloads.                                                                       |
 | run-job          | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
+| scaleway-cli     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
@@ -701,7 +702,7 @@ There are 56 apps that you can install on your cluster.
 | viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 114 tools, use `arkade get NAME` to download one.
+There are 115 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
