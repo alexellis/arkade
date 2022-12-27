@@ -212,9 +212,64 @@ There are no special steps required, just install the binary and run the command
 
 See also: [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
 
+## Upgrade Helm chart images from within a values.yaml file
+
+With the command `arkade chart upgrade` you can upgrade the image tags of a Helm chart from within a values.yaml file to the latest available semantically versioned image.
+
+Original YAML file:
+
+```yaml
+stan:
+  # Image used for nats deployment when using async with NATS-Streaming.
+  image: nats-streaming:0.24.6
+```
+
+Running the command with `--verbose` prints the upgraded tags to stderr, allowing the output to stdout to be piped to a file.
+
+```bash
+arkade chart upgrade -f \
+  ~/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yaml \
+  --verbose
+
+2023/01/03 10:12:47 Verifying images in: /home/alex/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yaml
+2023/01/03 10:12:47 Found 18 images
+2023/01/03 10:12:48 [natsio/prometheus-nats-exporter] 0.8.0 => 0.10.1
+2023/01/03 10:12:50 [nats-streaming] 0.24.6 => 0.25.2
+2023/01/03 10:12:52 [prom/prometheus] v2.38.0 => 2.41.0
+2023/01/03 10:12:54 [prom/alertmanager] v0.24.0 => 0.25.0
+2023/01/03 10:12:54 [nats] 2.9.2 => 2.9.10
+```
+
+Updated YAML file printed to console:
+
+```yaml
+stan:
+  # Image used for nats deployment when using async with NATS-Streaming.
+  image: nats-streaming:0.25.2
+```
+
+Write the updated image tags back to the file:
+
+```bash
+arkade chart upgrade -f \
+  ~/go/src/github.com/openfaas/faasd/docker-compose.yaml \
+  --write
+```
+
+Supported:
+
+* `image:` - at the top level
+* `component.image:` i.e. one level of nesting
+* Docker Hub and GitHub Container Registry
+
+Not supported yet:
+* Custom strings that don't match the word "image": `clientImage: `
+* Split fields for the image and tag name i.e. `image.name` and `image.tag`
+* Third-level nesting `openfaas.gateway.image`
+
 ## Validate Helm chart images from within a values.yaml file
 
-The `arkade chart validate` command validates that all images specified are accessible on a remote registry and takes a values.yaml file as its input.
+The `arkade chart verify` command validates that all images specified are accessible on a remote registry and takes a values.yaml file as its input.
 
 Successful checking of a chart with `image: ghcr.io/openfaas/cron-connector:TAG`:
 

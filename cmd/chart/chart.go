@@ -25,6 +25,7 @@ func MakeChart() *cobra.Command {
 	}
 
 	command.AddCommand(MakeVerify())
+	command.AddCommand(MakeUpgrade())
 
 	return command
 }
