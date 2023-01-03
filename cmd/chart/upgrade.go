@@ -106,6 +106,10 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 
 			if latestTag != tag {
 				updated++
+				// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
+				if strings.HasPrefix(tag, "v") {
+					latestTag = "v" + latestTag
+				}
 				filtered[k] = fmt.Sprintf("%s:%s", imageName, latestTag)
 				if verbose {
 					log.Printf("[%s] %s => %s", imageName, tag, latestTag)
