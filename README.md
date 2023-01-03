@@ -29,17 +29,15 @@ With over 90 CLIs and 55 apps (charts, manifests, installers) available for Kube
   - [FAQ](#faq)
 
 
-## Help fund arkade 👋
+## Support arkade 👋
 
-<a href="https://github.com/sponsors/alexellis/">Alex</a> made this project open source and free, so everyone can benefit from it, including you.
+[Alex](https://github.com/sponsors/alexellis/) Arkade is built to save you time at work so you can focus and get productive quickly.
 
-The project is funded through <a href="https://github.com/sponsors/alexellis/">GitHub Sponsors</a>, and you can join today.
+You can support [Alex via GitHub Sponsors](https://github.com/sponsors/alexellis/") or get a copy of his eBook on Go so you can learn how to build tools like arkade for yourself.
 
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
+Buy a copy of Alex's best selling eBook on Go:
 
-Which tier or option is right for you? [Find out now](https://github.com/sponsors/alexellis/)
+[![Buy Everyday Go](https://public-files.gumroad.com/7j27fj7c5xqxm3f9lyxj1pg8oa1w)](https://openfaas.gumroad.com/l/everyday-golang)
 
 ## Should you try arkade?
 
