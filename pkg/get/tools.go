@@ -50,6 +50,7 @@ func MakeTools() Tools {
 			Owner:       "helm",
 			Repo:        "helm",
 			Name:        "helm",
+			Version:     "v3.10.3",
 			Description: "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `{{$arch := "amd64"}}
 
