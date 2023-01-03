@@ -40,6 +40,9 @@ type Tool struct {
 	// if any only if only BinaryTemplate is specified.
 	Version string
 
+	// Bespoke approach for finding version when none is set.
+	VersionStrategy string
+
 	// Description of what the tool is used for.
 	Description string
 
@@ -127,7 +130,9 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
 	if len(version) == 0 &&
-		(len(tool.URLTemplate) == 0 || strings.Contains(tool.URLTemplate, "https://github.com/")) {
+		(len(tool.URLTemplate) == 0 ||
+			strings.Contains(tool.URLTemplate, "https://github.com/") ||
+			tool.VersionStrategy == "github") {
 		if !quiet {
 			log.Printf("Looking up version for %s", tool.Name)
 		}
