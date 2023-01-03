@@ -20,7 +20,8 @@ With over 90 CLIs and 55 apps (charts, manifests, installers) available for Kube
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
-  - [Use arkade for GitHub Actions](#use-arkade-for-github-actions)
+  - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
+  - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
   - [Install System Packages](#install-system-packages)
   - [Installing apps with arkade](#installing-apps-with-arkade)
   - [Community & contributing](#community--contributing)
@@ -204,15 +205,47 @@ Run the following to see what's available `arkade system install`:
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
 
-## Use arkade for GitHub Actions
+## Install CLIs during CI with GitHub Actions
 
-arkade works well for CI, to get system-level packages or CLIs that you need.
+There are two GitHub Actions available for arkade
 
-There are no special steps required, just install the binary and run the commands you see in this README file. However, a GitHub Action exists for arkade along with a few examples:
+* [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
 
-See also: [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
+```yaml
+    - uses: alexellis/setup-arkade@v2
+    - name: Install kubectl & Helm
+      run: arkade get 
+        kubectl \
+        helm
+```
 
-## Upgrade Helm chart images from within a values.yaml file
+* [alexellis/arkade-get@master](https://github.com/alexellis/arkade-get)
+
+Example downloading faas-cli (specific version) and kubectl (latest), putting them into the PATH automatically, and executing one of them in a subsequent step.
+
+```yaml
+    - uses: alexellis/setup-arkade@v2
+    - uses: alexellis/arkade-get@master
+      with:
+        kubectl: latest
+        faas-cli: 0.14.10
+    - name: check for faas-cli
+      run: |
+        faas-cli version
+```
+
+## Verify and upgrade images in Helm charts
+
+There are two commands built into arkade designed for software vendors and open source maintainers.
+
+* `arkade helm chart upgrade` - run this command to scan for container images and update them automatically by querying a remote registry. 
+* `arkade helm chart verify` - after changing the contents of a values.yaml or docker-compose.yaml file, this command will check each image exists on a remote registry
+
+Whilst end-users may use a GitOps-style tool to deploy charts and update their versions, maintainers need to make conscious decisions about when and which images to change within a Helm chart or compose file.
+
+These two features are used by OpenFaaS Ltd on projects and products like OpenFaaS CE/Pro (Serverless platform) and faasd (docker-compose file). 
+
+### Upgrade images within a Helm chart
 
 With the command `arkade chart upgrade` you can upgrade the image tags of a Helm chart from within a values.yaml file to the latest available semantically versioned image.
 
@@ -267,7 +300,7 @@ Not supported yet:
 * Split fields for the image and tag name i.e. `image.name` and `image.tag`
 * Third-level nesting `openfaas.gateway.image`
 
-## Validate Helm chart images from within a values.yaml file
+## Verify images within a helm chart
 
 The `arkade chart verify` command validates that all images specified are accessible on a remote registry and takes a values.yaml file as its input.
 
