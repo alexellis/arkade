@@ -47,11 +47,11 @@ func MakeTools() Tools {
 
 	tools = append(tools,
 		Tool{
-			Owner:       "helm",
-			Repo:        "helm",
-			Name:        "helm",
-			Version:     "v3.10.3",
-			Description: "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
+			Owner:           "helm",
+			Repo:            "helm",
+			Name:            "helm",
+			VersionStrategy: "github",
+			Description:     "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `{{$arch := "amd64"}}
 
 {{- if eq .Arch "armv7l" -}}
