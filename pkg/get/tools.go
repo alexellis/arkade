@@ -1139,7 +1139,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 	{{$os = "windows"}}
 	{{- end -}}
 
-	{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
+	{{.Version}}/{{.Name}}_v{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
