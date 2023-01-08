@@ -3312,38 +3312,56 @@ func Test_DownloadKrew(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_amd64.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-darwin_amd64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-darwin_arm64.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-darwin_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_arm64.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-linux_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_amd64.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-linux_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-linux_arm.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-linux_arm.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
-			version: "v0.4.2",
-			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.2/krew-windows_amd64.tar.gz`,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-windows_amd64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archDarwinARM64,
+			version: "v0.4.3",
+			url:     `https://github.com/kubernetes-sigs/krew/releases/download/v0.4.3/krew-darwin_arm64.tar.gz`,
 		},
 	}
 
@@ -3354,7 +3372,7 @@ func Test_DownloadKrew(t *testing.T) {
 				t.Fatal(err)
 			}
 			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
+				t.Errorf("want: %s for %s on %s, got: %s", tc.url, tc.os, tc.arch, got)
 			}
 		})
 	}

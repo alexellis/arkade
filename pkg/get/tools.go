@@ -1022,13 +1022,13 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{$osStr = "linux_arm64"}}
 			{{- end -}}
 			{{- else if eq .OS "darwin" -}}
-			{{-  if eq .Arch "aarch64" -}}
+			{{-  if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{$osStr = "darwin_arm64"}}
 			{{- else if eq .Arch "x86_64" -}}
 			{{$osStr = "darwin_amd64"}}
 			{{- end -}}
 			{{ else if HasPrefix .OS "ming" -}}
-			{{-  if eq .Arch "aarch64" -}}
+			{{-  if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{$osStr = "darwin_arm64"}}
 			{{- else if eq .Arch "x86_64" -}}
 			{{$osStr ="windows_amd64"}}
@@ -1046,13 +1046,13 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{$osStr = "linux_arm64"}}
 			{{- end -}}
 			{{- else if eq .OS "darwin" -}}
-			{{-  if eq .Arch "aarch64" -}}
+			{{-  if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{$osStr = "darwin_arm64"}}
 			{{- else if eq .Arch "x86_64" -}}
 			{{$osStr = "darwin_amd64"}}
 			{{- end -}}
 			{{ else if HasPrefix .OS "ming" -}}
-			{{-  if eq .Arch "aarch64" -}}
+			{{-  if  or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{$osStr = "darwin_arm64"}}
 			{{- else if eq .Arch "x86_64" -}}
 			{{$osStr ="windows_amd64"}}
