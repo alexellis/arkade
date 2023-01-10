@@ -1028,9 +1028,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{$osStr = "darwin_amd64"}}
 			{{- end -}}
 			{{ else if HasPrefix .OS "ming" -}}
-			{{-  if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
-			{{$osStr = "darwin_arm64"}}
-			{{- else if eq .Arch "x86_64" -}}
+			{{- if eq .Arch "x86_64" -}}
 			{{$osStr ="windows_amd64"}}
 			{{- end -}}
 			{{- end -}}
@@ -1052,9 +1050,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{$osStr = "darwin_amd64"}}
 			{{- end -}}
 			{{ else if HasPrefix .OS "ming" -}}
-			{{-  if  or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
-			{{$osStr = "darwin_arm64"}}
-			{{- else if eq .Arch "x86_64" -}}
+			{{-  if eq .Arch "x86_64" -}}
 			{{$osStr ="windows_amd64"}}
 			{{- end -}}
 			{{- end -}}
