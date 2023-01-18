@@ -57,7 +57,7 @@ Or the Open Source Docker registry https://github.com/distribution/distribution`
 		}
 		namespace, _ := command.Flags().GetString("namespace")
 		if namespace != "default" {
-			return fmt.Errorf(`to override the "default", install via tiller`)
+			return fmt.Errorf(`to override the "default", install via helm directly`)
 		}
 
 		outputFile, _ := command.Flags().GetString("write-file")
