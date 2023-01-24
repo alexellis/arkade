@@ -22,7 +22,7 @@ import (
 const (
 	// A default Istio version, get the latest from:
 	// https://github.com/istio/istio/releases/latest
-	istioVer = "1.11.4"
+	istioVer = "1.16.1"
 )
 
 func MakeInstallIstio() *cobra.Command {
@@ -33,6 +33,7 @@ func MakeInstallIstio() *cobra.Command {
 		Example:      `  arkade install istio --loadbalancer`,
 		SilenceUsage: true,
 	}
+
 	istio.Flags().StringP("version", "v", istioVer, "Specify a version of Istio")
 	istio.Flags().String("namespace", "default", "Namespace for the app")
 	istio.Flags().String("istio-namespace", "istio-system", "Namespace for the app")
@@ -101,7 +102,7 @@ func MakeInstallIstio() *cobra.Command {
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if suffix := getValuesSuffix(arch); suffix == "-armhf" {
-			return fmt.Errorf(`Istio is currently not supported on armhf architectures`)
+			return fmt.Errorf(`istio is currently not supported on armhf architectures`)
 		}
 
 		userPath, err := config.InitUserDir()
