@@ -773,6 +773,7 @@ There are 56 apps that you can install on your cluster.
 | scaleway-cli     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
 | sops             | Simple and flexible tool for managing secrets                                                                                             |
 | stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
+| syft             | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
 | talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
 | tctl             | Temporal CLI.                                                                                                                             |
 | terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
@@ -788,7 +789,7 @@ There are 56 apps that you can install on your cluster.
 | viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 115 tools, use `arkade get NAME` to download one.
+There are 116 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
