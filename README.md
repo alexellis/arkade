@@ -704,6 +704,7 @@ There are 56 apps that you can install on your cluster.
 | gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
 | goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
 | grafana-agent    | Grafana Agent is a telemetry collector for sending metrics, logs, and trace data to the opinionated Grafana observability stack.          |
+| grype            | A vulnerability scanner for container images and filesystems                                                                              |
 | hadolint         | A smarter Dockerfile linter that helps you build best practice Docker images                                                              |
 | helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
 | helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
@@ -789,7 +790,7 @@ There are 56 apps that you can install on your cluster.
 | viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
 | waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | yq               | Portable command-line YAML processor.                                                                                                     |
-There are 116 tools, use `arkade get NAME` to download one.
+There are 117 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
