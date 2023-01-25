@@ -244,7 +244,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
-			Owner:       "loft-sh",
+			Owner:       "devspace-sh",
 			Repo:        "devspace",
 			Name:        "devspace",
 			Description: "Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.",
