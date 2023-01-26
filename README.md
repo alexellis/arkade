@@ -33,11 +33,12 @@ With over 100 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
 
 [Alex](https://github.com/sponsors/alexellis/) Arkade is built to save you time at work so you can focus and get productive quickly.
 
-You can support [Alex via GitHub Sponsors](https://github.com/sponsors/alexellis/") or get a copy of his eBook on Go so you can learn how to build tools like arkade for yourself.
+You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/").
 
-Buy a copy of Alex's best selling eBook on Go:
+Or get a copy of his eBook on Go so you can learn how to build tools like k3sup, arkade and OpenFaaS for yourself:
 
-[![Buy Everyday Go](https://public-files.gumroad.com/7j27fj7c5xqxm3f9lyxj1pg8oa1w)](https://openfaas.gumroad.com/l/everyday-golang)
+<a href="https://openfaas.gumroad.com/l/everyday-golang">
+<img src="https://public-files.gumroad.com/7j27fj7c5xqxm3f9lyxj1pg8oa1w" alt="Buy Everyday Go" width="50%"></a>
 
 ## Should you try arkade?
 
