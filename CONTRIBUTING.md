@@ -83,7 +83,7 @@ In the unit tests always pin an exact version and write a test case for that ver
 You can try different architectures and OSes with `arkade get` via `--arch` and `--os` flags, to try out arm64 binaries
 for example.
 
-Please always test your tools manually (`hack/test-tool.sh`) and with the end-to-end test tool (`make e2e`).
+Please always test your tools manually (`hack/test-tool.sh`) and with the end-to-end test tool (`make e2e`). Add the output of these commands to the PR description.
 
 **Available variables in the `URLTemplate`:**
 
