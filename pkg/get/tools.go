@@ -654,23 +654,25 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:        "k9s",
 			Description: "Provides a terminal UI to interact with your Kubernetes clusters.",
 			BinaryTemplate: `
-		{{$osStr := ""}}
+		{{$os := "" }}
 		{{ if HasPrefix .OS "ming" -}}
-		{{$osStr = "Windows"}}
+		{{$os = "Windows"}}
 		{{- else if eq .OS "linux" -}}
-		{{$osStr = "Linux"}}
+		{{$os = "Linux"}}
 		{{- else if eq .OS "darwin" -}}
-		{{$osStr = "Darwin"}}
+		{{$os = "Darwin"}}
 		{{- end -}}
 
-		{{$archStr := .Arch}}
-		{{- if eq .Arch "armv7l" -}}
-		{{$archStr = "arm"}}
-		{{- else if eq .Arch "aarch64" -}}
-		{{$archStr = "arm64"}}
+		{{$arch := .Arch}}
+		{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+		{{$arch = "arm64"}}
+		{{- else if eq .Arch "x86_64" -}}
+		{{ $arch = "amd64" }}
+		{{- else if eq .Arch "armv7l" -}}
+		{{$arch = "arm"}}
 		{{- end -}}
 
-		{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+		{{.Name}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -2905,7 +2907,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$arch = "arm64"}}
 				{{- end -}}
 
-				kubeconform-{{$os}}-{{$arch}}{{$ext}}
+				{{.Name}}-{{$os}}-{{$arch}}{{$ext}}
 				`,
 		})
 
@@ -2934,7 +2936,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$os = "Darwin"}}
 				{{- end -}}
 
-				conftest_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
 				`,
 		})
 
@@ -2961,7 +2963,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = "zip"}}
 				{{- end -}}
 
-				kubeval-{{$os}}-{{$arch}}.{{$ext}}
+				{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}
 				`,
 		})
 
@@ -2989,7 +2991,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$osStr = "Darwin"}}
 					{{- end -}}
 
-					viddy_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}
+					{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}
 					`,
 		})
 
@@ -3016,7 +3018,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$ext = "zip"}}
 						{{- end -}}
 
-						tctl_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+						{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
 
@@ -3026,7 +3028,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Repo:           "firectl",
 			Name:           "firectl",
 			Description:    "Command-line tool that lets you run arbitrary Firecracker MicroVMs",
-			BinaryTemplate: `firectl-{{.Version}}`,
+			BinaryTemplate: `{{.Name}}-{{.Version}}`,
 		})
 
 	tools = append(tools,
@@ -3100,7 +3102,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$os = "windows"}}
 							{{$ext = ".exe"}}
 							{{- end -}}
-							scaleway-cli_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}
+							{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}
 							`,
 		})
 
@@ -3127,7 +3129,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = "zip"}}
 				{{- end -}}
 
-				syft_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
 				`,
 		})
 
@@ -3154,7 +3156,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = "zip"}}
 				{{- end -}}
 
-				grype_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
 				`,
 		})
 
