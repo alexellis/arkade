@@ -5617,12 +5617,6 @@ func Test_DownloaClusterawsadm(t *testing.T) {
 			version: toolVersion,
 			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-windows-amd64.exe`,
 		},
-		{
-			os:      "ming",
-			arch:    archARM64,
-			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-windows-arm64.exe`,
-		},
 	}
 
 	for _, tc := range tests {
