@@ -672,128 +672,128 @@ There are 56 apps that you can install on your cluster.
 
 ### Catalog of CLIs
 
-|       TOOL       |                                                                DESCRIPTION                                                                |
-|------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| argocd           | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
-| argocd-autopilot | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
-| arkade           | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
-| autok3s          | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
-| buildx           | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
-| bun              | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
-| butane           | Translates human readable Butane Configs into machine readable Ignition Configs                                                           |
-| caddy            | Caddy is an extensible server platform that uses TLS by default                                                                           |
-| cilium           | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
-| civo             | CLI for interacting with your Civo resources.                                                                                             |
-| clusterawsadm    | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
-| clusterctl       | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
-| conftest         | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
-| cosign           | Container Signing, Verification and Storage in an OCI registry.                                                                           |
-| cr               | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
-| crane            | crane is a tool for interacting with remote images and registries                                                                         |
-| dagger           | A portable devkit for CI/CD pipelines.                                                                                                    |
-| devspace         | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
-| dive             | A tool for exploring each layer in a docker image                                                                                         |
-| docker-compose   | Define and run multi-container applications with Docker.                                                                                  |
-| doctl            | Official command line interface for the DigitalOcean API.                                                                                 |
-| eksctl           | Amazon EKS Kubernetes cluster management                                                                                                  |
-| eksctl-anywhere  | Run Amazon EKS on your own infrastructure                                                                                                 |
-| faas-cli         | Official CLI for OpenFaaS.                                                                                                                |
-| firectl          | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                        |
-| flux             | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
-| flyctl           | Command line tools for fly.io services                                                                                                    |
-| fzf              | General-purpose command-line fuzzy finder                                                                                                 |
-| gh               | GitHub’s official command line tool.                                                                                                      |
-| golangci-lint    | Go linters aggregator.                                                                                                                    |
-| gomplate         | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
-| goreleaser       | Deliver Go binaries as fast and easily as possible                                                                                        |
-| grafana-agent    | Grafana Agent is a telemetry collector for sending metrics, logs, and trace data to the opinionated Grafana observability stack.          |
-| grype            | A vulnerability scanner for container images and filesystems                                                                              |
-| hadolint         | A smarter Dockerfile linter that helps you build best practice Docker images                                                              |
-| helm             | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
-| helmfile         | Deploy Kubernetes Helm Charts                                                                                                             |
-| hey              | Load testing tool                                                                                                                         |
-| hostctl          | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
-| hubble           | CLI for network, service & security observability for Kubernetes clusters running Cilium.                                                 |
-| hugo             | Static HTML and CSS website generator.                                                                                                    |
-| influx           | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
-| inlets-pro       | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
-| inletsctl        | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
-| istioctl         | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
-| jq               | jq is a lightweight and flexible command-line JSON processor                                                                              |
-| just             | Just a command runner                                                                                                                     |
-| k0s              | Zero Friction Kubernetes                                                                                                                  |
-| k0sctl           | A bootstrapping and management tool for k0s clusters                                                                                      |
-| k10multicluster  | Multi-cluster support for K10.                                                                                                            |
-| k10tools         | Tools for evaluating and debugging K10.                                                                                                   |
-| k3d              | Helper to run Rancher Lab's k3s in Docker.                                                                                                |
-| k3s              | Lightweight Kubernetes                                                                                                                    |
-| k3sup            | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                           |
-| k9s              | Provides a terminal UI to interact with your Kubernetes clusters.                                                                         |
-| kail             | Kubernetes log viewer.                                                                                                                    |
-| kanctl           | Framework for application-level data management on Kubernetes.                                                                            |
-| kgctl            | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                       |
-| kim              | Build container images inside of Kubernetes. (Experimental)                                                                               |
-| kind             | Run local Kubernetes clusters using Docker container nodes.                                                                               |
-| kops             | Production Grade K8s Installation, Upgrades, and Management.                                                                              |
-| krew             | Package manager for kubectl plugins.                                                                                                      |
-| kube-bench       | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
-| kubebuilder      | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
-| kubecm           | Easier management of kubeconfig.                                                                                                          |
-| kubeconform      | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
-| kubectl          | Run commands against Kubernetes clusters                                                                                                  |
-| kubectx          | Faster way to switch between clusters.                                                                                                    |
-| kubens           | Switch between Kubernetes namespaces smoothly.                                                                                            |
-| kubescape        | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
-| kubeseal         | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
-| kubestr          | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
-| kubetail         | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
-| kubeval          | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                       |
-| kumactl          | kumactl is a CLI to interact with Kuma and its data                                                                                       |
-| kustomize        | Customization of kubernetes YAML configurations                                                                                           |
-| lazygit          | A simple terminal UI for git commands.                                                                                                    |
-| linkerd2         | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
-| mc               | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
-| metal            | Official Equinix Metal CLI                                                                                                                |
-| minikube         | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
-| mixctl           | A tiny TCP load-balancer.                                                                                                                 |
-| mkcert           | A simple zero-config tool to make locally trusted development certificates with any names you'd like.                                     |
-| nats             | Utility to interact with and manage NATS.                                                                                                 |
-| nats-server      | Cloud native message bus and queue server                                                                                                 |
-| nerdctl          | Docker-compatible CLI for containerd, with support for Compose                                                                            |
-| nova             | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
-| oh-my-posh       | A prompt theme engine for any shell that can display kubernetes information.                                                              |
-| opa              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
-| operator-sdk     | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                              |
-| osm              | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
-| pack             | Build apps using Cloud Native Buildpacks.                                                                                                 |
-| packer           | Build identical machine images for multiple platforms from a single source configuration.                                                 |
-| polaris          | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                                                 |
-| popeye           | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
-| porter           | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
-| promtool         | Prometheus rule tester and debugging utility                                                                                              |
-| rekor-cli        | Secure Supply Chain - Transparency Log                                                                                                    |
-| rpk              | Kafka compatible streaming platform for mission critical workloads.                                                                       |
-| run-job          | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
-| scaleway-cli     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
-| sops             | Simple and flexible tool for managing secrets                                                                                             |
-| stern            | Multi pod and container log tailing for Kubernetes.                                                                                       |
-| syft             | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
-| talosctl         | The command-line tool for managing Talos Linux OS.                                                                                        |
-| tctl             | Temporal CLI.                                                                                                                             |
-| terraform        | Infrastructure as Code for major cloud providers.                                                                                         |
-| terragrunt       | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
-| terrascan        | Detect compliance and security violations across Infrastructure as Code.                                                                  |
-| tfsec            | Security scanner for your Terraform code                                                                                                  |
-| tilt             | A multi-service dev environment for teams on Kubernetes.                                                                                  |
-| tkn              | A CLI for interacting with Tekton.                                                                                                        |
-| trivy            | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
-| vagrant          | Tool for building and distributing development environments.                                                                              |
-| vault            | A tool for secrets management, encryption as a service, and privileged access management.                                                 |
-| vcluster         | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
-| viddy            | A modern watch command. Time machine and pager etc.                                                                                       |
-| waypoint         | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
-| yq               | Portable command-line YAML processor.                                                                                                     |
-There are 118 tools, use `arkade get NAME` to download one.
+|                                     TOOL                                     |                                                                DESCRIPTION                                                                |
+|------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
+| [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
+| [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
+| [autok3s](https://github.com/cnrancher/autok3s)                              | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
+| [buildx](https://github.com/docker/buildx)                                   | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
+| [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
+| [butane](https://github.com/coreos/butane)                                   | Translates human readable Butane Configs into machine readable Ignition Configs                                                           |
+| [caddy](https://github.com/caddyserver/caddy)                                | Caddy is an extensible server platform that uses TLS by default                                                                           |
+| [cilium](https://github.com/cilium/cilium-cli)                               | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
+| [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                             |
+| [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
+| [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
+| [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
+| [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                           |
+| [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
+| [crane](https://github.com/google/go-containerregistry)                      | crane is a tool for interacting with remote images and registries                                                                         |
+| [dagger](https://github.com/dagger/dagger)                                   | A portable devkit for CI/CD pipelines.                                                                                                    |
+| [devspace](https://github.com/devspace-sh/devspace)                          | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
+| [dive](https://github.com/wagoodman/dive)                                    | A tool for exploring each layer in a docker image                                                                                         |
+| [docker-compose](https://github.com/docker/compose)                          | Define and run multi-container applications with Docker.                                                                                  |
+| [doctl](https://github.com/digitalocean/doctl)                               | Official command line interface for the DigitalOcean API.                                                                                 |
+| [eksctl](https://github.com/weaveworks/eksctl)                               | Amazon EKS Kubernetes cluster management                                                                                                  |
+| [eksctl-anywhere](https://github.com/aws/eks-anywhere)                       | Run Amazon EKS on your own infrastructure                                                                                                 |
+| [faas-cli](https://github.com/openfaas/faas-cli)                             | Official CLI for OpenFaaS.                                                                                                                |
+| [firectl](https://github.com/firecracker-microvm/firectl)                    | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                        |
+| [flux](https://github.com/fluxcd/flux2)                                      | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
+| [flyctl](https://github.com/superfly/flyctl)                                 | Command line tools for fly.io services                                                                                                    |
+| [fzf](https://github.com/junegunn/fzf)                                       | General-purpose command-line fuzzy finder                                                                                                 |
+| [gh](https://github.com/cli/cli)                                             | GitHub’s official command line tool.                                                                                                      |
+| [golangci-lint](https://github.com/golangci/golangci-lint)                   | Go linters aggregator.                                                                                                                    |
+| [gomplate](https://github.com/hairyhenderson/gomplate)                       | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                        |
+| [goreleaser](https://github.com/goreleaser/goreleaser)                       | Deliver Go binaries as fast and easily as possible                                                                                        |
+| [grafana-agent](https://github.com/grafana/agent)                            | Grafana Agent is a telemetry collector for sending metrics, logs, and trace data to the opinionated Grafana observability stack.          |
+| [grype](https://github.com/anchore/grype)                                    | A vulnerability scanner for container images and filesystems                                                                              |
+| [hadolint](https://github.com/hadolint/hadolint)                             | A smarter Dockerfile linter that helps you build best practice Docker images                                                              |
+| [helm](https://github.com/helm/helm)                                         | The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.                                                         |
+| [helmfile](https://github.com/helmfile/helmfile)                             | Deploy Kubernetes Helm Charts                                                                                                             |
+| [hey](https://github.com/alexellis/hey)                                      | Load testing tool                                                                                                                         |
+| [hostctl](https://github.com/guumaster/hostctl)                              | Dev tool to manage /etc/hosts like a pro!                                                                                                 |
+| [hubble](https://github.com/cilium/hubble)                                   | CLI for network, service & security observability for Kubernetes clusters running Cilium.                                                 |
+| [hugo](https://github.com/gohugoio/hugo)                                     | Static HTML and CSS website generator.                                                                                                    |
+| [influx](https://github.com/influxdata/influxdb)                             | InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.                                                      |
+| [inlets-pro](https://github.com/inlets/inlets-pro)                           | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
+| [inletsctl](https://github.com/inlets/inletsctl)                             | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
+| [istioctl](https://github.com/istio/istio)                                   | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
+| [jq](https://github.com/stedolan/jq)                                         | jq is a lightweight and flexible command-line JSON processor                                                                              |
+| [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                     |
+| [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                  |
+| [k0sctl](https://github.com/k0sproject/k0sctl)                               | A bootstrapping and management tool for k0s clusters                                                                                      |
+| [k10multicluster](https://github.com/kastenhq/external-tools)                | Multi-cluster support for K10.                                                                                                            |
+| [k10tools](https://github.com/kastenhq/external-tools)                       | Tools for evaluating and debugging K10.                                                                                                   |
+| [k3d](https://github.com/k3d-io/k3d)                                         | Helper to run Rancher Lab's k3s in Docker.                                                                                                |
+| [k3s](https://github.com/k3s-io/k3s)                                         | Lightweight Kubernetes                                                                                                                    |
+| [k3sup](https://github.com/alexellis/k3sup)                                  | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                           |
+| [k9s](https://github.com/derailed/k9s)                                       | Provides a terminal UI to interact with your Kubernetes clusters.                                                                         |
+| [kail](https://github.com/boz/kail)                                          | Kubernetes log viewer.                                                                                                                    |
+| [kanctl](https://github.com/kanisterio/kanister)                             | Framework for application-level data management on Kubernetes.                                                                            |
+| [kgctl](https://github.com/squat/kilo)                                       | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                       |
+| [kim](https://github.com/rancher/kim)                                        | Build container images inside of Kubernetes. (Experimental)                                                                               |
+| [kind](https://github.com/kubernetes-sigs/kind)                              | Run local Kubernetes clusters using Docker container nodes.                                                                               |
+| [kops](https://github.com/kubernetes/kops)                                   | Production Grade K8s Installation, Upgrades, and Management.                                                                              |
+| [krew](https://github.com/kubernetes-sigs/krew)                              | Package manager for kubectl plugins.                                                                                                      |
+| [kube-bench](https://github.com/aquasecurity/kube-bench)                     | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
+| [kubebuilder](https://github.com/kubernetes-sigs/kubebuilder)                | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
+| [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                          |
+| [kubeconform](https://github.com/yannh/kubeconform)                          | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
+| [kubectl](https://github.com/kubernetes/kubernetes)                          | Run commands against Kubernetes clusters                                                                                                  |
+| [kubectx](https://github.com/ahmetb/kubectx)                                 | Faster way to switch between clusters.                                                                                                    |
+| [kubens](https://github.com/ahmetb/kubectx)                                  | Switch between Kubernetes namespaces smoothly.                                                                                            |
+| [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
+| [kubeseal](https://github.com/bitnami-labs/sealed-secrets)                   | A Kubernetes controller and tool for one-way encrypted Secrets                                                                            |
+| [kubestr](https://github.com/kastenhq/kubestr)                               | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                               |
+| [kubetail](https://github.com/johanhaleby/kubetail)                          | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                  |
+| [kubeval](https://github.com/instrumenta/kubeval)                            | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                       |
+| [kumactl](https://github.com/kumahq/kuma)                                    | kumactl is a CLI to interact with Kuma and its data                                                                                       |
+| [kustomize](https://github.com/kubernetes-sigs/kustomize)                    | Customization of kubernetes YAML configurations                                                                                           |
+| [lazygit](https://github.com/jesseduffield/lazygit)                          | A simple terminal UI for git commands.                                                                                                    |
+| [linkerd2](https://github.com/linkerd/linkerd2)                              | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
+| [mc](https://github.com/minio/mc)                                            | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
+| [metal](https://github.com/equinix/metal-cli)                                | Official Equinix Metal CLI                                                                                                                |
+| [minikube](https://github.com/kubernetes/minikube)                           | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                              |
+| [mixctl](https://github.com/inlets/mixctl)                                   | A tiny TCP load-balancer.                                                                                                                 |
+| [mkcert](https://github.com/FiloSottile/mkcert)                              | A simple zero-config tool to make locally trusted development certificates with any names you'd like.                                     |
+| [nats](https://github.com/nats-io/natscli)                                   | Utility to interact with and manage NATS.                                                                                                 |
+| [nats-server](https://github.com/nats-io/nats-server)                        | Cloud native message bus and queue server                                                                                                 |
+| [nerdctl](https://github.com/containerd/nerdctl)                             | Docker-compatible CLI for containerd, with support for Compose                                                                            |
+| [nova](https://github.com/FairwindsOps/nova)                                 | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
+| [oh-my-posh](https://github.com/jandedobbeleer/oh-my-posh)                   | A prompt theme engine for any shell that can display kubernetes information.                                                              |
+| [opa](https://github.com/open-policy-agent/opa)                              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
+| [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                              |
+| [osm](https://github.com/openservicemesh/osm)                                | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
+| [pack](https://github.com/buildpacks/pack)                                   | Build apps using Cloud Native Buildpacks.                                                                                                 |
+| [packer](https://github.com/hashicorp/packer)                                | Build identical machine images for multiple platforms from a single source configuration.                                                 |
+| [polaris](https://github.com/FairwindsOps/polaris)                           | Run checks to ensure Kubernetes pods and controllers are configured using best practices.                                                 |
+| [popeye](https://github.com/derailed/popeye)                                 | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                    |
+| [porter](https://github.com/getporter/porter)                                | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
+| [promtool](https://github.com/prometheus/prometheus)                         | Prometheus rule tester and debugging utility                                                                                              |
+| [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                    |
+| [rpk](https://github.com/redpanda-data/redpanda)                             | Kafka compatible streaming platform for mission critical workloads.                                                                       |
+| [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
+| [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
+| [sops](https://github.com/mozilla/sops)                                      | Simple and flexible tool for managing secrets                                                                                             |
+| [stern](https://github.com/stern/stern)                                      | Multi pod and container log tailing for Kubernetes.                                                                                       |
+| [syft](https://github.com/anchore/syft)                                      | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
+| [talosctl](https://github.com/siderolabs/talos)                              | The command-line tool for managing Talos Linux OS.                                                                                        |
+| [tctl](https://github.com/temporalio/tctl)                                   | Temporal CLI.                                                                                                                             |
+| [terraform](https://github.com/hashicorp/terraform)                          | Infrastructure as Code for major cloud providers.                                                                                         |
+| [terragrunt](https://github.com/gruntwork-io/terragrunt)                     | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
+| [terrascan](https://github.com/tenable/terrascan)                            | Detect compliance and security violations across Infrastructure as Code.                                                                  |
+| [tfsec](https://github.com/aquasecurity/tfsec)                               | Security scanner for your Terraform code                                                                                                  |
+| [tilt](https://github.com/tilt-dev/tilt)                                     | A multi-service dev environment for teams on Kubernetes.                                                                                  |
+| [tkn](https://github.com/tektoncd/cli)                                       | A CLI for interacting with Tekton.                                                                                                        |
+| [trivy](https://github.com/aquasecurity/trivy)                               | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
+| [vagrant](https://github.com/hashicorp/vagrant)                              | Tool for building and distributing development environments.                                                                              |
+| [vault](https://github.com/hashicorp/vault)                                  | A tool for secrets management, encryption as a service, and privileged access management.                                                 |
+| [vcluster](https://github.com/loft-sh/vcluster)                              | Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster.                |
+| [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
+| [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
+| [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
+There are 119 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
