@@ -5369,7 +5369,7 @@ func Test_DownloadFirectl(t *testing.T) {
 func Test_GrafanaAgent(t *testing.T) {
 	tools := MakeTools()
 	name := "grafana-agent"
-	version := "v0.29.0"
+	version := "v0.31.0"
 
 	tool := getTool(name, tools)
 
@@ -5378,31 +5378,31 @@ func Test_GrafanaAgent(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-linux-amd64.zip",
+			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-linux-amd64.zip",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-linux-arm64.zip",
+			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-linux-arm64.zip",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-darwin-amd64.zip",
+			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-darwin-amd64.zip",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-darwin-arm64.zip",
+			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-darwin-arm64.zip",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.29.0/agent-windows-amd64.exe.zip",
+			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-windows-amd64.exe.zip",
 		},
 	}
 
