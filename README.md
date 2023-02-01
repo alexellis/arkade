@@ -33,7 +33,7 @@ With over 100 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
 
 [Alex](https://github.com/sponsors/alexellis/) Arkade is built to save you time at work so you can focus and get productive quickly.
 
-You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/").
+You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/).
 
 Or get a copy of his eBook on Go so you can learn how to build tools like k3sup, arkade and OpenFaaS for yourself:
 
