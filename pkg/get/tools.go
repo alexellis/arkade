@@ -3074,7 +3074,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$os = "windows"}}
 						{{$ext = ".exe.zip"}}
 						{{- end -}}
-						https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/agent-{{$os}}-{{$arch}}{{$ext}}
+						https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/grafana-agent-{{$os}}-{{$arch}}{{$ext}}
 						`,
 			BinaryTemplate: `
 						{{$os := .OS}}
@@ -3095,7 +3095,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$os = "windows"}}
 						{{$ext = ".exe"}}
 						{{- end -}}
-						agent-{{$os}}-{{$arch}}{{$ext}}
+						grafana-agent-{{$os}}-{{$arch}}{{$ext}}
 						`,
 		})
 
