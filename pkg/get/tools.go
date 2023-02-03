@@ -3205,5 +3205,41 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "schollz",
+			Repo:        "croc",
+			Name:        "croc",
+			Description: "Easily and securely send things from one computer to another",
+			BinaryTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+	
+					{{- if eq .OS "darwin" -}}
+					{{$os = "macOS"}}
+					{{- else if eq .OS "linux" -}}
+					{{ $os = "Linux" }}
+					{{- end -}}
+
+					{{- if eq .Arch "aarch64" -}}
+					{{$arch = "ARM64"}}
+					{{- else if eq .Arch "arm64" -}}
+					{{ $arch = "ARM64" }}
+					{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "64bit" }}
+					{{- else if eq .Arch "armv7l" -}}
+					{{ $arch = "ARM" }}
+					{{- end -}}
+	
+					{{ if HasPrefix .OS "ming" -}}
+					{{$os = "Windows"}}
+					{{$ext = "zip"}}
+					{{- end -}}
+	
+	
+					croc_{{.VersionNumber}}_{{$os}}-{{$arch}}.{{$ext}}
+					`,
+		})
 	return tools
 }
