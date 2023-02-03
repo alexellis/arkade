@@ -694,6 +694,7 @@ There are 56 apps that you can install on your cluster.
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
 | [crane](https://github.com/google/go-containerregistry)                      | crane is a tool for interacting with remote images and registries                                                                         |
+| [croc](https://github.com/schollz/croc)                                      | Easily and securely send things from one computer to another                                                                              |
 | [dagger](https://github.com/dagger/dagger)                                   | A portable devkit for CI/CD pipelines.                                                                                                    |
 | [devspace](https://github.com/devspace-sh/devspace)                          | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                          |
 | [dive](https://github.com/wagoodman/dive)                                    | A tool for exploring each layer in a docker image                                                                                         |
@@ -797,7 +798,8 @@ There are 56 apps that you can install on your cluster.
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
-There are 119 tools, use `arkade get NAME` to download one.
+There are 120 tools, use `arkade get NAME` to download one.
+
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
