@@ -31,7 +31,11 @@ With over 100 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
 
 ## Support arkade 👋
 
-[Alex](https://github.com/sponsors/alexellis/) Arkade is built to save you time at work so you can focus and get productive quickly.
+Arkade is built to save you time at work so you can focus and get productive quickly.
+
+<a href="https://github.com/sponsors/alexellis/">
+<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
+</a>
 
 You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/).
 
