@@ -88,7 +88,7 @@ func (tool Tool) IsArchive(quiet bool) (bool, error) {
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, error) {
-	ver := getToolVersion(tool, version)
+	ver := GetToolVersion(tool, version)
 
 	dlURL, err := tool.GetURL(os, arch, ver, quiet)
 	if err != nil {
@@ -98,7 +98,7 @@ func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, e
 	return dlURL, nil
 }
 
-func getToolVersion(tool *Tool, version string) string {
+func GetToolVersion(tool *Tool, version string) string {
 	ver := tool.Version
 	if len(version) > 0 {
 		ver = version
@@ -308,7 +308,7 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 		}
 
 		var buf bytes.Buffer
-		ver := getToolVersion(tool, version)
+		ver := GetToolVersion(tool, version)
 		if err := t.Execute(&buf, map[string]string{
 			"OS":            os,
 			"Arch":          arch,
@@ -367,6 +367,10 @@ func toolExists(arkadeTools *[]Tool, tools Tools, name, version string) error {
 		}
 	}
 	return fmt.Errorf("tool %s not found", name)
+}
+
+func PostToolNotFoundMsg(url string) string {
+	return fmt.Sprintf("Look like this tool isn't available for your OS or/and platform. Check out the link to see if the tool you're after is available: %s.\nIf it is there, don't hesitate to open an issue and contribute to Arkade!", url)
 }
 
 // PostInstallationMsg generates installation message after tool has been downloaded
