@@ -4,6 +4,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/signal"
@@ -150,6 +151,14 @@ and provides a fast and easy alternative to a package manager.`,
 				dlMode,
 				progress,
 				quiet)
+
+			// handle 404 error gracefully
+			if errors.Is(err, &get.ErrNotFound{}) {
+				tag, _ := get.FindGitHubRelease(tool.Owner, tool.Repo)
+				releaseUrl := fmt.Sprintf("https://github.com/%s/%s/releases/tag/%s", tool.Owner, tool.Repo, tag)
+				fmt.Printf("%s \n", get.PostToolNotFoundMsg(releaseUrl))
+				return err
+			}
 			if err != nil {
 				return err
 			}

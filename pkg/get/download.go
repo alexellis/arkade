@@ -21,6 +21,12 @@ const (
 	DownloadArkadeDir = iota
 )
 
+type ErrNotFound struct{}
+
+func (e *ErrNotFound) Error() string {
+	return fmt.Sprintf("incorrect status for downloading tool: 404")
+}
+
 func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress, quiet bool) (string, string, error) {
 
 	downloadURL, err := GetDownloadURL(tool,
@@ -100,6 +106,9 @@ func downloadFile(downloadURL string, displayProgress bool) (string, error) {
 		defer res.Body.Close()
 	}
 
+	if res.StatusCode == http.StatusNotFound {
+		return "", &ErrNotFound{}
+	}
 	if res.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
 	}
