@@ -211,7 +211,7 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 	}
 
 	if res.StatusCode != 302 {
-		return "", fmt.Errorf("incorrect status code: %d", res.StatusCode)
+		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 	}
 
 	loc := res.Header.Get("Location")
