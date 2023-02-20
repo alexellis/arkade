@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"sort"
 	"strconv"
+	"strings"
 	"syscall"
 
 	units "github.com/docker/go-units"
@@ -154,9 +155,26 @@ and provides a fast and easy alternative to a package manager.`,
 
 			// handle 404 error gracefully
 			if errors.Is(err, &get.ErrNotFound{}) {
-				tag, _ := get.FindGitHubRelease(tool.Owner, tool.Repo)
-				releaseUrl := fmt.Sprintf("https://github.com/%s/%s/releases/tag/%s", tool.Owner, tool.Repo, tag)
-				fmt.Printf("%s \n", get.PostToolNotFoundMsg(releaseUrl))
+
+				extra := ""
+				// 1. The tool either has an explicit GitHub URL
+				// 2. or has no URL in the URLTemplate meaning it's on GitHub
+				// 3. or there is no URLTemplate because a BinaryTemplate was used instead, meaning the tool is on GitHub
+				if strings.Contains(tool.URLTemplate, "https://github.com/") ||
+					!strings.Contains(tool.URLTemplate, "https://") ||
+					len(tool.URLTemplate) == 0 {
+					extra = fmt.Sprintf(`
+* View the %s releases page: %s`, tool.Name, fmt.Sprintf("https://github.com/%s/%s/releases", tool.Owner, tool.Repo))
+				}
+
+				fmt.Fprintf(os.Stderr, `
+The requested version of %s is not available or configured in arkade for %s/%s
+
+* Check if a binary is available from the project for your Operating System%s
+* Feel free to raise an issue at https://github.com/alexellis/arkade/issues for help
+
+`, tool.Name, operatingSystem, arch, extra)
+
 				return err
 			}
 			if err != nil {

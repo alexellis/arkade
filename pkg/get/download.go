@@ -22,10 +22,11 @@ const (
 	DownloadArkadeDir = iota
 )
 
-type ErrNotFound struct{}
+type ErrNotFound struct {
+}
 
 func (e *ErrNotFound) Error() string {
-	return "incorrect status for downloading tool: 404"
+	return "server returned status: 404"
 }
 
 func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress, quiet bool) (string, string, error) {
@@ -67,7 +68,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, downloadMode in
 	}
 
 	finalName := tool.Name
-	if strings.Contains(strings.ToLower(operatingSystem), "mingw") && tool.NoExtension == false {
+	if strings.Contains(strings.ToLower(operatingSystem), "mingw") && !tool.NoExtension {
 		finalName = finalName + ".exe"
 	}
 
@@ -118,8 +119,9 @@ func downloadFile(downloadURL string, displayProgress bool) (string, error) {
 	if res.StatusCode == http.StatusNotFound {
 		return "", &ErrNotFound{}
 	}
+
 	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("incorrect status for downloading tool: %d", res.StatusCode)
+		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 	}
 
 	_, fileName := path.Split(downloadURL)
