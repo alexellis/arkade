@@ -11,6 +11,7 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
@@ -112,6 +113,8 @@ func getGoVersion() (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
 
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {

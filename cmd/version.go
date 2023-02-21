@@ -11,11 +11,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	Version   string
-	GitCommit string
-)
-
 func PrintArkadeASCIIArt() {
 	arkadeLogo := aec.BlueF.Apply(arkadeFigletStr)
 	fmt.Print(arkadeLogo)
@@ -31,12 +26,12 @@ func MakeVersion() *cobra.Command {
 	}
 	command.Run = func(cmd *cobra.Command, args []string) {
 		PrintArkadeASCIIArt()
-		if len(Version) == 0 {
+		if len(pkg.Version) == 0 {
 			fmt.Println("Version: dev")
 		} else {
-			fmt.Println("Version:", Version)
+			fmt.Println("Version:", pkg.Version)
 		}
-		fmt.Println("Git Commit:", GitCommit)
+		fmt.Println("Git Commit:", pkg.GitCommit)
 
 		fmt.Println("\n", aec.Bold.Apply(pkg.SupportMessageShort))
 	}
