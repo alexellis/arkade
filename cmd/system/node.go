@@ -2,23 +2,33 @@ package system
 
 import (
 	"fmt"
-	"github.com/alexellis/arkade/pkg/archive"
-	"github.com/alexellis/arkade/pkg/env"
-	"github.com/alexellis/arkade/pkg/get"
-	cp "github.com/otiai10/copy"
-	"github.com/spf13/cobra"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/alexellis/arkade/pkg"
+	"github.com/alexellis/arkade/pkg/archive"
+	"github.com/alexellis/arkade/pkg/env"
+	"github.com/alexellis/arkade/pkg/get"
+	cp "github.com/otiai10/copy"
+	"github.com/spf13/cobra"
 )
 
 func getLatestNodeVersion(version, channel string) (*string, error) {
-	res, err := http.Get(fmt.Sprintf("https://nodejs.org/download/%s/%s", channel, version))
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://nodejs.org/download/%s/%s", channel, version), nil)
 	if err != nil {
 		return nil, err
 	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err

@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
@@ -24,7 +25,7 @@ const (
 type ErrNotFound struct{}
 
 func (e *ErrNotFound) Error() string {
-	return fmt.Sprintf("incorrect status for downloading tool: 404")
+	return "incorrect status for downloading tool: 404"
 }
 
 func Download(tool *Tool, arch, operatingSystem, version string, downloadMode int, displayProgress, quiet bool) (string, string, error) {
@@ -97,7 +98,15 @@ func DownloadFileP(downloadURL string, displayProgress bool) (string, error) {
 }
 
 func downloadFile(downloadURL string, displayProgress bool) (string, error) {
-	res, err := http.DefaultClient.Get(downloadURL)
+
+	req, err := http.NewRequest(http.MethodGet, downloadURL, nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
+
+	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return "", err
 	}

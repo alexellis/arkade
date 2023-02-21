@@ -13,6 +13,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/env"
 )
 
@@ -113,6 +114,8 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 		return http.StatusBadRequest, "", nil, err
 	}
 
+	req.Header.Set("User-Agent", pkg.UserAgent())
+
 	res, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return http.StatusBadRequest, "", nil, err
@@ -195,6 +198,8 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
 
 	res, err := client.Do(req)
 	if err != nil {
