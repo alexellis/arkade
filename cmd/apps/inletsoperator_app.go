@@ -173,10 +173,9 @@ IngressController`,
 
 				res, err := os.ReadFile(licenseFile)
 				if err != nil {
-					if fileFlagChanged == false {
+					if !fileFlagChanged {
 						return noLicenseErr
 					}
-
 					return fmt.Errorf("unable to open license file: %s", err.Error())
 				}
 				license = strings.TrimSpace(string(res))
@@ -185,6 +184,19 @@ IngressController`,
 
 		if len(license) == 0 {
 			return noLicenseErr
+		}
+
+		licenseSecret := Secret{
+			Namespace: namespace,
+			Name:      "inlets-license",
+		}
+		licenseSecret.Literals = append(licenseSecret.Literals, SecretLiteral{
+			Name:      "license",
+			FromValue: license,
+		})
+
+		if err := applySecret(licenseSecret); err != nil {
+			return err
 		}
 
 		overrides["inletsProLicense"] = license
