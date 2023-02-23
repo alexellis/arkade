@@ -107,7 +107,7 @@ IngressController`,
 			return err
 		}
 
-		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/inlets.inlets.dev_tunnels.yaml")
+		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/operator.inlets.dev_tunnels.yaml")
 		if err != nil {
 			return err
 		}
