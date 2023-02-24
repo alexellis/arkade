@@ -1461,6 +1461,8 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 
 			{{- if eq .Arch "aarch64" -}}
             {{$arch = "-arm64"}}
+			{{- else if eq .Arch "arm64" -}}
+			{{$arch = "-arm64"}}
 			{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
 			{{$arch = "-armhf"}}
 			{{- end -}}
