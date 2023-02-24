@@ -2253,7 +2253,7 @@ func Test_DownloadInletsProCli(t *testing.T) {
 		},
 		{
 			os:      "darwin",
-			arch:    archARM64,
+			arch:    archDarwinARM64,
 			version: version,
 			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-darwin-arm64`,
 		},
