@@ -5687,3 +5687,61 @@ func Test_DownloaCroc(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadCmctl(t *testing.T) {
+	tools := MakeTools()
+	name := "cmctl"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.11.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-arm.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-windows-amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

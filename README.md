@@ -690,6 +690,7 @@ There are 56 apps that you can install on your cluster.
 | [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                             |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
 | [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
+| [cmctl](https://github.com/cert-manager/cert-manager)                        | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                             |
 | [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
@@ -798,7 +799,7 @@ There are 56 apps that you can install on your cluster.
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
-There are 120 tools, use `arkade get NAME` to download one.
+There are 121 tools, use `arkade get NAME` to download one.
 
 
 
