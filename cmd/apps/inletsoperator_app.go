@@ -329,34 +329,11 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 	return overrides, nil
 }
 
-const InletsOperatorInfoMsg = `# The default configuration is for DigitalOcean and your secret is
-# stored as "inlets-access-key" in the "default" namespace or the namespace
-# you gave if installing with helm3
-
-# To get your first Public IP run the following:
-
-# K8s 1.17
-kubectl run nginx-1 --image=nginx --port=80 --restart=Always
-
-# K8s 1.18 and higher:
-
-kubectl apply -f \
- https://raw.githubusercontent.com/inlets/inlets-operator/master/contrib/nginx-sample-deployment.yaml
-
-# Then expose the Deployment as a LoadBalancer:
-
-kubectl expose deployment nginx-1 --port=80 --type=LoadBalancer
-
-# Find your IP in the "EXTERNAL-IP" field, watch for "<pending>" to
-# change to an IP
-
-kubectl get svc -w
-
-# When you're done, remove the tunnel by deleting the service
-kubectl delete svc/nginx-1
-
-# Check the logs
+const InletsOperatorInfoMsg = `# Check the logs
 kubectl logs deploy/inlets-operator -f
+
+# Check for tunnels
+kubectl get tunnels -A -o wide
 
 # Find out more at:
 # https://github.com/inlets/inlets-operator`
