@@ -107,11 +107,6 @@ IngressController`,
 			return err
 		}
 
-		_, err = k8s.KubectlTask("apply", "-f", "https://raw.githubusercontent.com/inlets/inlets-operator/master/artifacts/crds/operator.inlets.dev_tunnels.yaml")
-		if err != nil {
-			return err
-		}
-
 		tokenFileName, _ := command.Flags().GetString("token-file")
 		tokenString, _ := command.Flags().GetString("token")
 
