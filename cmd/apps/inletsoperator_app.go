@@ -397,9 +397,9 @@ func applySecret(s Secret) error {
 
 	for _, l := range s.Literals {
 		if len(l.FromFile) > 0 {
-			parts = append(parts, "--from-file", s.Name+"="+l.FromFile)
+			parts = append(parts, "--from-file", l.Name+"="+l.FromFile)
 		} else {
-			parts = append(parts, "--from-literal", s.Name+"="+l.FromValue)
+			parts = append(parts, "--from-literal", l.Name+"="+l.FromValue)
 		}
 	}
 
