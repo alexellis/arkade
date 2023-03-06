@@ -28,6 +28,10 @@ With over 100 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
   - [Sponsored apps](#sponsored-apps)
   - [FAQ](#faq)
 
+  See also:
+
+- [Catalog of CLI tools](#catalog-of-clis)
+- [Catalog of Kubernetes apps](#catalog-of-apps)
 
 ## Support arkade 👋
 
@@ -163,7 +167,7 @@ Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for h
 
 Adding a new tool for download is as simple as editing [tools.go](https://github.com/alexellis/arkade/blob/master/pkg/get/tools.go).
 
-[Click here for the full catalog of CLIs](#catalog-of-apps)
+[Click here for the full catalog of CLIs](#catalog-of-clis)
 
 ## Install System Packages
 
@@ -746,6 +750,7 @@ There are 56 apps that you can install on your cluster.
 | [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                          |
 | [kubeconform](https://github.com/yannh/kubeconform)                          | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
 | [kubectl](https://github.com/kubernetes/kubernetes)                          | Run commands against Kubernetes clusters                                                                                                  |
+| [kubectl-cnpg](https://github.com/cloudnative-pg/cloudnative-pg)             | This plugin provides multiple commands to help you manage your CloudNativePG clusters.                                                    |
 | [kubectx](https://github.com/ahmetb/kubectx)                                 | Faster way to switch between clusters.                                                                                                    |
 | [kubens](https://github.com/ahmetb/kubectx)                                  | Switch between Kubernetes namespaces smoothly.                                                                                            |
 | [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
@@ -798,8 +803,7 @@ There are 56 apps that you can install on your cluster.
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
-There are 120 tools, use `arkade get NAME` to download one.
-
+There are 121 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
