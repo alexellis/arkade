@@ -401,11 +401,14 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			{{- end -}}`,
 		})
 
+	// The kubeseal repo has releases for both the Helm chart and the CLI
+	// tool, and there's no way to filter, so the version has to be hard-coded.
 	tools = append(tools,
 		Tool{
 			Owner:       "bitnami-labs",
 			Repo:        "sealed-secrets",
 			Name:        "kubeseal",
+			Version:     "v0.19.5",
 			Description: "A Kubernetes controller and tool for one-way encrypted Secrets",
 			BinaryTemplate: `{{$arch := ""}}
 		{{- if eq .Arch "aarch64" -}}
