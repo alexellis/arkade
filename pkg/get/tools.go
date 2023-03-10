@@ -125,13 +125,13 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 {{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
 		})
 
-	// https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl
+	// https://storage.googleapis.com/kubernetes-release/release/v1.26.2/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:       "kubernetes",
 			Repo:        "kubernetes",
 			Name:        "kubectl",
-			Version:     "v1.24.2",
+			Version:     "v1.26.2",
 			Description: "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
@@ -172,7 +172,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:          "ahmetb",
 			Repo:           "kubectx",
 			Name:           "kubens",
-			Version:        "v0.9.1",
+			Version:        "v0.9.4",
 			Description:    "Switch between Kubernetes namespaces smoothly.",
 			BinaryTemplate: `kubens`,
 			NoExtension:    true,
@@ -760,7 +760,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "terraform",
 			Name:        "terraform",
-			Version:     "1.1.9",
+			Version:     "1.3.9",
 			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}

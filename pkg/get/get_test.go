@@ -173,7 +173,7 @@ func Test_DownloadFaaSCLIDarwin(t *testing.T) {
 
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
-	kubectlVersion := "v1.24.2"
+	kubectlVersion := "v1.26.2"
 
 	tests := []struct {
 		name    string
@@ -226,7 +226,7 @@ func Test_GetDownloadURLs(t *testing.T) {
 		},
 		{
 			name:    "terraform",
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip",
 			version: "1.1.7",
 			os:      "linux",
 			arch:    "x86_64",
@@ -490,7 +490,7 @@ func Test_DownloadKubens(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens"
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
