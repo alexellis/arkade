@@ -30,11 +30,11 @@ func CreateToolsTable(tools Tools, format TableFormat) {
 		table.SetCenterSeparator("|")
 		table.SetAutoWrapText(false)
 	default:
-		table.SetHeader([]string{"Tool", "URL", "Description"})
+		table.SetHeader([]string{"Tool", "Description"})
 		table.SetRowLine(true)
 		table.SetColWidth(60)
-		table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold}, tablewriter.Colors{}, tablewriter.Colors{})
-		table.SetColumnColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor}, tablewriter.Colors{}, tablewriter.Colors{})
+		table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold}, tablewriter.Colors{})
+		table.SetColumnColor(tablewriter.Colors{tablewriter.Bold, tablewriter.FgGreenColor}, tablewriter.Colors{})
 	}
 
 	for _, t := range tools {
@@ -45,7 +45,7 @@ func CreateToolsTable(tools Tools, format TableFormat) {
 			name := fmt.Sprintf("[%s](%s)", t.Name, url)
 			table.Append([]string{name, t.Description})
 		default:
-			table.Append([]string{t.Name, url, t.Description})
+			table.Append([]string{t.Name, t.Description})
 		}
 	}
 
