@@ -682,6 +682,7 @@ There are 56 apps that you can install on your cluster.
 
 |                                     TOOL                                     |                                                                DESCRIPTION                                                                |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for Actuated.                                                                                                                |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
