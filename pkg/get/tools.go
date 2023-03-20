@@ -378,6 +378,25 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner:       "self-actuated",
+			Repo:        "actuated-cli",
+			Name:        "actuated-cli",
+			Description: "CLI for Actuated",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+			{{.Name}}.exe
+			{{- else if eq .OS "darwin" -}}
+				{{ if eq .Arch "arm64" -}}
+				{{.Name}}-darwin-arm64
+				{{- else -}}
+				{{.Name}}-darwin
+				{{- end -}}
+			{{- else -}}
+			{{.Name}}
+			{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "inlets",
 			Repo:        "mixctl",
 			Name:        "mixctl",
