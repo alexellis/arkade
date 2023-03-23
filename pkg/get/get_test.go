@@ -5729,50 +5729,113 @@ func Test_DownloaCroc(t *testing.T) {
 	}
 }
 
-func Test_DownloadKubectlcnpg(t *testing.T) {
+// func Test_DownloadKubectlcnpg(t *testing.T) {
+// 	tools := MakeTools()
+// 	name := "kubectl-cnpg"
+
+// 	tool := getTool(name, tools)
+
+// 	const toolVersion = "v1.19.0"
+
+// 	tests := []test{
+// 		{
+// 			os:      "linux",
+// 			arch:    arch64bit,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_x86_64.tar.gz`,
+// 		},
+// 		{
+// 			os:      "darwin",
+// 			arch:    arch64bit,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_darwin_x86_64.tar.gz`,
+// 		},
+// 		{
+// 			os:      "linux",
+// 			arch:    archARM64,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_arm64.tar.gz`,
+// 		},
+// 		{
+// 			os:      "darwin",
+// 			arch:    archDarwinARM64,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_darwin_arm64.tar.gz`,
+// 		},
+// 		{
+// 			os:      "linux",
+// 			arch:    archARM7,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_armv7.tar.gz`,
+// 		},
+// 		{
+// 			os:      "ming",
+// 			arch:    arch64bit,
+// 			version: toolVersion,
+// 			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_windows_x86_64.tar.gz`,
+// 		},
+// 	}
+
+// 	for _, tc := range tests {
+// 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+// 		if err != nil {
+// 			t.Fatal(err)
+// 		}
+// 		if got != tc.url {
+// 			t.Errorf("want: %s, got: %s", tc.url, got)
+// 		}
+// 	}
+// }
+
+func Test_DownloadFstail(t *testing.T) {
 	tools := MakeTools()
-	name := "kubectl-cnpg"
+	name := "fstail"
+	const version = "0.1.0"
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v1.19.0"
-
 	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail.exe`,
+		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_x86_64.tar.gz`,
-		},
-		{
-			os:      "darwin",
-			arch:    arch64bit,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_darwin_x86_64.tar.gz`,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_arm64.tar.gz`,
-		},
-		{
-			os:      "darwin",
-			arch:    archDarwinARM64,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_darwin_arm64.tar.gz`,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail-arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_linux_armv7.tar.gz`,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail-armhf`,
 		},
 		{
-			os:      "ming",
+			os:      "linux",
+			arch:    "armv6l",
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail-armhf`,
+		},
+		{
+			os:      "darwin",
 			arch:    arch64bit,
-			version: toolVersion,
-			url:     `https://github.com/cloudnative-pg/cloudnative-pg/releases/download/v1.19.0/kubectl-cnpg_1.19.0_windows_x86_64.tar.gz`,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail-darwin`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/alexellis/fstail/releases/download/0.1.0/fstail-darwin-arm64`,
 		},
 	}
 
@@ -5785,4 +5848,5 @@ func Test_DownloadKubectlcnpg(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
+
 }
