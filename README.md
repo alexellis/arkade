@@ -679,10 +679,8 @@ There are 56 apps that you can install on your cluster.
 > Note to contributors, run `arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
-
 |                                     TOOL                                     |                                                                DESCRIPTION                                                                |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
-| [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for Actuated.                                                                                                                |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
@@ -751,7 +749,6 @@ There are 56 apps that you can install on your cluster.
 | [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                          |
 | [kubeconform](https://github.com/yannh/kubeconform)                          | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                  |
 | [kubectl](https://github.com/kubernetes/kubernetes)                          | Run commands against Kubernetes clusters                                                                                                  |
-| [kubectl-cnpg](https://github.com/cloudnative-pg/cloudnative-pg)             | This plugin provides multiple commands to help you manage your CloudNativePG clusters.                                                    |
 | [kubectx](https://github.com/ahmetb/kubectx)                                 | Faster way to switch between clusters.                                                                                                    |
 | [kubens](https://github.com/ahmetb/kubectx)                                  | Switch between Kubernetes namespaces smoothly.                                                                                            |
 | [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA |
@@ -804,7 +801,7 @@ There are 56 apps that you can install on your cluster.
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
-There are 121 tools, use `arkade get NAME` to download one.
+There are 120 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
