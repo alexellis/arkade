@@ -3266,30 +3266,58 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					`,
 		})
 
+	// tools = append(tools,
+	// 	Tool{
+	// 		Owner:       "cloudnative-pg",
+	// 		Repo:        "cloudnative-pg",
+	// 		Name:        "kubectl-cnpg",
+	// 		Description: "This plugin provides multiple commands to help you manage your CloudNativePG clusters.",
+	// 		BinaryTemplate: `
+	// 				{{ $os := .OS }}
+	// 				{{ $arch := .Arch }}
+
+	// 				{{- if eq .Arch "aarch64" -}}
+	// 				{{ $arch = "arm64" }}
+	// 				{{- else if eq .Arch "arm64" -}}
+	// 				{{ $arch = "arm64" }}
+	// 				{{- else if eq .Arch "armv7l" -}}
+	// 				{{ $arch = "armv7" }}
+	// 				{{- end -}}
+
+	// 				{{ if HasPrefix .OS "ming" -}}
+	// 				{{$os = "windows"}}
+	// 				{{- end -}}
+
+	// 				kubectl-cnpg_{{ .VersionNumber }}_{{ $os }}_{{ $arch }}.tar.gz
+	// 				`,
+	// 	})
+
 	tools = append(tools,
 		Tool{
-			Owner:       "cloudnative-pg",
-			Repo:        "cloudnative-pg",
-			Name:        "kubectl-cnpg",
-			Description: "This plugin provides multiple commands to help you manage your CloudNativePG clusters.",
+			Owner:       "alexellis",
+			Repo:        "fstail",
+			Name:        "fstail",
+			Description: "Tail modified files in a directory.",
 			BinaryTemplate: `
-					{{ $os := .OS }}
-					{{ $arch := .Arch }}
-
-					{{- if eq .Arch "aarch64" -}}
-					{{ $arch = "arm64" }}
-					{{- else if eq .Arch "arm64" -}}
-					{{ $arch = "arm64" }}
-					{{- else if eq .Arch "armv7l" -}}
-					{{ $arch = "armv7" }}
-					{{- end -}}
-
-					{{ if HasPrefix .OS "ming" -}}
-					{{$os = "windows"}}
-					{{- end -}}
-
-					kubectl-cnpg_{{ .VersionNumber }}_{{ $os }}_{{ $arch }}.tar.gz
-					`,
+				{{$arch := ""}}
+				{{$os := ""}}
+				{{$ext := ""}}
+	
+				{{- if eq .Arch "aarch64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if eq .Arch "arm64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+				{{$arch = "-armhf"}}
+				{{- end -}}
+	
+				{{ if eq .OS "darwin" -}}
+				{{$os = "-darwin"}}
+				{{ else if HasPrefix .OS "ming" -}}
+				{{$ext = ".exe"}}
+				{{- end -}}
+				{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
+
 	return tools
 }
