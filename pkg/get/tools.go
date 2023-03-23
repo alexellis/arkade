@@ -3354,5 +3354,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "cert-manager",
+			Repo:        "cert-manager",
+			Name:        "cmctl",
+			Description: "cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.",
+			BinaryTemplate: `
+						{{$os := .OS}}
+						{{$arch := "arm"}}
+						{{$ext := "tar.gz"}}
+						{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+						{{$arch = "arm64"}}
+						{{- else if eq .Arch "x86_64" -}}
+						{{$arch = "amd64"}}
+						{{- end -}}
+						{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = "zip"}}
+						{{- end -}}
+						cmctl-{{$os}}-{{$arch}}.{{$ext}}
+						`,
+		})
+
 	return tools
 }
