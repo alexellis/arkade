@@ -378,25 +378,6 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
-			Owner:       "self-actuated",
-			Repo:        "actuated-cli",
-			Name:        "actuated-cli",
-			Description: "CLI for Actuated",
-			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-			{{.Name}}.exe
-			{{- else if eq .OS "darwin" -}}
-				{{ if eq .Arch "arm64" -}}
-				{{.Name}}-darwin-arm64
-				{{- else -}}
-				{{.Name}}-darwin
-				{{- end -}}
-			{{- else -}}
-			{{.Name}}
-			{{- end -}}`,
-		})
-
-	tools = append(tools,
-		Tool{
 			Owner:       "inlets",
 			Repo:        "mixctl",
 			Name:        "mixctl",
@@ -3317,6 +3298,60 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".exe"}}
 				{{- end -}}
 				{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "self-actuated",
+			Repo:        "actions-usage",
+			Name:        "actions-usage",
+			Description: "Get usage insights from GitHub Actions.",
+			BinaryTemplate: `
+				{{$arch := ""}}
+				{{$os := ""}}
+				{{$ext := ""}}
+	
+				{{- if eq .Arch "aarch64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if eq .Arch "arm64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+				{{$arch = "-armhf"}}
+				{{- end -}}
+	
+				{{ if eq .OS "darwin" -}}
+				{{$os = "-darwin"}}
+				{{ else if HasPrefix .OS "ming" -}}
+				{{$ext = ".exe"}}
+				{{- end -}}
+				{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "self-actuated",
+			Repo:        "actuated-cli",
+			Name:        "actuated-cli",
+			Description: "Official CLI for actuated.dev",
+			BinaryTemplate: `
+					{{$arch := ""}}
+					{{$os := ""}}
+					{{$ext := ""}}
+		
+					{{- if eq .Arch "aarch64" -}}
+					{{$arch = "-arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+					{{$arch = "-arm64"}}
+					{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+					{{$arch = "-armhf"}}
+					{{- end -}}
+		
+					{{ if eq .OS "darwin" -}}
+					{{$os = "-darwin"}}
+					{{ else if HasPrefix .OS "ming" -}}
+					{{$ext = ".exe"}}
+					{{- end -}}
+					{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
 
 	return tools
