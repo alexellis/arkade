@@ -679,6 +679,7 @@ There are 56 apps that you can install on your cluster.
 > Note to contributors, run `arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
+
 |                                     TOOL                                     |                                                                DESCRIPTION                                                                |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
