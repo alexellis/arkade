@@ -1,4 +1,4 @@
-# arkade - The Open Source Marketplace For Kubernetes
+# arkade - Open Source Marketplace For Developer Tools
 
 arkade is how developers install the latest versions of their favourite tools and Kubernetes apps.
 
