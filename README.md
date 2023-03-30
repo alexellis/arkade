@@ -631,6 +631,7 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | gitea                   | Install gitea                                                       |
 | gitlab                  | Install GitLab                                                      |
 | grafana                 | Install grafana                                                     |
+| harbor                  | Install harbor                                                      |
 | influxdb                | Install influxdb                                                    |
 | ingress-nginx           | Install ingress-nginx                                               |
 | inlets-operator         | Install inlets-operator                                             |
@@ -674,13 +675,13 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | vault                   | Install vault                                                       |
 | waypoint                | Install Waypoint                                                    |
 
-There are 56 apps that you can install on your cluster.
+There are 57 apps that you can install on your cluster.
 
 > Note to contributors, run `arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
 
-|                                     TOOL                                     |                                                                DESCRIPTION                                                                |
+| TOOL                                                                         |                                                                DESCRIPTION                                                                |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                   |
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                             |
