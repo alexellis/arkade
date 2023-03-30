@@ -6,10 +6,12 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"sort"
 
-	"github.com/alexellis/arkade/cmd/apps"
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
+
+	"github.com/alexellis/arkade/cmd/apps"
 )
 
 type ArkadeApp struct {
@@ -51,8 +53,15 @@ command.`,
 			table.SetCenterSeparator("|")
 			table.SetAutoWrapText(false)
 
-			for k, v := range appList {
-				table.Append([]string{k, v.Installer().Short})
+			appSortedList := make([]string, 0, len(appList))
+
+			for a := range appList {
+				appSortedList = append(appSortedList, a)
+			}
+			sort.Strings(appSortedList)
+
+			for _, k := range appSortedList {
+				table.Append([]string{k, appList[k].Installer().Short})
 			}
 
 			table.Render()
@@ -137,7 +146,7 @@ func GetApps() map[string]ArkadeApp {
 	arkadeApps["inlets-operator"] = NewArkadeApp(apps.MakeInstallInletsOperator, apps.InletsOperatorInfoMsg)
 	arkadeApps["nfs-provisioner"] = NewArkadeApp(apps.MakeInstallNfsProvisioner, apps.NfsClientProvisioneriInfoMsg)
 	arkadeApps["docker-registry"] = NewArkadeApp(apps.MakeInstallRegistry, apps.RegistryInfoMsg)
-	arkadeApps["OSM"] = NewArkadeApp(apps.MakeInstallOSM, apps.OSMInfoMsg)
+	arkadeApps["osm"] = NewArkadeApp(apps.MakeInstallOSM, apps.OSMInfoMsg)
 	arkadeApps["kube-image-prefetch"] = NewArkadeApp(apps.MakeInstallKubeImagePrefetch, apps.KubeImagePrefetchInfoMsg)
 	arkadeApps["registry-creds"] = NewArkadeApp(apps.MakeInstallRegistryCredsOperator, apps.RegistryCredsOperatorInfoMsg)
 	arkadeApps["gitea"] = NewArkadeApp(apps.MakeInstallGitea, apps.GiteaInfoMsg)
