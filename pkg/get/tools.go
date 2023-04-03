@@ -33,7 +33,11 @@ func MakeTools() Tools {
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}.exe
 {{- else if eq .OS "darwin" -}}
+  {{- if eq .Arch "arm64" -}}
+{{.Name}}-darwin-arm64
+  {{- else -}}
 {{.Name}}-darwin
+  {{- end -}}
 {{- else if eq .Arch "armv6l" -}}
 {{.Name}}-armhf
 {{- else if eq .Arch "armv7l" -}}

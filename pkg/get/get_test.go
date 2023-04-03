@@ -3,9 +3,7 @@ package get
 import (
 	"fmt"
 	"reflect"
-	"regexp"
 	"sort"
-	"strings"
 	"testing"
 
 	"github.com/Masterminds/semver"
@@ -35,15 +33,6 @@ func getTool(name string, tools []Tool) *Tool {
 		}
 	}
 	return tool
-}
-
-func getFaaSCLIVersion(url string, expectedBinaryName string) *semver.Version {
-	faasCLIURLVersionRegex := regexp.MustCompile(
-		"https://github.com/openfaas/faas-cli/releases/download/" +
-			semver.SemVerRegex + "/" + expectedBinaryName)
-	result := faasCLIURLVersionRegex.FindStringSubmatch(url)
-	version, _ := semver.NewVersion(strings.Join(result[1:], ""))
-	return version
 }
 
 func Test_MakeSureToolsAreSorted(t *testing.T) {
@@ -146,28 +135,6 @@ sudo install -m 755 /tmp/jq-linux64 /usr/local/bin/jq`,
 				t.Errorf("got %q, want %q", got, tt.want)
 			}
 		})
-	}
-}
-
-func Test_DownloadFaaSCLIDarwin(t *testing.T) {
-	tools := MakeTools()
-	name := "faas-cli"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	gotURL, err := tool.GetURL("darwin", "", "", false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-darwin")
-	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
-	if !valid {
-		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
@@ -534,72 +501,6 @@ func Test_DownloadKubens(t *testing.T) {
 	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
-	}
-}
-
-func Test_DownloadFaaSCLIArmhf(t *testing.T) {
-	tools := MakeTools()
-	name := "faas-cli"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	gotURL, err := tool.GetURL("Linux", archARM7, "", false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-armhf")
-	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
-	if !valid {
-		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
-	}
-}
-
-func Test_DownloadFaaSCLIArm64(t *testing.T) {
-	tools := MakeTools()
-	name := "faas-cli"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	gotURL, err := tool.GetURL("Linux", "aarch64", "", false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli-arm64")
-	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
-	if !valid {
-		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
-	}
-}
-
-func Test_DownloadFaaSCLIWindows(t *testing.T) {
-	tools := MakeTools()
-	name := "faas-cli"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
-
-	gotURL, err := tool.GetURL("mingw64_nt-10.0-18362", arch64bit, "", false)
-	if err != nil {
-		t.Fatal(err)
-	}
-	gotVersion := getFaaSCLIVersion(gotURL, "faas-cli.exe")
-	valid, msgs := faasCLIVersionConstraint.Validate(gotVersion)
-	if !valid {
-		t.Fatalf("%s failed version constraint: %v", gotURL, msgs)
 	}
 }
 
@@ -2297,6 +2198,70 @@ func Test_DownloadInletsProCli(t *testing.T) {
 			arch:    archDarwinARM64,
 			version: version,
 			url:     `https://github.com/inlets/inlets-pro/releases/download/0.9.1/inlets-pro-darwin-arm64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloadFaaSCLI(t *testing.T) {
+	tools := MakeTools()
+	name := "faas-cli"
+	const version = "0.16.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli-armhf`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli-armhf`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli-darwin`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/openfaas/faas-cli/releases/download/0.16.0/faas-cli-darwin-arm64`,
 		},
 	}
 
