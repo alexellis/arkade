@@ -5816,6 +5816,57 @@ func Test_DownloadFstail(t *testing.T) {
 
 }
 
+func Test_DownloadYt(t *testing.T) {
+	tools := MakeTools()
+	name := "yt-dlp"
+	const version = "0.1.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/yt-dlp/yt-dlp/releases/download/0.1.0/yt-dlp_linux`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/yt-dlp/yt-dlp/releases/download/0.1.0/yt-dlp_linux_armv7l`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/yt-dlp/yt-dlp/releases/download/0.1.0/yt-dlp_linux_aarch64`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/yt-dlp/yt-dlp/releases/download/0.1.0/yt-dlp_macos`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/yt-dlp/yt-dlp/releases/download/0.1.0/yt-dlp_x86.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadActuatedCLI(t *testing.T) {
 	tools := MakeTools()
 	name := "actions-usage"
@@ -5877,7 +5928,6 @@ func Test_DownloadActuatedCLI(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 	}
-
 }
 
 func Test_DownloadCmctl(t *testing.T) {

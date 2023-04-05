@@ -3381,5 +3381,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "yt-dlp",
+			Repo:        "yt-dlp",
+			Name:        "yt-dlp",
+			Description: "Fork of youtube-dl with additional features and fixes",
+			BinaryTemplate: `
+						{{$arch := ""}}
+						{{$os := ""}}
+						{{$ext := ""}}
+			
+						{{- if eq .OS "linux" -}}
+							{{$os = "linux"}}
+						{{- else if eq .OS "darwin" -}}
+							{{$os = "macos"}}
+						{{- end }}
+
+						{{- if eq .Arch "aarch64" -}}
+						{{$arch = "_aarch64"}}
+						{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+						{{$arch = "_armv7l"}}
+						{{- end -}}
+			
+						{{ if HasPrefix .OS "ming" -}}
+						{{$ext = ".exe"}}
+						{{$arch = "x86"}}
+						{{- end -}}
+						{{.Name}}_{{$os}}{{$arch}}{{$ext}}`,
+		})
+
 	return tools
 }
