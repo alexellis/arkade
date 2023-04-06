@@ -5987,3 +5987,55 @@ func Test_DownloadCmctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadSlice(t *testing.T) {
+	tools := MakeTools()
+	name := "slice"
+	version := "v1.2.5"
+
+	tool := getTool(name, tools)
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.2.5/kubectl-slice_darwin_x86_64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.2.5/kubectl-slice_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.2.5/kubectl-slice_linux_x86_64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.2.5/kubectl-slice_linux_arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/patrickdappollonio/kubectl-slice/releases/download/v1.2.5/kubectl-slice_windows_x86_64.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(tt *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				tt.Fatal(err)
+			}
+			if got != tc.url {
+				tt.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
