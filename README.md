@@ -682,6 +682,8 @@ There are 56 apps that you can install on your cluster.
 
 |                                     TOOL                                     |                                                                DESCRIPTION                                                                |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
+| [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                   |
+| [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                             |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
@@ -694,6 +696,7 @@ There are 56 apps that you can install on your cluster.
 | [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                             |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
 | [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                         |
+| [cmctl](https://github.com/cert-manager/cert-manager)                        | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                             |
 | [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                         |
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                           |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                         |
@@ -710,6 +713,7 @@ There are 56 apps that you can install on your cluster.
 | [firectl](https://github.com/firecracker-microvm/firectl)                    | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                        |
 | [flux](https://github.com/fluxcd/flux2)                                      | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                    |
 | [flyctl](https://github.com/superfly/flyctl)                                 | Command line tools for fly.io services                                                                                                    |
+| [fstail](https://github.com/alexellis/fstail)                                | Tail modified files in a directory.                                                                                                       |
 | [fzf](https://github.com/junegunn/fzf)                                       | General-purpose command-line fuzzy finder                                                                                                 |
 | [gh](https://github.com/cli/cli)                                             | GitHub’s official command line tool.                                                                                                      |
 | [golangci-lint](https://github.com/golangci/golangci-lint)                   | Go linters aggregator.                                                                                                                    |
@@ -794,6 +798,7 @@ There are 56 apps that you can install on your cluster.
 | [terrascan](https://github.com/tenable/terrascan)                            | Detect compliance and security violations across Infrastructure as Code.                                                                  |
 | [tfsec](https://github.com/aquasecurity/tfsec)                               | Security scanner for your Terraform code                                                                                                  |
 | [tilt](https://github.com/tilt-dev/tilt)                                     | A multi-service dev environment for teams on Kubernetes.                                                                                  |
+| [timoni](https://github.com/stefanprodan/timoni)                             | A package manager for Kubernetes powered by CUE.                                                                                          |
 | [tkn](https://github.com/tektoncd/cli)                                       | A CLI for interacting with Tekton.                                                                                                        |
 | [trivy](https://github.com/aquasecurity/trivy)                               | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                |
 | [vagrant](https://github.com/hashicorp/vagrant)                              | Tool for building and distributing development environments.                                                                              |
@@ -802,7 +807,8 @@ There are 56 apps that you can install on your cluster.
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                       |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
-There are 120 tools, use `arkade get NAME` to download one.
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
+There are 126 tools, use `arkade get NAME` to download one.
 
 
 > Note to contributors, run `arkade get --output markdown` to generate this list
