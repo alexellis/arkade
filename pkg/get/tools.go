@@ -1576,6 +1576,37 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 
 	tools = append(tools,
 		Tool{
+			Owner:       "stefanprodan",
+			Repo:        "timoni",
+			Name:        "timoni",
+			Description: "A package manager for Kubernetes powered by CUE.",
+			BinaryTemplate: `
+				{{$arch := .Arch}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "amd64"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$osString := ""}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$osString = "windows"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$osString = "darwin"}}
+				{{- end -}}
+
+				{{$ext := ".tar.gz"}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".zip"}}
+				{{- end -}}
+
+				{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "FairwindsOps",
 			Repo:        "polaris",
 			Name:        "polaris",
