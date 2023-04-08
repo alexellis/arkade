@@ -6027,6 +6027,64 @@ func Test_DownloadTimoni(t *testing.T) {
 			version: toolVersion,
 			url:     `https://github.com/stefanprodan/timoni/releases/download/v0.3.0/timoni_0.3.0_darwin_arm64.tar.gz`,
 		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/stefanprodan/timoni/releases/download/v0.3.0/timoni_0.3.0_linux_armv7l.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadSeaweedFS(t *testing.T) {
+	tools := MakeTools()
+	name := "seaweedfs"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "3.45"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/seaweedfs/seaweedfs/releases/download/3.45/linux_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/seaweedfs/seaweedfs/releases/download/3.45/darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/seaweedfs/seaweedfs/releases/download/3.45/linux_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/seaweedfs/seaweedfs/releases/download/3.45/darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/seaweedfs/seaweedfs/releases/download/3.45/linux_arm.tar.gz`,
+		},
 	}
 
 	for _, tc := range tests {

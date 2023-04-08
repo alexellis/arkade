@@ -3442,5 +3442,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{.Name}}_{{$os}}{{$arch}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "seaweedfs",
+			Repo:        "seaweedfs",
+			Name:        "seaweedfs",
+			Description: "SeaweedFS is a fast distributed storage system for blobs, objects, files, and data lake, for billions of files!",
+			URLTemplate: `
+							{{$arch := ""}}
+							{{$os := .OS}}
+							{{$ext := ".tar.gz"}}
+	
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$arch = "arm64"}}
+							{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+							{{$arch = "arm"}}
+							{{- else if eq .Arch "x86_64" -}}
+							{{$arch = "amd64"}}
+							{{- end -}}
+				
+							https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$os}}_{{$arch}}{{$ext}}
+							`,
+			BinaryTemplate: `weed`,
+		})
+
 	return tools
 }
