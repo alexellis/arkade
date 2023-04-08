@@ -14,13 +14,6 @@
 <!--- Include details of your testing environment, and the tests you ran to -->
 <!--- see how your change affects other areas of the code, etc. -->
 
-## Are you a GitHub Sponsor yet (Yes/No?)
-
-<!-- Requests from sponsors take priority -->
-<!--- Check at https://github.com/sponsors/alexellis         -->
-
-- [ ] Yes
-- [ ] No
 
 ## Types of changes
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
