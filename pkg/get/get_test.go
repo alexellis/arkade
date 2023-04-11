@@ -224,13 +224,7 @@ func Test_DownloadArkade(t *testing.T) {
 	tools := MakeTools()
 	name := "arkade"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -277,13 +271,7 @@ func Test_Download_RunJob(t *testing.T) {
 	tools := MakeTools()
 	name := "run-job"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -330,13 +318,7 @@ func Test_Download_ActuatedCLI(t *testing.T) {
 	tools := MakeTools()
 	name := "actuated-cli"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -371,13 +353,7 @@ func Test_Download_mixctl(t *testing.T) {
 	tools := MakeTools()
 	name := "mixctl"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -424,13 +400,7 @@ func Test_DownloadKubectl(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectl"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "darwin",
@@ -465,13 +435,7 @@ func Test_DownloadKubectl(t *testing.T) {
 func Test_DownloadKubectx(t *testing.T) {
 	tools := MakeTools()
 	name := "kubectx"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	got, err := tool.GetURL("linux", arch64bit, "v0.9.4", false)
 	if err != nil {
@@ -486,19 +450,13 @@ func Test_DownloadKubectx(t *testing.T) {
 func Test_DownloadKubens(t *testing.T) {
 	tools := MakeTools()
 	name := "kubens"
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	got, err := tool.GetURL("linux", arch64bit, tool.Version, false)
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.1/kubens"
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
@@ -508,13 +466,7 @@ func Test_DownloadKubeseal(t *testing.T) {
 	tools := MakeTools()
 	name := "kubeseal"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -557,13 +509,7 @@ func Test_DownloadKind(t *testing.T) {
 	tools := MakeTools()
 	name := "kind"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -606,13 +552,7 @@ func Test_DownloadK3d(t *testing.T) {
 	tools := MakeTools()
 	name := "k3d"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -651,13 +591,7 @@ func Test_DownloadK3s(t *testing.T) {
 	tools := MakeTools()
 	name := "k3s"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "linux",
@@ -684,13 +618,7 @@ func Test_DownloadDevspace(t *testing.T) {
 	tools := MakeTools()
 	name := "devspace"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -729,13 +657,7 @@ func Test_DownloadTilt(t *testing.T) {
 	tools := MakeTools()
 	name := "tilt"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -774,13 +696,7 @@ func Test_DownloadK3sup(t *testing.T) {
 	tools := MakeTools()
 	name := "k3sup"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -818,13 +734,7 @@ func Test_DownloadAutok3s(t *testing.T) {
 	tools := MakeTools()
 	name := "autok3s"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -863,13 +773,7 @@ func Test_DownloadInletsctl(t *testing.T) {
 	tools := MakeTools()
 	name := "inletsctl"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -916,13 +820,7 @@ func Test_DownloadKubebuilder(t *testing.T) {
 	tools := MakeTools()
 	name := "kubebuilder"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "darwin",
@@ -954,13 +852,7 @@ func Test_DownloadKustomize(t *testing.T) {
 	tools := MakeTools()
 	name := "kustomize"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	ver := "4.4.1"
 
@@ -999,13 +891,7 @@ func Test_DownloadCrane(t *testing.T) {
 
 	const toolVersion = "v0.11.0"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -1862,13 +1748,7 @@ func Test_DownloadLinkerd(t *testing.T) {
 	tools := MakeTools()
 	name := "linkerd2"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
@@ -1904,13 +1784,7 @@ func Test_DownloadArgocd(t *testing.T) {
 	name := "argocd"
 	version := "v2.4.14"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -1953,13 +1827,7 @@ func Test_DownloadNerdctl(t *testing.T) {
 	tools := MakeTools()
 	name := "nerdctl"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{os: "linux",
@@ -3411,13 +3279,7 @@ func Test_DownloadKubeBench(t *testing.T) {
 	tools := MakeTools()
 	name := "kube-bench"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -3449,13 +3311,7 @@ func Test_DownloadClusterctl(t *testing.T) {
 	tools := MakeTools()
 	name := "clusterctl"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -3499,13 +3355,7 @@ func Test_DownloadvCluster(t *testing.T) {
 	tools := MakeTools()
 	name := "vcluster"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -3556,13 +3406,7 @@ func Test_DownloadHostcl(t *testing.T) {
 	name := "hostctl"
 	version := "v1.1.3"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -3719,13 +3563,7 @@ func Test_DownloadSOPS(t *testing.T) {
 	name := "sops"
 	version := "v3.7.2"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
 
 	tests := []test{
 		{
@@ -3775,13 +3613,8 @@ func Test_DownloadDagger(t *testing.T) {
 	tools := MakeTools()
 	name := "dagger"
 
-	var tool *Tool
-	for _, target := range tools {
-		if name == target.Name {
-			tool = &target
-			break
-		}
-	}
+	tool := getTool(name, tools)
+
 	version := "v0.2.4"
 	tests := []test{
 		{
