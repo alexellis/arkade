@@ -176,7 +176,6 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 			Owner:          "ahmetb",
 			Repo:           "kubectx",
 			Name:           "kubens",
-			Version:        "v0.9.1",
 			Description:    "Switch between Kubernetes namespaces smoothly.",
 			BinaryTemplate: `kubens`,
 			NoExtension:    true,
@@ -764,7 +763,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "terraform",
 			Name:        "terraform",
-			Version:     "1.1.9",
+			Version:     "1.3.9",
 			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
