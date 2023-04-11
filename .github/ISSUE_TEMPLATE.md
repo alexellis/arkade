@@ -32,6 +32,8 @@ How many downloads does this tool have? Check at:
 
 https://somsubhra.github.io/github-release-stats/
 
+If approved, are you willing to submit a pull request for this?
+
 ## Your Environment
 
 * What Kubernetes distribution are you using?
