@@ -129,7 +129,7 @@ sudo install -m 755 /tmp/jq-linux64 /usr/local/bin/jq`,
 		t.Run(tt.localToolsStore[0].Name, func(t *testing.T) {
 			msg, _ := PostInstallationMsg(tt.dlMode, tt.localToolsStore)
 
-			got := fmt.Sprintf("%s", msg)
+			got := string(msg)
 
 			if got != tt.want {
 				t.Errorf("got %q, want %q", got, tt.want)
@@ -140,7 +140,7 @@ sudo install -m 755 /tmp/jq-linux64 /usr/local/bin/jq`,
 
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
-	kubectlVersion := "v1.24.2"
+	kubectlVersion := "v1.26.2"
 
 	tests := []struct {
 		name    string
@@ -193,8 +193,8 @@ func Test_GetDownloadURLs(t *testing.T) {
 		},
 		{
 			name:    "terraform",
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip",
-			version: "1.1.7",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip",
+			version: "1.3.9",
 			os:      "linux",
 			arch:    "x86_64",
 		},
@@ -1304,41 +1304,41 @@ func Test_DownloadTerraform(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.1.7"
+	const toolVersion = "1.3.9"
 
 	tests := []test{
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_windows_amd64.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_windows_amd64.zip`,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_amd64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    arch64bit,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_arm.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_arm.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM7,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_linux_arm64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_arm64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_darwin_arm64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_darwin_arm64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    archDarwinARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.1.7/terraform_1.1.7_darwin_amd64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_darwin_amd64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    arch64bit,
