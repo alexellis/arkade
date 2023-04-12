@@ -3465,5 +3465,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `weed`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "kyverno",
+			Repo:        "kyverno",
+			Name:        "kyverno",
+			Description: "CLI to apply and test Kyverno policies outside a cluster.",
+			URLTemplate: `
+				{{$arch := .Arch}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "x86_64"}}
+				{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+	
+				{{$os := .OS}}
+				{{$extStr := "tar.gz"}}
+				
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{$extStr = "zip"}}
+				{{- end -}}
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-cli_{{.Version}}_{{$os}}_{{$arch}}.{{$extStr}}`,
+		})
 	return tools
 }
