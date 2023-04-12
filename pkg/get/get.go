@@ -5,7 +5,7 @@ import (
 	"crypto/tls"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net"
 	"net/http"
@@ -123,7 +123,7 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 
 	var body string
 	if res.Body != nil {
-		b, _ := ioutil.ReadAll(res.Body)
+		b, _ := io.ReadAll(res.Body)
 		body = string(b)
 	}
 

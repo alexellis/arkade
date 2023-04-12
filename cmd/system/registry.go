@@ -22,8 +22,8 @@ func MakeInstallRegistry() *cobra.Command {
 
 	cmd.Flags().StringP("version", "v", "", "Version of the registry binary pack, leave blank for latest")
 	cmd.Flags().String("path", "/usr/local/bin", "Install path, where the distribution binaries will installed")
-	cmd.Flags().String("arch", "", "Set system download arch")
 	cmd.Flags().Bool("progress", true, "Show download progress")
+	cmd.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		_, err := cmd.Flags().GetString("path")
