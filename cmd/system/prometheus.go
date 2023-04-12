@@ -24,7 +24,7 @@ func MakeInstallPrometheus() *cobra.Command {
 	command.Flags().StringP("version", "v", "latest", "The version for Prometheus to install")
 	command.Flags().StringP("path", "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
-	command.Flags().String("arch", "", "CPU architecture for Prometheus, eg: amd64")
+	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")

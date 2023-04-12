@@ -28,9 +28,8 @@ func MakeInstallActionsRunner() *cobra.Command {
 
 	command.Flags().StringP("version", "v", "", "The version or leave blank to determine the latest available version")
 	command.Flags().String("path", "$HOME/actions-runner/", "Installation path, where a actions-runner subfolder will be created")
-	command.Flags().String("arch", "", "Leave blank for automatic determination")
-
 	command.Flags().Bool("progress", true, "Show download progress")
+	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 

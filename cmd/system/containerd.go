@@ -6,15 +6,16 @@ package system
 import (
 	"bytes"
 	"fmt"
+	"io"
+	"net/http"
+	"os"
+	"strings"
+
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	execute "github.com/alexellis/go-execute/pkg/v1"
 	"github.com/spf13/cobra"
-	"io/ioutil"
-	"net/http"
-	"os"
-	"strings"
 )
 
 func MakeInstallContainerd() *cobra.Command {
@@ -28,9 +29,9 @@ func MakeInstallContainerd() *cobra.Command {
 
 	cmd.Flags().StringP("version", "v", "", "Version of the containerd binary pack, leave blank for latest")
 	cmd.Flags().String("path", "/usr/local/bin", "Install path, where the containerd binaries will installed")
-	cmd.Flags().String("arch", "", "Set system download arch")
 	cmd.Flags().Bool("systemd", true, "Add and enable systemd service for containerd")
 	cmd.Flags().Bool("progress", true, "Show download progress")
+	cmd.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		_, err := cmd.Flags().GetString("path")
@@ -148,7 +149,7 @@ func MakeInstallContainerd() *cobra.Command {
 				return err
 			}
 
-			content, err := ioutil.ReadAll(response.Body)
+			content, err := io.ReadAll(response.Body)
 			if err != nil {
 				return err
 			}

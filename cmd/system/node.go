@@ -55,7 +55,7 @@ func MakeInstallNode() *cobra.Command {
 	command.Flags().StringP("path", "p", "/usr/local/", "Installation path")
 	command.Flags().StringP("channel", "c", "release", "The channel to install from, can be 'release' or 'nightly',")
 	command.Flags().Bool("progress", true, "Show download progress")
-	command.Flags().String("arch", "", "CPU architecture for Prometheus, eg: amd64")
+	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
