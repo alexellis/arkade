@@ -26,7 +26,7 @@ func MakeInstallMetricsServer() *cobra.Command {
 	metricsServer.Flags().StringP("namespace", "n", "kube-system", "The namespace used for installation")
 	metricsServer.Flags().StringArray("set", []string{},
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
-	metricsServer.Flags().StringP("tag", "t", "v0.6.1", "The tag or version of the metrics-server to install")
+	metricsServer.Flags().StringP("tag", "t", "v0.6.3", "The tag or version of the metrics-server to install")
 	metricsServer.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	metricsServer.RunE = func(command *cobra.Command, args []string) error {
