@@ -1818,7 +1818,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "equinix",
 			Repo:        "metal-cli",
 			Name:        "metal",
-			Version:     "0.6.0-alpha2",
 			Description: "Official Equinix Metal CLI",
 			BinaryTemplate: `{{ $ext := "" }}
 				{{ $osStr := "linux" }}
