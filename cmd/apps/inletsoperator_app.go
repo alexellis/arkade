@@ -57,9 +57,18 @@ IngressController`,
 	inletsOperator.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	inletsOperator.PreRunE = func(command *cobra.Command, args []string) error {
-		tokenString, _ := command.Flags().GetString("token")
-		tokenFileName, _ := command.Flags().GetString("token-file")
-		secretKeyFile, _ := command.Flags().GetString("secret-key-file")
+		tokenString, err := command.Flags().GetString("token")
+		if err != nil {
+			return err
+		}
+		tokenFileName, err := command.Flags().GetString("token-file")
+		if err != nil {
+			return err
+		}
+		secretKeyFile, err := command.Flags().GetString("secret-key-file")
+		if err != nil {
+			return err
+		}
 
 		return validatePreRun(tokenString, tokenFileName, secretKeyFile)
 	}
@@ -138,7 +147,7 @@ IngressController`,
 				Name:      "inlets-secret-key",
 			}
 			s.Literals = append(s.Literals, SecretLiteral{
-				Name:     "inlets-access-key",
+				Name:     "inlets-secret-key",
 				FromFile: secretKeyFile,
 			})
 
