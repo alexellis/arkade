@@ -30,6 +30,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallNode())
 	command.AddCommand(MakeInstallTCRedirectTap())
 	command.AddCommand(MakeInstallRegistry())
+	command.AddCommand(MakeInstallGitLabRunner())
 
 	return command
 }
