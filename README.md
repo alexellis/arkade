@@ -162,6 +162,20 @@ arkade get faas-cli \
 ```
 > This is a time saver compared to searching for download pages every time you need a tool.
 
+Files are stored at `$HOME/.arkade/bin/`
+
+Want to download tools to a custom path such as into the GitHub Actions cached tool folder?
+
+```bash
+arkade get faas-cli kubectl \
+  --path $HOME/runner/_work/_tools
+
+# Usage:
+/runner/_work/_tools/faas-cli version
+
+PATH=$PATH:$HOME/runner/_work/_tools
+faas-cli version
+```
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
 
@@ -749,6 +763,7 @@ There are 56 apps that you can install on your cluster.
 | [kind](https://github.com/kubernetes-sigs/kind)                              | Run local Kubernetes clusters using Docker container nodes.                                                                               |
 | [kops](https://github.com/kubernetes/kops)                                   | Production Grade K8s Installation, Upgrades, and Management.                                                                              |
 | [krew](https://github.com/kubernetes-sigs/krew)                              | Package manager for kubectl plugins.                                                                                                      |
+| [ktop](https://github.com/vladimirvivien/ktop)                               | A top-like tool for your Kubernetes cluster.                                                                                              |
 | [kube-bench](https://github.com/aquasecurity/kube-bench)                     | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                          |
 | [kubebuilder](https://github.com/kubernetes-sigs/kubebuilder)                | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                          |
 | [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                          |
@@ -763,7 +778,7 @@ There are 56 apps that you can install on your cluster.
 | [kubeval](https://github.com/instrumenta/kubeval)                            | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                       |
 | [kumactl](https://github.com/kumahq/kuma)                                    | kumactl is a CLI to interact with Kuma and its data                                                                                       |
 | [kustomize](https://github.com/kubernetes-sigs/kustomize)                    | Customization of kubernetes YAML configurations                                                                                           |
-| [kyverno](https://github.com/kyverno/kyverno)                                | Apply and test Kyverno policies outside a cluster                                                                                           |
+| [kyverno](https://github.com/kyverno/kyverno)                                | CLI to apply and test Kyverno policies outside a cluster.                                                                                 |
 | [lazygit](https://github.com/jesseduffield/lazygit)                          | A simple terminal UI for git commands.                                                                                                    |
 | [linkerd2](https://github.com/linkerd/linkerd2)                              | Ultralight, security-first service mesh for Kubernetes.                                                                                   |
 | [mc](https://github.com/minio/mc)                                            | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                              |
@@ -814,4 +829,4 @@ There are 56 apps that you can install on your cluster.
 There are 126 tools, use `arkade get NAME` to download one.
 
 
-> Note to contributors, run `arkade get --output markdown` to generate this list
+> Note to contributors, run `arkade get --format markdown` to generate this list

@@ -3512,5 +3512,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "vladimirvivien",
+			Repo:        "ktop",
+			Name:        "ktop",
+			Description: "A top-like tool for your Kubernetes cluster.",
+			URLTemplate: `
+					{{$arch := .Arch}}
+					{{ if eq .Arch "x86_64" -}}
+					{{$arch = "amd64"}}
+					{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+					{{$arch = "arm64"}}
+					{{- else if eq .Arch "armv7l" -}}
+					{{$arch = "armv7"}}
+					{{- end -}}
+		
+					{{$os := .OS}}
+					{{$ext := "tar.gz"}}
+					
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
 	return tools
 }

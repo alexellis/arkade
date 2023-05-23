@@ -6023,3 +6023,55 @@ func Test_DownloadBuildKit(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadKtop(t *testing.T) {
+	tools := MakeTools()
+	name := "ktop"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.3.5"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/vladimirvivien/ktop/releases/download/v0.3.5/ktop_v0.3.5_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/vladimirvivien/ktop/releases/download/v0.3.5/ktop_v0.3.5_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/vladimirvivien/ktop/releases/download/v0.3.5/ktop_v0.3.5_linux_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/vladimirvivien/ktop/releases/download/v0.3.5/ktop_v0.3.5_darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/vladimirvivien/ktop/releases/download/v0.3.5/ktop_v0.3.5_linux_armv7.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

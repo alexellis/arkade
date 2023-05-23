@@ -23,7 +23,7 @@
 
 ## Documentation
 
-- [ ] I have updated the list of tools in README.md if (required) with `./arkade get -o markdown`
+- [ ] I have updated the list of tools in README.md if (required) with `./arkade get --format markdown`
 - [ ] I have updated the list of apps in README.md if (required) with `./arkade install --help`
 
 ## Checklist:
