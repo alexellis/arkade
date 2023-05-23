@@ -162,6 +162,20 @@ arkade get faas-cli \
 ```
 > This is a time saver compared to searching for download pages every time you need a tool.
 
+Files are stored at `$HOME/.arkade/bin/`
+
+Want to download tools to a custom path such as into the GitHub Actions cached tool folder?
+
+```bash
+arkade get faas-cli kubectl \
+  --path $HOME/runner/_work/_tools
+
+# Usage:
+/runner/_work/_tools/faas-cli version
+
+PATH=$PATH:$HOME/runner/_work/_tools
+faas-cli version
+```
 
 Think of `arkade get TOOL` as a doing for CLIs, what `arkade install` does for helm.
 
@@ -814,4 +828,4 @@ There are 56 apps that you can install on your cluster.
 There are 126 tools, use `arkade get NAME` to download one.
 
 
-> Note to contributors, run `arkade get --output markdown` to generate this list
+> Note to contributors, run `arkade get --format markdown` to generate this list
