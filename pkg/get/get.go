@@ -379,14 +379,13 @@ func PostToolNotFoundMsg(url string) string {
 }
 
 // PostInstallationMsg generates installation message after tool has been downloaded
-func PostInstallationMsg(dlMode int, localToolsStore []ToolLocal) ([]byte, error) {
+func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, error) {
 
 	t := template.New("Installation Instructions")
 
-	if dlMode == DownloadTempDir {
+	if movePath != "" {
 		t.Parse(`Run the following to copy to install the tool:
 
-chmod +x {{range .}}{{.Path}} {{end}}
 {{- range . }}
 sudo install -m 755 {{.Path}} /usr/local/bin/{{.Name}}
 {{- end}}`)

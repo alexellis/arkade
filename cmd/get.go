@@ -61,21 +61,21 @@ and provides a fast and easy alternative to a package manager.`,
 	clientArch, clientOS := env.GetClientArch()
 
 	command.Flags().Bool("progress", true, "Display a progress bar")
-	command.Flags().StringP("output", "o", "", "Output format of the list of tools (table/markdown/list)")
-	command.Flags().Bool("stash", true, "When set to true, stash binary in HOME/.arkade/bin/, otherwise store in /tmp/")
+	command.Flags().StringP("format", "o", "", "Format format of the list of tools (table/markdown/list)")
+	command.Flags().String("path", "", "Leave empty to store in HOME/.arkade/bin/, otherwise give a path for the resulting binaries")
 	command.Flags().StringP("version", "v", "", "Download a specific version")
 	command.Flags().String("arch", clientArch, "CPU architecture for the tool")
 	command.Flags().String("os", clientOS, "Operating system for the tool")
-	command.Flags().Bool("quiet", false, "Suppress most additional output")
+	command.Flags().Bool("quiet", false, "Suppress most additional format")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
-			output, _ := command.Flags().GetString("output")
+			format, _ := command.Flags().GetString("format")
 
-			if len(output) > 0 {
-				if get.TableFormat(output) == get.MarkdownStyle {
+			if len(format) > 0 {
+				if get.TableFormat(format) == get.MarkdownStyle {
 					get.CreateToolsTable(tools, get.MarkdownStyle)
-				} else if get.TableFormat(output) == get.ListStyle {
+				} else if get.TableFormat(format) == get.ListStyle {
 					for _, r := range tools {
 						fmt.Printf("%s\n", r.Name)
 					}
@@ -99,7 +99,7 @@ and provides a fast and easy alternative to a package manager.`,
 			return err
 		}
 
-		stash, _ := command.Flags().GetBool("stash")
+		movePath, _ := command.Flags().GetString("path")
 		progress, _ := command.Flags().GetBool("progress")
 		quiet, _ := command.Flags().GetBool("quiet")
 
@@ -116,10 +116,7 @@ and provides a fast and easy alternative to a package manager.`,
 			progress = b
 		}
 
-		dlMode := get.DownloadTempDir
-		if stash {
-			dlMode = get.DownloadArkadeDir
-		}
+		movePath = os.ExpandEnv(movePath)
 
 		signalChan := make(chan os.Signal, 1)
 		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
@@ -136,6 +133,7 @@ and provides a fast and easy alternative to a package manager.`,
 		if err := get.ValidateArch(arch); err != nil {
 			return err
 		}
+
 		operatingSystem, _ := command.Flags().GetString("os")
 		if err := get.ValidateOS(operatingSystem); err != nil {
 			return err
@@ -149,7 +147,7 @@ and provides a fast and easy alternative to a package manager.`,
 				arch,
 				operatingSystem,
 				version,
-				dlMode,
+				movePath,
 				progress,
 				quiet)
 
@@ -196,7 +194,7 @@ The requested version of %s is not available or configured in arkade for %s/%s
 		nl := ""
 		if !quiet {
 			nl = "\n"
-			msg, err := get.PostInstallationMsg(dlMode, localToolsStore)
+			msg, err := get.PostInstallationMsg(movePath, localToolsStore)
 			if err != nil {
 				return err
 			}

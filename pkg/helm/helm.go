@@ -66,11 +66,12 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 			quiet    bool
 		)
 
+		defaultMovePath := ""
 		outPath, finalName, err := get.Download(tool,
 			clientArch,
 			clientOS,
 			tool.Version,
-			get.DownloadArkadeDir,
+			defaultMovePath,
 			progress,
 			quiet)
 		if err != nil {
