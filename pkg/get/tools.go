@@ -85,7 +85,7 @@ https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 			Repo:        "helmfile",
 			Name:        "helmfile",
 			Description: "Deploy Kubernetes Helm Charts",
-			BinaryTemplate: `{{$arch := "386"}}
+			BinaryTemplate: `{{$arch := ""}}
 						{{- if eq .Arch "x86_64" -}}
 						{{$arch = "amd64"}}
 						{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
