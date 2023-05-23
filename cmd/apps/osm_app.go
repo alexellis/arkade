@@ -108,8 +108,9 @@ func downloadOSM(userPath, arch, clientOS string) error {
 			progress bool
 			quiet    bool
 		)
+		defaultMovePath := ""
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, get.DownloadArkadeDir, progress, quiet)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, tool.Version, defaultMovePath, progress, quiet)
 		if err != nil {
 			return err
 		}
