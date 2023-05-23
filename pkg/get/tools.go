@@ -3487,5 +3487,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-cli_{{.Version}}_{{$os}}_{{$arch}}.{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "replicatedhq",
+			Repo:        "replicated",
+			Name:        "replicated",
+			Description: "CLI for interacting with the Replicated Vendor API",
+			URLTemplate: `
+				{{$arch := ""}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "amd64"}}
+				{{- end -}}
+
+				{{$osStr := ""}}
+				{{- if eq .OS "darwin" -}}
+				{{$osStr = "darwin"}}
+				{{$arch = "all"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- end -}}
+
+				{{$extStr := "tar.gz"}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
 	return tools
 }
