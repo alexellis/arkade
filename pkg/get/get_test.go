@@ -3337,6 +3337,12 @@ func Test_DownloadClusterctl(t *testing.T) {
 			version: "v1.0.0",
 			url:     "https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-darwin-arm64",
 		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v1.0.0",
+			url:     `https://github.com/kubernetes-sigs/cluster-api/releases/download/v1.0.0/clusterctl-windows-amd64.exe`,
+		},
 	}
 
 	for _, tc := range tests {

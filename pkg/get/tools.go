@@ -2127,8 +2127,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Description: "The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster",
 			BinaryTemplate: `{{ $ext := "" }}
 			{{ $osStr := "linux" }}
-			{{- if eq .OS "darwin" -}}
-			{{  $osStr = "darwin" }}
+			{{ if HasPrefix .OS "ming" -}}
+			{{ $osStr = "windows" }}
+			{{ $ext = ".exe" }}
+			{{- else if eq .OS "darwin" -}}
+			{{ $osStr = "darwin" }}
 			{{- end -}}
 
 			{{ $archStr := "amd64" }}
