@@ -214,9 +214,11 @@ Run the following to see what's available `arkade system install`:
 
 ```
   actions-runner  Install GitHub Actions Runner
+  buildkitd       Install Buildkitd
   cni             Install CNI plugins
   containerd      Install containerd
   firecracker     Install Firecracker
+  gitlab-runner   Install Gitlab Runner
   go              Install Go
   node            Install Node.js
   prometheus      Install Prometheus
