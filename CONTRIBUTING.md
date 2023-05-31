@@ -26,8 +26,8 @@ about at the end of this document.
 To add the sign-off, simply run:
 
 ```bash
-git commit --global user.name "Full Name"
-git commit --global user.email "you@example.com"
+git config --global user.name "Full Name"
+git config --global user.email "you@example.com"
 
 git commit -s / --signoff
 ```
