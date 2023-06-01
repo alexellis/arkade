@@ -3537,5 +3537,37 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cloud-bulldozer",
+			Repo:        "kube-burner",
+			Name:        "kube-burner",
+			Description: "A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.",
+			BinaryTemplate: `
+ 					{{$os := .OS}}
+ 					{{$arch := .Arch}}
+ 					{{$ext := "tar.gz"}}
+ 	
+ 					{{- if eq .OS "darwin" -}}
+ 						{{$os = "Darwin"}}
+ 					{{- else if eq .OS "linux" -}}
+ 						{{ $os = "Linux" }}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "Windows"}}
+						{{$ext = "zip"}}
+ 					{{- end -}}
+
+ 					{{- if eq .Arch "aarch64" -}}
+ 						{{$arch = "arm64"}}
+ 					{{- else if eq .Arch "arm64" -}}
+ 						{{ $arch = "arm64" }}
+ 					{{- else if eq .Arch "x86_64" -}}
+ 						{{ $arch = "x86_64" }}
+ 					{{- end -}}
+
+ 					{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
+ 					`,
+		})
 	return tools
 }
