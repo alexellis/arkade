@@ -7,7 +7,8 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
 [![Sponsor this](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/alexellis)](https://github.com/sponsors/alexellis)
-[![build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
+[![CI Build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
+[![URL Checker](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml)
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
