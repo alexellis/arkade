@@ -233,24 +233,11 @@ The initial set of system apps is now complete, learn more in the original propo
 
 ## Install CLIs during CI with GitHub Actions
 
-There are two GitHub Actions available for arkade
-
-* [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
-
-```yaml
-    - uses: alexellis/setup-arkade@v2
-    - name: Install kubectl & Helm
-      run: arkade get 
-        kubectl \
-        helm
-```
-
 * [alexellis/arkade-get@master](https://github.com/alexellis/arkade-get)
 
 Example downloading faas-cli (specific version) and kubectl (latest), putting them into the PATH automatically, and executing one of them in a subsequent step.
 
 ```yaml
-    - uses: alexellis/setup-arkade@v2
     - uses: alexellis/arkade-get@master
       with:
         kubectl: latest
@@ -258,6 +245,18 @@ Example downloading faas-cli (specific version) and kubectl (latest), putting th
     - name: check for faas-cli
       run: |
         faas-cli version
+```
+
+If you just need system applications, you could also try "setup-arkade":
+
+* [alexellis/setup-arkade@master](https://github.com/alexellis/setup-arkade)
+
+```yaml
+    - uses: alexellis/setup-arkade@v2
+    - name: Install containerd and go
+      run: |
+        arkade system install containerd
+        arkade system install go
 ```
 
 ## Verify and upgrade images in Helm charts
