@@ -3569,5 +3569,72 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
  					{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
  					`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "openshift",
+			Repo:        "installer",
+			Name:        "openshift-install",
+			Description: "CLI to install an OpenShift 4.x cluster.",
+			URLTemplate: `
+						{{$os := .OS}}
+						{{$arch := .Arch}}
+						{{$ext := "tar.gz"}}
+						{{$version := .VersionNumber}}
+		 
+						{{- if eq .OS "darwin" -}}
+							{{$os = "mac"}}
+						{{- end -}}
+	
+						{{- if eq .Arch "aarch64" -}}
+							{{$arch = "-arm64"}}
+						{{- else if eq .Arch "arm64" -}}
+							{{ $arch = "-arm64" }}
+						{{- else if eq .Arch "x86_64" -}}
+							{{ $arch = "" }}
+						{{- end -}}
+
+						{{- if eq .VersionNumber "" -}}
+							{{$version = "4.13.0"}}
+						{{- end -}}
+	
+						https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{$version}}/{{.Name}}-{{$os}}{{$arch}}.tar.gz
+						`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "openshift",
+			Repo:        "oc",
+			Name:        "oc",
+			Description: "Client to use an OpenShift 4.x cluster.",
+			URLTemplate: `
+						{{$os := .OS}}
+						{{$arch := .Arch}}
+						{{$ext := "tar.gz"}}
+						{{$version := .VersionNumber}}
+			
+						{{- if eq .OS "darwin" -}}
+							{{$os = "mac"}}
+						{{- else if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = "zip"}}
+						{{- end -}}
+	
+						{{- if eq .Arch "aarch64" -}}
+							{{$arch = "-arm64"}}
+						{{- else if eq .Arch "arm64" -}}
+							{{ $arch = "-arm64" }}
+						{{- else if eq .Arch "x86_64" -}}
+							{{ $arch = "" }}
+						{{- end -}}
+
+						{{- if eq .VersionNumber "" -}}
+							{{$version = "latest"}}
+						{{- end -}}
+	
+						https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{$version}}/openshift-client-{{$os}}{{$arch}}.{{$ext}}
+						`,
+		})
 	return tools
 }
