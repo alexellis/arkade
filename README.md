@@ -750,7 +750,7 @@ There are 56 apps that you can install on your cluster.
 | [inlets-pro](https://github.com/inlets/inlets-pro)                           | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                             |
 | [inletsctl](https://github.com/inlets/inletsctl)                             | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                             |
 | [istioctl](https://github.com/istio/istio)                                   | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                        |
-| [jq](https://github.com/jqlang/jq)                                         | jq is a lightweight and flexible command-line JSON processor                                                                              |
+| [jq](https://github.com/jqlang/jq)                                           | jq is a lightweight and flexible command-line JSON processor                                                                              |
 | [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                     |
 | [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                  |
 | [k0sctl](https://github.com/k0sproject/k0sctl)                               | A bootstrapping and management tool for k0s clusters                                                                                      |
@@ -795,8 +795,10 @@ There are 56 apps that you can install on your cluster.
 | [nats-server](https://github.com/nats-io/nats-server)                        | Cloud native message bus and queue server                                                                                                 |
 | [nerdctl](https://github.com/containerd/nerdctl)                             | Docker-compatible CLI for containerd, with support for Compose                                                                            |
 | [nova](https://github.com/FairwindsOps/nova)                                 | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
+| [oc](https://github.com/openshift/oc)                                        | Client to use an OpenShift 4.x cluster.                                                                                                   |
 | [oh-my-posh](https://github.com/jandedobbeleer/oh-my-posh)                   | A prompt theme engine for any shell that can display kubernetes information.                                                              |
 | [opa](https://github.com/open-policy-agent/opa)                              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
+| [openshift-install](https://github.com/openshift/installer)                  | CLI to install an OpenShift 4.x cluster.                                                                                                  |
 | [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                              |
 | [osm](https://github.com/openservicemesh/osm)                                | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                             |
 | [pack](https://github.com/buildpacks/pack)                                   | Build apps using Cloud Native Buildpacks.                                                                                                 |
@@ -806,7 +808,7 @@ There are 56 apps that you can install on your cluster.
 | [porter](https://github.com/getporter/porter)                                | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                           |
 | [promtool](https://github.com/prometheus/prometheus)                         | Prometheus rule tester and debugging utility                                                                                              |
 | [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                    |
-| [replicated](https://github.com/replicatedhq/replicated)                     | CLI for interacting with the Replicated Vendor API                                                                       |
+| [replicated](https://github.com/replicatedhq/replicated)                     | CLI for interacting with the Replicated Vendor API                                                                                        |
 | [rpk](https://github.com/redpanda-data/redpanda)                             | Kafka compatible streaming platform for mission critical workloads.                                                                       |
 | [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
 | [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
@@ -831,7 +833,8 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
-There are 131 tools, use `arkade get NAME` to download one.
+There are 133 tools, use `arkade get NAME` to download one.
+
 
 
 
