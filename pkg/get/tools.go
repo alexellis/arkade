@@ -463,7 +463,7 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 {{- end -}}
 https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}`,
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-{{.Name}}.exe
+{{.Name}}
 {{- else if eq .OS "darwin" -}}
 	{{- if eq .Arch "arm64" -}}
 	{{.Name}}-darwin-arm64
