@@ -471,13 +471,15 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{.Name}}-darwin
 	{{- end -}}
 {{- else if eq .OS "linux" -}}
-{{.Name}}
-{{- else if eq .Arch "armv6l" -}}
-{{.Name}}-armhf
-{{- else if eq .Arch "armv7l" -}}
-{{.Name}}-armhf
-{{- else if eq .Arch "aarch64" -}}
-{{.Name}}-arm64
+	{{- if eq .Arch "armv6l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-arm64
+	{{- else -}}
+	{{.Name}}
+	{{- end -}}
 {{- end -}}`,
 		},
 		Tool{
