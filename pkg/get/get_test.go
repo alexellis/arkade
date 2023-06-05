@@ -6132,3 +6132,101 @@ func Test_DownloadKubeBurner(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadOpenshiftInstall(t *testing.T) {
+	tools := MakeTools()
+	name := "openshift-install"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "4.13.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-install-linux.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-install-mac.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-install-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-install-mac-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadOpenshiftCLI(t *testing.T) {
+	tools := MakeTools()
+	name := "oc"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "4.13.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-client-linux.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-client-mac.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-client-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-client-mac-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.13.1/openshift-client-windows.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
