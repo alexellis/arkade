@@ -6230,3 +6230,38 @@ func Test_DownloadOpenshiftCLI(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadAtuin(t *testing.T) {
+	tools := MakeTools()
+	name := "atuin"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v15.0.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/ellie/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-unknown-linux-gnu.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/ellie/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-apple-darwin.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}

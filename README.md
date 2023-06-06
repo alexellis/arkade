@@ -705,6 +705,7 @@ There are 56 apps that you can install on your cluster.
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                              |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                        |
+| [atuin](https://github.com/ellie/atuin)                                      | Sync, search and backup shell history with Atuin.                                                                                         |
 | [autok3s](https://github.com/cnrancher/autok3s)                              | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                     |
 | [buildx](https://github.com/docker/buildx)                                   | Docker CLI plugin for extended build capabilities with BuildKit.                                                                          |
 | [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
@@ -833,7 +834,7 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
-There are 133 tools, use `arkade get NAME` to download one.
+There are 134 tools, use `arkade get NAME` to download one.
 
 
 
