@@ -3636,5 +3636,29 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{$version}}/openshift-client-{{$os}}{{$arch}}.{{$ext}}
 						`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "ellie",
+			Repo:        "atuin",
+			Name:        "atuin",
+			Description: "Sync, search and backup shell history with Atuin.",
+			URLTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+					
+					{{- if eq .OS "darwin" -}}
+						{{$os = "apple-darwin"}}
+					{{- else if eq .OS "linux" -}}
+						{{$os = "unknown-linux-gnu"}}
+					{{- end -}}
+					
+					{{- if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+						{{$arch = "x86_64"}}
+					{{- end -}}
+					
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
+		})
 	return tools
 }
