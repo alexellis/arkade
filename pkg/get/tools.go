@@ -3660,5 +3660,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "project-copacetic",
+			Repo:        "copacetic",
+			Name:        "copa",
+			Description: "CLI for patching container images",
+			URLTemplate: `
+				{{$arch := ""}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "amd64"}}
+				{{- end -}}
+
+				{{$osStr := ""}}
+				{{- if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- end -}}
+
+				{{$extStr := "tar.gz"}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
 	return tools
 }
