@@ -6265,3 +6265,30 @@ func Test_DownloadAtuin(t *testing.T) {
 	}
 
 }
+
+func Test_Copacetic(t *testing.T) {
+	tools := MakeTools()
+	name := "copa"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.2.0"
+
+	test := test{
+		os:      "linux",
+		arch:    arch64bit,
+		version: toolVersion,
+		url:     `https://github.com/project-copacetic/copacetic/releases/download/v0.2.0/copa_0.2.0_linux_amd64.tar.gz`,
+	}
+
+	t.Run(test.os+" "+test.arch+" "+test.version, func(r *testing.T) {
+		got, err := tool.GetURL(test.os, test.arch, test.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != test.url {
+			t.Errorf("want: %s, got: %s", test.url, got)
+		}
+	})
+
+}
