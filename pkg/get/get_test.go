@@ -2,8 +2,10 @@ package get
 
 import (
 	"fmt"
+	"path/filepath"
 	"reflect"
 	"sort"
+	"strings"
 	"testing"
 
 	"github.com/Masterminds/semver"
@@ -827,7 +829,18 @@ func Test_DownloadInletsctl(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Fatalf("want: %s, got: %s", tc.url, got)
+			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
+		}
+		name, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		// Remove the tgz and possible exe extensions from the url base name
+		// and verify that it matches the name from the binary template.
+		// Note: decompress adds the exe extension to the binary name if needed.
+		nameFromUrl := strings.Split(filepath.Base(tc.url), ".")[0]
+		if name != nameFromUrl {
+			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, nameFromUrl, name)
 		}
 	}
 }
