@@ -2,10 +2,8 @@ package get
 
 import (
 	"fmt"
-	"path/filepath"
 	"reflect"
 	"sort"
-	"strings"
 	"testing"
 
 	"github.com/Masterminds/semver"
@@ -24,6 +22,8 @@ type test struct {
 	arch    string
 	version string
 	url     string
+	// Optional fields
+	binaryBase string
 }
 
 func getTool(name string, tools []Tool) *Tool {
@@ -795,33 +795,40 @@ func Test_DownloadInletsctl(t *testing.T) {
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
-			arch:    arch64bit,
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.exe.tgz"},
+			arch:       arch64bit,
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.exe.tgz",
+			binaryBase: "inletsctl"},
 		{os: "darwin",
-			arch:    arch64bit,
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin.tgz"},
+			arch:       arch64bit,
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin.tgz",
+			binaryBase: "inletsctl-darwin"},
 		{os: "darwin",
-			arch:    archDarwinARM64,
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin-arm64.tgz"},
+			arch:       archDarwinARM64,
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin-arm64.tgz",
+			binaryBase: "inletsctl-darwin-arm64"},
 		{os: "linux",
-			arch:    arch64bit,
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.tgz"},
+			arch:       arch64bit,
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.tgz",
+			binaryBase: "inletsctl"},
 		{os: "linux",
-			arch:    "armv6l",
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz"},
+			arch:       "armv6l",
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
+			binaryBase: "inletsctl-armhf"},
 		{os: "linux",
-			arch:    "armv7l",
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz"},
+			arch:       "armv7l",
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
+			binaryBase: "inletsctl-armhf"},
 		{os: "linux",
-			arch:    archARM64,
-			version: "0.8.16",
-			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-arm64.tgz"},
+			arch:       archARM64,
+			version:    "0.8.16",
+			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-arm64.tgz",
+			binaryBase: "inletsctl-arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
@@ -835,12 +842,8 @@ func Test_DownloadInletsctl(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		// Remove the tgz and possible exe extensions from the url base name
-		// and verify that it matches the name from the binary template.
-		// Note: decompress adds the exe extension to the binary name if needed.
-		nameFromUrl := strings.Split(filepath.Base(tc.url), ".")[0]
-		if name != nameFromUrl {
-			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, nameFromUrl, name)
+		if name != tc.binaryBase {
+			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.binaryBase, name)
 		}
 	}
 }
