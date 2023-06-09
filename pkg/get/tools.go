@@ -3682,5 +3682,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cilium",
+			Repo:        "cilium-cli",
+			Name:        "cilium",
+			Description: "The cilium CLI.",
+			URLTemplate: `
+{{$arch := .Arch}}
+{{ if (eq .Arch "x86_64") -}}
+	{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+{{- end -}}
+
+{{$osString:= .OS}}
+{{ if HasPrefix .OS "ming" -}}
+	{{$osString = "windows"}}
+{{- end -}}
+
+{{$ext := ".tar.gz"}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/cilium-{{$osString}}-{{$arch}}{{$ext}}`,
+		})
+
 	return tools
 }
