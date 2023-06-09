@@ -711,6 +711,7 @@ There are 56 apps that you can install on your cluster.
 | [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
 | [butane](https://github.com/coreos/butane)                                   | Translates human readable Butane Configs into machine readable Ignition Configs                                                           |
 | [caddy](https://github.com/caddyserver/caddy)                                | Caddy is an extensible server platform that uses TLS by default                                                                           |
+| [cilium](https://github.com/cilium/cilium-cli)                               | The cilium CLI.                                                                                                                           |
 | [cilium](https://github.com/cilium/cilium-cli)                               | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                             |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
@@ -835,9 +836,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
-There are 134 tools, use `arkade get NAME` to download one.
-
-
-
+There are 136 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
