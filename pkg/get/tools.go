@@ -556,7 +556,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	kustomize%2Fv{{.Version}}/{{.Name}}_v{{.Version}}_{{$osStr}}.tar.gz`,
+	kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.tar.gz`,
 		})
 
 	tools = append(tools,
