@@ -853,7 +853,7 @@ func Test_DownloadKustomize(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	ver := "4.4.1"
+	ver := "v4.4.1"
 
 	tests := []test{
 		{os: "linux",
