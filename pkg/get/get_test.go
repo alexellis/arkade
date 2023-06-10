@@ -35,6 +35,23 @@ func getTool(name string, tools []Tool) *Tool {
 	return tool
 }
 
+func Test_MakeSureNoDuplicates(t *testing.T) {
+	count := map[string]int{}
+	tools := MakeTools()
+	dupes := []string{}
+
+	for _, tool := range tools {
+		count[tool.Name]++
+
+		if count[tool.Name] > 1 {
+			dupes = append(dupes, tool.Name)
+		}
+	}
+	if len(dupes) > 0 {
+		t.Fatalf("Duplicate tools found which will break get-arkade GitHub Action: %v", dupes)
+	}
+}
+
 func Test_MakeSureToolsAreSorted(t *testing.T) {
 	got := Tools{
 		{
