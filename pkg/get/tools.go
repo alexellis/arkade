@@ -544,9 +544,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:        "kustomize",
 			Name:        "kustomize",
 			Description: "Customization of kubernetes YAML configurations",
-			Version:     "4.4.1",
+			Version:     "v5.0.3",
 			BinaryTemplate: `
 	{{$osStr := ""}}
+	{{$ext := "tar.gz"}}
 	{{- if eq .OS "linux" -}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$osStr = "linux_amd64"}}
@@ -556,7 +557,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	kustomize%2Fv{{.Version}}/{{.Name}}_v{{.Version}}_{{$osStr}}.tar.gz`,
+	{{ if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows_amd64"}}
+	{{- end -}}
+	kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.{{$ext}}`,
 		})
 
 	tools = append(tools,
