@@ -2,6 +2,13 @@
 
 if [ -z $1 ];
 then
+  echo "test-tool.sh"
+  echo ""
+  echo "Downloads the tool for all supported operating systems and"
+  echo "CPU architectures. Print the file type for manual checking"
+  echo "This often finds issues with PRs that are not caught by"
+  echo "unit test alone"
+  echo
   echo usage: test-tool.sh TOOLNAME
   exit 1
 fi
