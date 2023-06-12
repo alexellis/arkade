@@ -870,23 +870,29 @@ func Test_DownloadKustomize(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	ver := "4.4.1"
+	ver := "v5.0.3"
 
 	tests := []test{
 		{os: "linux",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_linux_amd64.tar.gz",
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_darwin_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_amd64.tar.gz",
 		},
 		{os: "linux",
 			arch:    archARM64,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_arm64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_linux_arm64.tar.gz",
+		},
+		{os: "mingw64_nt-10.0-18362",
+
+			arch:    arch64bit,
+			version: ver,
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_windows_amd64.tar.gz",
 		},
 	}
 
