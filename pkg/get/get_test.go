@@ -23,7 +23,7 @@ type test struct {
 	version string
 	url     string
 	// Optional fields
-	binaryBase string
+	binary  string
 }
 
 func getTool(name string, tools []Tool) *Tool {
@@ -778,40 +778,40 @@ func Test_DownloadInletsctl(t *testing.T) {
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
-			arch:       arch64bit,
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.exe.tgz",
-			binaryBase: "inletsctl"},
+			arch:    arch64bit,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.exe.tgz",
+			binary:  "inletsctl"},
 		{os: "darwin",
-			arch:       arch64bit,
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin.tgz",
-			binaryBase: "inletsctl-darwin"},
+			arch:    arch64bit,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin.tgz",
+			binary:  "inletsctl-darwin"},
 		{os: "darwin",
-			arch:       archDarwinARM64,
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin-arm64.tgz",
-			binaryBase: "inletsctl-darwin-arm64"},
+			arch:    archDarwinARM64,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-darwin-arm64.tgz",
+			binary:  "inletsctl-darwin-arm64"},
 		{os: "linux",
-			arch:       arch64bit,
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.tgz",
-			binaryBase: "inletsctl"},
+			arch:    arch64bit,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl.tgz",
+			binary:  "inletsctl"},
 		{os: "linux",
-			arch:       "armv6l",
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
-			binaryBase: "inletsctl-armhf"},
+			arch:    "armv6l",
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
+			binary:  "inletsctl-armhf"},
 		{os: "linux",
-			arch:       "armv7l",
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
-			binaryBase: "inletsctl-armhf"},
+			arch:    "armv7l",
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-armhf.tgz",
+			binary:  "inletsctl-armhf"},
 		{os: "linux",
-			arch:       archARM64,
-			version:    "0.8.16",
-			url:        "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-arm64.tgz",
-			binaryBase: "inletsctl-arm64"},
+			arch:    archARM64,
+			version: "0.8.16",
+			url:     "https://github.com/inlets/inletsctl/releases/download/0.8.16/inletsctl-arm64.tgz",
+			binary:  "inletsctl-arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
@@ -821,12 +821,12 @@ func Test_DownloadInletsctl(t *testing.T) {
 		if got != tc.url {
 			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
 		}
-		name, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
+		binary, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if name != tc.binaryBase {
-			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.binaryBase, name)
+		if binary != tc.binary {
+			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.binary, binary)
 		}
 	}
 }
