@@ -23,7 +23,7 @@ type test struct {
 	version string
 	url     string
 	// Optional fields
-	binary  string
+	binary string
 }
 
 func getTool(name string, tools []Tool) *Tool {
