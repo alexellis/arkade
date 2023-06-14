@@ -14,6 +14,11 @@
 <!--- Include details of your testing environment, and the tests you ran to -->
 <!--- see how your change affects other areas of the code, etc. -->
 
+If updating or adding a new CLI to `arkade get`, run:
+
+```
+go build && ./hack/test-tool.sh TOOL_NAME
+```
 
 ## Types of changes
 <!--- What types of changes does your code introduce? Put an `x` in all the boxes that apply: -->
@@ -33,5 +38,5 @@
 - [ ] I've read the [CONTRIBUTION](https://github.com/alexellis/arkade/blob/master/CONTRIBUTING.md) guide
 - [ ] I have signed-off my commits with `git commit -s`
 
-<!--- In case it is a new application -->
+<!--- For "arkade install" or "arkade system install" -->
 - [ ] I have tested this on arm, or have added code to prevent deployment

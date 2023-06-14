@@ -544,9 +544,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:        "kustomize",
 			Name:        "kustomize",
 			Description: "Customization of kubernetes YAML configurations",
-			Version:     "4.4.1",
+			Version:     "v5.0.3",
 			BinaryTemplate: `
 	{{$osStr := ""}}
+	{{$ext := "tar.gz"}}
 	{{- if eq .OS "linux" -}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$osStr = "linux_amd64"}}
@@ -556,7 +557,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	kustomize%2Fv{{.Version}}/{{.Name}}_v{{.Version}}_{{$osStr}}.tar.gz`,
+	{{ if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows_amd64"}}
+	{{- end -}}
+	kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -3660,5 +3664,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "project-copacetic",
+			Repo:        "copacetic",
+			Name:        "copa",
+			Description: "CLI for patching container images",
+			URLTemplate: `
+				{{$arch := ""}}
+				{{ if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+				{{$arch = "amd64"}}
+				{{- end -}}
+
+				{{$osStr := ""}}
+				{{- if eq .OS "linux" -}}
+				{{$osStr = "linux"}}
+				{{- end -}}
+
+				{{$extStr := "tar.gz"}}
+
+				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
+
 	return tools
 }

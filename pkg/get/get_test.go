@@ -49,6 +49,23 @@ func runGetToolTemplateTests(t *testing.T, tool *Tool, tests []test) {
 	}
 }
 
+func Test_MakeSureNoDuplicates(t *testing.T) {
+	count := map[string]int{}
+	tools := MakeTools()
+	dupes := []string{}
+
+	for _, tool := range tools {
+		count[tool.Name]++
+
+		if count[tool.Name] > 1 {
+			dupes = append(dupes, tool.Name)
+		}
+	}
+	if len(dupes) > 0 {
+		t.Fatalf("Duplicate tools found which will break get-arkade GitHub Action: %v", dupes)
+	}
+}
+
 func Test_MakeSureToolsAreSorted(t *testing.T) {
 	got := Tools{
 		{
@@ -747,23 +764,29 @@ func Test_DownloadKustomize(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	ver := "4.4.1"
+	ver := "v5.0.3"
 
 	tests := []test{
 		{os: "linux",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_linux_amd64.tar.gz",
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_darwin_amd64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_darwin_amd64.tar.gz",
 		},
 		{os: "linux",
 			arch:    archARM64,
 			version: ver,
-			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv4.4.1/kustomize_v4.4.1_linux_arm64.tar.gz",
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_linux_arm64.tar.gz",
+		},
+		{os: "mingw64_nt-10.0-18362",
+
+			arch:    arch64bit,
+			version: ver,
+			url:     "https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv5.0.3/kustomize_v5.0.3_windows_amd64.tar.gz",
 		},
 	}
 
@@ -5022,6 +5045,7 @@ func Test_DownloadKtop(t *testing.T) {
 
 	runGetToolTemplateTests(t, tool, tests)
 }
+
 func Test_DownloadKubeBurner(t *testing.T) {
 	tools := MakeTools()
 	name := "kube-burner"
@@ -5172,5 +5196,32 @@ func Test_DownloadAtuin(t *testing.T) {
 	}
 
 	runGetToolTemplateTests(t, tool, tests)
+
+}
+
+func Test_Copacetic(t *testing.T) {
+	tools := MakeTools()
+	name := "copa"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.2.0"
+
+	test := test{
+		os:      "linux",
+		arch:    arch64bit,
+		version: toolVersion,
+		url:     `https://github.com/project-copacetic/copacetic/releases/download/v0.2.0/copa_0.2.0_linux_amd64.tar.gz`,
+	}
+
+	t.Run(test.os+" "+test.arch+" "+test.version, func(r *testing.T) {
+		got, err := tool.GetURL(test.os, test.arch, test.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != test.url {
+			t.Errorf("want: %s, got: %s", test.url, got)
+		}
+	})
 
 }
