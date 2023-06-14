@@ -3689,5 +3689,61 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "go-task",
+			Repo:        "task",
+			Name:        "task",
+			Description: "A simple task runner and build tool",
+			BinaryTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+
+					{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "x86_64" -}}
+						{{ $arch = "amd64" }}
+					{{- else if eq .Arch "armv7l" -}}
+						{{ $arch = "arm" }}
+					{{- end -}}
+
+					{{ if HasPrefix .OS "ming" -}}
+					{{$os = "windows"}}
+					{{$ext = "zip"}}
+					{{- end -}}
+
+					{{.Name}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "1password",
+			Name:        "op",
+			Description: "1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.",
+			URLTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$version := .Version}}
+
+				{{- if eq .Version "" -}}
+					{{ $version = "v2.17.0" }}
+				{{- end -}}
+
+				{{- if eq .Arch "aarch64" -}}
+					{{ $arch = "arm64" }}
+				{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "amd64" }}
+				{{- else if eq .Arch "armv7l" -}}
+					{{ $arch = "arm" }}
+				{{- end -}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{- end -}}
+
+				https://cache.agilebits.com/dist/1P/op2/pkg/{{$version}}/op_{{$os}}_{{$arch}}_{{$version}}.zip`,
+		})
+
 	return tools
 }

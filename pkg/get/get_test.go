@@ -6332,3 +6332,107 @@ func Test_Copacetic(t *testing.T) {
 	})
 
 }
+
+func Test_DownloadTask(t *testing.T) {
+	tools := MakeTools()
+	name := "task"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v3.26.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/go-task/task/releases/download/v3.26.0/task_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/go-task/task/releases/download/v3.26.0/task_linux_arm.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/go-task/task/releases/download/v3.26.0/task_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/go-task/task/releases/download/v3.26.0/task_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/go-task/task/releases/download/v3.26.0/task_darwin_amd64.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download1Password(t *testing.T) {
+	tools := MakeTools()
+	name := "op"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.17.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_amd64_v2.17.0.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "",
+			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_amd64_v2.17.0.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_arm_v2.17.0.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_arm64_v2.17.0.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_windows_amd64_v2.17.0.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

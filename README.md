@@ -800,6 +800,7 @@ There are 56 apps that you can install on your cluster.
 | [nova](https://github.com/FairwindsOps/nova)                                 | Find outdated or deprecated Helm charts running in your cluster.                                                                          |
 | [oc](https://github.com/openshift/oc)                                        | Client to use an OpenShift 4.x cluster.                                                                                                   |
 | [oh-my-posh](https://github.com/jandedobbeleer/oh-my-posh)                   | A prompt theme engine for any shell that can display kubernetes information.                                                              |
+| [op](https://github.com/1password/)                                          | 1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.                |
 | [opa](https://github.com/open-policy-agent/opa)                              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                             |
 | [openshift-install](https://github.com/openshift/installer)                  | CLI to install an OpenShift 4.x cluster.                                                                                                  |
 | [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                              |
@@ -820,6 +821,7 @@ There are 56 apps that you can install on your cluster.
 | [stern](https://github.com/stern/stern)                                      | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | [syft](https://github.com/anchore/syft)                                      | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
 | [talosctl](https://github.com/siderolabs/talos)                              | The command-line tool for managing Talos Linux OS.                                                                                        |
+| [task](https://github.com/go-task/task)                                      | A simple task runner and build tool                                                                                                       |
 | [tctl](https://github.com/temporalio/tctl)                                   | Temporal CLI.                                                                                                                             |
 | [terraform](https://github.com/hashicorp/terraform)                          | Infrastructure as Code for major cloud providers.                                                                                         |
 | [terragrunt](https://github.com/gruntwork-io/terragrunt)                     | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                          |
@@ -836,6 +838,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
-There are 136 tools, use `arkade get NAME` to download one.
+There are 137 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
