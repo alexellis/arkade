@@ -3745,5 +3745,38 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				https://cache.agilebits.com/dist/1P/op2/pkg/{{$version}}/op_{{$os}}_{{$arch}}_{{$version}}.zip`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "charmbracelet",
+			Repo:        "vhs",
+			Name:        "vhs",
+			Description: "CLI for recording demos",
+			URLTemplate: `
+					{{$arch := .Arch}}
+					{{ if (eq .Arch "x86_64") -}}
+					{{$arch = "x86_64"}}
+					{{- else if eq .Arch "aarch64" -}}
+					{{$arch = "arm64"}}
+					{{- end -}}
+
+					{{$osStr := ""}}
+					{{$extStr := "tar.gz"}}
+					{{- if eq .OS "darwin" -}}
+					{{$osStr = "Darwin"}}
+					{{- else if eq .OS "linux" -}}
+					{{$osStr = "Linux"}}
+					{{- else if HasPrefix .OS "ming" -}}
+					{{$osStr = "Windows"}}
+					{{$extStr = "zip"}}
+					{{- end -}}
+
+					{{- if eq $osStr "Darwin"}}
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$arch}}.{{$extStr}}
+					{{- else if or (eq $osStr "Windows") (eq $osStr "Linux") -}}
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}
+					{{- end -}}
+					`,
+		})
+
 	return tools
 }
