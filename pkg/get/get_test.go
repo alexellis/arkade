@@ -6515,3 +6515,55 @@ func Test_Download1Password(t *testing.T) {
 		}
 	}
 }
+
+func Test_VHS(t *testing.T) {
+	tools := MakeTools()
+	name := "vhs"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.5.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_0.5.0_Linux_x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_Darwin_x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_0.5.0_Linux_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_Darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_0.5.0_Windows_x86_64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
