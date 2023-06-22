@@ -99,7 +99,7 @@ To connect to your database from outside the cluster execute the following comma
     kubectl port-forward --namespace default svc/postgresql 5432:5432 &
 	PGPASSWORD="$POSTGRES_PASSWORD" psql --host 127.0.0.1 -U postgres -d postgres -p 5432
 
-# Find out more at: https://github.com/helm/charts/tree/master/stable/postgresql`
+# Find out more at: https://github.com/bitnami/charts/tree/main/bitnami/postgresql`
 
 const postgresqlInstallMsg = `=======================================================================
 = PostgreSQL has been installed.                                      =
