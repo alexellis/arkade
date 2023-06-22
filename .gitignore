@@ -1,4 +1,5 @@
 arkade
+arkade.exe
 bin/**
 kubeconfig
 .DS_Store
