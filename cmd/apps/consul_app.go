@@ -45,10 +45,6 @@ func MakeInstallConsul() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		namespace, _ := consul.Flags().GetString("namespace")
 
 		overrides := map[string]string{}

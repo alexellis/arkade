@@ -85,10 +85,6 @@ func MakeInstallJenkins() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		jenkinsAppOptions := types.DefaultInstallOptions().
 			WithNamespace(ns).
 			WithHelmRepo("jenkins/jenkins").

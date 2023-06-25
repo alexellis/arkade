@@ -9,7 +9,6 @@ import (
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
-	"github.com/alexellis/arkade/pkg/k8s"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -58,11 +57,6 @@ func MakeInstallRabbitmq() *cobra.Command {
 		_, err = command.Flags().GetStringArray("set")
 		if err != nil {
 			return fmt.Errorf("error with --set usage: %s", err)
-		}
-
-		arch := k8s.GetNodeArchitecture()
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
 		}
 
 		return nil

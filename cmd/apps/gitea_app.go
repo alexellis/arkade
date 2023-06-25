@@ -90,10 +90,6 @@ func MakeInstallGitea() *cobra.Command {
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath)
 
-		if _, found := overrides["gitea.config.database.HOST"]; !found && arch != IntelArch {
-			return fmt.Errorf("if installing on ARM platform you'll need to use an external database")
-		}
-
 		_, err = apps.MakeInstallChart(giteaAppOptions)
 		if err != nil {
 			return err

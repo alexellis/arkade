@@ -35,10 +35,6 @@ func MakeInstallWaypoint() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		namespace, _ := waypoint.Flags().GetString("namespace")
 
 		overrides := map[string]string{}

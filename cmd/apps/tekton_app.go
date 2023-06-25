@@ -32,10 +32,6 @@ func MakeInstallTekton() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(`only Intel and AMD (i.e. PC) architecture is supported for this app`)
-		}
-
 		fmt.Println("Installing Tekton pipelines...")
 		_, err := k8s.KubectlTask("apply", "-f",
 			"https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml")
