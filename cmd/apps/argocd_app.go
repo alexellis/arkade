@@ -33,10 +33,6 @@ func MakeInstallArgoCD() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		_, err := k8s.KubectlTask("create", "ns",
 			"argocd")
 		if err != nil {

@@ -15,8 +15,7 @@ import (
 )
 
 const (
-	MetalLBNamespaceManifest = "https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/namespace.yaml"
-	MetalLBManifest          = "https://raw.githubusercontent.com/metallb/metallb/v0.10.2/manifests/metallb.yaml"
+	MetalLBManifest = "https://raw.githubusercontent.com/metallb/metallb/v0.13.10/config/manifests/metallb-native.yaml"
 )
 
 func MakeInstallMetalLB() *cobra.Command {
@@ -57,15 +56,7 @@ func MakeInstallMetalLB() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		addressRange, _ := command.Flags().GetString("address-range")
-
-		if err := k8s.Kubectl("apply", "-f", MetalLBNamespaceManifest); err != nil {
-			return err
-		}
 
 		if err := k8s.Kubectl("apply", "-f", MetalLBManifest); err != nil {
 			return err

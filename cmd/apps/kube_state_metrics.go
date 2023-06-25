@@ -41,10 +41,6 @@ func MakeInstallKubeStateMetrics() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
-		}
-
 		clientArch, clientOS := env.GetClientArch()
 		fmt.Printf("Client: %q, %q\n", clientArch, clientOS)
 
