@@ -131,6 +131,35 @@ Example:
 }
 ```
 
+### Edit and Generate demo GIF
+
+To add an entry to the demo GIF:
+- Open the `docs/arkade.tape` file in your preferred text editor.
+- Insert your desired commands according to the following format
+
+```
+Type@50ms "# Short decription of what the command does" Sleep <duration>
+Hide
+Ctrl+C
+Show
+
+Type "<command>" Enter Sleep <duration>
+Hide
+Type "clear" Enter
+Show
+```
+
+- Generate the GIF file.
+
+```bash
+$ vhs docs/arkade.tape
+```
+
+- Publish the GIF to get a shareable URL
+```bash
+$ vhs publish arkade.gif
+```
+
 ### Workflow for a first-time contributing
 
 Here's the basics for contributing:

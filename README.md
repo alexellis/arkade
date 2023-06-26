@@ -121,6 +121,10 @@ Or get a copy of his eBook on Go so you can learn how to build tools like k3sup,
 >
 > [John Arundel](https://twitter.com/bitfield/status/1242385165445455872?s=20) - Cloud consultant, author
 
+## Demo
+
+![demo](https://vhs.charm.sh/vhs-7Fyg69mwbYHFuUtSKnWMYT.gif)
+
 ## Getting arkade
 
 ```bash
