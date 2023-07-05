@@ -3572,7 +3572,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
  						{{ $arch = "x86_64" }}
  					{{- end -}}
 
- 					{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
+ 					{{.Name}}-V{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
  					`,
 		})
 

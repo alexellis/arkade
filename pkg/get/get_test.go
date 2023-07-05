@@ -6134,31 +6134,31 @@ func Test_DownloadKubeBurner(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-1.6-Linux-x86_64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Linux-x86_64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-1.6-Darwin-x86_64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Darwin-x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-1.6-Linux-arm64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-1.6-Darwin-arm64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Darwin-arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-1.6-Windows-x86_64.zip`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Windows-x86_64.zip`,
 		},
 	}
 
