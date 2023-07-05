@@ -2265,7 +2265,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 		})
 	tools = append(tools,
 		Tool{
-			Owner:       "mozilla",
+			Owner:       "getsops",
 			Repo:        "sops",
 			Name:        "sops",
 			Description: "Simple and flexible tool for managing secrets",
