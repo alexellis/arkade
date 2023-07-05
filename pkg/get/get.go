@@ -210,7 +210,7 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 		defer res.Body.Close()
 	}
 
-	if res.StatusCode != 302 {
+	if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
 		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 	}
 

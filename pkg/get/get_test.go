@@ -3614,31 +3614,31 @@ func Test_DownloadSOPS(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.linux.amd64",
+			url:     "https://github.com/getsops/sops/releases/download/v3.7.2/sops-v3.7.2.linux.amd64",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.linux.arm64",
+			url:     "https://github.com/getsops/sops/releases/download/v3.7.2/sops-v3.7.2.linux.arm64",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.amd64",
+			url:     "https://github.com/getsops/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.amd64",
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
+			url:     "https://github.com/getsops/sops/releases/download/v3.7.2/sops-v3.7.2.darwin.arm64",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/mozilla/sops/releases/download/v3.7.2/sops-v3.7.2.exe",
+			url:     "https://github.com/getsops/sops/releases/download/v3.7.2/sops-v3.7.2.exe",
 		},
 	}
 
