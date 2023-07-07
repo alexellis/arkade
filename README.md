@@ -18,7 +18,7 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
 - [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
-  - [Help fund arkade](#help-fund-arkade-)
+  - [Help fund arkade](#support-arkade-)
   - [Should you try arkade?](#should-you-try-arkade)
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
