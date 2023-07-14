@@ -1160,6 +1160,58 @@ func Test_DownloadK9s(t *testing.T) {
 	}
 }
 
+func Test_DownloadEtcd(t *testing.T) {
+	tools := MakeTools()
+	name := "etcd"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v3.5.9"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-darwin-amd64.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-darwin-arm64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/etcd-io/etcd/releases/download/v3.5.9/etcd-v3.5.9-windows-amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadCivo(t *testing.T) {
 	tools := MakeTools()
 	name := "civo"
