@@ -224,6 +224,34 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 
 	tools = append(tools,
 		Tool{
+			Owner:       "etcd-io",
+			Repo:        "etcd",
+			Name:        "etcd",
+			Description: "Distributed reliable key-value store for the most critical data of a distributed system.",
+			BinaryTemplate: `
+					{{$ext := "zip"}}
+					{{- if eq .OS "linux" -}}
+						{{$ext = "tar.gz"}}
+					{{- end -}}
+
+					{{$arch := .Arch}}
+					{{ if (eq .Arch "x86_64") -}}
+						{{$arch = "amd64"}}
+					{{- else if eq .Arch "aarch64" -}}
+						{{$arch = "arm64"}}
+					{{- end -}}
+
+					{{$osString:= .OS}}
+					{{ if HasPrefix .OS "ming" -}}
+						{{$osString = "windows"}}
+					{{- end -}}
+
+					{{.Name}}-{{.Version}}-{{$osString}}-{{$arch}}.{{$ext}}
+				`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "cnrancher",
 			Repo:        "autok3s",
 			Name:        "autok3s",
