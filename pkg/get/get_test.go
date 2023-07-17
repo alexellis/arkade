@@ -2401,7 +2401,7 @@ func Test_DownloadHelm(t *testing.T) {
 			os:      "darwin",
 			arch:    archARM64,
 			version: "3.5.4",
-			url:     `https://get.helm.sh/helm-3.5.4-darwin-amd64.tar.gz`,
+			url:     `https://get.helm.sh/helm-3.5.4-darwin-arm64.tar.gz`,
 		},
 	}
 
