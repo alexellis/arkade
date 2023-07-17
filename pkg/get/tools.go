@@ -626,7 +626,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "weaveworks",
+			Owner:       "eksctl-io",
 			Repo:        "eksctl",
 			Name:        "eksctl",
 			Description: "Amazon EKS Kubernetes cluster management",
