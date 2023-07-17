@@ -17,24 +17,47 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 
 With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
 
-- [arkade - The Open Source Kubernetes Marketplace](#arkade---the-open-source-kubernetes-marketplace)
-  - [Help fund arkade](#help-fund-arkade-)
+- [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
+  - [Support arkade 👋](#support-arkade-)
   - [Should you try arkade?](#should-you-try-arkade)
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
+  - [Install System Packages](#install-system-packages)
   - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
   - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
-  - [Install System Packages](#install-system-packages)
+    - [Upgrade images within a Helm chart](#upgrade-images-within-a-helm-chart)
+  - [Verify images within a helm chart](#verify-images-within-a-helm-chart)
   - [Installing apps with arkade](#installing-apps-with-arkade)
-  - [Community & contributing](#community--contributing)
+    - [Create a Kubernetes cluster](#create-a-kubernetes-cluster)
+    - [Install a Kubernetes app](#install-a-kubernetes-app)
+    - [Uninstall an app](#uninstall-an-app)
+    - [Reduce the repetition](#reduce-the-repetition)
+    - [Say goodbye to values.yaml and hello to flags](#say-goodbye-to-valuesyaml-and-hello-to-flags)
+    - [Override with `--set`](#override-with---set)
+    - [Compounding apps](#compounding-apps)
+      - [Get a self-hosted TLS registry with authentication](#get-a-self-hosted-tls-registry-with-authentication)
+      - [Get a public IP for a private cluster and your IngressController](#get-a-public-ip-for-a-private-cluster-and-your-ingresscontroller)
+    - [Explore the apps](#explore-the-apps)
+  - [Community \& contributing](#community--contributing)
+    - [Tutorials \& community blog posts](#tutorials--community-blog-posts)
+      - [Watch a video walk-through by Alex Ellis](#watch-a-video-walk-through-by-alex-ellis)
+      - [Featured tutorials](#featured-tutorials)
+      - [Official blog posts](#official-blog-posts)
+      - [Community posts](#community-posts)
+    - [Suggest a new app](#suggest-a-new-app)
   - [Sponsored apps](#sponsored-apps)
   - [FAQ](#faq)
-
-  See also:
-
-- [Catalog of CLI tools](#catalog-of-clis)
-- [Catalog of Kubernetes apps](#catalog-of-apps)
+    - [How does `arkade` compare to `helm`?](#how-does-arkade-compare-to-helm)
+    - [Is arkade suitable for production use?](#is-arkade-suitable-for-production-use)
+    - [What is in scope for `arkade get`?](#what-is-in-scope-for-arkade-get)
+    - [Automatic download of tools](#automatic-download-of-tools)
+    - [Improving the code or fixing an issue](#improving-the-code-or-fixing-an-issue)
+    - [Join us on Slack](#join-us-on-slack)
+    - [License](#license)
+  - [Catalog of apps and CLIs](#catalog-of-apps-and-clis)
+    - [Catalog of Apps](#catalog-of-apps)
+    - [Catalog of CLIs](#catalog-of-clis)
 
 ## Support arkade 👋
 
@@ -711,7 +734,6 @@ There are 56 apps that you can install on your cluster.
 | [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                       |
 | [butane](https://github.com/coreos/butane)                                   | Translates human readable Butane Configs into machine readable Ignition Configs                                                           |
 | [caddy](https://github.com/caddyserver/caddy)                                | Caddy is an extensible server platform that uses TLS by default                                                                           |
-| [cilium](https://github.com/cilium/cilium-cli)                               | The cilium CLI.                                                                                                                           |
 | [cilium](https://github.com/cilium/cilium-cli)                               | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                 |
 | [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                             |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                    |
@@ -728,7 +750,7 @@ There are 56 apps that you can install on your cluster.
 | [dive](https://github.com/wagoodman/dive)                                    | A tool for exploring each layer in a docker image                                                                                         |
 | [docker-compose](https://github.com/docker/compose)                          | Define and run multi-container applications with Docker.                                                                                  |
 | [doctl](https://github.com/digitalocean/doctl)                               | Official command line interface for the DigitalOcean API.                                                                                 |
-| [eksctl](https://github.com/weaveworks/eksctl)                               | Amazon EKS Kubernetes cluster management                                                                                                  |
+| [eksctl](https://github.com/eksctl-io/eksctl)                                | Amazon EKS Kubernetes cluster management                                                                                                  |
 | [eksctl-anywhere](https://github.com/aws/eks-anywhere)                       | Run Amazon EKS on your own infrastructure                                                                                                 |
 | [faas-cli](https://github.com/openfaas/faas-cli)                             | Official CLI for OpenFaaS.                                                                                                                |
 | [firectl](https://github.com/firecracker-microvm/firectl)                    | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                        |
@@ -817,7 +839,7 @@ There are 56 apps that you can install on your cluster.
 | [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
 | [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
 | [seaweedfs](https://github.com/seaweedfs/seaweedfs)                          | SeaweedFS is a fast distributed storage system for blobs, objects, files, and data lake, for billions of files!                           |
-| [sops](https://github.com/mozilla/sops)                                      | Simple and flexible tool for managing secrets                                                                                             |
+| [sops](https://github.com/getsops/sops)                                      | Simple and flexible tool for managing secrets                                                                                             |
 | [stern](https://github.com/stern/stern)                                      | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | [syft](https://github.com/anchore/syft)                                      | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
 | [talosctl](https://github.com/siderolabs/talos)                              | The command-line tool for managing Talos Linux OS.                                                                                        |
