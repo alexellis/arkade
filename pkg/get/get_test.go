@@ -474,7 +474,7 @@ func Test_DownloadKubens(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.4/kubens"
+	want := "https://github.com/ahmetb/kubectx/releases/download/v0.9.5/kubens"
 	if got != want {
 		t.Fatalf("want: %s, got: %s", want, got)
 	}
