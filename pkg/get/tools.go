@@ -56,27 +56,25 @@ func MakeTools() Tools {
 			Name:            "helm",
 			VersionStrategy: "github",
 			Description:     "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
-			URLTemplate: `{{$arch := "amd64"}}
+			URLTemplate: `
+						{{$os := .OS}}
+						{{$arch := .Arch}}
+						{{$ext := "tar.gz"}}
 
-{{- if eq .Arch "armv7l" -}}
-{{$arch = "arm"}}
-{{- end -}}
+						{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$arch = "arm64"}}
+						{{- else if eq .Arch "x86_64" -}}
+							{{ $arch = "amd64" }}
+						{{- else if eq .Arch "armv7l" -}}
+							{{ $arch = "arm" }}
+						{{- end -}}
 
-{{- if eq .OS "linux" -}}
-	{{- if eq .Arch "aarch64" -}}
-	{{$arch = "arm64"}}
-	{{- end -}}
-{{- end -}}
+						{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = "zip"}}
+						{{- end -}}
 
-{{$os := .OS}}
-{{$ext := "tar.gz"}}
-
-{{ if HasPrefix .OS "ming" -}}
-{{$os = "windows"}}
-{{$ext = "zip"}}
-{{- end -}}
-
-https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
+						https://get.helm.sh/helm-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 
 	tools = append(tools,
