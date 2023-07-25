@@ -641,12 +641,12 @@ func Test_DownloadK0s(t *testing.T) {
 	tests := []test{
 		{os: "linux",
 			arch:    arch64bit,
-			version: "v1.21.4+k3s1",
-			url:     "https://github.com/k0sproject/k0s/releases/download/v1.21.4+k3s1/k0s-v1.21.4+k3s1-amd64"},
+			version: "v1.27.4+k0s.0",
+			url:     "https://github.com/k0sproject/k0s/releases/download/v1.27.4+k0s.0/k0s-v1.27.4+k0s.0-amd64"},
 		{os: "linux",
 			arch:    "aarch64",
-			version: "v1.21.4+k3s1",
-			url:     "https://github.com/k0sproject/k0s/releases/download/v1.21.4+k3s1/k0s-v1.21.4+k3s1-arm64"},
+			version: "v1.27.4+k0s.0",
+			url:     "https://github.com/k0sproject/k0s/releases/download/v1.27.4+k0s.0/k0s-v1.27.4+k0s.0-arm64"},
 	}
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
@@ -654,7 +654,7 @@ func Test_DownloadK0s(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Fatalf("want: %s, got: %s", tc.url, got)
+			t.Fatalf("want:\n%q, got:\n%q", tc.url, got)
 		}
 	}
 }
