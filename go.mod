@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/alexellis/go-execute v0.5.0
+	github.com/alexellis/go-execute v0.6.0
 	github.com/cheggaaa/pb/v3 v3.1.4
 	github.com/docker/go-units v0.5.0
 	github.com/google/go-containerregistry v0.15.2
