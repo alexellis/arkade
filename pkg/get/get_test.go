@@ -632,6 +632,33 @@ func Test_DownloadK3s(t *testing.T) {
 	}
 }
 
+func Test_DownloadK0s(t *testing.T) {
+	tools := MakeTools()
+	name := "k0s"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v1.21.4+k3s1",
+			url:     "https://github.com/k0sproject/k0s/releases/download/v1.21.4+k3s1/k0s-v1.21.4+k3s1-amd64"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v1.21.4+k3s1",
+			url:     "https://github.com/k0sproject/k0s/releases/download/v1.21.4+k3s1/k0s-v1.21.4+k3s1-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadDevspace(t *testing.T) {
 	tools := MakeTools()
 	name := "devspace"
