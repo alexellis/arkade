@@ -1,10 +1,12 @@
 package helm
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"reflect"
-	"strings"
+	"regexp"
 
 	"gopkg.in/yaml.v2"
 )
@@ -38,10 +40,28 @@ func ReplaceValuesInHelmValuesFile(values map[string]string, yamlPath string) (s
 		return "", err
 	}
 
-	fileContent := string(readFile)
-	for k, v := range values {
-		fileContent = strings.ReplaceAll(fileContent, k, v)
+	var buffer bytes.Buffer
+
+	scanner := bufio.NewScanner(bytes.NewReader(readFile))
+	for scanner.Scan() {
+		line := scanner.Text()
+
+		for k, v := range values {
+			// The regex 're' is constructed to match the exact key 'k' as a whole word at the end of
+			// the line to prevent unintended replacement of partial matches.
+			re := regexp.MustCompile(`\b` + regexp.QuoteMeta(k) + `$`)
+			line = re.ReplaceAllString(line, v)
+		}
+
+		buffer.WriteString(line)
+		buffer.WriteByte('\n')
 	}
+
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	fileContent := buffer.String()
 	return fileContent, nil
 }
 

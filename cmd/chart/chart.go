@@ -25,7 +25,7 @@ func MakeChart() *cobra.Command {
 	}
 
 	command.AddCommand(MakeVerify())
-	command.AddCommand(MakeUpgrade())
+	command.AddCommand(MakeUpgrade(craneLister{}))
 
 	return command
 }

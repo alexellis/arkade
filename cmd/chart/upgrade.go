@@ -15,7 +15,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func MakeUpgrade() *cobra.Command {
+type tagLister interface {
+	listTags(string) ([]string, error)
+}
+
+type craneLister struct{}
+
+func (c craneLister) listTags(image string) ([]string, error) {
+	return crane.ListTags(image)
+}
+
+func MakeUpgrade(lister tagLister) *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "upgrade",
 		Short: "Upgrade all images in a values.yaml file to the latest version",
@@ -87,22 +97,15 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 		for k := range filtered {
 
 			imageName, tag := splitImageName(k)
-			ref, err := crane.ListTags(imageName)
+			ref, err := lister.listTags(imageName)
 			if err != nil {
 				return errors.New("unable to list tags for " + imageName)
 			}
 
-			var vs []*semver.Version
-			for _, r := range ref {
-				v, err := semver.NewVersion(r)
-				if err == nil {
-					vs = append(vs, v)
-				}
+			latestTag, err := getLatestTag(tag, ref)
+			if err != nil {
+				return err
 			}
-
-			sort.Sort(sort.Reverse(semver.Collection(vs)))
-
-			latestTag := vs[0].String()
 
 			if latestTag != tag {
 				updated++
@@ -143,4 +146,60 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 func splitImageName(reposName string) (string, string) {
 	nameParts := strings.SplitN(reposName, ":", 2)
 	return nameParts[0], nameParts[1]
+}
+
+func getLatestTag(tag string, refs []string) (string, error) {
+	current, err := semver.NewVersion(tag)
+	if err != nil {
+		return "", err
+	}
+
+	hasRootlessSuffix := strings.Contains(current.Prerelease(), "rootless")
+
+	var vs []*semver.Version
+	for _, r := range refs {
+		// Strip out '-rootless' metadata from version string as semver treats it as prerelease
+		if hasRootlessSuffix {
+			r = strings.TrimSuffix(r, "-rootless")
+			r = r + "+rootless"
+		}
+
+		v, err := semver.NewVersion(r)
+		if err == nil && v.GreaterThan(current) {
+			vs = append(vs, v)
+		}
+	}
+
+	if len(vs) == 0 {
+		return tag, err
+	}
+
+	latestStableVersion := getLatestStableVersion(vs)
+
+	return latestStableVersion, nil
+}
+
+func getLatestStableVersion(vs []*semver.Version) string {
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+	latest := vs[0]
+
+	// Finding the latest stable version by selecting the first version without a prerelease tag
+	if latest.Prerelease() != "" {
+		for _, ver := range vs {
+			if ver.Prerelease() == "" {
+				latest = ver
+				break
+			}
+		}
+	}
+
+	latestStr := latest.String()
+
+	// Adding the '-rootless' build tag back
+	if strings.HasSuffix(latestStr, "+rootless") {
+		latestStr = strings.TrimSuffix(latestStr, "+rootless")
+		latestStr = latestStr + "-rootless"
+	}
+
+	return latestStr
 }
