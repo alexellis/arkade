@@ -6365,13 +6365,13 @@ func Test_DownloadAtuin(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/ellie/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-unknown-linux-gnu.tar.gz`,
+			url:     `https://github.com/atuinsh/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-unknown-linux-gnu.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/ellie/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-apple-darwin.tar.gz`,
+			url:     `https://github.com/atuinsh/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-apple-darwin.tar.gz`,
 		},
 	}
 
