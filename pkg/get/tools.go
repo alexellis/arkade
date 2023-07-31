@@ -3672,7 +3672,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "ellie",
+			Owner:       "atuinsh",
 			Repo:        "atuin",
 			Name:        "atuin",
 			Description: "Sync, search and backup shell history with Atuin.",
