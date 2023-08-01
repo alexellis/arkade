@@ -1888,36 +1888,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			BinaryTemplate: `{{.Name}}`,
 		})
 
-	// Commented out due to: https://github.com/kastenhq/kubestr/issues/160
-	// 	tools = append(tools,
-	// 		Tool{
-	// 			Owner:       "kastenhq",
-	// 			Repo:        "kubestr",
-	// 			Name:        "kubestr",
-	// 			Description: "Kubestr discovers, validates and evaluates your Kubernetes storage options.",
+	tools = append(tools,
+		Tool{
+			Owner:       "kastenhq",
+			Repo:        "kubestr",
+			Name:        "kubestr",
+			Description: "Kubestr discovers, validates and evaluates your Kubernetes storage options.",
 
-	// 			URLTemplate: `
-	// {{ $ext := "tar.gz" }}
-	// {{ $osStr := "Linux" }}
-	// {{ $arch := .Arch }}
+			URLTemplate: `
+	{{ $ext := "tar.gz" }}
+	{{ $osStr := "Linux" }}
+	{{ $arch := .Arch }}
+	
+	{{- if eq .Arch "x86_64" -}}
+	{{$arch = "amd64"}}
+	{{- end -}}
 
-	// {{- if eq .Arch "x86_64" -}}
-	// {{$arch = "amd64"}}
-	// {{- end -}}
+	{{- if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+	{{- end -}}
 
-	// {{- if eq .Arch "aarch64" -}}
-	// {{$arch = "arm64"}}
-	// {{- end -}}
+	{{- if eq .OS "darwin" -}}
+	{{ $osStr = "MacOS" }}
+	{{- else if HasPrefix .OS "ming" -}}
+	{{ $osStr = "Windows" }}
+	{{- end -}}
 
-	// {{- if eq .OS "darwin" -}}
-	// {{ $osStr = "MacOS" }}
-	// {{- else if HasPrefix .OS "ming" -}}
-	// {{ $osStr = "Windows" }}
-	// {{- end -}}
-
-	// https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
-	// 			BinaryTemplate: `{{.Name}}`,
-	// 		})
+	https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
+			BinaryTemplate: `{{.Name}}`,
+		})
 
 	tools = append(tools,
 		Tool{
