@@ -3671,6 +3671,41 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "redhat",
+			Repo:        "rosa",
+			Name:        "rosa",
+			Description: "Red Hat OpenShift on AWS (ROSA) command line tool",
+			URLTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := "tar.gz"}}
+							{{$version := .VersionNumber}}
+				
+							{{- if eq .OS "darwin" -}}
+								{{$os = "macosx"}}
+							{{- else if HasPrefix .OS "ming" -}}
+								{{$os = "windows"}}
+								{{$ext = "zip"}}
+							{{- end -}}
+		
+							{{- if eq .Arch "aarch64" -}}
+								{{$arch = "-arm64"}}
+							{{- else if eq .Arch "arm64" -}}
+								{{ $arch = "-arm64" }}
+							{{- else if eq .Arch "x86_64" -}}
+								{{ $arch = "" }}
+							{{- end -}}
+		
+							{{- if eq .VersionNumber "" -}}
+								{{$version = "latest"}}
+							{{- end -}}
+			
+							https://mirror.openshift.com/pub/openshift-v4/clients/rosa/{{$version}}/rosa-{{$os}}.{{$ext}}
+							`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "atuinsh",
 			Repo:        "atuin",
 			Name:        "atuin",

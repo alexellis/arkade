@@ -6350,6 +6350,46 @@ func Test_DownloadOpenshiftCLI(t *testing.T) {
 	}
 }
 
+func Test_DownloadRosaCLI(t *testing.T) {
+	tools := MakeTools()
+	name := "rosa"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.2.23"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/rosa/1.2.23/rosa-linux.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/rosa/1.2.23/rosa-macosx.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/rosa/1.2.23/rosa-windows.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadAtuin(t *testing.T) {
 	tools := MakeTools()
 	name := "atuin"
