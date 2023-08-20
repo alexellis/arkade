@@ -6567,3 +6567,61 @@ func Test_VHS(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloaSkupper(t *testing.T) {
+	tools := MakeTools()
+	name := "skupper"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.4.2"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-linux-amd64.tgz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-mac-amd64.tgz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-linux-arm64.tgz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-mac-arm64.tgz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-linux-arm32.tgz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-windows-amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
