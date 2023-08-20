@@ -840,6 +840,7 @@ There are 56 apps that you can install on your cluster.
 | [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                     |
 | [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                        |
 | [seaweedfs](https://github.com/seaweedfs/seaweedfs)                          | SeaweedFS is a fast distributed storage system for blobs, objects, files, and data lake, for billions of files!                           |
+| [skupper](https://github.com/skupperproject/skupper)                         | Skupper is an implementation of a Virtual Application Network, enabling rich hybrid cloud communication                                   |
 | [sops](https://github.com/getsops/sops)                                      | Simple and flexible tool for managing secrets                                                                                             |
 | [stern](https://github.com/stern/stern)                                      | Multi pod and container log tailing for Kubernetes.                                                                                       |
 | [syft](https://github.com/anchore/syft)                                      | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                    |
@@ -862,6 +863,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                 |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                     |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                     |
-There are 138 tools, use `arkade get NAME` to download one.
+There are 140 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
