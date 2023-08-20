@@ -3804,5 +3804,41 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "skupperproject",
+			Repo:        "skupper",
+			Name:        "skupper",
+			Description: "Skupper is an implementation of a Virtual Application Network, enabling rich hybrid cloud communication",
+			BinaryTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tgz"}}
+	
+					{{- if eq .OS "darwin" -}}
+					{{$os = "mac"}}
+					{{- else if eq .OS "linux" -}}
+					{{ $os = "linux" }}
+					{{- end -}}
+
+					{{- if eq .Arch "aarch64" -}}
+					{{$arch = "arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+					{{ $arch = "arm64" }}
+					{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "amd64" }}
+					{{- else if eq .Arch "armv7l" -}}
+					{{ $arch = "arm32" }}
+					{{- end -}}
+	
+					{{ if HasPrefix .OS "ming" -}}
+					{{$os = "windows"}}
+					{{$ext = "zip"}}
+					{{- end -}}
+	
+	
+					skupper-cli-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
+					`,
+		})
 	return tools
 }
