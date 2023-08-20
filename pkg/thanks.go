@@ -4,4 +4,4 @@
 package pkg
 
 // SupportMessageShort shows how to support arkade
-const SupportMessageShort = `🐳 arkade needs your support: https://github.com/sponsors/alexellis`
+const SupportMessageShort = `🐳 Want to speed up your CI 2-3x, whilst lowering costs? https://actuated.dev`
