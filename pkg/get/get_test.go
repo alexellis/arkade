@@ -5205,31 +5205,31 @@ func Test_DownloadViddy(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_0.3.6_Darwin_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Darwin_x86_64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_0.3.6_Darwin_arm64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Darwin_arm64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_0.3.6_Linux_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Linux_x86_64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_0.3.6_Linux_arm64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Linux_arm64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_0.3.6_Windows_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Windows_x86_64.tar.gz",
 		},
 	}
 
