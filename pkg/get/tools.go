@@ -3082,7 +3082,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{$osStr = "Darwin"}}
 					{{- end -}}
 
-					{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}
+					{{.Name}}_{{$osStr}}_{{$arch}}.{{$ext}}
 					`,
 		})
 
