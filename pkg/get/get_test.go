@@ -11,7 +11,6 @@ import (
 
 var faasCLIVersionConstraint, _ = semver.NewConstraint(">= 0.13.2")
 
-const arch32bit = "i686"
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"
 const archARM64 = "aarch64"
@@ -2795,45 +2794,79 @@ func Test_DownloadJq(t *testing.T) {
 	tools := MakeTools()
 	name := "jq"
 	tool := getTool(name, tools)
-	tool.Version = "jq-1.7"
-	prefix := "https://github.com/" + tool.Owner + "/" + tool.Repo + "/releases/download/" + tool.Version + "/"
 
 	tests := []test{
 		{
-			os:   "darwin",
-			arch: arch64bit,
-			url:  prefix + "jq-osx-amd64",
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-macos-amd64",
 		},
 		{
-			os:   "darwin",
-			arch: archDarwinARM64,
-			url:  prefix + "jq-osx-amd64",
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-macos-arm64",
 		},
 		{
-			os:   "linux",
-			arch: arch64bit,
-			url:  prefix + "jq-linux64",
+			os:      "linux",
+			arch:    arch64bit,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux-amd64",
 		},
 		{
-			os:   "linux",
-			arch: arch32bit,
-			url:  prefix + "jq-linux32",
+			os:      "linux",
+			arch:    archARM64,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux-arm64",
 		},
 		{
-			os:   "ming",
-			arch: arch64bit,
-			url:  prefix + "jq-win64.exe",
+			os:      "linux",
+			arch:    archARM7,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux-armhf",
 		},
 		{
-			os:   "ming",
-			arch: arch32bit,
-			url:  prefix + "jq-win32.exe",
+			os:      "ming",
+			arch:    arch64bit,
+			version: "jq-1.7",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.7/jq-windows-amd64.exe",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "jq-1.6",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-osx-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "jq-1.6",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "jq-1.6",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "jq-1.6",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-linux32",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "jq-1.6",
+			url:     "https://github.com/jqlang/jq/releases/download/jq-1.6/jq-win64.exe",
 		},
 	}
 
 	for _, tc := range tests {
-		t.Run(tc.os+" "+tc.arch, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tool.Version, false)
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -2842,7 +2875,6 @@ func Test_DownloadJq(t *testing.T) {
 			}
 		})
 	}
-
 }
 
 func Test_DownloadOperatorSDK(t *testing.T) {
