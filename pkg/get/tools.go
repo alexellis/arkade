@@ -104,27 +104,47 @@ func MakeTools() Tools {
 			Repo:        "jq",
 			Name:        "jq",
 			Description: "jq is a lightweight and flexible command-line JSON processor",
-			BinaryTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `
+				{{- if or (eq .Version "jq-1.6") (eq .Version "jq-1.5") -}}
+					{{$os := .OS}}
+					{{$ext := ""}}
+					{{- if eq .OS "darwin" -}}
+						{{$os = "osx-amd"}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "win"}}
+						{{$ext = ".exe"}}
+					{{- end -}}
 
-{{- if eq .Arch "x86_64" -}}
-{{$arch = "64"}}
-{{- else if eq .Arch "arm64" -}}
-{{$arch = "64"}}
-{{- else -}}
-{{$arch = "32"}}
-{{- end -}}
+					{{$arch := ""}}
+					{{- if or (eq .Arch "x86_64") (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+						{{$arch = "64"}}
+					{{- else -}}
+						{{$arch = "32"}}
+					{{- end -}}
 
-{{$ext := ""}}
-{{$os := .OS}}
+					{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}
+				{{- else -}}
 
-{{ if HasPrefix .OS "ming" -}}
-{{$ext = ".exe"}}
-{{$os = "win"}}
-{{- else if eq .OS "darwin" -}}
-{{$os = "osx-amd"}}
-{{- end -}}
+					{{$os := .OS}}
+					{{$ext := ""}}
+					{{- if eq .OS "darwin" -}}
+						{{$os = "macos"}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = ".exe"}}
+					{{- end -}}
 
-{{.Version}}/jq-{{$os}}{{$arch}}{{$ext}}`,
+					{{$arch := .Arch}}
+					{{- if eq .Arch "x86_64" -}}
+						{{$arch = "amd64"}}
+					{{- else if eq .Arch "aarch64" -}}
+						{{$arch = "arm64"}}
+					{{- else if or (eq .Arch "armv6l") (eq .Arch "armv7l") -}}
+						{{$arch = "armhf"}}
+					{{- end -}}
+
+					{{.Version}}/jq-{{$os}}-{{$arch}}{{$ext}}
+				{{- end -}}`,
 		})
 
 	// https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl
