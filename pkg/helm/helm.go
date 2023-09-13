@@ -143,7 +143,6 @@ func AddHelmRepo(name, url string, update bool) error {
 		StreamStdio: true,
 	}
 	res, err := task.Execute()
-
 	if err != nil {
 		return err
 	}
