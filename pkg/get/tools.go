@@ -930,6 +930,8 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 	{{$extStr := "tar.gz"}}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$extStr = "zip"}}
+	{{- else if eq .OS "darwin" -}}
+	{{$extStr = "zip"}}
 	{{- end -}}
 
 	{{$osStr := ""}}
