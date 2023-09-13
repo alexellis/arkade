@@ -138,7 +138,7 @@ func AddHelmRepo(name, url string, update bool) error {
 	}
 
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s repo add %s %s", env.LocalBinary("helm", subdir), name, url),
+		Command:     fmt.Sprintf("%s repo add %s %s --force-update", env.LocalBinary("helm", subdir), name, url),
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
