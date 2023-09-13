@@ -3798,11 +3798,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{$extStr = "zip"}}
 					{{- end -}}
 
-					{{- if eq $osStr "Darwin"}}
-					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{$osStr}}_{{$arch}}.{{$extStr}}
-					{{- else if or (eq $osStr "Windows") (eq $osStr "Linux") -}}
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}
-					{{- end -}}
 					`,
 		})
 
