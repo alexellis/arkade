@@ -6540,7 +6540,7 @@ func Test_VHS(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_Darwin_x86_64.tar.gz`,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_0.5.0_Darwin_x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
@@ -6552,7 +6552,7 @@ func Test_VHS(t *testing.T) {
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_Darwin_arm64.tar.gz`,
+			url:     `https://github.com/charmbracelet/vhs/releases/download/v0.5.0/vhs_0.5.0_Darwin_arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
