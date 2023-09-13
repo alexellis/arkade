@@ -36,34 +36,28 @@ func MakeInstallGrafana() *cobra.Command {
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 
 	grafana.PreRunE = func(command *cobra.Command, args []string) error {
-		_, err := command.Flags().GetString("kubeconfig")
-		if err != nil {
-			return fmt.Errorf("error with --kubeconfig usage: %s", err)
+		if _, err := command.Flags().GetString("kubeconfig"); err != nil {
+			return fmt.Errorf("error with --kubeconfig usage: %w", err)
 		}
 
-		_, err = command.Flags().GetBool("wait")
-		if err != nil {
-			return fmt.Errorf("error with --wait usage: %s", err)
+		if _, err := command.Flags().GetBool("wait"); err != nil {
+			return fmt.Errorf("error with --wait usage: %w", err)
 		}
 
-		_, err = command.Flags().GetBool("persistence")
-		if err != nil {
-			return fmt.Errorf("error with --persistence usage: %s", err)
+		if _, err := command.Flags().GetBool("persistence"); err != nil {
+			return fmt.Errorf("error with --persistence usage: %w", err)
 		}
 
-		_, err = command.Flags().GetString("namespace")
-		if err != nil {
-			return fmt.Errorf("error with --namespace usage: %s", err)
+		if _, err := command.Flags().GetString("namespace"); err != nil {
+			return fmt.Errorf("error with --namespace usage: %w", err)
 		}
 
-		_, err = command.Flags().GetBool("update-repo")
-		if err != nil {
-			return fmt.Errorf("error with --update-repo usage: %s", err)
+		if _, err := command.Flags().GetBool("update-repo"); err != nil {
+			return fmt.Errorf("error with --update-repo usage: %w", err)
 		}
 
-		_, err = command.Flags().GetStringArray("set")
-		if err != nil {
-			return fmt.Errorf("error with --set usage: %s", err)
+		if _, err := command.Flags().GetStringArray("set"); err != nil {
+			return fmt.Errorf("error with --set usage: %w", err)
 		}
 
 		return nil
@@ -106,8 +100,7 @@ func MakeInstallGrafana() *cobra.Command {
 			WithKubeconfigPath(kubeConfigPath).
 			WithWait(wait)
 
-		_, err := apps.MakeInstallChart(grafanaAppOptions)
-		if err != nil {
+		if _, err := apps.MakeInstallChart(grafanaAppOptions); err != nil {
 			return err
 		}
 
