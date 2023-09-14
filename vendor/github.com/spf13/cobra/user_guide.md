@@ -23,7 +23,7 @@ import (
 )
 
 func main() {
-  cmd.Execute(context.Background())
+  cmd.Execute()
 }
 ```
 
@@ -58,7 +58,7 @@ var rootCmd = &cobra.Command{
 }
 
 func Execute() {
-  if err := rootCmd.Execute(context.Background()); err != nil {
+  if err := rootCmd.Execute(); err != nil {
     fmt.Fprintln(os.Stderr, err)
     os.Exit(1)
   }
@@ -96,7 +96,7 @@ to quickly create a Cobra application.`,
 
 // Execute executes the root command.
 func Execute() error {
-	return rootCmd.Execute(context.Background())
+	return rootCmd.Execute()
 }
 
 func init() {
@@ -153,7 +153,7 @@ import (
 )
 
 func main() {
-  cmd.Execute(context.Background())
+  cmd.Execute()
 }
 ```
 
@@ -474,7 +474,7 @@ a count and a string.`,
   var rootCmd = &cobra.Command{Use: "app"}
   rootCmd.AddCommand(cmdPrint, cmdEcho)
   cmdEcho.AddCommand(cmdTimes)
-  rootCmd.Execute(context.Background())
+  rootCmd.Execute()
 }
 ```
 
@@ -650,10 +650,10 @@ func main() {
   rootCmd.AddCommand(subCmd)
 
   rootCmd.SetArgs([]string{""})
-  rootCmd.Execute(context.Background())
+  rootCmd.Execute()
   fmt.Println()
   rootCmd.SetArgs([]string{"sub", "arg1", "arg2"})
-  rootCmd.Execute(context.Background())
+  rootCmd.Execute()
 }
 ```
 

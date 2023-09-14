@@ -282,7 +282,7 @@ func (c *Command) getCompletions(args []string) (*Command, []string, ShellCompDi
 	finalCmd.ctx = c.ctx
 
 	// These flags are normally added when `execute()` is called on `finalCmd`,
-	// however, when doing completion, we don't call `finalCmd.Execute(context.Background())`.
+	// however, when doing completion, we don't call `finalCmd.execute()`.
 	// Let's add the --help and --version flag ourselves.
 	finalCmd.InitDefaultHelpFlag()
 	finalCmd.InitDefaultVersionFlag()
