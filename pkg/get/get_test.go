@@ -1119,7 +1119,7 @@ func Test_DownloadK9s(t *testing.T) {
 		{os: "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Windows_amd64.tar.gz`,
+			url:     `https://github.com/derailed/k9s/releases/download/v0.24.10/k9s_Windows_amd64.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
