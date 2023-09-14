@@ -5,13 +5,14 @@ package k8s
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"io"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg/types"
 
-	execute "github.com/alexellis/go-execute/pkg/v1"
+	execute "github.com/alexellis/go-execute/v2"
 )
 
 // Capabilities is an index of the support API versions on the server
@@ -54,7 +55,7 @@ func KubectlTaskStdin(reader io.Reader, parts ...string) (execute.ExecResult, er
 		Stdin:       reader,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	return res, err
 }
@@ -65,7 +66,7 @@ func KubectlTask(parts ...string) (execute.ExecResult, error) {
 		StreamStdio: false,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	return res, err
 }
@@ -77,7 +78,7 @@ func Kubectl(parts ...string) error {
 		StreamStdio: true,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err
@@ -99,7 +100,7 @@ func KubectlIn(stdin io.Reader, parts ...string) error {
 		Stdin:       stdin,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err

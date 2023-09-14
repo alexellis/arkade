@@ -5,6 +5,7 @@ package apps
 
 import (
 	"bufio"
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -15,7 +16,7 @@ import (
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/alexellis/arkade/pkg/k8s"
-	execute "github.com/alexellis/go-execute/pkg/v1"
+	execute "github.com/alexellis/go-execute/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -222,7 +223,7 @@ func istioCli(parts ...string) (execute.ExecResult, error) {
 		StreamStdio: true,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return res, err

@@ -4,6 +4,7 @@
 package helm
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -13,7 +14,7 @@ import (
 
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	execute "github.com/alexellis/go-execute/pkg/v1"
+	execute "github.com/alexellis/go-execute/v2"
 )
 
 func TryDownloadHelm(userPath, clientArch, clientOS string) (string, error) {
@@ -97,7 +98,7 @@ func HelmInit() error {
 		StreamStdio: true,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err
@@ -118,7 +119,7 @@ func UpdateHelmRepos(helm3 bool) error {
 		StreamStdio: true,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err
@@ -142,7 +143,7 @@ func AddHelmRepo(name, url string, update bool) error {
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 	if err != nil {
 		return err
 	}
@@ -159,7 +160,7 @@ func AddHelmRepo(name, url string, update bool) error {
 			Env:         os.Environ(),
 			StreamStdio: true,
 		}
-		res, err := task.Execute()
+		res, err := task.Execute(context.Background())
 
 		if err != nil {
 			return err
@@ -199,7 +200,7 @@ func FetchChart(chart, version string) error {
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err
@@ -253,7 +254,7 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 	}
 
 	fmt.Printf("Command: %s %s\n", task.Command, task.Args)
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err

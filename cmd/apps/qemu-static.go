@@ -4,12 +4,13 @@
 package apps
 
 import (
+	"context"
 	"fmt"
 	"os"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/env"
-	execute "github.com/alexellis/go-execute/pkg/v1"
+	execute "github.com/alexellis/go-execute/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -67,7 +68,7 @@ func runQemuStaticContainer() error {
 		StreamStdio: true,
 	}
 
-	res, err := task.Execute()
+	res, err := task.Execute(context.Background())
 
 	if err != nil {
 		return err

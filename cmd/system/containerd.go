@@ -5,6 +5,7 @@ package system
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -14,7 +15,7 @@ import (
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	execute "github.com/alexellis/go-execute/pkg/v1"
+	execute "github.com/alexellis/go-execute/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -179,7 +180,7 @@ func createSystemdUnit(systemdUnitName string, content []byte) error {
 		Args:        []string{"daemon-reload"},
 		StreamStdio: false,
 	}
-	if _, err := taskReload.Execute(); err != nil {
+	if _, err := taskReload.Execute(context.Background()); err != nil {
 		return err
 	}
 
@@ -189,7 +190,7 @@ func createSystemdUnit(systemdUnitName string, content []byte) error {
 		StreamStdio: false,
 	}
 
-	result, err := taskEnable.Execute()
+	result, err := taskEnable.Execute(context.Background())
 	if err != nil {
 		return err
 	}

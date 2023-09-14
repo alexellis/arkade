@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"strings"
 	"testing"
 )
@@ -23,7 +24,7 @@ func Test_GetCommandWithInvalidArch(t *testing.T) {
 	for _, tc := range tests {
 		cmd := MakeGet()
 		cmd.SetArgs(tc.args)
-		err := cmd.Execute()
+		err := cmd.Execute(context.Background())
 
 		if !strings.Contains(err.Error(), tc.wantError) {
 			t.Fatalf("for args %q\n want: %q\n but got: %q", tc.args, tc.wantError, err)
