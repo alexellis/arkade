@@ -6,7 +6,9 @@ github.com/Masterminds/semver
 github.com/VividCortex/ewma
 # github.com/alexellis/go-execute v0.6.0
 ## explicit; go 1.19
-github.com/alexellis/go-execute/pkg/v1
+# github.com/alexellis/go-execute/v2 v2.0.0
+## explicit; go 1.20
+github.com/alexellis/go-execute/v2
 # github.com/cheggaaa/pb/v3 v3.1.4
 ## explicit; go 1.17
 github.com/cheggaaa/pb/v3
