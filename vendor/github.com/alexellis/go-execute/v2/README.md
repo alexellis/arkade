@@ -69,7 +69,7 @@ func main() {
 		StreamStdio: false,
 	}
 
-	res, err := cmd.Execute(context.Background())
+	res, err := cmd.Execute()
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +100,7 @@ func main() {
 		Args:    []string{"-l"},
 		Shell:   true,
 	}
-	res, err := ls.Execute(context.Background())
+	res, err := ls.Execute()
 	if err != nil {
 		panic(err)
 	}
@@ -125,7 +125,7 @@ func main() {
 		Command: "exit 1",
 		Shell:   true,
 	}
-	res, err := ls.Execute(context.Background())
+	res, err := ls.Execute()
 	if err != nil {
 		panic(err)
 	}
