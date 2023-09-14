@@ -730,6 +730,12 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:        "k9s",
 			Description: "Provides a terminal UI to interact with your Kubernetes clusters.",
 			BinaryTemplate: `
+
+		{{$extStr := "tar.gz"}}
+		{{ if HasPrefix .OS "ming" -}}
+		{{$extStr = "zip"}}
+		{{- end -}}
+
 		{{$os := "" }}
 		{{ if HasPrefix .OS "ming" -}}
 		{{$os = "Windows"}}
@@ -748,7 +754,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{$arch = "arm"}}
 		{{- end -}}
 
-		{{.Name}}_{{$os}}_{{$arch}}.tar.gz`,
+		{{.Name}}_{{$os}}_{{$arch}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,
