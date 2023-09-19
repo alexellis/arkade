@@ -5,6 +5,7 @@ package apps
 
 import (
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg/apps"
@@ -18,7 +19,7 @@ func MakeInstallKafkaConnector() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "kafka-connector",
 		Short: "Install kafka-connector for OpenFaaS",
-		Long: `Install OpenFaaS PRO kafka-connector for OpenFaaS so that you can invoke 
+		Long: `Install OpenFaaS Pro kafka-connector for OpenFaaS so that you can invoke 
 functions when messages are received on a given topic on a Kafka broker.`,
 		Example:      `  arkade install kafka-connector`,
 		SilenceUsage: true,
@@ -27,8 +28,8 @@ functions when messages are received on a given topic on a Kafka broker.`,
 	command.Flags().StringP("namespace", "n", "openfaas", "The namespace used for installation")
 	command.Flags().Bool("update-repo", true, "Update the helm repo")
 	command.Flags().StringP("topics", "t", "faas-request", "The topics for the connector to bind to")
-	command.Flags().String("broker-host", "kafka", "The host for the Kafka broker")
-	command.Flags().String("license-file", "", "The path to your license for OpenFaaS PRO")
+	command.Flags().String("broker-hosts", "kafka:9092", "The server address or multiple addresses separated by a comma for the Kafka broker(s)")
+	command.Flags().String("license-file", "", "The path to your license for OpenFaaS Pro")
 	command.Flags().String("image", "", "The container image for the connector")
 
 	command.Flags().StringArray("set", []string{},
@@ -44,7 +45,7 @@ functions when messages are received on a given topic on a Kafka broker.`,
 			return err
 		}
 
-		brokerHostVal, err := command.Flags().GetString("broker-host")
+		brokerHostsVal, err := command.Flags().GetString("broker-hosts")
 		if err != nil {
 			return err
 		}
@@ -58,8 +59,8 @@ functions when messages are received on a given topic on a Kafka broker.`,
 		}
 
 		overrides := map[string]string{
-			"topics":     topicsVal,
-			"brokerHost": brokerHostVal,
+			"topics":      topicsVal,
+			"brokerHosts": brokerHostsVal,
 		}
 		if len(imageVal) > 0 {
 			overrides["image"] = imageVal
@@ -89,7 +90,7 @@ functions when messages are received on a given topic on a Kafka broker.`,
 		}
 
 		if len(licenseFile) == 0 {
-			return fmt.Errorf("--license-file is required for OpenFaaS PRO")
+			return fmt.Errorf("--license-file is required for OpenFaaS Pro")
 		}
 
 		secretData := []types.SecretsData{
