@@ -5,8 +5,10 @@ package cmd
 
 import (
 	"context"
+	"crypto/sha256"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -21,12 +23,14 @@ import (
 
 func MakeUpdate() *cobra.Command {
 	var command = &cobra.Command{
-		Use:          "update",
-		Short:        "Print update instructions",
-		Example:      `  arkade update`,
-		Aliases:      []string{"u"},
-		SilenceUsage: false,
+		Use:           "update",
+		Short:         "Print update instructions",
+		Example:       `  arkade update`,
+		Aliases:       []string{"u"},
+		SilenceUsage:  true,
+		SilenceErrors: false,
 	}
+
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 
 		name := "arkade"
@@ -82,12 +86,25 @@ func MakeUpdate() *cobra.Command {
 			return err
 		}
 
-		binary, err := get.DownloadFileP(downloadUrl, true)
+		newBinary, err := get.DownloadFileP(downloadUrl, true)
 		if err != nil {
 			return err
 		}
 
-		if err := replaceExec(executable, binary); err != nil {
+		digest, err := downloadDigest(downloadUrl + ".sha256")
+		if err != nil {
+			return err
+		}
+
+		match, err := compareSHA(digest, newBinary)
+		if err != nil {
+			return fmt.Errorf("SHA256 checksum failed for %s, error: %w", newBinary, err)
+		}
+		if !match {
+			return fmt.Errorf("SHA256 checksum failed for %s", newBinary)
+		}
+
+		if err := replaceExec(executable, newBinary); err != nil {
 			return err
 		}
 
@@ -97,6 +114,31 @@ func MakeUpdate() *cobra.Command {
 		return nil
 	}
 	return command
+}
+
+func downloadDigest(uri string) (string, error) {
+	req, err := http.NewRequest(http.MethodGet, uri, nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+	var body []byte
+	if res.Body != nil {
+		defer res.Body.Close()
+		body, _ = io.ReadAll(res.Body)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code %d, body: %s", res.StatusCode, string(body))
+	}
+
+	return string(body), nil
 }
 
 // Copy the new binary to the same directory as the current binary before calling os.Rename to prevent an
@@ -129,4 +171,32 @@ func replaceExec(currentExec, newBinary string) error {
 	}
 
 	return nil
+}
+
+func compareSHA(target, downloaded string) (bool, error) {
+
+	// GitHub format may sometimes include the binary name and a space, i.e.
+	// "9dcfd1611440aa15333980b860220bcd55ca1d6875692facc458caf7eb1cd042  bin/arkade-darwin-arm64"
+	if strings.Contains(target, " ") {
+		t, _, _ := strings.Cut(target, " ")
+		target = t
+	}
+
+	digest, err := getSHA256Checksum(downloaded)
+	if err != nil {
+		return false, err
+	}
+
+	return target == digest, nil
+}
+
+func getSHA256Checksum(path string) (string, error) {
+	f, err := os.ReadFile(path)
+	if err != nil {
+		return "", fmt.Errorf("failed to compute checksum: %s", err)
+	}
+
+	sum := sha256.Sum256(f)
+
+	return fmt.Sprintf("%x", sum), nil
 }
