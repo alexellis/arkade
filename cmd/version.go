@@ -24,7 +24,9 @@ func MakeVersion() *cobra.Command {
 		Aliases:      []string{"v"},
 		SilenceUsage: false,
 	}
+
 	command.Run = func(cmd *cobra.Command, args []string) {
+
 		PrintArkadeASCIIArt()
 		if len(pkg.Version) == 0 {
 			fmt.Println("Version: dev")
