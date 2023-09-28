@@ -23,8 +23,18 @@ import (
 
 func MakeUpdate() *cobra.Command {
 	var command = &cobra.Command{
-		Use:           "update",
-		Short:         "Print update instructions",
+		Use:   "update",
+		Short: "Replace the running binary with an updated version",
+		Long: `The latest release version of arkade will be downloaded from GitHub.
+
+If that text is not found by running "arkade version", then the release
+will be downloaded, along with its .sha256 checksum file.
+
+If the checksum matches the downloaded file then the running binary will be
+replaced with the new binary.
+
+This command can be run as often as you require, won't download the same 
+version twice.`,
 		Example:       `  arkade update`,
 		Aliases:       []string{"u"},
 		SilenceUsage:  true,
@@ -32,10 +42,12 @@ func MakeUpdate() *cobra.Command {
 	}
 
 	command.Flags().Bool("verify", true, "Verify the checksum of the downloaded binary")
+	command.Flags().Bool("force", false, "Force a download of the latest binary, even if up to date, the --verify flag still applies")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 
 		verifyDigest, _ := cmd.Flags().GetBool("verify")
+		forceDownload, _ := cmd.Flags().GetBool("force")
 
 		name := "arkade"
 		toolList := get.MakeTools()
@@ -69,7 +81,7 @@ func MakeUpdate() *cobra.Command {
 
 		fmt.Printf("Latest release: %s\n", release)
 
-		if strings.Contains(res.Stdout, release) {
+		if !forceDownload && strings.Contains(res.Stdout, release) {
 			fmt.Println("You are already using the latest version of arkade.")
 
 			fmt.Println("\n\n", aec.Bold.Apply(pkg.SupportMessageShort))
@@ -101,22 +113,21 @@ func MakeUpdate() *cobra.Command {
 				return err
 			}
 
-			match, err := compareSHA(digest, newBinary)
-			if err != nil {
-				return fmt.Errorf("SHA256 checksum failed for %s, error: %w", newBinary, err)
+			if err := compareSHA(digest, newBinary); err != nil {
+				return fmt.Errorf("checksum failed for %s, error: %w", newBinary, err)
 			}
-			if !match {
-				return fmt.Errorf("SHA256 checksum failed for %s", newBinary)
-			}
+
+			fmt.Printf("Checksum verified..OK.\n")
 		}
 
 		if err := replaceExec(executable, newBinary); err != nil {
 			return err
 		}
 
-		fmt.Printf("Replaced: %s.. OK.", executable)
+		fmt.Printf("Replaced: %s..OK.", executable)
 
 		fmt.Println("\n\n", aec.Bold.Apply(pkg.SupportMessageShort))
+
 		return nil
 	}
 	return command
@@ -134,6 +145,7 @@ func downloadDigest(uri string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	var body []byte
 	if res.Body != nil {
 		defer res.Body.Close()
@@ -179,30 +191,33 @@ func replaceExec(currentExec, newBinary string) error {
 	return nil
 }
 
-func compareSHA(target, downloaded string) (bool, error) {
+// compareSHA returns a nil error if the local digest matches the remote digest
+func compareSHA(remoteDigest, localFile string) error {
 
 	// GitHub format may sometimes include the binary name and a space, i.e.
 	// "9dcfd1611440aa15333980b860220bcd55ca1d6875692facc458caf7eb1cd042  bin/arkade-darwin-arm64"
-	if strings.Contains(target, " ") {
-		t, _, _ := strings.Cut(target, " ")
-		target = t
+	if strings.Contains(remoteDigest, " ") {
+		t, _, _ := strings.Cut(remoteDigest, " ")
+		remoteDigest = t
 	}
 
-	digest, err := getSHA256Checksum(downloaded)
+	localDigest, err := getSHA256Checksum(localFile)
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	return target == digest, nil
+	if remoteDigest != localDigest {
+		return fmt.Errorf("checksum mismatch, want: %s, but got: %s", remoteDigest, localDigest)
+	}
+
+	return nil
 }
 
 func getSHA256Checksum(path string) (string, error) {
 	f, err := os.ReadFile(path)
 	if err != nil {
-		return "", fmt.Errorf("failed to compute checksum: %s", err)
+		return "", err
 	}
 
-	sum := sha256.Sum256(f)
-
-	return fmt.Sprintf("%x", sum), nil
+	return fmt.Sprintf("%x", sha256.Sum256(f)), nil
 }
