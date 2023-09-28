@@ -31,7 +31,11 @@ func MakeUpdate() *cobra.Command {
 		SilenceErrors: false,
 	}
 
+	command.Flags().Bool("verify", true, "Verify the checksum of the downloaded binary")
+
 	command.RunE = func(cmd *cobra.Command, args []string) error {
+
+		verifyDigest, _ := cmd.Flags().GetBool("verify")
 
 		name := "arkade"
 		toolList := get.MakeTools()
@@ -91,17 +95,19 @@ func MakeUpdate() *cobra.Command {
 			return err
 		}
 
-		digest, err := downloadDigest(downloadUrl + ".sha256")
-		if err != nil {
-			return err
-		}
+		if verifyDigest {
+			digest, err := downloadDigest(downloadUrl + ".sha256")
+			if err != nil {
+				return err
+			}
 
-		match, err := compareSHA(digest, newBinary)
-		if err != nil {
-			return fmt.Errorf("SHA256 checksum failed for %s, error: %w", newBinary, err)
-		}
-		if !match {
-			return fmt.Errorf("SHA256 checksum failed for %s", newBinary)
+			match, err := compareSHA(digest, newBinary)
+			if err != nil {
+				return fmt.Errorf("SHA256 checksum failed for %s, error: %w", newBinary, err)
+			}
+			if !match {
+				return fmt.Errorf("SHA256 checksum failed for %s", newBinary)
+			}
 		}
 
 		if err := replaceExec(executable, newBinary); err != nil {
