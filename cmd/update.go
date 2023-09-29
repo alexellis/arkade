@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	"github.com/alexellis/arkade/pkg"
@@ -39,6 +40,10 @@ version twice.`,
 	command.Flags().Bool("force", false, "Force a download of the latest binary, even if up to date, the --verify flag still applies")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
+
+		if runtime.GOOS == "windows" {
+			return fmt.Errorf("update is not supported on Windows at this time")
+		}
 
 		verifyDigest, _ := cmd.Flags().GetBool("verify")
 		forceDownload, _ := cmd.Flags().GetBool("force")
