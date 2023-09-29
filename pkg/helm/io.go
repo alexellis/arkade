@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"strings"
 
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 // ValuesMap is an alias for map[string]interface{}
