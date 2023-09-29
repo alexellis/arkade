@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/alexellis/go-execute/v2 v2.0.0
+	github.com/alexellis/go-execute/v2 v2.1.0
 	github.com/cheggaaa/pb/v3 v3.1.4
 	github.com/docker/go-units v0.5.0
 	github.com/google/go-containerregistry v0.16.1
