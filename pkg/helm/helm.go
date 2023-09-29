@@ -31,22 +31,6 @@ func TryDownloadHelm(userPath, clientArch, clientOS string) (string, error) {
 	return helmBinaryPath, nil
 }
 
-func GetHelmURL(arch, os, version string) string {
-	archSuffix := "amd64"
-	osSuffix := strings.ToLower(os)
-
-	if strings.HasPrefix(arch, "armv7") {
-		archSuffix = "arm"
-	} else if strings.HasPrefix(arch, "aarch64") {
-		archSuffix = "arm64"
-	}
-	if strings.Contains(strings.ToLower(os), "mingw") {
-		osSuffix = "windows"
-	}
-
-	return fmt.Sprintf("https://get.helm.sh/helm-%s-%s-%s.tar.gz", version, osSuffix, archSuffix)
-}
-
 func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 	tools := get.MakeTools()
 	var tool *get.Tool
@@ -88,11 +72,11 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 }
 
 func HelmInit() error {
-	fmt.Printf("Running helm init.\n")
+	fmt.Println("Running \"helm init\".")
 	subdir := ""
 
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("helm", subdir)),
+		Command:     env.LocalBinary("helm", subdir),
 		Env:         os.Environ(),
 		Args:        []string{"init", "--client-only"},
 		StreamStdio: true,
