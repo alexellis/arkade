@@ -26,10 +26,11 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 
 	OpenFaaSlokiApp.Flags().StringP("namespace", "n", "default", "The namespace to install loki (default: default")
 	OpenFaaSlokiApp.Flags().Bool("update-repo", true, "Update the helm repo")
+	OpenFaaSlokiApp.Flags().MarkDeprecated("update-repo", "this flag is deprecated, it is no longer needed for the openfaas-loki")
 	OpenFaaSlokiApp.Flags().String("openfaas-namespace", "openfaas", "set the namespace that OpenFaaS is installed into")
 	OpenFaaSlokiApp.Flags().String("loki-url", "http://loki-stack.default:3100", "set the loki url (default http://loki-stack.default:3100)")
+	OpenFaaSlokiApp.Flags().String("version", "", "Override chart version, must be >= 1.7.3")
 	OpenFaaSlokiApp.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set grafana.enabled=true)")
-
 	OpenFaaSlokiApp.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 
@@ -37,8 +38,6 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 
 		openfaasNamespace, _ := OpenFaaSlokiApp.Flags().GetString("openfaas-namespace")
 		lokiURL, _ := OpenFaaSlokiApp.Flags().GetString("loki-url")
-
-		updateRepo, _ := OpenFaaSlokiApp.Flags().GetBool("update-repo")
 
 		overrides := map[string]string{}
 		overrides["lokiURL"] = lokiURL
@@ -49,13 +48,18 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 			return err
 		}
 
+		version, _ := command.Flags().GetString("version")
+
 		lokiOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("lucas/openfaas-loki").
-			WithHelmURL("https://lucasroesler.com/helm-charts").
-			WithHelmUpdateRepo(updateRepo).
+			WithHelmURL("oci://ghcr.io/lucasroesler/charts/openfaas-loki").
 			WithOverrides(overrides).
-			WithKubeconfigPath(kubeConfigPath)
+			WithKubeconfigPath(kubeConfigPath).
+			WithHelmRepoVersion(version)
+
+		// The default options includes the `values.yaml` file but this is already
+		// implied when using the OCI chart.
+		lokiOptions.Helm.ValuesFile = ""
 
 		_, err := apps.MakeInstallChart(lokiOptions)
 		if err != nil {
