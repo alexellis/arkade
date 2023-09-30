@@ -159,6 +159,7 @@ func FetchChart(chart, version string) error {
 	if mkErr != nil {
 		return mkErr
 	}
+
 	task := execute.ExecTask{
 		Command:     env.LocalBinary("helm", subdir),
 		Args:        []string{"fetch", chart, "--untar=true", "--untardir", chartsPath + versionStr},
@@ -175,6 +176,10 @@ func FetchChart(chart, version string) error {
 		return fmt.Errorf("exit code %d", res.ExitCode)
 	}
 	return nil
+}
+
+func IsOCI(chart string) bool {
+	return strings.HasPrefix(chart, "oci://")
 }
 
 func Helm3Upgrade(chart, namespace, values, version string, overrides map[string]string, wait bool) error {
@@ -220,6 +225,62 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 
 	fmt.Printf("Command: %s %s\n", task.Command, task.Args)
 	res, err := task.Execute(context.Background())
+
+	if err != nil {
+		return err
+	}
+
+	if res.ExitCode != 0 {
+		return fmt.Errorf("exit code %d, stderr: %s", res.ExitCode, res.Stderr)
+	}
+
+	if len(res.Stderr) > 0 {
+		log.Printf("stderr: %s\n", res.Stderr)
+	}
+
+	return nil
+}
+
+func Helm3OCIUpgrade(chart, namespace, values, version string, overrides map[string]string, wait bool) error {
+
+	if !IsOCI(chart) {
+		return fmt.Errorf("chart %s is not an OCI chart URL", chart)
+	}
+
+	index := strings.LastIndex(chart, "/")
+	if index < 0 {
+		return fmt.Errorf("chart %s is not an OCI chart URL", chart)
+	}
+	name := chart[index+1:]
+
+	args := []string{"upgrade", "--install", name, chart, "--namespace", namespace}
+	if len(version) > 0 {
+		args = append(args, "--version", version)
+	}
+
+	if wait {
+		args = append(args, "--wait")
+	}
+
+	fmt.Println("VALUES", values)
+	if len(values) > 0 {
+		args = append(args, "--values", values)
+	}
+
+	for k, v := range overrides {
+		args = append(args, "--set")
+		args = append(args, fmt.Sprintf("%s=%s", k, v))
+	}
+
+	task := execute.ExecTask{
+		Command:     env.LocalBinary("helm", ""),
+		Args:        args,
+		Env:         os.Environ(),
+		StreamStdio: true,
+	}
+
+	fmt.Printf("Command: %s %s\n", task.Command, task.Args)
+	res, err := task.Execute(context.TODO())
 
 	if err != nil {
 		return err

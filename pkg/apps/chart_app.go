@@ -50,16 +50,24 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 		return nil, err
 	}
 
-	err = helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
-	if err != nil {
-		return result, err
+	installer := helm.Helm3OCIUpgrade
+	name := options.Helm.Repo.URL
+	if !helm.IsOCI(options.Helm.Repo.URL) {
+		err = helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
+		if err != nil {
+			return result, err
+		}
+
+		if err := helm.FetchChart(options.Helm.Repo.Name, options.Helm.Repo.Version); err != nil {
+			return result, err
+		}
+		installer = helm.Helm3Upgrade
+		name = options.Helm.Repo.Name
 	}
 
-	if err := helm.FetchChart(options.Helm.Repo.Name, options.Helm.Repo.Version); err != nil {
-		return result, err
-	}
-
-	if err := helm.Helm3Upgrade(options.Helm.Repo.Name, options.Namespace,
+	if err := installer(
+		name,
+		options.Namespace,
 		options.Helm.ValuesFile,
 		options.Helm.Repo.Version,
 		options.Helm.Overrides,
