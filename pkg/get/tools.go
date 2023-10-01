@@ -3032,6 +3032,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "stackrox",
+			Repo:        "kube-linter",
+			Name:        "kube-linter",
+			Description: "KubeLinter is a static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices.",
+			BinaryTemplate: `
+				{{$os := ""}}
+				{{$ext := ""}}
+
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".exe"}}
+				{{- else if eq .OS "linux" -}}
+				{{$os = "-linux"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$os = "-darwin"}}
+				{{- end -}}
+
+				{{.Name}}{{$os}}{{$ext}}
+				`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "open-policy-agent",
 			Repo:        "conftest",
 			Name:        "conftest",
