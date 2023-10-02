@@ -71,34 +71,12 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 	return nil
 }
 
-func HelmInit() error {
-	fmt.Println("Running \"helm init\".")
-	subdir := ""
-
-	task := execute.ExecTask{
-		Command:     env.LocalBinary("helm", subdir),
-		Env:         os.Environ(),
-		Args:        []string{"init", "--client-only"},
-		StreamStdio: true,
-	}
-
-	res, err := task.Execute(context.Background())
-
-	if err != nil {
-		return err
-	}
-
-	if res.ExitCode != 0 {
-		return fmt.Errorf("exit code %d", res.ExitCode)
-	}
-	return nil
-}
-
 func UpdateHelmRepos(helm3 bool) error {
 	subdir := ""
 
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
+		Command:     env.LocalBinary("helm", subdir),
+		Args:        []string{"repo", "update"},
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
@@ -123,7 +101,8 @@ func AddHelmRepo(name, url string, update bool) error {
 	}
 
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s repo add %s %s --force-update", env.LocalBinary("helm", subdir), name, url),
+		Command:     env.LocalBinary("helm", subdir),
+		Args:        []string{"repo", "add", name, url, "--force-update"},
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
@@ -140,7 +119,8 @@ func AddHelmRepo(name, url string, update bool) error {
 
 	if update {
 		task := execute.ExecTask{
-			Command:     fmt.Sprintf("%s repo update", env.LocalBinary("helm", subdir)),
+			Command:     env.LocalBinary("helm", subdir),
+			Args:        []string{"repo", "update"},
 			Env:         os.Environ(),
 			StreamStdio: true,
 		}
@@ -180,7 +160,8 @@ func FetchChart(chart, version string) error {
 		return mkErr
 	}
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s fetch %s --untar=true --untardir %s%s", env.LocalBinary("helm", subdir), chart, chartsPath, versionStr),
+		Command:     env.LocalBinary("helm", subdir),
+		Args:        []string{"fetch", chart, "--untar=true", "--untardir", chartsPath + versionStr},
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
