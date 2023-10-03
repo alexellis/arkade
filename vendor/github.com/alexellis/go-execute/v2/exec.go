@@ -151,9 +151,10 @@ func (et ExecTask) Execute(ctx context.Context) (ExecResult, error) {
 	var stdoutWriters []io.Writer
 	var stderrWriters []io.Writer
 
-	// Always capture to a buffer
-	stdoutWriters = append(stdoutWriters, &stdoutBuff)
-	stderrWriters = append(stderrWriters, &stderrBuff)
+	if !et.DisableStdioBuffer {
+		stdoutWriters = append(stdoutWriters, &stdoutBuff)
+		stderrWriters = append(stderrWriters, &stderrBuff)
+	}
 
 	if et.StreamStdio {
 		stdoutWriters = append(stdoutWriters, os.Stdout)
