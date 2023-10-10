@@ -1,6 +1,9 @@
 // Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
+//go:build !windows
+// +build !windows
+
 package env
 
 import (
