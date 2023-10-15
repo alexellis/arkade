@@ -28,6 +28,7 @@ flag and the ingress-nginx docs for more info`,
 	nginx.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
 	nginx.Flags().Bool("update-repo", true, "Update the helm repo")
 	nginx.Flags().Bool("host-mode", false, "If we should install ingress-nginx in host mode.")
+	nginx.Flags().Bool("default-ingress", true, "Is this the default ingressClass for the cluster?")
 	nginx.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set image=org/repo:tag)")
 
 	nginx.RunE = func(command *cobra.Command, args []string) error {
@@ -55,6 +56,14 @@ flag and the ingress-nginx docs for more info`,
 			overrides["controller.service.type"] = "NodePort"
 			overrides["dnsPolicy"] = "ClusterFirstWithHostNet"
 			overrides["controller.kind"] = "DaemonSet"
+		}
+
+		defaultIngress, flagErr := command.Flags().GetBool("default-ingress")
+		if flagErr != nil {
+			return flagErr
+		}
+		if defaultIngress {
+			overrides["controller.ingressClassResource.default"] = "true"
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
