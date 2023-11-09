@@ -33,10 +33,14 @@ func getLatestNodeVersion(version, channel string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	regex := regexp.MustCompile(`(?m)node-(.*)-linux-.*"`)
+	regex := regexp.MustCompile(`(?m)node-v(\d+.\d+.\d+)-linux-.*`)
 	result := regex.FindStringSubmatch(string(body))
+
 	if len(result) < 2 {
-		return nil, fmt.Errorf("could not find latest version for %s", version)
+		if v, ok := os.LookupEnv("ARK_DEBUG"); ok && v == "1" {
+			fmt.Printf("Body: %s\n", string(body))
+		}
+		return nil, fmt.Errorf("could not find latest version for %s, (%d), %s", version, res.StatusCode, result)
 	}
 	return &result[1], nil
 }
