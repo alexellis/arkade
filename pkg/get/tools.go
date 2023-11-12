@@ -3911,5 +3911,24 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 			kwok-{{$os}}-{{$arch}}{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kubernetes-sigs",
+			Repo:        "kwok",
+			Name:        "kwokctl",
+			Description: "CLI tool designed to streamline the creation and management of clusters, with nodes simulated by `kwok`",
+			BinaryTemplate: `
+			{{ $os := .OS }}
+			{{ $arch := .Arch }}
+
+			{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+				{{ $arch = "arm64" }}
+			{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
+			{{- end -}}
+
+			kwokctl-{{$os}}-{{$arch}}`,
+		})
 	return tools
 }
