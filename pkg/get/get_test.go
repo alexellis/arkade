@@ -6703,3 +6703,61 @@ func Test_DownloaSkupper(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadKwok(t *testing.T) {
+	var (
+		tools       = MakeTools()
+		name        = "kwok"
+		toolVersion = "v0.4.0"
+		tool        = getTool(name, tools)
+	)
+
+	tests := []test{
+		{
+			os:      "linux",
+			version: toolVersion,
+			arch:    archARM64,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-linux-arm64`,
+		},
+		{
+			os:      "linux",
+			version: toolVersion,
+			arch:    arch64bit,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-linux-amd64`,
+		},
+		{
+			os:      "darwin",
+			version: toolVersion,
+			arch:    archDarwinARM64,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-darwin-arm64`,
+		},
+		{
+			os:      "darwin",
+			version: toolVersion,
+			arch:    arch64bit,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-darwin-amd64`,
+		},
+		{
+			os:      "ming",
+			version: toolVersion,
+			arch:    archARM64,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-windows-arm64.exe`,
+		},
+		{
+			os:      "ming",
+			version: toolVersion,
+			arch:    arch64bit,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwok-windows-amd64.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

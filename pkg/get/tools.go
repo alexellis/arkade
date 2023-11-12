@@ -3886,5 +3886,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					skupper-cli-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
 					`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "kubernetes-sigs",
+			Repo:        "kwok",
+			Name:        "kwok",
+			Description: "KWOK stands for Kubernetes WithOut Kubelet, responsible for simulating the lifecycle of fake nodes, pods, and other Kubernetes API resources",
+			BinaryTemplate: `
+			{{ $os := .OS }}
+			{{ $arch := .Arch }}
+			{{ $ext := "" }}
+
+			{{- if HasPrefix .OS "ming" -}}
+				{{ $os = "windows" }}
+				{{ $ext = ".exe" }}
+			{{- end -}}
+
+			{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+				{{ $arch = "arm64" }}
+			{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
+			{{- end -}}
+
+			kwok-{{$os}}-{{$arch}}{{$ext}}`,
+		})
 	return tools
 }
