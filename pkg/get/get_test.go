@@ -6761,3 +6761,49 @@ func Test_DownloadKwok(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadKwokctl(t *testing.T) {
+	var (
+		tools       = MakeTools()
+		name        = "kwokctl"
+		toolVersion = "v0.4.0"
+		tool        = getTool(name, tools)
+	)
+
+	tests := []test{
+		{
+			os:      "linux",
+			version: toolVersion,
+			arch:    arch64bit,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwokctl-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			version: toolVersion,
+			arch:    archARM64,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwokctl-linux-arm64`,
+		},
+		{
+			os:      "darwin",
+			version: toolVersion,
+			arch:    archDarwinARM64,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwokctl-darwin-arm64`,
+		},
+		{
+			os:      "darwin",
+			version: toolVersion,
+			arch:    arch64bit,
+			url:     `https://github.com/kubernetes-sigs/kwok/releases/download/v0.4.0/kwokctl-darwin-amd64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
