@@ -131,5 +131,11 @@ func getGoVersion() (string, error) {
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
 
-	return strings.TrimSpace(string(body)), nil
+	content := strings.TrimSpace(string(body))
+	version, _, ok := strings.Cut(content, "\n")
+	if !ok {
+		return "", fmt.Errorf("format unexpected: %q", content)
+	}
+
+	return version, nil
 }
