@@ -6807,3 +6807,65 @@ func Test_DownloadKwokctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadSnowMachine(t *testing.T) {
+	tools := MakeTools()
+	name := "snowmachine"
+	const version = "1.0.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-armhf`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-armhf`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-darwin`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-darwin-arm64`,
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
