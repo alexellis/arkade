@@ -3930,5 +3930,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 			kwokctl-{{$os}}-{{$arch}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "rgee0",
+			Repo:        "snowmachine",
+			Name:        "snowmachine",
+			Description: "Festive cheer for your terminal.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+	{{.Name}}.exe
+	{{- else if eq .OS "darwin" -}}
+	  {{- if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64
+	  {{- else -}}
+	{{.Name}}-darwin
+	  {{- end -}}
+	{{- else if eq .Arch "armv6l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "armv7l" -}}
+	{{.Name}}-armhf
+	{{- else if eq .Arch "aarch64" -}}
+	{{.Name}}-arm64
+	{{- else -}}
+	{{.Name}}
+	{{- end -}}`,
+		})
+
 	return tools
 }
