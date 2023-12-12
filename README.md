@@ -1,15 +1,12 @@
 # arkade - Open Source Marketplace For Developer Tools
 
-arkade is how developers install the latest versions of their favourite tools and Kubernetes apps.
+arkade is how developers install the latest versions of their favourite CLI tools and Kubernetes apps.
 
-With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your machine faster than you can type `apt-get install/brew update`.
+With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your machine faster than you can type `apt-get install` or `brew update`.
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
-[![Sponsor this](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/alexellis)](https://github.com/sponsors/alexellis)
-
-
-[![CI Build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
+[![Sponsor this](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/alexellis)](https://github.com/sponsors/alexellis) [![CI Build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
 [![URL Checker](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml)
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -61,7 +58,7 @@ With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
 
 ## Support arkade 👋
 
-Arkade is built to save you time at work so you can focus and get productive quickly.
+Arkade is built to save you time so you can focus and get productive quickly.
 
 <a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
