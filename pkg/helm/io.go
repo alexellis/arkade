@@ -29,6 +29,19 @@ func Load(yamlPath string) (ValuesMap, error) {
 	return values, nil
 }
 
+// LoadFrom loads a values.yaml snippet from memory and
+// returns a ValuesMap with the keys and values from the YAML
+func LoadFrom(yamlText string) (ValuesMap, error) {
+
+	values := ValuesMap{}
+
+	if err := yaml.Unmarshal([]byte(yamlText), &values); err != nil {
+		return nil, fmt.Errorf("unable to parse %s, error: %s", yamlText, err)
+	}
+
+	return values, nil
+}
+
 // ReplaceValuesInHelmValuesFile takes a values.yaml file and replaces values in it with the values provided in the map
 // and returns the updated values.yaml file as a string
 func ReplaceValuesInHelmValuesFile(values map[string]string, yamlPath string) (string, error) {
