@@ -53,8 +53,7 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 	installer := helm.Helm3OCIUpgrade
 	name := options.Helm.Repo.URL
 	if !helm.IsOCI(options.Helm.Repo.URL) {
-		err = helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo)
-		if err != nil {
+		if err = helm.AddHelmRepo(options.Helm.Repo.Name, options.Helm.Repo.URL, options.Helm.UpdateRepo); err != nil {
 			return result, err
 		}
 
