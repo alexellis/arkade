@@ -18,7 +18,7 @@ import (
 // such as:
 //
 // https://github.com/grafana/helm-charts/issues/1826
-const grafanaChartVersion = "6.36.1"
+const grafanaChartVersion = "7.0.17"
 
 func MakeInstallGrafana() *cobra.Command {
 	var grafana = &cobra.Command{

@@ -142,30 +142,27 @@ func AddHelmRepo(name, url string, update bool) error {
 
 func FetchChart(chart, version string) error {
 	chartsPath := path.Join(os.TempDir(), "charts")
-	versionStr := ""
 
-	if len(version) > 0 {
-		// Issue in helm where adding a space to the command makes it think that it's another chart of " " we want to template,
-		// So we add the space before version here rather than on the command
-		versionStr = " --version " + version
-	}
 	subdir := ""
 
 	// First remove any existing folder
 	os.RemoveAll(chartsPath)
 
-	mkErr := os.MkdirAll(chartsPath, 0700)
-
-	if mkErr != nil {
-		return mkErr
+	if err := os.MkdirAll(chartsPath, 0700); err != nil {
+		return err
 	}
 
 	task := execute.ExecTask{
 		Command:     env.LocalBinary("helm", subdir),
-		Args:        []string{"fetch", chart, "--untar=true", "--untardir", chartsPath + versionStr},
+		Args:        []string{"fetch", chart, "--untar=true", "--untardir", chartsPath},
 		Env:         os.Environ(),
 		StreamStdio: true,
 	}
+
+	if len(version) > 0 {
+		task.Args = append(task.Args, "--version", version)
+	}
+
 	res, err := task.Execute(context.Background())
 
 	if err != nil {
