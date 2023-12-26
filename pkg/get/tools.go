@@ -147,7 +147,7 @@ func MakeTools() Tools {
 				{{- end -}}`,
 		})
 
-	// https://storage.googleapis.com/kubernetes-release/release/v1.22.2/bin/darwin/amd64/kubectl
+	// https://dl.k8s.io/release/v1.22.2/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:       "kubernetes",
@@ -177,7 +177,7 @@ func MakeTools() Tools {
 {{$os = "windows"}}
 {{- end -}}
 
-https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
+https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
