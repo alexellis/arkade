@@ -764,23 +764,24 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Name:        "popeye",
 			Description: "Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.",
 			BinaryTemplate: `
-			{{$osStr := ""}}
+			{{ $os := .OS }}
+			{{ $arch := .Arch }}
+
 			{{ if HasPrefix .OS "ming" -}}
-			{{$osStr = "Windows"}}
+			{{$os = "Windows"}}
 			{{- else if eq .OS "linux" -}}
-			{{$osStr = "Linux"}}
+			{{$os = "Linux"}}
 			{{- else if eq .OS "darwin" -}}
-			{{$osStr = "Darwin"}}
+			{{$os = "Darwin"}}
 			{{- end -}}
 
-			{{$archStr := .Arch}}
-			{{- if eq .Arch "armv7l" -}}
-			{{$archStr = "arm"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$archStr = "arm64"}}
+			{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+				{{ $arch = "arm64" }}
+			{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
 			{{- end -}}
 
-			{{.Version}}/{{.Name}}_{{$osStr}}_{{$archStr}}.tar.gz`,
+			{{.Version}}/{{.Name}}_{{ $os }}_{{ $arch }}.tar.gz`,
 		})
 
 	tools = append(tools,
@@ -1207,21 +1208,21 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Repo:        "kail",
 			Name:        "kail",
 			Description: "Kubernetes log viewer.",
-			BinaryTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `
+			{{ $os := .OS }}
+			{{ $arch := .Arch }}
 
-	{{- if eq .Arch "aarch64" -}}
-	{{$arch = "arm64"}}
-	{{- else if eq .Arch "x86_64" -}}
-	{{$arch = "amd64"}}
-	{{- end -}}
+			{{- if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- end -}}
 
-	{{$os := .OS}}
-	{{$ext := "tar.gz"}}
-	{{ if HasPrefix .OS "ming" -}}
-	{{$os = "windows"}}
-	{{- end -}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{- end -}}
 
-	{{.Version}}/{{.Name}}_v{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
+			{{.Version}}/{{.Name}}_v{{.VersionNumber}}_{{$os}}_{{$arch}}.tar.gz`,
 		})
 
 	tools = append(tools,
