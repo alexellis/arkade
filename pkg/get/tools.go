@@ -320,15 +320,15 @@ https://storage.googleapis.com/kubernetes-release/release/{{.Version}}/bin/{{$os
 	{{ if HasPrefix .OS "ming" -}}
 	{{.Name}}.{{$version}}.windows.x86_64.zip
 	{{- else if and (eq .OS "darwin") (eq .Arch "aarch64") -}}
-	{{.Name}}.{{$version}}.mac.arm64_ALPHA.tar.gz
+	{{.Name}}.{{$version}}.mac.arm64.tar.gz
 	{{- else if eq .OS "darwin" -}}
 	{{.Name}}.{{$version}}.mac.x86_64.tar.gz
 	{{- else if eq .Arch "armv6l" -}}
-	{{.Name}}.{{$version}}.linux.arm_ALPHA.tar.gz
+	{{.Name}}.{{$version}}.linux.arm.tar.gz
 	{{- else if eq .Arch "armv7l" -}}
-	{{.Name}}.{{$version}}.linux.arm_ALPHA.tar.gz
+	{{.Name}}.{{$version}}.linux.arm.tar.gz
 	{{- else if eq .Arch "aarch64" -}}
-	{{.Name}}.{{$version}}.linux.arm64_ALPHA.tar.gz
+	{{.Name}}.{{$version}}.linux.arm64.tar.gz
 	{{- else -}}
 	{{.Name}}.{{$version}}.linux.x86_64.tar.gz
 	{{- end -}}`,
@@ -627,7 +627,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- else if eq .Arch "armv7l" -}}
 				{{$arch = "armv6"}}
 			{{- end -}}
-	
+
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
 				{{$osStr = "Windows"}}
@@ -636,7 +636,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- else if eq .OS "darwin" -}}
 				{{$osStr = "Darwin"}}
 			{{- end -}}
-	
+
 			{{.Version}}/go-containerregistry_{{$osStr}}_{{$arch}}.tar.gz`,
 		})
 
@@ -1065,7 +1065,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			{{ else if HasPrefix .OS "ming" -}}
 				{{$osStr =".exe"}}
 			{{- end -}}
-			
+
 			{{.Name}}{{$osStr}}`,
 		})
 
@@ -1928,7 +1928,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 	{{ $ext := "tar.gz" }}
 	{{ $osStr := "Linux" }}
 	{{ $arch := .Arch }}
-	
+
 	{{- if eq .Arch "x86_64" -}}
 	{{$arch = "amd64"}}
 	{{- end -}}
@@ -2299,7 +2299,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else -}}
 				{{$archiveStr = ""}}
 				{{- end -}}
-	
+
 				{{ if HasPrefix .OS "ming" -}}
 				{{ $osStr = "windows" }}
 				{{- else if eq .OS "linux" -}}
@@ -2307,7 +2307,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if eq .OS "darwin" -}}
 				{{ $osStr = "darwin" }}
 				{{- end -}}
-	
+
 				{{- if eq .Arch "x86_64" -}}
 				{{ $archStr = "amd64" }}
 				{{- else if eq .Arch "aarch64" -}}
@@ -2315,7 +2315,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{ $archStr = "arm" }}
 				{{- end -}}
-	
+
 				{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$osStr}}-{{$archStr}}{{$archiveStr}}`,
 		})
 	tools = append(tools,
@@ -2495,7 +2495,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{ $archStr = "arm7" }}
 				{{- end -}}
-	
+
 				{{ .Name }}-{{ .Version }}-{{ $osStr }}-{{ $archStr }}.zip
 				`,
 		})
@@ -2608,7 +2608,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{ $os := "linux" }}
 				{{ $arch := "amd64" }}
 				{{ $ext := "" }}
-	
+
 				{{- if eq .Arch "aarch64" -}}
 				{{ $arch = "arm64" }}
 				{{- else if eq .Arch "arm64" -}}
@@ -2616,14 +2616,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if eq .Arch "armv7l" -}}
 				{{ $arch = "armv7" }}
 				{{- end -}}
-	
+
 				{{ if HasPrefix .OS "ming" -}}
 				{{ $os = "windows" }}
 				{{ $ext = ".exe" }}
 				{{- else if eq .OS "darwin" -}}
 				{{  $os = "darwin" }}
 				{{- end -}}
-	
+
 				https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{ .Version }}/{{ .Name }}_{{ $os }}-{{ $arch }}{{ $ext }}
 				`,
 			BinaryTemplate: `
@@ -2996,7 +2996,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$os = "Windows"}}
 				{{$ext = ".zip"}}
 				{{- end -}}
-	
+
 				{{- if eq .Arch "aarch64" -}}
 				{{$arch = "arm64"}}
 				{{- end -}}
@@ -3019,7 +3019,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$os = "windows"}}
 				{{$ext = ".zip"}}
 				{{- end -}}
-	
+
 				{{$arch := .Arch}}
 				{{- if eq .Arch "x86_64" -}}
 				{{$arch = "amd64"}}
@@ -3118,7 +3118,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			BinaryTemplate: `
 					{{$arch := .Arch}}
 					{{$ext := "tar.gz"}}
-	
+
 					{{$arch := .Arch}}
 					{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 					{{$arch = "arm64"}}
@@ -3233,13 +3233,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 							{{$os := .OS}}
 							{{$arch := .Arch}}
 							{{$ext := ""}}
-	
+
 							{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 							{{$arch = "arm64"}}
 							{{- else if eq .Arch "x86_64" -}}
 							{{ $arch = "amd64" }}
 							{{- end -}}
-	
+
 							{{ if HasPrefix .OS "ming" -}}
 							{{$os = "windows"}}
 							{{$ext = ".exe"}}
@@ -3339,7 +3339,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{$os := .OS}}
 					{{$arch := .Arch}}
 					{{$ext := "tar.gz"}}
-	
+
 					{{- if eq .OS "darwin" -}}
 					{{$os = "macOS"}}
 					{{- else if eq .OS "linux" -}}
@@ -3355,13 +3355,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{- else if eq .Arch "armv7l" -}}
 					{{ $arch = "ARM" }}
 					{{- end -}}
-	
+
 					{{ if HasPrefix .OS "ming" -}}
 					{{$os = "Windows"}}
 					{{$ext = "zip"}}
 					{{- end -}}
-	
-	
+
+
 					croc_{{.VersionNumber}}_{{$os}}-{{$arch}}.{{$ext}}
 					`,
 		})
@@ -3402,7 +3402,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$arch := ""}}
 				{{$os := ""}}
 				{{$ext := ""}}
-	
+
 				{{- if eq .Arch "aarch64" -}}
 				{{$arch = "-arm64"}}
 				{{- else if eq .Arch "arm64" -}}
@@ -3410,7 +3410,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
 				{{$arch = "-armhf"}}
 				{{- end -}}
-	
+
 				{{ if eq .OS "darwin" -}}
 				{{$os = "-darwin"}}
 				{{ else if HasPrefix .OS "ming" -}}
@@ -3429,7 +3429,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$arch := ""}}
 				{{$os := ""}}
 				{{$ext := ""}}
-	
+
 				{{- if eq .Arch "aarch64" -}}
 				{{$arch = "-arm64"}}
 				{{- else if eq .Arch "arm64" -}}
@@ -3437,7 +3437,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
 				{{$arch = "-armhf"}}
 				{{- end -}}
-	
+
 				{{ if eq .OS "darwin" -}}
 				{{$os = "-darwin"}}
 				{{ else if HasPrefix .OS "ming" -}}
@@ -3456,7 +3456,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{$arch := ""}}
 					{{$os := ""}}
 					{{$ext := ""}}
-		
+
 					{{- if eq .Arch "aarch64" -}}
 					{{$arch = "-arm64"}}
 					{{- else if eq .Arch "arm64" -}}
@@ -3464,7 +3464,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
 					{{$arch = "-armhf"}}
 					{{- end -}}
-		
+
 					{{ if eq .OS "darwin" -}}
 					{{$os = "-darwin"}}
 					{{ else if HasPrefix .OS "ming" -}}
@@ -3506,7 +3506,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{$arch := ""}}
 						{{$os := ""}}
 						{{$ext := ""}}
-			
+
 						{{- if eq .OS "linux" -}}
 							{{$os = "linux"}}
 						{{- else if eq .OS "darwin" -}}
@@ -3518,7 +3518,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
 						{{$arch = "_armv7l"}}
 						{{- end -}}
-			
+
 						{{ if HasPrefix .OS "ming" -}}
 						{{$ext = ".exe"}}
 						{{$arch = "x86"}}
@@ -3536,7 +3536,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 							{{$arch := ""}}
 							{{$os := .OS}}
 							{{$ext := ".tar.gz"}}
-	
+
 							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 							{{$arch = "arm64"}}
 							{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
@@ -3544,7 +3544,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 							{{- else if eq .Arch "x86_64" -}}
 							{{$arch = "amd64"}}
 							{{- end -}}
-				
+
 							https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$os}}_{{$arch}}{{$ext}}
 							`,
 			BinaryTemplate: `weed`,
@@ -3563,10 +3563,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 				{{$arch = "arm64"}}
 				{{- end -}}
-	
+
 				{{$os := .OS}}
 				{{$extStr := "tar.gz"}}
-				
+
 				{{ if HasPrefix .OS "ming" -}}
 				{{$os = "windows"}}
 				{{$extStr = "zip"}}
@@ -3614,10 +3614,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{- else if eq .Arch "armv7l" -}}
 					{{$arch = "armv7"}}
 					{{- end -}}
-		
+
 					{{$os := .OS}}
 					{{$ext := "tar.gz"}}
-					
+
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
@@ -3632,7 +3632,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
  					{{$os := .OS}}
  					{{$arch := .Arch}}
  					{{$ext := "tar.gz"}}
- 	
+
  					{{- if eq .OS "darwin" -}}
  						{{$os = "darwin"}}
  					{{- else if eq .OS "linux" -}}
@@ -3665,11 +3665,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{$arch := .Arch}}
 						{{$ext := "tar.gz"}}
 						{{$version := .VersionNumber}}
-		 
+
 						{{- if eq .OS "darwin" -}}
 							{{$os = "mac"}}
 						{{- end -}}
-	
+
 						{{- if eq .Arch "aarch64" -}}
 							{{$arch = "-arm64"}}
 						{{- else if eq .Arch "arm64" -}}
@@ -3681,7 +3681,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{- if eq .VersionNumber "" -}}
 							{{$version = "4.13.0"}}
 						{{- end -}}
-	
+
 						https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{$version}}/{{.Name}}-{{$os}}{{$arch}}.tar.gz
 						`,
 		})
@@ -3697,14 +3697,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{$arch := .Arch}}
 						{{$ext := "tar.gz"}}
 						{{$version := .VersionNumber}}
-			
+
 						{{- if eq .OS "darwin" -}}
 							{{$os = "mac"}}
 						{{- else if HasPrefix .OS "ming" -}}
 							{{$os = "windows"}}
 							{{$ext = "zip"}}
 						{{- end -}}
-	
+
 						{{- if eq .Arch "aarch64" -}}
 							{{$arch = "-arm64"}}
 						{{- else if eq .Arch "arm64" -}}
@@ -3716,7 +3716,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{- if eq .VersionNumber "" -}}
 							{{$version = "latest"}}
 						{{- end -}}
-	
+
 						https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{$version}}/openshift-client-{{$os}}{{$arch}}.{{$ext}}
 						`,
 		})
@@ -3731,17 +3731,17 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{$os := .OS}}
 					{{$arch := .Arch}}
 					{{$ext := "tar.gz"}}
-					
+
 					{{- if eq .OS "darwin" -}}
 						{{$os = "apple-darwin"}}
 					{{- else if eq .OS "linux" -}}
 						{{$os = "unknown-linux-gnu"}}
 					{{- end -}}
-					
+
 					{{- if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
 						{{$arch = "x86_64"}}
 					{{- end -}}
-					
+
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
 		})
 
@@ -3862,7 +3862,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{$os := .OS}}
 					{{$arch := .Arch}}
 					{{$ext := "tgz"}}
-	
+
 					{{- if eq .OS "darwin" -}}
 					{{$os = "mac"}}
 					{{- else if eq .OS "linux" -}}
@@ -3878,13 +3878,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{- else if eq .Arch "armv7l" -}}
 					{{ $arch = "arm32" }}
 					{{- end -}}
-	
+
 					{{ if HasPrefix .OS "ming" -}}
 					{{$os = "windows"}}
 					{{$ext = "zip"}}
 					{{- end -}}
-	
-	
+
+
 					skupper-cli-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
 					`,
 		})
