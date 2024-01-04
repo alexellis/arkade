@@ -79,7 +79,7 @@ Or get a copy of his eBook on Go so you can learn how to build tools like k3sup,
 > [Ivan Velichko](https://twitter.com/iximiuz/status/1422605221226860548?s=20), SRE @ Booking.com
 
 > Before arkade whenever I used to spin up an instance, I used to go to multiple sites and download the binary. Arkade is one of my favourite tools.
-> 
+>
 > [Kumar Anurag](https://kubesimplify.com/arkade) - Cloud Native Enthusiast
 
 > It's hard to use K8s without Arkade these days.
@@ -88,7 +88,7 @@ Or get a copy of his eBook on Go so you can learn how to build tools like k3sup,
 > [@Yankexe](https://twitter.com/yankexe/status/1305427718050250754?s=20)
 
 > arkade is really a great tool to install CLI tools, and system packages, check this blog on how to get started with arkade it's a time saver.
-> 
+>
 > [Kiran Satya Raj](https://twitter.com/jksrtwt/status/1556592117627047936?s=20&t=g0gnSP98jg3ZwU7sQqUrLw)
 
 > This is real magic get #kubernetes up and going in a second; then launch #openfaas a free better than lambda solution that uses docker images.
@@ -103,7 +103,7 @@ Or get a copy of his eBook on Go so you can learn how to build tools like k3sup,
 > I finally got around to installing Arkade, super simple!
 > quicker to install this than the argocli standalone commands, but there are lots of handy little tools in there.
 > also, the neat little part about arkade, not only does it make it easy to install a ton of different apps and CLIs you can also get the info on them as well pretty quickly.
-> 
+>
 > [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
 
 > You've to install latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍
@@ -241,6 +241,7 @@ Run the following to see what's available `arkade system install`:
 
 ```
   actions-runner  Install GitHub Actions Runner
+  aws-cli         Install AWS CLI
   buildkitd       Install Buildkitd
   cni             Install CNI plugins
   containerd      Install containerd
@@ -287,12 +288,12 @@ If you just need system applications, you could also try "setup-arkade":
 
 There are two commands built into arkade designed for software vendors and open source maintainers.
 
-* `arkade helm chart upgrade` - run this command to scan for container images and update them automatically by querying a remote registry. 
+* `arkade helm chart upgrade` - run this command to scan for container images and update them automatically by querying a remote registry.
 * `arkade helm chart verify` - after changing the contents of a values.yaml or docker-compose.yaml file, this command will check each image exists on a remote registry
 
 Whilst end-users may use a GitOps-style tool to deploy charts and update their versions, maintainers need to make conscious decisions about when and which images to change within a Helm chart or compose file.
 
-These two features are used by OpenFaaS Ltd on projects and products like OpenFaaS CE/Pro (Serverless platform) and faasd (docker-compose file). 
+These two features are used by OpenFaaS Ltd on projects and products like OpenFaaS CE/Pro (Serverless platform) and faasd (docker-compose file).
 
 ### Upgrade images within a Helm chart
 

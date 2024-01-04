@@ -6646,7 +6646,7 @@ func Test_VHS(t *testing.T) {
 	}
 }
 
-func Test_DownloaSkupper(t *testing.T) {
+func Test_DownloadSkupper(t *testing.T) {
 	tools := MakeTools()
 	name := "skupper"
 
@@ -6690,6 +6690,52 @@ func Test_DownloaSkupper(t *testing.T) {
 			arch:    arch64bit,
 			version: toolVersion,
 			url:     `https://github.com/skupperproject/skupper/releases/download/1.4.2/skupper-cli-1.4.2-windows-amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadAWSCLI(t *testing.T) {
+	tools := MakeTools()
+	name := "awscli"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "2.13.28"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://awscli.amazonaws.com/awscli-exe-linux-x86_64-2.13.28.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://awscli.amazonaws.com/AWSCLIV2-2.13.28.pkg`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://awscli.amazonaws.com/awscli-exe-linux-aarch64-2.13.28.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://awscli.amazonaws.com/AWSCLIV2-2.13.28.msi`,
 		},
 	}
 
