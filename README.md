@@ -735,8 +735,10 @@ There are 56 apps that you can install on your cluster.
 | [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                                             |
 | [butane](https://github.com/coreos/butane)                                   | Translates human readable Butane Configs into machine readable Ignition Configs                                                                                 |
 | [caddy](https://github.com/caddyserver/caddy)                                | Caddy is an extensible server platform that uses TLS by default                                                                                                 |
+| [ch-remote](https://github.com/cloud-hypervisor/cloud-hypervisor)            | The ch-remote binary is used for controlling an running Virtual Machine.                                                                                        |
 | [cilium](https://github.com/cilium/cilium-cli)                               | CLI to install, manage & troubleshoot Kubernetes clusters running Cilium.                                                                                       |
 | [civo](https://github.com/civo/cli)                                          | CLI for interacting with your Civo resources.                                                                                                                   |
+| [cloud-hypervisor](https://github.com/cloud-hypervisor/cloud-hypervisor)     | Cloud Hypervisor is an open source Virtual Machine Monitor (VMM) that runs on top of the KVM hypervisor and the Microsoft Hypervisor (MSHV).                    |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                                          |
 | [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                                               |
 | [cmctl](https://github.com/cert-manager/cert-manager)                        | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                                                   |
@@ -868,6 +870,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 144 tools, use `arkade get NAME` to download one.
+There are 146 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
