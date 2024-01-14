@@ -3175,6 +3175,59 @@ func Test_DownloadRekorCli(t *testing.T) {
 
 }
 
+func Test_DownloadTflint(t *testing.T) {
+	tools := MakeTools()
+	name := "tflint"
+	version := "v0.50.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-linters/tflint/releases/download/v0.50.1/tflint_darwin_amd64.zip`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/terraform-linters/tflint/releases/download/v0.50.1/tflint_darwin_arm64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-linters/tflint/releases/download/v0.50.1/tflint_linux_amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/terraform-linters/tflint/releases/download/v0.50.1/tflint_linux_arm64.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-linters/tflint/releases/download/v0.50.1/tflint_windows_amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
 func Test_DownloadTFSecCli(t *testing.T) {
 	tools := MakeTools()
 	name := "tfsec"
