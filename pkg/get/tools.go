@@ -846,6 +846,37 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "terraform-docs",
+			Repo:        "terraform-docs",
+			Name:        "terraform-docs",
+			Description: "Generate documentation from Terraform modules in various output formats.",
+			BinaryTemplate: `
+			{{$extStr := ".tar.gz"}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$extStr = ".zip"}}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$archStr := .Arch}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$archStr = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$archStr = "arm64"}}
+			{{- end -}}
+
+			{{.Version}}/{{.Name}}-{{.Version}}-{{$osStr}}-{{$archStr}}{{$extStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "gruntwork-io",
 			Repo:        "terragrunt",
 			Name:        "terragrunt",
