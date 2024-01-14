@@ -3626,6 +3626,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Owner:       "cloud-bulldozer",
 			Repo:        "kube-burner",
 			Name:        "kube-burner",
+			Version:     "v1.8.1",
 			Description: "A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.",
 			BinaryTemplate: `
  					{{$os := .OS}}
@@ -3633,11 +3634,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
  					{{$ext := "tar.gz"}}
  	
  					{{- if eq .OS "darwin" -}}
- 						{{$os = "Darwin"}}
+ 						{{$os = "darwin"}}
  					{{- else if eq .OS "linux" -}}
- 						{{ $os = "Linux" }}
+ 						{{ $os = "linux" }}
 					{{- else if HasPrefix .OS "ming" -}}
-						{{$os = "Windows"}}
+						{{$os = "windows"}}
 						{{$ext = "zip"}}
  					{{- end -}}
 
@@ -3957,5 +3958,40 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 	{{- end -}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "cloud-hypervisor",
+			Repo:        "cloud-hypervisor",
+			Name:        "cloud-hypervisor",
+			Description: "Cloud Hypervisor is an open source Virtual Machine Monitor (VMM) that runs on top of the KVM hypervisor and the Microsoft Hypervisor (MSHV).",
+			BinaryTemplate: `
+				{{ $os := .OS }}
+				{{ $arch := .Arch }}
+				{{ $ext := "" }}
+	
+				{{- if (eq .Arch "aarch64") -}}
+					{{ $ext = "-aarch64" }}
+				{{- end -}}
+	
+				cloud-hypervisor-static{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cloud-hypervisor",
+			Repo:        "cloud-hypervisor",
+			Name:        "ch-remote",
+			Description: "The ch-remote binary is used for controlling an running Virtual Machine.",
+			BinaryTemplate: `
+					{{ $os := .OS }}
+					{{ $arch := .Arch }}
+					{{ $ext := "" }}
+		
+					{{- if (eq .Arch "aarch64") -}}
+						{{ $ext = "-aarch64" }}
+					{{- end -}}
+		
+					ch-remote-static{{$ext}}`,
+		})
 	return tools
 }
