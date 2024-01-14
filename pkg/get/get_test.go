@@ -6284,38 +6284,38 @@ func Test_DownloadKubeBurner(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v1.6"
+	const toolVersion = "v1.8.1"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Linux-x86_64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-x86_64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Darwin-x86_64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Linux-arm64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Darwin-arm64.tar.gz`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.6/kube-burner-V1.6-Windows-x86_64.zip`,
+			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-windows-x86_64.zip`,
 		},
 	}
 
@@ -6857,6 +6857,70 @@ func Test_DownloadSnowMachine(t *testing.T) {
 			arch:    archDarwinARM64,
 			version: version,
 			url:     `https://github.com/rgee0/snowmachine/releases/download/1.0.1/snowmachine-darwin-arm64`,
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadCloudHypervisor(t *testing.T) {
+	tools := MakeTools()
+	name := "cloud-hypervisor"
+	const version = "v36.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/cloud-hypervisor/cloud-hypervisor/releases/download/v36.1/cloud-hypervisor-static`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/cloud-hypervisor/cloud-hypervisor/releases/download/v36.1/cloud-hypervisor-static-aarch64`,
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadCloudHypervisorRemote(t *testing.T) {
+	tools := MakeTools()
+	name := "ch-remote"
+	const version = "v36.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/cloud-hypervisor/cloud-hypervisor/releases/download/v36.1/ch-remote-static`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/cloud-hypervisor/cloud-hypervisor/releases/download/v36.1/ch-remote-static-aarch64`,
 		},
 	}
 	for _, tc := range tests {
