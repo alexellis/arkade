@@ -125,7 +125,7 @@ func downloadOSM(userPath, arch, clientOS string) error {
 
 func osmCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("osm", "")),
+		Command:     env.LocalBinary("osm", ""),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,
