@@ -168,7 +168,7 @@ func downloadLinkerd(userPath, arch, clientOS, version string) error {
 
 func linkerdCli(parts ...string) (execute.ExecResult, error) {
 	task := execute.ExecTask{
-		Command:     fmt.Sprintf("%s", env.LocalBinary("linkerd2", "")),
+		Command:     env.LocalBinary("linkerd2", ""),
 		Args:        parts,
 		Env:         os.Environ(),
 		StreamStdio: true,
