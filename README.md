@@ -23,6 +23,7 @@ With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
   - [Install System Packages](#install-system-packages)
   - [Install packages from OCI images](#install-packages-from-oci-images)
   - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
+  - [Bump Helm chart versions](#bump-helm-chart-versions)
   - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
     - [Upgrade images within a Helm chart](#upgrade-images-within-a-helm-chart)
   - [Verify images within a helm chart](#verify-images-within-a-helm-chart)
@@ -298,6 +299,25 @@ If you just need system applications, you could also try "setup-arkade":
         arkade system install containerd
         arkade system install go
 ```
+
+## Bump Helm chart versions
+
+To bump the patch version of your Helm chart, run `arkade chart bump -f ./chart/values.yaml`. This updates the patch component of the version specified in Chart.yaml.
+
+```bash
+arkade chart bump -f ./charts/flagger/values.yaml
+charts/flagger/Chart.yaml 1.36.0 => 1.37.0
+```
+
+By default, the new version is written to stdout. To bump the version in the file, run the above command with the `--write` flag.
+To bump the version in the chart's Chart.yaml only if the chart has any changes, specify the `--check-for-updates` flag:
+
+```bash
+arkade chart bump -f ./charts/flagger/values.yaml --check-for-updates
+no changes detected in charts/flagger/values.yaml; skipping version bump
+```
+
+The directory that contains the Helm chart should be a Git repository. If the flag is specified, the command runs `git diff --exit-code <file>` to figure out if the file has any changes.
 
 ## Verify and upgrade images in Helm charts
 
