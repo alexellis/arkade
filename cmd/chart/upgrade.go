@@ -104,7 +104,8 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 
 			latestTag := vs[0].String()
 
-			if latestTag != tag {
+			// AE: Don't upgrade to an RC tag, even if it's newer.
+			if latestTag != tag && !strings.Contains(latestTag, "-rc") {
 				updated++
 				// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
 				if strings.HasPrefix(tag, "v") {
@@ -127,11 +128,6 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 				return err
 			}
 			log.Printf("Wrote %d updates to: %s", updated, file)
-		}
-
-		if !writeFile {
-			// Output updated YAML file to stdout
-			fmt.Print(rawValues)
 		}
 
 		return nil
