@@ -22,6 +22,7 @@ With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
   - [Install System Packages](#install-system-packages)
   - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
+  - [Bump Helm chart versions](#bump-helm-chart-versions)
   - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
     - [Upgrade images within a Helm chart](#upgrade-images-within-a-helm-chart)
   - [Verify images within a helm chart](#verify-images-within-a-helm-chart)
@@ -281,6 +282,27 @@ If you just need system applications, you could also try "setup-arkade":
       run: |
         arkade system install containerd
         arkade system install go
+```
+
+## Bump Helm chart versions
+
+To bump the minor of your Helm chart version, run `arkade chart bump --dir ./chart`. This updates the minor component of the version specified in Chart.yaml.
+
+```bash
+arkade chart bump --dir ~/Development/fluxcd/flagger/charts/flagger
+/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/flagger/Chart.yaml 1.35.0 => 1.36.0
+```
+
+By default, the new version is written to stdout. To bump the version in the file, run the above command with the `--write` flag.
+If you have a parent directory containing multiple charts, you can bump all charts by specifying the `--recursive` flag.
+
+```bash
+❯ ./arkade chart bump --dir ~/Development/fluxcd/flagger/charts --recursive
+Found 4 charts
+/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/flagger/Chart.yaml 1.35.0 => 1.36.0
+/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/grafana/Chart.yaml 1.7.0 => 1.8.0
+/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/loadtester/Chart.yaml 0.30.0 => 0.31.0
+/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/podinfo/Chart.yaml 6.1.3 => 6.2.0
 ```
 
 ## Verify and upgrade images in Helm charts
