@@ -289,21 +289,19 @@ If you just need system applications, you could also try "setup-arkade":
 To bump the minor of your Helm chart version, run `arkade chart bump --dir ./chart`. This updates the minor component of the version specified in Chart.yaml.
 
 ```bash
-arkade chart bump --dir ~/Development/fluxcd/flagger/charts/flagger
-/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/flagger/Chart.yaml 1.35.0 => 1.36.0
+arkade chart bump --dir ./charts/flagger
+charts/flagger/Chart.yaml 1.36.0 => 1.37.0
 ```
 
 By default, the new version is written to stdout. To bump the version in the file, run the above command with the `--write` flag.
-If you have a parent directory containing multiple charts, you can bump all charts by specifying the `--recursive` flag.
+To bump the version in the chart's Chart.yaml only if the adjacent values file has any changes, specify the `--check-for-value-updates` flag:
 
 ```bash
-❯ ./arkade chart bump --dir ~/Development/fluxcd/flagger/charts --recursive
-Found 4 charts
-/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/flagger/Chart.yaml 1.35.0 => 1.36.0
-/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/grafana/Chart.yaml 1.7.0 => 1.8.0
-/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/loadtester/Chart.yaml 0.30.0 => 0.31.0
-/Users/sanskarjaiswal/Development/fluxcd/flagger/charts/podinfo/Chart.yaml 6.1.3 => 6.2.0
+arkade chart bump --dir ./charts/flagger/ --check-for-value-updates values.yaml
+no changes detected in charts/flagger/values.yaml; skipping version bump
 ```
+
+The directory that contains the Helm chart should be a Git repository. If the flag is specified, the command runs `git diff --exit-code <file>` to figure out if the file has any changes.
 
 ## Verify and upgrade images in Helm charts
 
