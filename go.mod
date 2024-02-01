@@ -5,7 +5,7 @@ go 1.21
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/alexellis/go-execute/v2 v2.2.1
-	github.com/cheggaaa/pb/v3 v3.1.4
+	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/docker/go-units v0.5.0
 	github.com/google/go-containerregistry v0.19.0
 	github.com/morikuni/aec v1.0.0
