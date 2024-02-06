@@ -286,18 +286,18 @@ If you just need system applications, you could also try "setup-arkade":
 
 ## Bump Helm chart versions
 
-To bump the minor of your Helm chart version, run `arkade chart bump --dir ./chart`. This updates the minor component of the version specified in Chart.yaml.
+To bump the patch version of your Helm chart, run `arkade chart bump -f ./chart/values.yaml`. This updates the patch component of the version specified in Chart.yaml.
 
 ```bash
-arkade chart bump --dir ./charts/flagger
+arkade chart bump -f ./charts/flagger/values.yaml
 charts/flagger/Chart.yaml 1.36.0 => 1.37.0
 ```
 
 By default, the new version is written to stdout. To bump the version in the file, run the above command with the `--write` flag.
-To bump the version in the chart's Chart.yaml only if the adjacent values file has any changes, specify the `--check-for-value-updates` flag:
+To bump the version in the chart's Chart.yaml only if the chart has any changes, specify the `--check-for-updates` flag:
 
 ```bash
-arkade chart bump --dir ./charts/flagger/ --check-for-value-updates values.yaml
+arkade chart bump -f ./charts/flagger/values.yaml --check-for-updates
 no changes detected in charts/flagger/values.yaml; skipping version bump
 ```
 
