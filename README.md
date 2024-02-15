@@ -21,6 +21,7 @@ With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
   - [Install System Packages](#install-system-packages)
+  - [Install packages from OCI images](#install-packages-from-oci-images)
   - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
   - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
     - [Upgrade images within a Helm chart](#upgrade-images-within-a-helm-chart)
@@ -254,6 +255,21 @@ Run the following to see what's available `arkade system install`:
 ```
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
+
+## Install Packages from OCI images
+
+For packages distributed in Open Container Initiative (OCI) images, you can use `arkade oci install` to extract them to a given folder on your system.
+
+vmmeter is one example of a package that is only published as a container image, which is not released on a GitHub releases page.
+
+```bash
+arkade oci install ghcr.io/openfaasltd/vmmeter \
+  --path /usr/local/bin
+```
+
+* `--path` - the folder to extract the package to
+* `--version` - the version of the package to extract, if not specified the `:latest` tag is used
+* `--arch` - the architecture to extract, if not specified the host's architecture is used
 
 ## Install CLIs during CI with GitHub Actions
 
