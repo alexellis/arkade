@@ -20,13 +20,13 @@ func MakeInstallCNI() *cobra.Command {
 	command := &cobra.Command{
 		Use:   "cni",
 		Short: "Install CNI plugins",
-		Long:  `Install CNI plugins for use with faasd, CNI, Kubernetes, etc.`,
+		Long:  `Install CNI plugins for use with faasd, actuated, Kubernetes, etc.`,
 		Example: `  arkade system install cni
-  arkade system install cni --version v1.0.0`,
+  arkade system install cni --version v1.4.0`,
 		SilenceUsage: true,
 	}
 
-	command.Flags().StringP("version", "v", "v0.8.5", "The version for CNI to install")
+	command.Flags().StringP("version", "v", "v1.4.0", "The version for CNI to install")
 	command.Flags().StringP("path", "p", "/opt/cni/bin/", "Installation path, where a go subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
 

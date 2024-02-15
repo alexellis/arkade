@@ -123,7 +123,7 @@ func MakeInstallNode() *cobra.Command {
 		}
 		defer os.RemoveAll(tempUnpackPath)
 		fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
-		if err = archive.UntarNested(f, tempUnpackPath); err != nil {
+		if err = archive.UntarNested(f, tempUnpackPath, true, false); err != nil {
 			return err
 		}
 

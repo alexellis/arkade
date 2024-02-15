@@ -15,27 +15,36 @@ import (
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-func UntarNested(r io.Reader, dir string) error {
-	return untarNested(r, dir)
+func UntarNested(r io.Reader, dir string, gzipped, quiet bool) error {
+	return untarNested(r, dir, gzipped, quiet)
 }
 
-func untarNested(r io.Reader, dir string) (err error) {
+func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
 	defer func() {
 		td := time.Since(t0)
 		if err == nil {
-			log.Printf("extracted tarball into %s: %d files, %d dirs (%v)", dir, nFiles, len(madeDir), td)
+			if !quiet {
+				log.Printf("extracted tarball into %s: %d files, %d dirs (%v)", dir, nFiles, len(madeDir), td)
+			}
 		} else {
 			log.Printf("error extracting tarball into %s after %d files, %d dirs, %v: %v", dir, nFiles, len(madeDir), td, err)
 		}
 	}()
-	zr, err := gzip.NewReader(r)
-	if err != nil {
-		return fmt.Errorf("requires gzip-compressed body: %v", err)
+
+	reader := r
+
+	if gzipped {
+		zr, err := gzip.NewReader(r)
+		if err != nil {
+			return fmt.Errorf("requires gzip-compressed body: %v", err)
+		}
+		reader = zr
 	}
-	tr := tar.NewReader(zr)
+
+	tr := tar.NewReader(reader)
 	loggedChtimesError := false
 	for {
 		f, err := tr.Next()
@@ -54,6 +63,9 @@ func untarNested(r io.Reader, dir string) (err error) {
 
 		fi := f.FileInfo()
 		mode := fi.Mode()
+		if !quiet {
+			fmt.Printf("Extracting: %s\n", abs)
+		}
 		switch {
 		case mode.IsRegular():
 			// Make the directory. This is redundant because it should

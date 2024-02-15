@@ -115,7 +115,7 @@ func MakeInstallRegistry() *cobra.Command {
 
 		tempDirName := fmt.Sprintf("%s/%s", os.TempDir(), toolName)
 		defer os.RemoveAll(tempDirName)
-		if err := archive.UntarNested(f, tempDirName); err != nil {
+		if err := archive.UntarNested(f, tempDirName, true, false); err != nil {
 			return err
 		}
 
