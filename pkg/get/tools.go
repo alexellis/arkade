@@ -3362,7 +3362,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{- end -}}
 
 
-					croc_{{.VersionNumber}}_{{$os}}-{{$arch}}.{{$ext}}
+					croc_v{{.VersionNumber}}_{{$os}}-{{$arch}}.{{$ext}}
 					`,
 		})
 

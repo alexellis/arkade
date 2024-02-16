@@ -5676,44 +5676,44 @@ func Test_DownloaCroc(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v9.6.2"
+	const toolVersion = "v9.6.10"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_Linux-64bit.tar.gz`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_Linux-64bit.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_macOS-64bit.tar.gz`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_macOS-64bit.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_Linux-ARM64.tar.gz`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_Linux-ARM64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_macOS-ARM64.tar.gz`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_macOS-ARM64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_Linux-ARM.tar.gz`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_Linux-ARM.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/schollz/croc/releases/download/v9.6.2/croc_9.6.2_Windows-64bit.zip`,
+			url:     `https://github.com/schollz/croc/releases/download/v9.6.10/croc_v9.6.10_Windows-64bit.zip`,
 		},
 	}
 
