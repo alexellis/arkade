@@ -6933,3 +6933,53 @@ func Test_DownloadCloudHypervisorRemote(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadGPTScript(t *testing.T) {
+	tools := MakeTools()
+	name := "gptscript"
+	const version = "0.1.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gptscript-ai/gptscript/releases/download/0.1.1/gptscript-0.1.1-windows-amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gptscript-ai/gptscript/releases/download/0.1.1/gptscript-0.1.1-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/gptscript-ai/gptscript/releases/download/0.1.1/gptscript-0.1.1-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/gptscript-ai/gptscript/releases/download/0.1.1/gptscript-0.1.1-macOS-universal.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/gptscript-ai/gptscript/releases/download/0.1.1/gptscript-0.1.1-macOS-universal.tar.gz`,
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
