@@ -3993,5 +3993,41 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 		
 					ch-remote-static{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "gptscript-ai",
+			Repo:        "gptscript",
+			Name:        "gptscript",
+			Description: "Natural Language Programming",
+			BinaryTemplate: `
+					{{ $os := .OS }}
+					{{ $arch := .Arch }}
+					{{ $ext := "tar.gz" }}
+
+					{{- if eq .Arch "aarch64" -}}
+					{{$arch = "arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+					{{ $arch = "arm64" }}
+					{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "amd64" }}
+					{{- end -}}
+
+					{{ if HasPrefix .OS "ming" -}}
+					{{$os = "windows"}}
+					{{$ext = "zip"}}
+					{{- end -}}
+
+					{{- if eq .OS "darwin" -}}
+					{{$os = "macOS"}}
+					{{ $arch = "universal" }}
+					{{- else if eq .OS "linux" -}}
+					{{ $os = "linux" }}
+					{{- end -}}
+
+
+					gptscript-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
+					`,
+		})
 	return tools
 }
