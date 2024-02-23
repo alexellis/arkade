@@ -18,8 +18,9 @@ import (
 
 func MakeOciInstall() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "install",
-		Short: "Install the contents of an OCI image to a given path",
+		Use:     "install",
+		Aliases: []string{"i"},
+		Short:   "Install the contents of an OCI image to a given path",
 		Long: `Use this command to install binaries or packages distributed within an 
 OCI image.`,
 		Example: `  # Install vmmeter to /usr/local/bin
