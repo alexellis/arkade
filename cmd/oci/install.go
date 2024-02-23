@@ -23,13 +23,13 @@ func MakeOciInstall() *cobra.Command {
 		Long: `Use this command to install binaries or packages distributed within an 
 OCI image.`,
 		Example: `  # Install vmmeter to /usr/local/bin
-  arkade oci extract ghcr.io/openfaasltd/vmmeter
+  arkade oci install ghcr.io/openfaasltd/vmmeter
 
   # Install a specific version of vmmeter to /tmp/
-  arkade oci extract ghcr.io/openfaasltd/vmmeter --path /tmp --version 0.1.0
+  arkade oci install ghcr.io/openfaasltd/vmmeter --path /tmp --version 0.1.0
 
   # Install vmmeter for arm64 as an architecture override, instead of using uname
-  arkade oci extract ghcr.io/openfaasltd/vmmeter --arch arm64
+  arkade oci install ghcr.io/openfaasltd/vmmeter --arch arm64
 `,
 		SilenceUsage: true,
 	}
