@@ -822,7 +822,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Owner:       "hashicorp",
 			Repo:        "terraform",
 			Name:        "terraform",
-			Version:     "1.3.9",
+			Version:     "1.7.4",
 			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
@@ -914,26 +914,26 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Version:     "2.2.19",
 			Description: "Tool for building and distributing development environments.",
 			URLTemplate: `{{$arch := .Arch}}
-
-{{- if eq .Arch "x86_64" -}}
-{{$arch = "amd64"}}
-{{- else if eq .Arch "armv7l" -}}
-{{$arch = "arm"}}
-{{- end -}}
-
-{{$os := .OS}}
-{{ if HasPrefix .OS "ming" -}}
-{{$os = "windows"}}
-{{- end -}}
-
-https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+	
+	{{- if eq .Arch "x86_64" -}}
+	{{$arch = "amd64"}}
+	{{- else if eq .Arch "armv7l" -}}
+	{{$arch = "arm"}}
+	{{- end -}}
+	
+	{{$os := .OS}}
+	{{ if HasPrefix .OS "ming" -}}
+	{{$os = "windows"}}
+	{{- end -}}
+	
+	https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
 
 	tools = append(tools,
 		Tool{
 			Owner:       "hashicorp",
 			Repo:        "packer",
 			Name:        "packer",
-			Version:     "1.8.0",
+			Version:     "1.10.1",
 			Description: "Build identical machine images for multiple platforms from a single source configuration.",
 			URLTemplate: `
 			{{$arch := ""}}
@@ -958,10 +958,10 @@ https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$
 			Owner:       "hashicorp",
 			Repo:        "waypoint",
 			Name:        "waypoint",
-			Version:     "0.8.1",
+			Version:     "0.11.4",
 			Description: "Easy application deployment for Kubernetes and Amazon ECS",
 			URLTemplate: `
-			{{$arch := ""}}
+			{{$arch := .Arch}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
 			{{- else if eq .Arch "aarch64" -}}

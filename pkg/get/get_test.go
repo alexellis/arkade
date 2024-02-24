@@ -210,8 +210,8 @@ func Test_GetDownloadURLs(t *testing.T) {
 		},
 		{
 			name:    "terraform",
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip",
-			version: "1.3.9",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_linux_amd64.zip",
+			version: "1.7.4",
 			os:      "linux",
 			arch:    "x86_64",
 		},
@@ -1259,33 +1259,33 @@ func Test_DownloadWaypoint(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "0.6.1"
+	const toolVersion = "0.11.4"
 
 	tests := []test{
 		{os: "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_windows_amd64.zip`,
+			url:     `https://releases.hashicorp.com/waypoint/0.11.4/waypoint_0.11.4_windows_amd64.zip`,
 		},
 		{os: "darwin",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_darwin_arm64.zip`,
+			url:     `https://releases.hashicorp.com/waypoint/0.11.4/waypoint_0.11.4_darwin_arm64.zip`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_darwin_amd64.zip`,
+			url:     `https://releases.hashicorp.com/waypoint/0.11.4/waypoint_0.11.4_darwin_amd64.zip`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_linux_arm.zip`,
+			url:     `https://releases.hashicorp.com/waypoint/0.11.4/waypoint_0.11.4_linux_arm.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/waypoint/0.6.1/waypoint_0.6.1_linux_amd64.zip`,
+			url:     `https://releases.hashicorp.com/waypoint/0.11.4/waypoint_0.11.4_linux_amd64.zip`,
 		},
 	}
 
@@ -1306,41 +1306,41 @@ func Test_DownloadTerraform(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.3.9"
+	const toolVersion = "1.7.4"
 
 	tests := []test{
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_windows_amd64.zip`,
+			url:     `https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_windows_amd64.zip`,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_amd64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_linux_amd64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    arch64bit,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_arm.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_linux_arm.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM7,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_linux_arm64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_linux_arm64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_darwin_arm64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_darwin_arm64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    archDarwinARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/terraform/1.3.9/terraform_1.3.9_darwin_amd64.zip",
+			url:     "https://releases.hashicorp.com/terraform/1.7.4/terraform_1.7.4_darwin_amd64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    arch64bit,
@@ -1364,41 +1364,41 @@ func Test_DownloadPacker(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.6.5"
+	const toolVersion = "1.10.1"
 
 	tests := []test{
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_windows_amd64.zip`,
+			url:     `https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_windows_amd64.zip`,
 		},
 		{
-			url:     "https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_linux_amd64.zip",
+			url:     "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_linux_amd64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    arch64bit,
 		},
 		{
-			url:     "https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_linux_arm.zip",
+			url:     "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_linux_arm.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM7,
 		},
 		{
-			url:     "https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_linux_arm64.zip",
+			url:     "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_linux_arm64.zip",
 			version: toolVersion,
 			os:      "linux",
 			arch:    archARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_darwin_arm64.zip",
+			url:     "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_darwin_arm64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    archARM64,
 		},
 		{
-			url:     "https://releases.hashicorp.com/packer/1.6.5/packer_1.6.5_darwin_amd64.zip",
+			url:     "https://releases.hashicorp.com/packer/1.10.1/packer_1.10.1_darwin_amd64.zip",
 			version: toolVersion,
 			os:      "darwin",
 			arch:    arch64bit,
