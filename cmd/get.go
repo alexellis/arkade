@@ -45,7 +45,7 @@ and provides a fast and easy alternative to a package manager.`,
 
   # Override the version
   arkade get kubectl@v1.19.3
-  arkade get terraform --version=0.12.0
+  arkade get terraform --version=1.7.4
 
   # Override the OS
   arkade get helm --os darwin --arch aarch64
