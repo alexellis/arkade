@@ -423,19 +423,19 @@ func Test_DownloadKubectl(t *testing.T) {
 		{os: "darwin",
 			arch:    arch64bit,
 			version: "v1.20.0",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/amd64/kubectl"},
+			url:     "https://dl.k8s.io/release/v1.20.0/bin/darwin/amd64/kubectl"},
 		{os: "darwin",
 			arch:    archDarwinARM64,
 			version: "v1.20.0",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/darwin/arm64/kubectl"},
+			url:     "https://dl.k8s.io/release/v1.20.0/bin/darwin/arm64/kubectl"},
 		{os: "linux",
 			arch:    arch64bit,
 			version: "v1.20.0",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/amd64/kubectl"},
+			url:     "https://dl.k8s.io/release/v1.20.0/bin/linux/amd64/kubectl"},
 		{os: "linux",
 			arch:    archARM64,
 			version: "v1.20.0",
-			url:     "https://storage.googleapis.com/kubernetes-release/release/v1.20.0/bin/linux/arm64/kubectl"},
+			url:     "https://dl.k8s.io/release/v1.20.0/bin/linux/arm64/kubectl"},
 	}
 
 	for _, tc := range tests {
