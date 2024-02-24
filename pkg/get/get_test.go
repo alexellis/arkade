@@ -4219,6 +4219,65 @@ func Test_DownloadCilium(t *testing.T) {
 	}
 }
 
+func Test_DownloadTerraformDocs(t *testing.T) {
+	tools := MakeTools()
+	name := "terraform-docs"
+	version := "v0.17.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-darwin-amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-linux-amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-windows-amd64.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/terraform-docs/terraform-docs/releases/download/v0.17.0/terraform-docs-v0.17.0-windows-arm64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
 func Test_DownloadTerragrunt(t *testing.T) {
 	tools := MakeTools()
 	name := "terragrunt"
