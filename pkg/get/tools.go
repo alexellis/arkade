@@ -908,6 +908,35 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "opentofu",
+			Repo:        "opentofu",
+			Name:        "tofu",
+			Version:     "v1.6.2",
+			Description: "OpenTofu lets you declaratively manage your cloud infrastructure",
+			BinaryTemplate: `
+			{{$extStr := ".zip"}}
+
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			{{$archStr := .Arch}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$archStr = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$archStr = "arm64"}}
+			{{- end -}}
+
+			{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}{{$extStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "hashicorp",
 			Repo:        "vagrant",
 			Name:        "vagrant",
