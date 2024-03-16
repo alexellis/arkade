@@ -4118,5 +4118,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					gptscript-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 					`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "regclient",
+			Repo:        "regclient",
+			Name:        "regctl",
+			Description: "Utility for accessing docker registries",
+			BinaryTemplate: `
+						{{ $os := .OS }}
+						{{ $arch := .Arch }}
+						{{ $ext := "" }}
+	
+						{{- if eq .Arch "aarch64" -}}
+						{{$arch = "arm64"}}
+						{{- else if eq .Arch "arm64" -}}
+						{{ $arch = "arm64" }}
+						{{- else if eq .Arch "x86_64" -}}
+						{{ $arch = "amd64" }}
+						{{- end -}}
+	
+						{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = ".exe"}}
+						{{- end -}}	
+	
+						regctl-{{$os}}-{{$arch}}{{$ext}}
+						`,
+		})
 	return tools
 }
