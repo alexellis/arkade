@@ -7149,3 +7149,53 @@ func Test_DownloadGPTScript(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadRegCtl(t *testing.T) {
+	tools := MakeTools()
+	name := "regctl"
+	const version = "v0.5.7"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/regclient/regclient/releases/download/v0.5.7/regctl-windows-amd64.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/regclient/regclient/releases/download/v0.5.7/regctl-linux-amd64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/regclient/regclient/releases/download/v0.5.7/regctl-linux-arm64`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/regclient/regclient/releases/download/v0.5.7/regctl-darwin-amd64`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/regclient/regclient/releases/download/v0.5.7/regctl-darwin-arm64`,
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
