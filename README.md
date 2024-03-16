@@ -877,6 +877,7 @@ There are 56 apps that you can install on your cluster.
 | [popeye](https://github.com/derailed/popeye)                                 | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                                          |
 | [porter](https://github.com/getporter/porter)                                | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                                                 |
 | [promtool](https://github.com/prometheus/prometheus)                         | Prometheus rule tester and debugging utility                                                                                                                    |
+| [regctl](https://github.com/regclient/regclient)                             | Utility for accessing docker registries                                                                                                                         |
 | [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                                          |
 | [replicated](https://github.com/replicatedhq/replicated)                     | CLI for interacting with the Replicated Vendor API                                                                                                              |
 | [rpk](https://github.com/redpanda-data/redpanda)                             | Kafka compatible streaming platform for mission critical workloads.                                                                                             |
@@ -892,7 +893,6 @@ There are 56 apps that you can install on your cluster.
 | [task](https://github.com/go-task/task)                                      | A simple task runner and build tool                                                                                                                             |
 | [tctl](https://github.com/temporalio/tctl)                                   | Temporal CLI.                                                                                                                                                   |
 | [terraform](https://github.com/hashicorp/terraform)                          | Infrastructure as Code for major cloud providers.                                                                                                               |
-| [opentofu](https://github.com/opentofu/opentofu)                             | OpenTofu lets you declaratively manage your cloud infrastructure.                                                                                                   |
 | [terraform-docs](https://github.com/terraform-docs/terraform-docs)           | Generate documentation from Terraform modules in various output formats.                                                                                        |
 | [terragrunt](https://github.com/gruntwork-io/terragrunt)                     | Terragrunt is a thin wrapper for Terraform that provides extra tools for working with multiple Terraform modules                                                |
 | [terrascan](https://github.com/tenable/terrascan)                            | Detect compliance and security violations across Infrastructure as Code.                                                                                        |
@@ -901,6 +901,7 @@ There are 56 apps that you can install on your cluster.
 | [tilt](https://github.com/tilt-dev/tilt)                                     | A multi-service dev environment for teams on Kubernetes.                                                                                                        |
 | [timoni](https://github.com/stefanprodan/timoni)                             | A package manager for Kubernetes powered by CUE.                                                                                                                |
 | [tkn](https://github.com/tektoncd/cli)                                       | A CLI for interacting with Tekton.                                                                                                                              |
+| [tofu](https://github.com/opentofu/opentofu)                                 | OpenTofu lets you declaratively manage your cloud infrastructure                                                                                                |
 | [trivy](https://github.com/aquasecurity/trivy)                               | Vulnerability Scanner for Containers and other Artifacts, Suitable for CI.                                                                                      |
 | [vagrant](https://github.com/hashicorp/vagrant)                              | Tool for building and distributing development environments.                                                                                                    |
 | [vault](https://github.com/hashicorp/vault)                                  | A tool for secrets management, encryption as a service, and privileged access management.                                                                       |
@@ -910,6 +911,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 146 tools, use `arkade get NAME` to download one.
+There are 151 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
