@@ -157,7 +157,7 @@ sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
-	kubectlVersion := "v1.26.2"
+	kubectlVersion := "v1.29.3"
 
 	tests := []struct {
 		name    string
@@ -422,20 +422,20 @@ func Test_DownloadKubectl(t *testing.T) {
 	tests := []test{
 		{os: "darwin",
 			arch:    arch64bit,
-			version: "v1.20.0",
-			url:     "https://dl.k8s.io/release/v1.20.0/bin/darwin/amd64/kubectl"},
+			version: "v1.29.3",
+			url:     "https://dl.k8s.io/release/v1.29.3/bin/darwin/amd64/kubectl"},
 		{os: "darwin",
 			arch:    archDarwinARM64,
-			version: "v1.20.0",
-			url:     "https://dl.k8s.io/release/v1.20.0/bin/darwin/arm64/kubectl"},
+			version: "v1.29.3",
+			url:     "https://dl.k8s.io/release/v1.29.3/bin/darwin/arm64/kubectl"},
 		{os: "linux",
 			arch:    arch64bit,
-			version: "v1.20.0",
-			url:     "https://dl.k8s.io/release/v1.20.0/bin/linux/amd64/kubectl"},
+			version: "v1.29.3",
+			url:     "https://dl.k8s.io/release/v1.29.3/bin/linux/amd64/kubectl"},
 		{os: "linux",
 			arch:    archARM64,
-			version: "v1.20.0",
-			url:     "https://dl.k8s.io/release/v1.20.0/bin/linux/arm64/kubectl"},
+			version: "v1.29.3",
+			url:     "https://dl.k8s.io/release/v1.29.3/bin/linux/arm64/kubectl"},
 	}
 
 	for _, tc := range tests {
