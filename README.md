@@ -793,6 +793,7 @@ There are 56 apps that you can install on your cluster.
 | [eksctl-anywhere](https://github.com/aws/eks-anywhere)                       | Run Amazon EKS on your own infrastructure                                                                                                                       |
 | [etcd](https://github.com/etcd-io/etcd)                                      | Distributed reliable key-value store for the most critical data of a distributed system.                                                                        |
 | [faas-cli](https://github.com/openfaas/faas-cli)                             | Official CLI for OpenFaaS.                                                                                                                                      |
+| [faasd](https://github.com/openfaas/faasd)                                   | faasd - a lightweight & portable faas engine                                                                                                                    |
 | [firectl](https://github.com/firecracker-microvm/firectl)                    | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                                              |
 | [flux](https://github.com/fluxcd/flux2)                                      | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                                          |
 | [flyctl](https://github.com/superfly/flyctl)                                 | Command line tools for fly.io services                                                                                                                          |
@@ -911,6 +912,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 151 tools, use `arkade get NAME` to download one.
+There are 152 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
