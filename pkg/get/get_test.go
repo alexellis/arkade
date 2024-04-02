@@ -157,7 +157,7 @@ sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
-	kubectlVersion := "v1.26.2"
+	kubectlVersion := "v1.29.1"
 
 	tests := []struct {
 		name    string
