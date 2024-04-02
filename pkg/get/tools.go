@@ -153,7 +153,7 @@ func MakeTools() Tools {
 			Owner:       "kubernetes",
 			Repo:        "kubernetes",
 			Name:        "kubectl",
-			Version:     "v1.24.2",
+			Version:     "v1.29.2",
 			Description: "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
