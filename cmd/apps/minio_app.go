@@ -5,9 +5,10 @@ package apps
 
 import (
 	"fmt"
-	"github.com/alexellis/arkade/pkg/config"
 	"strconv"
 	"strings"
+
+	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg/apps"
 	"github.com/alexellis/arkade/pkg/k8s"
@@ -29,8 +30,8 @@ func MakeInstallMinio() *cobra.Command {
 	}
 
 	minio.Flags().Bool("update-repo", true, "Update the helm repo")
-	minio.Flags().String("access-key", "", "Provide an access key to override the pre-generated value")
-	minio.Flags().String("secret-key", "", "Provide a secret key to override the pre-generated value")
+	minio.Flags().String("root-user", "", "Provide an root username to override the pre-generated value")
+	minio.Flags().String("root-password", "", "Provide a root password to override the pre-generated value")
 	minio.Flags().Bool("distributed", false, "Deploy Minio in Distributed Mode")
 	minio.Flags().String("namespace", "default", "Kubernetes namespace for the application")
 	minio.Flags().Bool("persistence", false, "Enable persistence")
@@ -68,13 +69,13 @@ func MakeInstallMinio() *cobra.Command {
 			return fmt.Errorf("error with --set usage: %s", err)
 		}
 
-		_, err = command.Flags().GetString("access-key")
+		_, err = command.Flags().GetString("root-user")
 		if err != nil {
-			return fmt.Errorf("error with --access-key usage: %s", err)
+			return fmt.Errorf("error with --root-user usage: %s", err)
 		}
-		_, err = command.Flags().GetString("secret-key")
+		_, err = command.Flags().GetString("root-password")
 		if err != nil {
-			return fmt.Errorf("error with --secret-key usage: %s", err)
+			return fmt.Errorf("error with --root-password usage: %s", err)
 		}
 
 		_, err = command.Flags().GetBool("distributed")
@@ -91,8 +92,8 @@ func MakeInstallMinio() *cobra.Command {
 		updateRepo, _ := command.Flags().GetBool("update-repo")
 		ns, _ := command.Flags().GetString("namespace")
 		persistence, _ := command.Flags().GetBool("persistence")
-		accessKey, _ := command.Flags().GetString("access-key")
-		secretKey, _ := command.Flags().GetString("secret-key")
+		rootUser, _ := command.Flags().GetString("root-user")
+		rootPassword, _ := command.Flags().GetString("root-password")
 		dist, _ := command.Flags().GetBool("distributed")
 		customFlags, _ := command.Flags().GetStringArray("set")
 
@@ -108,17 +109,17 @@ func MakeInstallMinio() *cobra.Command {
 			return err
 		}
 
-		if len(accessKey) == 0 {
+		if len(rootUser) == 0 {
 			fmt.Printf("Access Key not provided, one will be generated for you\n")
-			accessKey, err = gen.Generate(20, 10, 0, false, true)
+			rootUser, err = gen.Generate(20, 10, 0, false, true)
 		}
-		if len(secretKey) == 0 {
+		if len(rootPassword) == 0 {
 			fmt.Printf("Secret Key not provided, one will be generated for you\n")
-			secretKey, err = gen.Generate(40, 10, 5, false, true)
+			rootPassword, err = gen.Generate(40, 10, 5, false, true)
 		}
 
-		overrides["accessKey"] = accessKey
-		overrides["secretKey"] = secretKey
+		overrides["auth.rootUser"] = rootUser
+		overrides["auth.rootPassword"] = rootPassword
 		overrides["persistence.enabled"] = strings.ToLower(strconv.FormatBool(persistence))
 		if dist {
 			overrides["mode"] = "distributed"
@@ -130,8 +131,8 @@ func MakeInstallMinio() *cobra.Command {
 
 		minioAppOptions := types.DefaultInstallOptions().
 			WithNamespace(ns).
-			WithHelmRepo("minio/minio").
-			WithHelmURL("https://helm.min.io/").
+			WithHelmRepo("bitnamicharts/minio").
+			WithHelmURL("https://charts.bitnami.com/bitnami").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithKubeconfigPath(kubeConfigPath).
@@ -154,15 +155,15 @@ var _, clientOS = env.GetClientArch()
 var MinioInfoMsg = `# Forward the minio port to your machine
 kubectl port-forward -n default svc/minio 9000:9000 &
 
-# Get the access and secret key to gain access to minio
-ACCESSKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.accesskey}" | base64 --decode; echo)
-SECRETKEY=$(kubectl get secret -n default minio -o jsonpath="{.data.secretkey}" | base64 --decode; echo)
+# Get the root user and password to gain access to minio
+MINIO_ROOT_USER=$(kubectl get secret -n default minio -o jsonpath="{.data.root-user}" | base64 --decode; echo)
+MINIO_ROOT_PASS=$(kubectl get secret -n default minio -o jsonpath="{.data.root-password}" | base64 --decode; echo)
 
 # Get the Minio Client
 arkade get mc
 
 # Add a host
-mc config host add minio http://127.0.0.1:9000 $ACCESSKEY $SECRETKEY
+mc config host add minio http://127.0.0.1:9000 $MINIO_ROOT_USER $MINIO_ROOT_PASS
 
 # List buckets
 mc ls minio
