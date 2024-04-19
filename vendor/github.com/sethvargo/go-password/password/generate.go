@@ -1,11 +1,11 @@
 // Package password provides a library for generating high-entropy random
 // password strings via the crypto/rand package.
 //
-//    res, err := Generate(64, 10, 10, false, false)
-//    if err != nil  {
-//      log.Fatal(err)
-//    }
-//    log.Printf(res)
+//	res, err := Generate(64, 10, 10, false, false)
+//	if err != nil  {
+//	  log.Fatal(err)
+//	}
+//	log.Printf(res)
 //
 // Most functions are safe for concurrent use.
 package password
@@ -13,6 +13,7 @@ package password
 import (
 	"crypto/rand"
 	"errors"
+	"fmt"
 	"io"
 	"math/big"
 	"strings"
@@ -245,7 +246,7 @@ func randomInsert(reader io.Reader, s, val string) (string, error) {
 
 	n, err := rand.Int(reader, big.NewInt(int64(len(s)+1)))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to generate random integer: %w", err)
 	}
 	i := n.Int64()
 	return s[0:i] + val + s[i:], nil
@@ -255,7 +256,7 @@ func randomInsert(reader io.Reader, s, val string) (string, error) {
 func randomElement(reader io.Reader, s string) (string, error) {
 	n, err := rand.Int(reader, big.NewInt(int64(len(s))))
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to generate random integer: %w", err)
 	}
 	return string(s[n.Int64()]), nil
 }

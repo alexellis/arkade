@@ -1,6 +1,7 @@
 module github.com/alexellis/arkade
 
 go 1.21
+toolchain go1.22.2
 
 require (
 	github.com/Masterminds/semver v1.5.0
@@ -12,7 +13,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/otiai10/copy v1.14.0
 	github.com/pkg/errors v0.9.1
-	github.com/sethvargo/go-password v0.2.0
+	github.com/sethvargo/go-password v0.3.0
 	github.com/spf13/cobra v1.8.0
 	golang.org/x/crypto v0.22.0
 	golang.org/x/mod v0.17.0
