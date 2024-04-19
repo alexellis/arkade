@@ -115,8 +115,8 @@ github.com/pkg/errors
 # github.com/rivo/uniseg v0.4.4
 ## explicit; go 1.18
 github.com/rivo/uniseg
-# github.com/sethvargo/go-password v0.2.0
-## explicit; go 1.14
+# github.com/sethvargo/go-password v0.3.0
+## explicit; go 1.22
 github.com/sethvargo/go-password/password
 # github.com/sirupsen/logrus v1.9.3
 ## explicit; go 1.13
