@@ -3413,11 +3413,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$ext = ".exe"}}
 				{{- end -}}
 
-
-				clusterawsadm-{{$os}}-{{$arch}}{{$ext}}
+				clusterawsadm_{{.Version}}_{{$os}}_{{$arch}}{{$ext}}
 				`,
 		})
-
+	// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.5.0/clusterawsadm-v2.5.0-linux_amd64
+	// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.5.0/clusterawsadm_v2.5.0_linux_amd64
 	tools = append(tools,
 		Tool{
 			Owner:       "schollz",
@@ -3581,7 +3581,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 						{{$os = "windows"}}
 						{{$ext = "zip"}}
 						{{- end -}}
-						cmctl-{{$os}}-{{$arch}}.{{$ext}}
+						cert-manager-cmctl-{{$os}}-{{$arch}}.{{$ext}}
 						`,
 		})
 
