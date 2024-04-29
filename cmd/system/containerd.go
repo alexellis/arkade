@@ -150,14 +150,19 @@ func MakeInstallContainerd() *cobra.Command {
 				return err
 			}
 
-			content, err := io.ReadAll(response.Body)
+			defer response.Body.Close()
+
+			body, err := io.ReadAll(response.Body)
 			if err != nil {
 				return err
 			}
+			if response.StatusCode != http.StatusOK {
+				return fmt.Errorf("error fetching systemd unit file, status code: %d, body: %s", response.StatusCode, string(body))
+			}
 
-			content = bytes.ReplaceAll(content, []byte("/usr/local/bin/containerd"), []byte(installPath+"/containerd"))
+			body = bytes.ReplaceAll(body, []byte("/usr/local/bin/containerd"), []byte(installPath+"/containerd"))
 
-			if err := createSystemdUnit(systemdUnitName, content); err != nil {
+			if err := createSystemdUnit(systemdUnitName, body); err != nil {
 				return err
 			}
 		}
