@@ -121,15 +121,16 @@ func getGoVersion() (string, error) {
 		return "", err
 	}
 
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status code: %d", res.StatusCode)
-	}
 	if res.Body == nil {
 		return "", fmt.Errorf("unexpected empty body")
 	}
 
 	defer res.Body.Close()
 	body, _ := io.ReadAll(res.Body)
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code: %d", res.StatusCode)
+	}
 
 	content := strings.TrimSpace(string(body))
 	version, _, ok := strings.Cut(content, "\n")

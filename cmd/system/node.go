@@ -29,10 +29,19 @@ func getLatestNodeVersion(version, channel string) (*string, error) {
 		return nil, err
 	}
 
+	if res.Body != nil {
+		defer res.Body.Close()
+	}
+
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
 	}
+
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("could not find latest version for %s, (%d), body: %s", version, res.StatusCode, string(body))
+	}
+
 	regex := regexp.MustCompile(`(?m)node-v(\d+.\d+.\d+)-linux-.*`)
 	result := regex.FindStringSubmatch(string(body))
 
