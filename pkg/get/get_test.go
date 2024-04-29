@@ -5797,31 +5797,31 @@ func Test_DownloaClusterawsadm(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-linux-amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-darwin-amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-linux-arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_arm64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-darwin-arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_arm64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm-windows-amd64.exe`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_windows_amd64.exe`,
 		},
 	}
 
@@ -6136,44 +6136,44 @@ func Test_DownloadCmctl(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v1.11.0"
+	const toolVersion = "v1.14.5"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-amd64.tar.gz`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-amd64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-darwin-amd64.tar.gz`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-darwin-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-arm64.tar.gz`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-darwin-arm64.tar.gz`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-darwin-arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-linux-arm.tar.gz`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-arm.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cmctl-windows-amd64.zip`,
+			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-windows-amd64.zip`,
 		},
 	}
 
