@@ -1751,6 +1751,90 @@ func Test_DownloadMinikube(t *testing.T) {
 	}
 }
 
+func Test_DownloadStern(t *testing.T) {
+	tools := MakeTools()
+	name := "stern"
+	version := "v1.29.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    "amd64",
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    "amd64",
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_linux_arm.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_linux_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_windows_amd64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM7,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_windows_arm.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/stern/stern/releases/download/v1.29.0/stern_1.29.0_windows_arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
+
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
 func Test_DownloadMinio(t *testing.T) {
 	tools := MakeTools()
 	name := "mc"

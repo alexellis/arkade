@@ -1244,12 +1244,14 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:        "stern",
 			Name:        "stern",
 			Description: "Multi pod and container log tailing for Kubernetes.",
-			BinaryTemplate: `{{$arch := "arm"}}
+			BinaryTemplate: `{{$arch := .Arch}}
 
 {{- if eq .Arch "aarch64" -}}
 {{$arch = "arm64"}}
 {{- else if eq .Arch "x86_64" -}}
 {{$arch = "amd64"}}
+{{- else if eq .Arch "armv7l" -}}
+{{$arch = "arm"}}
 {{- end -}}
 
 {{$os := .OS}}
