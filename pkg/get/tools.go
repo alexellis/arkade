@@ -54,7 +54,7 @@ func MakeTools() Tools {
 			Owner:           "helm",
 			Repo:            "helm",
 			Name:            "helm",
-			VersionStrategy: "github",
+			VersionStrategy: GitHubVersionStrategy,
 			Description:     "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `
 						{{$os := .OS}}
@@ -150,11 +150,11 @@ func MakeTools() Tools {
 	// https://dl.k8s.io/release/v1.22.2/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
-			Owner:       "kubernetes",
-			Repo:        "kubernetes",
-			Name:        "kubectl",
-			Version:     "v1.29.2",
-			Description: "Run commands against Kubernetes clusters",
+			Owner:           "kubernetes",
+			Repo:            "kubernetes",
+			Name:            "kubectl",
+			VersionStrategy: k8sVersionStrategy,
+			Description:     "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
 {{- if eq .Arch "x86_64" -}}

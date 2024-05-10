@@ -17,6 +17,9 @@ import (
 	"github.com/alexellis/arkade/pkg/env"
 )
 
+const GitHubVersionStrategy = "github"
+const k8sVersionStrategy = "k8s"
+
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
 
@@ -139,22 +142,34 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 
 func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
-	if len(version) == 0 &&
-		(len(tool.URLTemplate) == 0 ||
-			strings.Contains(tool.URLTemplate, "https://github.com/") ||
-			tool.VersionStrategy == "github") {
+	if len(version) == 0 {
+
 		if !quiet {
 			log.Printf("Looking up version for %s", tool.Name)
 		}
 
-		v, err := FindGitHubRelease(tool.Owner, tool.Repo)
-		if err != nil {
-			return "", err
+		if len(tool.URLTemplate) == 0 ||
+			strings.Contains(tool.URLTemplate, "https://github.com/") ||
+			tool.VersionStrategy == GitHubVersionStrategy {
+
+			v, err := FindGitHubRelease(tool.Owner, tool.Repo)
+			if err != nil {
+				return "", err
+			}
+			version = v
 		}
+
+		if tool.VersionStrategy == k8sVersionStrategy {
+			v, err := FindK8sRelease()
+			if err != nil {
+				return "", err
+			}
+			version = v
+		}
+
 		if !quiet {
-			log.Printf("Found: %s", v)
+			log.Printf("Found: %s", version)
 		}
-		version = v
 	}
 
 	if len(tool.URLTemplate) > 0 {
@@ -227,6 +242,41 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 	}
 
 	version := loc[strings.LastIndex(loc, "/")+1:]
+	return version, nil
+}
+
+func FindK8sRelease() (string, error) {
+	url := "https://cdn.dl.k8s.io/release/stable.txt"
+
+	timeout := time.Second * 5
+	client := makeHTTPClient(&timeout, false)
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("User-Agent", pkg.UserAgent())
+
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	if res.Body == nil {
+		return "", fmt.Errorf("unable to determine release of tool")
+	}
+
+	defer res.Body.Close()
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	version := string(bodyBytes)
 	return version, nil
 }
 
