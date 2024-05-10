@@ -380,7 +380,7 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 			Owner:       "alexellis",
 			Repo:        "arkade",
 			Name:        "arkade",
-			Description: "Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.",
+			Description: "Portable marketplace for downloading your favourite DevOps CLIs and installing helm charts, with a single command.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 			{{.Name}}.exe
 			{{- else if eq .OS "darwin" -}}
@@ -2234,7 +2234,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Owner:       "kubescape",
 			Repo:        "kubescape",
 			Name:        "kubescape",
-			Description: "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA",
+			Description: "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA",
 			BinaryTemplate: `
 		{{$osStr := ""}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -2889,7 +2889,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Owner:       "oven-sh",
 			Repo:        "bun",
 			Name:        "bun",
-			Description: "Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.",
+			Description: "Bun is an incredibly fast JavaScript runtime, bundler, transpiler, and package manager – all in one.",
 			BinaryTemplate: `
 							{{$arch := .Arch}}
 							{{- if eq .Arch "x86_64" -}}
@@ -3817,7 +3817,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			Owner:       "atuinsh",
 			Repo:        "atuin",
 			Name:        "atuin",
-			Description: "Sync, search and backup shell history with Atuin.",
+			Description: "Sync, search, and backup shell history with Atuin.",
 			URLTemplate: `
 					{{$os := .OS}}
 					{{$arch := .Arch}}
