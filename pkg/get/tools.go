@@ -759,10 +759,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "derailed",
-			Repo:        "popeye",
-			Name:        "popeye",
-			Description: "Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.",
+			Owner:           "derailed",
+			Repo:            "popeye",
+			Name:            "popeye",
+			VersionStrategy: "github",
+			Description:     "Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.",
 			BinaryTemplate: `
 			{{ $os := .OS }}
 			{{ $arch := .Arch }}
@@ -779,6 +780,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 				{{ $arch = "arm64" }}
 			{{- else if eq .Arch "x86_64" -}}
 				{{ $arch = "amd64" }}
+			{{- else if eq .Arch "armv7l" -}}
+				{{ $arch = "armv7" }}
 			{{- end -}}
 
 			{{.Version}}/{{.Name}}_{{ $os }}_{{ $arch }}.tar.gz`,
