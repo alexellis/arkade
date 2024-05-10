@@ -12,7 +12,7 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres and cert-manager.
+With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
 
 - [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
   - [Support arkade 👋](#support-arkade-)
@@ -68,7 +68,7 @@ Arkade is built to save you time so you can focus and get productive quickly.
 
 You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/).
 
-Or get a copy of his eBook on Go so you can learn how to build tools like k3sup, arkade and OpenFaaS for yourself:
+Or get a copy of his eBook on Go so you can learn how to build tools like k3sup, arkade, and OpenFaaS for yourself:
 
 <a href="https://openfaas.gumroad.com/l/everyday-golang">
 <img src="https://public-files.gumroad.com/7j27fj7c5xqxm3f9lyxj1pg8oa1w" alt="Buy Everyday Go" width="50%"></a>
@@ -108,11 +108,11 @@ Or get a copy of his eBook on Go so you can learn how to build tools like k3sup,
 > 
 > [Michael Cade @ Kasten](https://twitter.com/MichaelCade1/status/1390403831167700995?s=20)
 
-> You've to install latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍
+> You've to install the latest and greatest tools for your daily @kubernetesio tasks? No problem, check out #arkade the open source #kubernetes marketplace 👍
 >
 > [Thorsten Hans](https://twitter.com/ThorstenHans/status/1457982292597608449?s=20) - Cloud Native consultant
 
-> If you want to install quickly a new tool in your dev env or in your k8s cluster you can use the Arkade (https://github.com/alexellis/arkade) easy and quick you should try out! Ps. I contribute to this project 🥰
+> If you want to install quickly a new tool in your dev env or in your k8s cluster you can use the Arkade (https://github.com/alexellis/arkade) easy and quick you should it try out! Ps. I contribute to this project 🥰
 >
 > [Carlos Panato](https://twitter.com/comedordexis/status/1423339283713347587) - Staff engineer @ Mattermost
 
@@ -150,9 +150,9 @@ Arkade can be used to install Kubernetes apps or to download CLI tools.
 * `arkade get` - download a CLI tool
 * `arkade update` - perform a self-update of arkade on MacOS and Linux
 
-An arkade "app" could represent a helm chart such as `openfaas/faas-netes`, a custom CLI installer such as `istioctl` or a set of static manifests (i.e. MetalLB).
+An arkade "app" could represent a helm chart such as `openfaas/faas-netes`, a custom CLI installer such as `istioctl`, or a set of static manifests (i.e. MetalLB).
 
-An arkade "tool" is a CLI that can be downloaded for your operating system. Arkade downloads statically-linked binaries from their upstream locations on GitHub or a the vendor's chosen URL such as with `kubectl` and `terraform`.
+An arkade "tool" is a CLI that can be downloaded for your operating system. Arkade downloads statically-linked binaries from their upstream locations on GitHub or the vendor's chosen URL such as with `kubectl` and `terraform`.
 
 > Did you know? Arkade users run `arkade get` both on their local workstations, and on their CI runners such as GitHub Actions or Jenkins.
 
@@ -276,7 +276,7 @@ arkade oci install ghcr.io/openfaasltd/vmmeter \
 
 * [alexellis/arkade-get@master](https://github.com/alexellis/arkade-get)
 
-Example downloading faas-cli (specific version) and kubectl (latest), putting them into the PATH automatically, and executing one of them in a subsequent step.
+Example of downloading faas-cli (specific version) and kubectl (latest), putting them into the PATH automatically, and executing one of them in a subsequent step.
 
 ```yaml
     - uses: alexellis/arkade-get@master
@@ -398,7 +398,7 @@ echo $?
 0
 ```
 
-There is an exit code of zero and no output when the check passed.
+There is an exit code of zero and no output when the check passes.
 
 You can pass `--verbose` to see a detailed view of what's happening.
 
@@ -457,7 +457,7 @@ arkade install openfaas \
 
 The post-installation message shows you how to connect. And whenever you want to see those details again, just run `arkade info openfaas`.
 
-There's even more options you can chose with `arkade install openfaas --help` - the various flags you see map to settings from the helm chart README, that you'd usually have to look up and set via a `values.yaml` file.
+There are even more options you can choose with `arkade install openfaas --help` - the various flags you see map to settings from the helm chart README, that you'd usually have to look up and set via a `values.yaml` file.
 
 If there's something missing from the list of flags that you need, arkade also supports `--set` for any arkade app that uses helm. Note that not every app uses helm.
 
@@ -764,11 +764,11 @@ There are 56 apps that you can install on your cluster.
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                                                   |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                                                    |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                                      |
-| [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite devops CLIs and installing helm charts, with a single command.                                              |
-| [atuin](https://github.com/atuinsh/atuin)                                    | Sync, search and backup shell history with Atuin.                                                                                                               |
+| [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite DevOps CLIs and installing helm charts, with a single command.                                              |
+| [atuin](https://github.com/atuinsh/atuin)                                    | Sync, search, and backup shell history with Atuin.                                                                                                              |
 | [autok3s](https://github.com/cnrancher/autok3s)                              | Run Rancher Lab's lightweight Kubernetes distribution k3s everywhere.                                                                                           |
 | [buildx](https://github.com/docker/buildx)                                   | Docker CLI plugin for extended build capabilities with BuildKit.                                                                                                |
-| [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler and package manager – all in one.                                                             |
+| [bun](https://github.com/oven-sh/bun)                                        | Bun is an incredibly fast JavaScript runtime, bundler, transpiler, and package manager – all in one.                                                            |
 | [butane](https://github.com/coreos/butane)                                   | Translates human readable Butane Configs into machine readable Ignition Configs                                                                                 |
 | [caddy](https://github.com/caddyserver/caddy)                                | Caddy is an extensible server platform that uses TLS by default                                                                                                 |
 | [ch-remote](https://github.com/cloud-hypervisor/cloud-hypervisor)            | The ch-remote binary is used for controlling an running Virtual Machine.                                                                                        |
@@ -844,7 +844,7 @@ There are 56 apps that you can install on your cluster.
 | [kubectl](https://github.com/kubernetes/kubernetes)                          | Run commands against Kubernetes clusters                                                                                                                        |
 | [kubectx](https://github.com/ahmetb/kubectx)                                 | Faster way to switch between clusters.                                                                                                                          |
 | [kubens](https://github.com/ahmetb/kubectx)                                  | Switch between Kubernetes namespaces smoothly.                                                                                                                  |
-| [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by to NSA and CISA                       |
+| [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA                          |
 | [kubeseal](https://github.com/bitnami-labs/sealed-secrets)                   | A Kubernetes controller and tool for one-way encrypted Secrets                                                                                                  |
 | [kubestr](https://github.com/kastenhq/kubestr)                               | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                                                     |
 | [kubetail](https://github.com/johanhaleby/kubetail)                          | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                                        |
