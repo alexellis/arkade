@@ -36,6 +36,40 @@ func getTool(name string, tools []Tool) *Tool {
 	return tool
 }
 
+func TestGetToolVersion(t *testing.T) {
+
+	testCases := []struct {
+		description string
+		tool        Tool
+		version     string
+		expected    string
+	}{
+		{
+			description: "Version is empty, expect the tool's version to be returned",
+			tool:        Tool{Version: "1.0.0"},
+			version:     "",
+			expected:    "1.0.0",
+		},
+		{
+			description: "Version argument is provided, expect the provided version to be returned",
+			tool:        Tool{Version: "2.0.0"},
+			version:     "1.2.0",
+			expected:    "1.2.0",
+		},
+	}
+
+	// Iterate over test cases
+	for _, tc := range testCases {
+		// Call the function with test inputs
+		result := GetToolVersion(&tc.tool, tc.version)
+
+		// Check if the result matches the expected output
+		if result != tc.expected {
+			t.Errorf("%s: For tool version %s and input version %s, expected %s but got %s", tc.description, tc.tool.Version, tc.version, tc.expected, result)
+		}
+	}
+}
+
 func Test_MakeSureNoDuplicates(t *testing.T) {
 	count := map[string]int{}
 	tools := MakeTools()
