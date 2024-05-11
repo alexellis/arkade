@@ -779,6 +779,8 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 				{{ $arch = "arm64" }}
 			{{- else if eq .Arch "x86_64" -}}
 				{{ $arch = "amd64" }}
+			{{- else if eq .Arch "armv7l" -}}
+				{{ $arch = "armv7" }}
 			{{- end -}}
 
 			{{.Version}}/{{.Name}}_{{ $os }}_{{ $arch }}.tar.gz`,
@@ -819,11 +821,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "hashicorp",
-			Repo:        "terraform",
-			Name:        "terraform",
-			Version:     "1.7.4",
-			Description: "Infrastructure as Code for major cloud providers.",
+			Owner:           "hashicorp",
+			Repo:            "terraform",
+			Name:            "terraform",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
@@ -841,7 +843,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{$os = "windows"}}
 			{{- end -}}
 
-			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
+			https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`,
 		})
 
 	tools = append(tools,
@@ -959,16 +961,16 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "hashicorp",
-			Repo:        "packer",
-			Name:        "packer",
-			Version:     "1.10.1",
-			Description: "Build identical machine images for multiple platforms from a single source configuration.",
+			Owner:           "hashicorp",
+			Repo:            "packer",
+			Name:            "packer",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Build identical machine images for multiple platforms from a single source configuration.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
-			{{- else if eq .Arch "aarch64" -}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
             {{$arch = "arm64"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
@@ -979,16 +981,16 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{$os = "windows"}}
 			{{- end -}}
 
-			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
+			https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`,
 		})
 
 	tools = append(tools,
 		Tool{
-			Owner:       "hashicorp",
-			Repo:        "waypoint",
-			Name:        "waypoint",
-			Version:     "0.11.4",
-			Description: "Easy application deployment for Kubernetes and Amazon ECS",
+			Owner:           "hashicorp",
+			Repo:            "waypoint",
+			Name:            "waypoint",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Easy application deployment for Kubernetes and Amazon ECS",
 			URLTemplate: `
 			{{$arch := .Arch}}
 			{{- if eq .Arch "x86_64" -}}
@@ -1004,7 +1006,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{$os = "windows"}}
 			{{- end -}}
 
-			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+			https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`})
 
 	tools = append(tools,
 		Tool{
@@ -2954,11 +2956,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "hashicorp",
-			Repo:        "vault",
-			Name:        "vault",
-			Version:     "1.11.2",
-			Description: "A tool for secrets management, encryption as a service, and privileged access management.",
+			Owner:           "hashicorp",
+			Repo:            "vault",
+			Name:            "vault",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A tool for secrets management, encryption as a service, and privileged access management.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
@@ -2976,7 +2978,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			{{$os = "windows"}}
 			{{- end -}}
 
-			https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`,
+			https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`,
 		})
 
 	tools = append(tools,
@@ -3831,6 +3833,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 					{{- if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
 						{{$arch = "x86_64"}}
+					{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "aarch64"}}
 					{{- end -}}
 
 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
