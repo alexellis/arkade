@@ -155,6 +155,50 @@ sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 	}
 }
 
+func TestIsArchiveStr(t *testing.T) {
+
+	testCases := []struct {
+		description string // Description of the test case
+		downloadURL string // Input download URL
+		expected    bool   // Expected output
+	}{
+		{
+			description: "URL ends with '.tar.gz'",
+			downloadURL: "https://example.com/download.tar.gz",
+			expected:    true,
+		},
+		{
+			description: "URL ends with '.zip'",
+			downloadURL: "https://example.com/download.zip",
+			expected:    true,
+		},
+		{
+			description: "URL ends with '.tgz'",
+			downloadURL: "https://example.com/download.tgz",
+			expected:    true,
+		},
+		{
+			description: "URL does not end with any known archive extension",
+			downloadURL: "https://example.com/download.txt",
+			expected:    false,
+		},
+		{
+			description: "URL ends with '.tgz' but has extra characters",
+			downloadURL: "https://example.com/download.tgz123",
+			expected:    false,
+		},
+	}
+
+	for _, tc := range testCases {
+
+		result := isArchiveStr(tc.downloadURL)
+
+		if result != tc.expected {
+			t.Errorf("%s: For URL %s, expected %v but got %v", tc.description, tc.downloadURL, tc.expected, result)
+		}
+	}
+}
+
 func Test_GetDownloadURLs(t *testing.T) {
 	tools := MakeTools()
 	kubectlVersion := "v1.29.1"

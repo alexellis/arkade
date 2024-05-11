@@ -52,10 +52,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 		fmt.Printf("%s written.\n", outFilePath)
 	}
 
-	if isArchive, err := tool.IsArchive(quiet); isArchive {
-		if err != nil {
-			return "", "", err
-		}
+	if isArchiveStr(downloadURL) {
 
 		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version, quiet)
 		if err != nil {
