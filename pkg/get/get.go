@@ -86,6 +86,13 @@ func (tool Tool) IsArchive(quiet bool) (bool, error) {
 		strings.HasSuffix(downloadURL, "tgz"), nil
 }
 
+func isArchiveStr(downloadURL string) bool {
+
+	return strings.HasSuffix(downloadURL, "tar.gz") ||
+		strings.HasSuffix(downloadURL, "zip") ||
+		strings.HasSuffix(downloadURL, "tgz")
+}
+
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
 func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, error) {
