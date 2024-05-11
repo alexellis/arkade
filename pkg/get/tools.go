@@ -4168,5 +4168,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "zegl",
+			Repo:        "kube-score",
+			Name:        "kube-score",
+			Description: "A tool that performs static code analysis of your Kubernetes object definitions.",
+			BinaryTemplate: `
+			{{$os := .OS}}
+			{{$arch := .Arch}}
+			{{$ext := "tar.gz"}}
+
+			{{- if HasPrefix .OS "ming" -}}
+			{{ $os = "windows" }}
+			{{ $ext = "exe" }}
+		{{- end -}}
+
+			{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+				{{$arch = "arm64"}}
+			{{- else if eq .Arch "x86_64" -}}
+				{{ $arch = "amd64" }}
+			{{- end -}}
+
+			{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
 	return tools
 }
