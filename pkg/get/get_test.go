@@ -1237,6 +1237,64 @@ func Test_DownloadK9s(t *testing.T) {
 	}
 }
 
+func Test_DownloadPopeye(t *testing.T) {
+	tools := MakeTools()
+	name := "popeye"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.21.2"
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Windows_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_armv7.tar.gz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadEtcd(t *testing.T) {
 	tools := MakeTools()
 	name := "etcd"
@@ -6762,20 +6820,32 @@ func Test_DownloadAtuin(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v15.0.0"
+	const toolVersion = "v18.2.0"
 
 	tests := []test{
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-aarch64-apple-darwin.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-aarch64-unknown-linux-gnu.tar.gz",
+		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/atuinsh/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-unknown-linux-gnu.tar.gz`,
+			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-x86_64-unknown-linux-gnu.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/atuinsh/atuin/releases/download/v15.0.0/atuin-v15.0.0-x86_64-apple-darwin.tar.gz`,
+			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-x86_64-apple-darwin.tar.gz",
 		},
 	}
 
@@ -6785,7 +6855,7 @@ func Test_DownloadAtuin(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 		}
 	}
 
