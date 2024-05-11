@@ -838,6 +838,7 @@ There are 56 apps that you can install on your cluster.
 | [kube-bench](https://github.com/aquasecurity/kube-bench)                     | Checks whether Kubernetes is deployed securely by running the checks documented in the CIS Kubernetes Benchmark.                                                |
 | [kube-burner](https://github.com/cloud-bulldozer/kube-burner)                | A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.                                                               |
 | [kube-linter](https://github.com/stackrox/kube-linter)                       | KubeLinter is a static analysis tool that checks Kubernetes YAML files and Helm charts to ensure the applications represented in them adhere to best practices. |
+| [kube-score](https://github.com/zegl/kube-score)                             | A tool that performs static code analysis of your Kubernetes object definitions.                                                                                |
 | [kubebuilder](https://github.com/kubernetes-sigs/kubebuilder)                | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                                                |
 | [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                                                |
 | [kubeconform](https://github.com/yannh/kubeconform)                          | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                                        |
@@ -912,6 +913,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 152 tools, use `arkade get NAME` to download one.
+There are 153 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
