@@ -32,6 +32,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallRegistry())
 	command.AddCommand(MakeInstallGitLabRunner())
 	command.AddCommand((MakeInstallBuildkitd()))
+	command.AddCommand(MakeInstallPowershell())
 
 	return command
 }

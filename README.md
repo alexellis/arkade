@@ -247,12 +247,13 @@ Run the following to see what's available `arkade system install`:
   cni             Install CNI plugins
   containerd      Install containerd
   firecracker     Install Firecracker
-  gitlab-runner   Install Gitlab Runner
+  gitlab-runner   Install GitLab Runner
   go              Install Go
   node            Install Node.js
   prometheus      Install Prometheus
-  tc-redirect-tap Install tc-redirect-tap
-  registry        Install Open Source Registry implementation for storing and distributing container images using the OCI Distribution Specification
+  pwsh            Install Powershell
+  registry        Install registry
+  tc-redirect-tap Install tc-redirect-tap      
 ```
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
