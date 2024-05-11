@@ -244,6 +244,7 @@ Run the following to see what's available `arkade system install`:
 ```
   actions-runner  Install GitHub Actions Runner
   buildkitd       Install Buildkitd
+  caddy           Install Caddy Server
   cni             Install CNI plugins
   containerd      Install containerd
   firecracker     Install Firecracker
