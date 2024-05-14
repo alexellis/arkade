@@ -822,6 +822,31 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	tools = append(tools,
 		Tool{
 			Owner:           "hashicorp",
+			Repo:            "consul",
+			Name:            "consul",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A solution to connect and configure applications across dynamic, distributed infrastructure",
+			URLTemplate: `
+				{{$arch := ""}}
+				{{- if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{$arch = "arm64"}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{$arch = "arm"}}
+				{{- end -}}
+	
+				{{$os := .OS}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$os = "windows"}}
+				{{- end -}}
+	
+				https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "hashicorp",
 			Repo:            "terraform",
 			Name:            "terraform",
 			VersionStrategy: GitHubVersionStrategy,
@@ -830,9 +855,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
-			{{- else if eq .Arch "arm64" -}}
-			{{$arch = "arm64"}}
-			{{- else if eq .Arch "aarch64" -}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 			{{$arch = "arm64"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
