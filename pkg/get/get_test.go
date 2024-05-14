@@ -246,35 +246,35 @@ func Test_GetDownloadURLs(t *testing.T) {
 	}{
 		{
 			name:    "kubectl",
-			url:     "https://dl.k8s.io/release/" + kubectlVersion + "/bin/linux/amd64/kubectl",
+			url:     "https://dl.k8s.io/release/v1.29.1/bin/linux/amd64/kubectl",
 			version: kubectlVersion,
 			os:      "linux",
 			arch:    "x86_64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://dl.k8s.io/release/" + kubectlVersion + "/bin/darwin/amd64/kubectl",
+			url:     "https://dl.k8s.io/release/v1.29.1/bin/darwin/amd64/kubectl",
 			version: kubectlVersion,
 			os:      "darwin",
 			arch:    "x86_64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://dl.k8s.io/release/" + kubectlVersion + "/bin/linux/arm64/kubectl",
+			url:     "https://dl.k8s.io/release/v1.29.1/bin/linux/arm64/kubectl",
 			version: kubectlVersion,
 			os:      "linux",
 			arch:    "aarch64",
 		},
 		{
 			name:    "kubectl",
-			url:     "https://dl.k8s.io/release/" + kubectlVersion + "/bin/darwin/arm64/kubectl",
+			url:     "https://dl.k8s.io/release/v1.29.1/bin/darwin/arm64/kubectl",
 			version: kubectlVersion,
 			os:      "darwin",
 			arch:    archDarwinARM64,
 		},
 		{
 			name:    "kubectl",
-			url:     "https://dl.k8s.io/release/" + kubectlVersion + "/bin/linux/amd64/kubectl",
+			url:     "https://dl.k8s.io/release/v1.29.1/bin/linux/amd64/kubectl",
 			version: kubectlVersion,
 			os:      "linux",
 			arch:    "x86_64",
@@ -1250,37 +1250,37 @@ func Test_DownloadPopeye(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Windows_amd64.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Windows_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_amd64.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Linux_amd64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Darwin_amd64.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Darwin_amd64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Darwin_arm64.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Darwin_arm64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_arm64.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Linux_arm64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     "https://github.com/derailed/popeye/releases/download/" + toolVersion + "/popeye_Linux_armv7.tar.gz",
+			url:     "https://github.com/derailed/popeye/releases/download/v0.21.2/popeye_Linux_armv7.tar.gz",
 		},
 	}
 
@@ -1432,6 +1432,64 @@ func Test_DownloadWaypoint(t *testing.T) {
 		}
 		if got != tc.url {
 			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadConsul(t *testing.T) {
+	tools := MakeTools()
+	name := "consul"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.18.1"
+
+	tests := []test{
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_windows_amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_arm.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_linux_arm64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_darwin_arm64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://releases.hashicorp.com/consul/1.18.1/consul_1.18.1_darwin_amd64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 		}
 	}
 }
@@ -6827,25 +6885,25 @@ func Test_DownloadAtuin(t *testing.T) {
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-aarch64-apple-darwin.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-aarch64-apple-darwin.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-aarch64-unknown-linux-gnu.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-aarch64-unknown-linux-gnu.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-x86_64-unknown-linux-gnu.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-x86_64-unknown-linux-gnu.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/" + toolVersion + "/atuin-" + toolVersion + "-x86_64-apple-darwin.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-x86_64-apple-darwin.tar.gz",
 		},
 	}
 
