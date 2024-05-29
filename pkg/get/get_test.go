@@ -1075,7 +1075,7 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "1.46.0"
+	const toolVersion = "v1.46.0"
 	const urlTemplate = "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-%s-%s.%s"
 
 	tests := []test{
@@ -1091,11 +1091,10 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 			arch:    arch64bit,
 			version: toolVersion,
 			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz")},
-		// this asserts that we can build a URL for ARM processors, but no asset exists and will yield a 404
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "linux", "", "tar.gz")},
+			url:     fmt.Sprintf(urlTemplate, "linux", "arm64", "tar.gz")},
 	}
 
 	for _, tc := range tests {
