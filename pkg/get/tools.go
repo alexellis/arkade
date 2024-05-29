@@ -642,34 +642,32 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "digitalocean",
-			Repo:        "doctl",
-			Name:        "doctl",
-			Version:     "1.56.0",
-			Description: "Official command line interface for the DigitalOcean API.",
-			URLTemplate: `
-		{{$osStr := ""}}
+			Owner:           "digitalocean",
+			Repo:            "doctl",
+			Name:            "doctl",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Official command line interface for the DigitalOcean API.",
+			BinaryTemplate: `
+		{{$osStr := .OS}}
 		{{ if HasPrefix .OS "ming" -}}
 		{{$osStr = "windows"}}
-		{{- else if eq .OS "linux" -}}
-		{{$osStr = "linux"}}
-		{{- else if eq .OS "darwin" -}}
-		{{$osStr = "darwin"}}
 		{{- end -}}
 
-		{{$archStr := ""}}
+		{{$archStr := .Arch}}
 		{{- if eq .Arch "x86_64" -}}
 		{{$archStr = "amd64"}}
+		{{- else if eq .Arch "armv7l" }}
+		{{$archStr = "arm64"}}
+		{{- else if eq .Arch "aarch64" }}
+		{{$archStr = "arm64"}}
 		{{- end -}}
 
-		{{$archiveStr := ""}}
-		{{ if HasPrefix .OS "ming" -}}
+		{{$archiveStr := "tar.gz"}}
+		{{ if eq $osStr "windows" -}}
 		{{$archiveStr = "zip"}}
-		{{- else -}}
-		{{$archiveStr = "tar.gz"}}
 		{{- end -}}
 
-		https://github.com/digitalocean/doctl/releases/download/v{{.Version}}/doctl-{{.Version}}-{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
+		doctl-{{.VersionNumber}}-{{$osStr}}-{{$archStr}}.{{$archiveStr}}`,
 		})
 
 	tools = append(tools,
