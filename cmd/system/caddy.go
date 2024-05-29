@@ -4,14 +4,16 @@
 package system
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"os"
-	"path"
+	"os/user"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
+	execute "github.com/alexellis/go-execute/v2"
 	"github.com/spf13/cobra"
 )
 
@@ -26,7 +28,7 @@ func MakeInstallCaddyServer() *cobra.Command {
 	}
 
 	command.Flags().StringP("version", "v", "", "The version or leave blank to determine the latest available version")
-	command.Flags().String("path", "/usr/local/bin", "Installation path, where a caddy subfolder will be created")
+	command.Flags().String("path", "/usr/bin", "Installation path, where a caddy subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
 	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
@@ -37,13 +39,7 @@ func MakeInstallCaddyServer() *cobra.Command {
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
 		version, _ := cmd.Flags().GetString("version")
-		fmt.Printf("Installing Caddy Server to %s\n", installPath)
-
-		installPath = strings.ReplaceAll(installPath, "$HOME", os.Getenv("HOME"))
-
-		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
-			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
-		}
+		progress, _ := cmd.Flags().GetBool("progress")
 
 		arch, osVer := env.GetClientArch()
 
@@ -51,17 +47,25 @@ func MakeInstallCaddyServer() *cobra.Command {
 			return fmt.Errorf("this app only supports Linux")
 		}
 
-		if cmd.Flags().Changed("arch") {
-			arch, _ = cmd.Flags().GetString("arch")
+		tools := get.MakeTools()
+		var tool *get.Tool
+		for _, t := range tools {
+			if t.Name == "caddy" {
+				tool = &t
+				break
+			}
 		}
 
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "amd64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		} else {
-			dlArch = arch
+		if tool == nil {
+			return fmt.Errorf("unable to find caddy definition")
+		}
+
+		fmt.Printf("Installing Caddy Server to %s\n", installPath)
+
+		installPath = strings.ReplaceAll(installPath, "$HOME", os.Getenv("HOME"))
+
+		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
+			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
 		}
 
 		if version == "" {
@@ -74,31 +78,55 @@ func MakeInstallCaddyServer() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-
-		filename := fmt.Sprintf("caddy_%s_linux_%s.tar.gz", strings.TrimPrefix(version, "v"), dlArch)
-		dlURL := fmt.Sprintf(githubDownloadTemplate, "caddyserver", "caddy", version, filename)
-
-		fmt.Printf("Downloading from: %s\n", dlURL)
-
-		progress, _ := cmd.Flags().GetBool("progress")
-		outPath, err := get.DownloadFileP(dlURL, progress)
+		outFilePath, _, err := get.Download(tool, arch, osVer, version, installPath, progress, !progress)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(outPath)
+		if err = os.Chmod(outFilePath, readWriteExecuteEveryone); err != nil {
+			return err
+		}
 
-		fmt.Printf("Downloaded to: %s\n", outPath)
-
-		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
+		svcTmpPath, err := get.DownloadFileP("https://raw.githubusercontent.com/caddyserver/dist/master/init/caddy.service", false)
 		if err != nil {
 			return err
 		}
-		defer f.Close()
+		fmt.Printf("Downloaded caddy.service file to %s\n", svcTmpPath)
+		defer os.Remove(svcTmpPath)
 
-		fmt.Printf("Unpacking Caddy to: %s\n", path.Join(installPath, "caddy"))
+		caddySystemFile := "/etc/systemd/system/caddy.service"
+		if _, err = get.CopyFile(svcTmpPath, caddySystemFile); err != nil {
+			return err
+		}
+		fmt.Printf("Copied caddy.service file to %s\n", caddySystemFile)
 
-		if err := archive.Untar(f, installPath, true, true); err != nil {
+		caddyHomeDir := "/var/lib/caddy"
+		caddyConfDir := "/etc/caddy"
+		caddyUser := "caddy"
+		if err = createCaddyConf(caddyHomeDir, caddyConfDir); err != nil {
+			return err
+		}
+		fmt.Printf("Created caddy home %s and Conf %s directory\n", caddyHomeDir, caddyConfDir)
+
+		if _, err = user.Lookup(caddyUser); errors.Is(err, user.UnknownUserError(caddyUser)) {
+			if _, err = executeShellCmd(context.Background(), "useradd", "--system", "--home", caddyHomeDir, "--shell", "/bin/false", caddyUser); err != nil {
+				return err
+			}
+			fmt.Printf("User created for caddy server.\n")
+		}
+
+		if _, err = executeShellCmd(context.Background(), "chown", "--recursive", "caddy:caddy", "/var/lib/caddy"); err != nil {
+			return err
+		}
+
+		if _, err = executeShellCmd(context.Background(), "chown", "--recursive", "caddy:caddy", "/etc/caddy"); err != nil {
+			return err
+		}
+
+		if _, err = executeShellCmd(context.Background(), "systemctl", "enable", "caddy"); err != nil {
+			return err
+		}
+
+		if _, err = executeShellCmd(context.Background(), "systemctl", "daemon-reload"); err != nil {
 			return err
 		}
 
@@ -106,4 +134,38 @@ func MakeInstallCaddyServer() *cobra.Command {
 	}
 
 	return command
+}
+
+func createCaddyConf(caddyHomeDir, caddyConfDir string) error {
+	os.MkdirAll(caddyHomeDir, 0755)
+	os.MkdirAll(caddyConfDir, 0755)
+
+	caddyConfFilePath := fmt.Sprintf("%s/Caddyfile", caddyConfDir)
+	caddyFile, err := os.Create(caddyConfFilePath)
+	if err != nil {
+		return err
+	}
+	defer caddyFile.Close()
+	return nil
+}
+
+func executeShellCmd(ctx context.Context, cmd string, parts ...string) (execute.ExecResult, error) {
+	task := execute.ExecTask{
+		Command:     cmd,
+		Args:        parts,
+		Env:         os.Environ(),
+		StreamStdio: true,
+	}
+
+	res, err := task.Execute(ctx)
+
+	if err != nil {
+		return res, err
+	}
+
+	if res.ExitCode != 0 {
+		return res, fmt.Errorf("exit code %d, stderr: %s", res.ExitCode, res.Stderr)
+	}
+
+	return res, nil
 }
