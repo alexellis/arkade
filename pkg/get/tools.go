@@ -4244,5 +4244,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "jesseduffield",
+			Repo:        "lazydocker",
+			Name:        "lazydocker",
+			Description: "A simple terminal UI for both docker and docker-compose, written in Go with the gocui library.",
+			BinaryTemplate: `
+			{{$os := .OS}}
+			{{$arch := .Arch}}
+			{{$ext := "tar.gz"}}
+
+			{{ if HasPrefix .OS "ming" -}}
+			    {{$ext = "zip"}}
+			{{- end -}}
+
+			{{- if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+			{{- else if eq .Arch "armv6l" -}}
+				{{ $arch = "armv6" }}
+			{{- else if eq .Arch "armv7l" -}}
+				{{ $arch = "armv7" }}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+				{{$osStr = "Windows"}}
+			{{- else if eq .OS "linux" -}}
+				{{$osStr = "Linux"}}
+			{{- else if eq .OS "darwin" -}}
+				{{$osStr = "Darwin"}}
+			{{- end -}}
+
+			{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
+		})
 	return tools
 }
