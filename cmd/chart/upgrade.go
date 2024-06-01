@@ -8,6 +8,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"sync"
 
 	"github.com/Masterminds/semver"
 	"github.com/alexellis/arkade/pkg/helm"
@@ -35,6 +36,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 	command.Flags().BoolP("verbose", "v", false, "Verbose output")
 	command.Flags().BoolP("write", "w", false, "Write the updated values back to the file, or stdout when set to false")
 	command.Flags().IntP("depth", "d", 3, "how many levels deep into the YAML structure to walk looking for image: tags")
+	command.Flags().IntP("workers", "c", 4, "number of workers to use")
 
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 		_, err := cmd.Flags().GetInt("depth")
@@ -54,6 +56,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 
 		verbose, _ := cmd.Flags().GetBool("verbose")
 		depth, _ := cmd.Flags().GetInt("depth")
+		workers, _ := cmd.Flags().GetInt("workers")
 
 		if len(file) == 0 {
 			return fmt.Errorf("flag --file is required")
@@ -83,38 +86,47 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			}
 		}
 
-		updated := 0
+		wg := sync.WaitGroup{}
+		wg.Add(workers)
+
+		workChan := make(chan string, workers)
+		errChan := make(chan error, workers)
+		var mu sync.Mutex
+
+		updatedCount := 0
+
+		for i := 0; i < workers; i++ {
+			go func() {
+				defer wg.Done()
+				for image := range workChan {
+					if len(image) > 0 {
+						updated, imageNameAndTag, err := updateImages(image, verbose)
+						if err != nil {
+							errChan <- err
+							continue
+						}
+						if updated {
+							mu.Lock()
+							updatedCount++
+							filtered[image] = imageNameAndTag
+							mu.Unlock()
+						}
+					}
+				}
+			}()
+		}
+
 		for k := range filtered {
+			workChan <- k
+		}
 
-			imageName, tag := splitImageName(k)
-			ref, err := crane.ListTags(imageName)
+		close(workChan)
+		wg.Wait()
+		close(errChan)
+
+		for err := range errChan {
 			if err != nil {
-				return errors.New("unable to list tags for " + imageName)
-			}
-
-			var vs []*semver.Version
-			for _, r := range ref {
-				v, err := semver.NewVersion(r)
-				if err == nil {
-					vs = append(vs, v)
-				}
-			}
-
-			sort.Sort(sort.Reverse(semver.Collection(vs)))
-
-			latestTag := vs[0].String()
-			// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
-			if strings.HasPrefix(tag, "v") {
-				latestTag = "v" + latestTag
-			}
-			// AE: Don't upgrade to an RC tag, even if it's newer.
-			if latestTag != tag && !strings.Contains(latestTag, "-rc") {
-				updated++
-
-				filtered[k] = fmt.Sprintf("%s:%s", imageName, latestTag)
-				if verbose {
-					log.Printf("[%s] %s => %s", imageName, tag, latestTag)
-				}
+				return err
 			}
 		}
 
@@ -123,11 +135,11 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			return err
 		}
 
-		if updated > 0 && writeFile {
+		if updatedCount > 0 && writeFile {
 			if err := os.WriteFile(file, []byte(rawValues), 0600); err != nil {
 				return err
 			}
-			log.Printf("Wrote %d updates to: %s", updated, file)
+			log.Printf("Wrote %d updates to: %s", updatedCount, file)
 		}
 
 		return nil
@@ -139,4 +151,48 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 func splitImageName(reposName string) (string, string) {
 	nameParts := strings.SplitN(reposName, ":", 2)
 	return nameParts[0], nameParts[1]
+}
+
+func updateImages(iName string, v bool) (bool, string, error) {
+
+	imageName, tag := splitImageName(iName)
+	ref, err := crane.ListTags(imageName)
+	if err != nil {
+		return false, iName, errors.New("unable to list tags for " + imageName)
+	}
+
+	var vs []*semver.Version
+	for _, r := range ref {
+		v, err := semver.NewVersion(r)
+		if err == nil {
+			vs = append(vs, v)
+		}
+	}
+
+	if len(vs) == 0 {
+		return false, iName, fmt.Errorf("no valid semver tags found for %s", imageName)
+	}
+
+	sort.Sort(sort.Reverse(semver.Collection(vs)))
+
+	latestTag := vs[0].String()
+	// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
+	if strings.HasPrefix(tag, "v") {
+		latestTag = "v" + latestTag
+	}
+
+	laterVersionB := false
+
+	// AE: Don't upgrade to an RC tag, even if it's newer.
+	if latestTag != tag && !strings.Contains(latestTag, "-rc") {
+
+		laterVersionB = true
+
+		iName = fmt.Sprintf("%s:%s", imageName, latestTag)
+		if v {
+			log.Printf("[%s] %s => %s", imageName, tag, latestTag)
+		}
+	}
+
+	return laterVersionB, iName, nil
 }
