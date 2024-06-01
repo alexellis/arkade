@@ -778,7 +778,7 @@ There are 56 apps that you can install on your cluster.
 | [cloud-hypervisor](https://github.com/cloud-hypervisor/cloud-hypervisor)     | Cloud Hypervisor is an open source Virtual Machine Monitor (VMM) that runs on top of the KVM hypervisor and the Microsoft Hypervisor (MSHV).                    |
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                                          |
 | [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                                               |
-| [cmctl](https://github.com/cert-manager/cmctl)                        | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                                                   |
+| [cmctl](https://github.com/cert-manager/cmctl)                               | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                                                   |
 | [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                                               |
 | [consul](https://github.com/hashicorp/consul)                                | A solution to connect and configure applications across dynamic, distributed infrastructure                                                                     |
 | [copa](https://github.com/project-copacetic/copacetic)                       | CLI for patching container images                                                                                                                               |
@@ -842,6 +842,7 @@ There are 56 apps that you can install on your cluster.
 | [kube-score](https://github.com/zegl/kube-score)                             | A tool that performs static code analysis of your Kubernetes object definitions.                                                                                |
 | [kubebuilder](https://github.com/kubernetes-sigs/kubebuilder)                | Framework for building Kubernetes APIs using custom resource definitions (CRDs).                                                                                |
 | [kubecm](https://github.com/sunny0826/kubecm)                                | Easier management of kubeconfig.                                                                                                                                |
+| [kubecolor](https://github.com/kubecolor/kubecolor)                          | KubeColor is a kubectl replacement used to add colors to your kubectl output.                                                                                   |
 | [kubeconform](https://github.com/yannh/kubeconform)                          | A FAST Kubernetes manifests validator, with support for Custom Resources                                                                                        |
 | [kubectl](https://github.com/kubernetes/kubernetes)                          | Run commands against Kubernetes clusters                                                                                                                        |
 | [kubectx](https://github.com/ahmetb/kubectx)                                 | Faster way to switch between clusters.                                                                                                                          |
@@ -914,6 +915,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 153 tools, use `arkade get NAME` to download one.
+There are 154 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list

@@ -7599,3 +7599,62 @@ func Test_DownloadKubeScore(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadKubeColor(t *testing.T) {
+	tools := MakeTools()
+	name := "kubecolor"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.3.3"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_linux_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_windows_arm64.exe",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubecolor/kubecolor/releases/download/v0.3.3/kubecolor_0.3.3_windows_amd64.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}

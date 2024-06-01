@@ -4219,5 +4219,30 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "kubecolor",
+			Repo:        "kubecolor",
+			Name:        "kubecolor",
+			Description: "KubeColor is a kubectl replacement used to add colors to your kubectl output.",
+			BinaryTemplate: `
+				{{$os := .OS}}
+				{{$arch := .Arch}}
+				{{$ext := "tar.gz"}}
+	
+				{{- if HasPrefix .OS "ming" -}}
+				{{ $os = "windows" }}
+				{{ $ext = "exe" }}
+			{{- end -}}
+	
+				{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+					{{$arch = "arm64"}}
+				{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "amd64" }}
+				{{- end -}}
+	
+				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
 	return tools
 }
