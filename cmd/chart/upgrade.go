@@ -89,15 +89,15 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 		wg := sync.WaitGroup{}
 		wg.Add(workers)
 
-		workChan := make(chan string, workers)
-		errChan := make(chan error, workers)
-		var mu sync.Mutex
-
-		updatedCount := 0
+		workChan := make(chan string, len(filtered))
+		errChan := make(chan error, len(filtered))
+		updatedImages := make(map[string]string)
 
 		for i := 0; i < workers; i++ {
 			go func() {
+
 				defer wg.Done()
+
 				for image := range workChan {
 					if len(image) > 0 {
 						updated, imageNameAndTag, err := updateImages(image, verbose)
@@ -106,10 +106,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 							continue
 						}
 						if updated {
-							mu.Lock()
-							updatedCount++
-							filtered[image] = imageNameAndTag
-							mu.Unlock()
+							updatedImages[image] = imageNameAndTag
 						}
 					}
 				}
@@ -124,22 +121,26 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 		wg.Wait()
 		close(errChan)
 
+		var joinedErrors error
 		for err := range errChan {
 			if err != nil {
-				return err
+				joinedErrors = errors.Join(joinedErrors, err)
 			}
 		}
+		if joinedErrors != nil {
+			return joinedErrors
+		}
 
-		rawValues, err := helm.ReplaceValuesInHelmValuesFile(filtered, file)
+		rawValues, err := helm.ReplaceValuesInHelmValuesFile(updatedImages, file)
 		if err != nil {
 			return err
 		}
 
-		if updatedCount > 0 && writeFile {
+		if len(updatedImages) > 0 && writeFile {
 			if err := os.WriteFile(file, []byte(rawValues), 0600); err != nil {
 				return err
 			}
-			log.Printf("Wrote %d updates to: %s", updatedCount, file)
+			log.Printf("Wrote %d updates to: %s", len(updatedImages), file)
 		}
 
 		return nil
