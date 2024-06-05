@@ -3326,7 +3326,8 @@ func Test_DownloadKubestr(t *testing.T) {
 	}
 }
 
-func Test_DownloadK10multicluster(t *testing.T) {
+//(Temporarily disable k10multicluster as the binaries are not available at v7.0.0)
+/*func Test_DownloadK10multicluster(t *testing.T) {
 	tools := MakeTools()
 	name := "k10multicluster"
 	v := "4.0.6"
@@ -3358,7 +3359,7 @@ func Test_DownloadK10multicluster(t *testing.T) {
 			}
 		})
 	}
-}
+}*/
 
 func Test_DownloadK10tools(t *testing.T) {
 	tools := MakeTools()
