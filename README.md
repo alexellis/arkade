@@ -823,7 +823,6 @@ There are 56 apps that you can install on your cluster.
 | [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                                           |
 | [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                                        |
 | [k0sctl](https://github.com/k0sproject/k0sctl)                               | A bootstrapping and management tool for k0s clusters                                                                                                            |
-| [k10multicluster](https://github.com/kastenhq/external-tools)                | Multi-cluster support for K10.                                                                                                                                  |
 | [k10tools](https://github.com/kastenhq/external-tools)                       | Tools for evaluating and debugging K10.                                                                                                                         |
 | [k3d](https://github.com/k3d-io/k3d)                                         | Helper to run Rancher Lab's k3s in Docker.                                                                                                                      |
 | [k3s](https://github.com/k3s-io/k3s)                                         | Lightweight Kubernetes                                                                                                                                          |
@@ -915,6 +914,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 154 tools, use `arkade get NAME` to download one.
+There are 153 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `arkade get --format markdown` to generate this list
