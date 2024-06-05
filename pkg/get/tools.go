@@ -657,7 +657,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 		{{- if eq .Arch "x86_64" -}}
 		{{$archStr = "amd64"}}
 		{{- else if eq .Arch "armv7l" }}
-		{{$archStr = "arm64"}}
+		{{$archStr = ""}}
 		{{- else if eq .Arch "aarch64" }}
 		{{$archStr = "arm64"}}
 		{{- end -}}
