@@ -1,7 +1,7 @@
 module github.com/alexellis/arkade
 
 go 1.21
-toolchain go1.22.2
+toolchain go1.22.3
 
 require (
 	github.com/Masterminds/semver v1.5.0
@@ -15,7 +15,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.3.0
 	github.com/spf13/cobra v1.8.0
-	golang.org/x/crypto v0.23.0
+	golang.org/x/crypto v0.24.0
 	golang.org/x/mod v0.17.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -42,5 +42,5 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/vbatts/tar-split v0.11.5 // indirect
 	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.20.0 // indirect
+	golang.org/x/sys v0.21.0 // indirect
 )
