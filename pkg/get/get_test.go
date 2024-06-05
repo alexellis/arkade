@@ -6415,44 +6415,51 @@ func Test_DownloadCmctl(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v1.14.5"
+	const toolVersion = "v2.0.0"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-amd64.tar.gz`,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_linux_amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-darwin-amd64.tar.gz`,
+
+			url: `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_darwin_amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-arm64.tar.gz`,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_linux_arm64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-darwin-arm64.tar.gz`,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_darwin_arm64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-linux-arm.tar.gz`,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_linux_arm`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cert-manager/cert-manager/releases/download/v1.14.5/cert-manager-cmctl-windows-amd64.zip`,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_windows_amd64.exe`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/cert-manager/cmctl/releases/download/v2.0.0/cmctl_windows_arm64.exe`,
 		},
 	}
 
@@ -6462,7 +6469,7 @@ func Test_DownloadCmctl(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 		}
 	}
 }
