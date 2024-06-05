@@ -1082,19 +1082,24 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "windows", "amd64", "zip")},
+			url:     fmt.Sprintf(urlTemplate, "windows", "amd64", "zip"),
+		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "linux", "amd64", "tar.gz")},
+			url:     fmt.Sprintf(urlTemplate, "linux", "amd64", "tar.gz"),
+		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz")},
+			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz"),
+		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "linux", "arm64", "tar.gz")},
+			// designed to fail with 404 due to no binary being published
+			url: "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-linux-.tar.gz",
+		},
 	}
 
 	for _, tc := range tests {
@@ -5892,7 +5897,7 @@ func Test_GrafanaAgent(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			fmt.Println(tc)
+
 			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
@@ -5946,7 +5951,7 @@ func Test_ScalewayCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			fmt.Println(tc)
+
 			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
