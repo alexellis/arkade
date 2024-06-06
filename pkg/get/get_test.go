@@ -1075,30 +1075,51 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v1.46.0"
-	const urlTemplate = "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-%s-%s.%s"
+	const toolVersion = "1.107.0"
 
 	tests := []test{
-		{os: "mingw64_nt-10.0-18362",
+		{
+			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "windows", "amd64", "zip"),
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-windows-amd64.zip",
 		},
-		{os: "linux",
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-windows-arm64.zip",
+		},
+		{
+			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "linux", "amd64", "tar.gz"),
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-linux-amd64.tar.gz",
 		},
-		{os: "darwin",
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-linux-arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-darwin-arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     fmt.Sprintf(urlTemplate, "darwin", "amd64", "tar.gz"),
+			url:     "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-darwin-amd64.tar.gz",
 		},
-		{os: "linux",
+		{
+			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
 			// designed to fail with 404 due to no binary being published
-			url: "https://github.com/digitalocean/doctl/releases/download/v1.46.0/doctl-1.46.0-linux-.tar.gz",
+			url: "https://github.com/digitalocean/doctl/releases/download/1.107.0/doctl-1.107.0-linux-.tar.gz",
 		},
 	}
 
@@ -1108,7 +1129,7 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 		}
 	}
 }
