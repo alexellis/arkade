@@ -6918,25 +6918,25 @@ func Test_DownloadAtuin(t *testing.T) {
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-aarch64-apple-darwin.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-aarch64-apple-darwin.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-aarch64-unknown-linux-gnu.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-aarch64-unknown-linux-gnu.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-x86_64-unknown-linux-gnu.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-x86_64-unknown-linux-gnu.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-v18.2.0-x86_64-apple-darwin.tar.gz",
+			url:     "https://github.com/atuinsh/atuin/releases/download/v18.2.0/atuin-x86_64-apple-darwin.tar.gz",
 		},
 	}
 
