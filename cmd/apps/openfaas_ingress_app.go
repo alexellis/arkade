@@ -112,7 +112,7 @@ func MakeInstallOpenFaaSIngress() *cobra.Command {
 }
 
 func createIssuer(domain, email, ingressClass, ingressName string, staging bool, clusterIssuer bool, namespace string) error {
-	yamlBytes, templateErr := buildIssuerYAML(domain, email, ingressClass, ingressName, staging, clusterIssuer, namespace)
+	yamlBytes, templateErr := buildIssuerYAML(email, ingressClass, staging, clusterIssuer, namespace)
 	if templateErr != nil {
 		log.Print("Unable to install the application. Could not build the templated yaml file for the resources")
 		return templateErr
@@ -132,7 +132,7 @@ func createIssuer(domain, email, ingressClass, ingressName string, staging bool,
 	}
 
 	if res.ExitCode != 0 {
-		return fmt.Errorf(`Unable to apply YAML files.
+		return fmt.Errorf(`unable to apply YAML files.
 Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 or higher installed in cert-manager namespace? %s`,
 			res.Stderr)
 	}
@@ -237,7 +237,7 @@ func buildOpenfaasIngressYAML(domain, email, ingressClass, ingressName string, s
 	return tpl.Bytes(), nil
 }
 
-func buildIssuerYAML(domain, email, ingressClass, ingressName string, staging, clusterIssuer bool, namespace string) ([]byte, error) {
+func buildIssuerYAML(email, ingressClass string, staging, clusterIssuer bool, namespace string) ([]byte, error) {
 	templ, err := template.New("issuer-yaml").Parse(http01IssuerTemplate)
 
 	if err != nil {
