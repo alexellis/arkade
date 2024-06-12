@@ -11,7 +11,7 @@ import (
 )
 
 func Test_buildYAML_Issuer(t *testing.T) {
-	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false, "openfaas")
+	templBytes, _ := buildIssuerYAML("openfaas@subdomain.example.com", "traefik", false, false, "openfaas")
 	var want = `
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -32,12 +32,12 @@ spec:
 
 	got := string(templBytes)
 	if want != got {
-		t.Errorf("want:\n%q\ngot:\n%q\n", want, got)
+		t.Errorf("want:\n%q\n\ngot:\n%q\n", want, got)
 	}
 }
 
 func Test_buildYAML_IssuerTakesEmailOverride(t *testing.T) {
-	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", false, false, "openfaas")
+	templBytes, _ := buildIssuerYAML("openfaas@subdomain.example.com", "traefik", false, false, "openfaas")
 	var want = `
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -63,7 +63,7 @@ spec:
 }
 
 func Test_buildIssuerYAMLStaging(t *testing.T) {
-	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, false, "openfaas")
+	templBytes, _ := buildIssuerYAML("openfaas@subdomain.example.com", "traefik", true, false, "openfaas")
 	var want = `
 apiVersion: cert-manager.io/v1
 kind: Issuer
@@ -282,7 +282,7 @@ spec:
 }
 
 func Test_buildYAMLClusterIssuer_HasNoNamespace(t *testing.T) {
-	templBytes, _ := buildIssuerYAML("openfaas.subdomain.example.com", "openfaas@subdomain.example.com", "traefik", "openfaas-gateway", true, true, "openfaas")
+	templBytes, _ := buildIssuerYAML("openfaas@subdomain.example.com", "traefik", true, true, "openfaas")
 	var want = `
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
