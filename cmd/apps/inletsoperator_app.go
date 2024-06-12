@@ -37,10 +37,10 @@ IngressController`,
 	}
 
 	inletsOperator.Flags().StringP("namespace", "n", "default", "The namespace used for installation")
-	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets PRO")
-	inletsOperator.Flags().StringP("license-file", "f", "$HOME/.inlets/LICENSE", "Path to license JWT file for inlets PRO")
+	inletsOperator.Flags().StringP("license", "l", "", "The license key for inlets")
+	inletsOperator.Flags().StringP("license-file", "f", "$HOME/.inlets/LICENSE", "Path to license JWT file for inlets")
 
-	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'equinix-metal', 'digitalocean', 'scaleway', 'linode', 'civo', 'gce', 'ec2', 'azure', 'hetzner'")
+	inletsOperator.Flags().StringP("provider", "p", "digitalocean", "Your infrastructure provider - 'digitalocean', 'scaleway', 'linode', 'gce', 'ec2', 'azure', 'hetzner'")
 	inletsOperator.Flags().StringP("zone", "z", "us-central1-a", "The zone to provision the exit node (GCE)")
 	inletsOperator.Flags().String("project-id", "", "Project ID to be used (for GCE and Equinix Metal)")
 	inletsOperator.Flags().StringP("region", "r", "lon1", "The default region to provision the exit node (DigitalOcean, Equinix Metal and Scaleway)")
@@ -170,7 +170,7 @@ IngressController`,
 		licenseFile, _ := command.Flags().GetString("license-file")
 		fileFlagChanged := command.Flags().Changed("license-file")
 
-		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets PRO")
+		noLicenseErr := fmt.Errorf("--license or --license-file is required for inlets")
 		if len(license) == 0 {
 			if len(licenseFile) > 0 {
 				licenseFile = os.ExpandEnv(licenseFile)
@@ -320,7 +320,7 @@ func getInletsOperatorOverrides(command *cobra.Command) (map[string]string, erro
 			return overrides, fmt.Errorf("region is required for provider %s", provider)
 		}
 
-		validHetznerRegions := []string{"fsn1", "nbg1", "hel1"}
+		validHetznerRegions := []string{"fsn1", "nbg1", "hel1", "eu-central"}
 		foundRegion := false
 		for _, validRegion := range validHetznerRegions {
 			if validRegion == userInputRegion {
