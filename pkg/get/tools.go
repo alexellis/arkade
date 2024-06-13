@@ -2032,29 +2032,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			BinaryTemplate: `{{.Name}}`,
 		})
 
-	//(Temporarily disable k10multicluster as the binaries are not available at v7.0.0)
-	/*  tools = append(tools,
-		Tool{
-			Owner:       "kastenhq",
-			Repo:        "external-tools",
-			Name:        "k10multicluster",
-			Description: "Multi-cluster support for K10.",
-
-			BinaryTemplate: `
-	{{ $osStr := "linux" }}
-	{{ $archStr := "amd64" }}
-
-	{{- if eq .Arch "aarch64" -}}
-	{{ $archStr = "arm64" }}
-	{{- end -}}
-
-	{{- if eq .OS "darwin" -}}
-	{{ $osStr = "macOS" }}
-	{{- end -}}
-
-	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
-		})
-	*/
 	tools = append(tools,
 		Tool{
 			Owner:       "kastenhq",
