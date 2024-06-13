@@ -2032,29 +2032,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 			BinaryTemplate: `{{.Name}}`,
 		})
 
-	//(Temporarily disable k10multicluster as the binaries are not available at v7.0.0)
-	/*  tools = append(tools,
-		Tool{
-			Owner:       "kastenhq",
-			Repo:        "external-tools",
-			Name:        "k10multicluster",
-			Description: "Multi-cluster support for K10.",
-
-			BinaryTemplate: `
-	{{ $osStr := "linux" }}
-	{{ $archStr := "amd64" }}
-
-	{{- if eq .Arch "aarch64" -}}
-	{{ $archStr = "arm64" }}
-	{{- end -}}
-
-	{{- if eq .OS "darwin" -}}
-	{{ $osStr = "macOS" }}
-	{{- end -}}
-
-	{{.Name}}_{{.Version}}_{{$osStr}}_{{$archStr}}.tar.gz`,
-		})
-	*/
 	tools = append(tools,
 		Tool{
 			Owner:       "kastenhq",
@@ -4278,5 +4255,42 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 			{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "keploy",
+			Repo:        "keploy",
+			Name:        "keploy",
+			Description: "Test generation for Developers. Generate tests and stubs for your application that actually work!",
+			BinaryTemplate: `
+					{{ $os := .OS }}
+					{{ $arch := .Arch }}
+					{{ $ext := "tar.gz" }}
+
+					{{- if eq .Arch "aarch64" -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+						{{ $arch = "arm64" }}
+					{{- else if eq .Arch "armv6l" -}}
+						{{ $arch = "armv6" }}
+					{{- else if eq .Arch "armv7l" -}}
+						{{ $arch = "armv7" }}
+					{{- end -}}
+
+					{{ if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = "tar.gz"}}
+					{{- end -}}
+
+					{{- if eq .OS "darwin" -}}
+						{{$os = "darwin"}}
+						{{ $arch = "all" }}
+					{{- else if eq .OS "linux" -}}
+						{{ $os = "linux" }}
+					{{- end -}}
+					keploy_{{$os}}_{{$arch}}.{{$ext}}
+					`,
+		})
+
 	return tools
 }

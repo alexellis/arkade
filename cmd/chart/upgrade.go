@@ -185,7 +185,7 @@ func updateImages(iName string, v bool) (bool, string, error) {
 	laterVersionB := false
 
 	// AE: Don't upgrade to an RC tag, even if it's newer.
-	if latestTag != tag && !strings.Contains(latestTag, "-rc") {
+	if tagIsUpgradeable(tag, latestTag) {
 
 		laterVersionB = true
 
@@ -196,4 +196,10 @@ func updateImages(iName string, v bool) (bool, string, error) {
 	}
 
 	return laterVersionB, iName, nil
+}
+
+func tagIsUpgradeable(currentTag, latestTag string) bool {
+
+	return latestTag != currentTag && !strings.Contains(strings.ToLower(latestTag), "-rc") && !strings.EqualFold(currentTag, "latest")
+
 }
