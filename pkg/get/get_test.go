@@ -3351,41 +3351,6 @@ func Test_DownloadKubestr(t *testing.T) {
 	}
 }
 
-//(Temporarily disable k10multicluster as the binaries are not available at v7.0.0)
-/*func Test_DownloadK10multicluster(t *testing.T) {
-	tools := MakeTools()
-	name := "k10multicluster"
-	v := "4.0.6"
-	tool := getTool(name, tools)
-
-	tests := []test{
-		{
-			os:      "darwin",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_macOS_amd64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.0.6/k10multicluster_4.0.6_linux_amd64.tar.gz`,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
-			}
-		})
-	}
-}*/
-
 func Test_DownloadK10tools(t *testing.T) {
 	tools := MakeTools()
 	name := "k10tools"
