@@ -76,7 +76,7 @@ type writer struct {
 func makeWriter(ctx context.Context, repo name.Repository, ls []v1.Layer, o *options) (*writer, error) {
 	auth := o.auth
 	if o.keychain != nil {
-		kauth, err := o.keychain.Resolve(repo)
+		kauth, err := authn.Resolve(ctx, o.keychain, repo)
 		if err != nil {
 			return nil, err
 		}
@@ -709,5 +709,5 @@ func Put(ref name.Reference, t Taggable, options ...Option) error {
 	if err != nil {
 		return err
 	}
-	return newPusher(o).Push(o.context, ref, t)
+	return newPusher(o).Put(o.context, ref, t)
 }
