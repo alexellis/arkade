@@ -4255,5 +4255,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 
 			{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "keploy",
+			Repo:        "keploy",
+			Name:        "keploy",
+			Description: "Test generation for Developers. Generate tests and stubs for your application that actually work!",
+			BinaryTemplate: `
+					{{ $os := .OS }}
+					{{ $arch := .Arch }}
+					{{ $ext := "tar.gz" }}
+
+					{{- if eq .Arch "aarch64" -}}
+					{{$arch = "arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+					{{ $arch = "arm64" }}
+					{{- else if eq .Arch "x86_64" -}}
+					{{ $arch = "amd64" }}
+					{{- end -}}
+
+					{{ if HasPrefix .OS "ming" -}}
+					{{$os = "windows"}}
+					{{$ext = "zip"}}
+					{{- end -}}
+
+					{{- if eq .OS "darwin" -}}
+					{{$os = "darwin_all"}}
+					{{- else if eq .OS "linux" -}}
+					{{ $os = "linux" }}
+					{{- end -}}
+					keploy_{{$os}}.{{$ext}}
+					`,
+		})
+
 	return tools
 }
