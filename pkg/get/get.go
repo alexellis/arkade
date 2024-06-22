@@ -64,6 +64,9 @@ type Tool struct {
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
+
+	// true if tool should be used as system install only
+	SystemOnly bool
 }
 
 type ToolLocal struct {
@@ -73,6 +76,7 @@ type ToolLocal struct {
 
 var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+	"ToLower":   func(s string) string { return strings.ToLower(s) },
 }
 
 func (tool Tool) IsArchive(quiet bool) (bool, error) {
@@ -210,7 +214,6 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 
 func FindGitHubRelease(owner, repo string) (string, error) {
 	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
-
 	client := makeHTTPClient(&githubTimeout, false)
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse

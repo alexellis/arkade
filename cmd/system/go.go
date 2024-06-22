@@ -12,7 +12,6 @@ import (
 	"strings"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/spf13/cobra"
@@ -53,13 +52,17 @@ func MakeInstallGo() *cobra.Command {
 			return fmt.Errorf("this app only supports Linux")
 		}
 
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "amd64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		} else if arch == "armv7" || arch == "armv7l" {
-			dlArch = "armv6l"
+		tools := get.MakeTools()
+		var tool *get.Tool
+		for _, t := range tools {
+			if t.Name == "go" {
+				tool = &t
+				break
+			}
+		}
+
+		if tool == nil {
+			return fmt.Errorf("unable to find go definition")
 		}
 
 		if len(version) == 0 {
@@ -73,31 +76,13 @@ func MakeInstallGo() *cobra.Command {
 			version = "go" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-
-		dlURL := fmt.Sprintf("https://go.dev/dl/%s.%s-%s.tar.gz", version, strings.ToLower(osVer), dlArch)
-		fmt.Printf("Downloading from: %s\n", dlURL)
-
 		progress, _ := cmd.Flags().GetBool("progress")
-		outPath, err := get.DownloadFileP(dlURL, progress)
+		err := get.DownloadNested(tool, arch, osVer, version, installPath, progress, !progress)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(outPath)
 
-		fmt.Printf("Downloaded to: %s\n", outPath)
-
-		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
-		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		fmt.Printf("Unpacking Go to: %s\n", path.Join(installPath, "go"))
-
-		if err := archive.UntarNested(f, installPath, true, false); err != nil {
-			return err
-		}
+		fmt.Printf("Downloaded to: %sgo\n", installPath)
 
 		fmt.Printf("\nexport PATH=$PATH:%s:$HOME/go/bin\n"+
 			"export GOPATH=$HOME/go/\n", path.Join(installPath, "go", "bin"))
@@ -133,10 +118,14 @@ func getGoVersion() (string, error) {
 	}
 
 	content := strings.TrimSpace(string(body))
-	version, _, ok := strings.Cut(content, "\n")
+	txtVersion, _, ok := strings.Cut(content, "\n")
 	if !ok {
 		return "", fmt.Errorf("format unexpected: %q", content)
 	}
 
+	version, ok := strings.CutPrefix(txtVersion, "go")
+	if !ok {
+		return "", fmt.Errorf("format unexpected: %q", txtVersion)
+	}
 	return version, nil
 }
