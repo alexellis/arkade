@@ -2,57 +2,13 @@ package system
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"os"
-	"regexp"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
-	cp "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
 )
-
-func getLatestNodeVersion(version, channel string) (*string, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("https://nodejs.org/download/%s/%s", channel, version), nil)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("could not find latest version for %s, (%d), body: %s", version, res.StatusCode, string(body))
-	}
-
-	regex := regexp.MustCompile(`(?m)node-v(\d+.\d+.\d+)-linux-.*`)
-	result := regex.FindStringSubmatch(string(body))
-
-	if len(result) < 2 {
-		if v, ok := os.LookupEnv("ARK_DEBUG"); ok && v == "1" {
-			fmt.Printf("Body: %s\n", string(body))
-		}
-		return nil, fmt.Errorf("could not find latest version for %s, (%d), %s", version, res.StatusCode, result)
-	}
-	return &result[1], nil
-}
 
 func MakeInstallNode() *cobra.Command {
 	command := &cobra.Command{
@@ -94,12 +50,18 @@ func MakeInstallNode() *cobra.Command {
 			dlArch = "arm64"
 		}
 
+		resolver := &get.NodeVersionResolver{
+			Channel: channel,
+			Version: version,
+		}
+
 		if (version == "latest" || strings.Contains(version, "latest-")) && channel == "release" {
-			v, err := getLatestNodeVersion(version, channel)
+			v, err := resolver.GetVersion()
 			if err != nil {
 				return err
 			}
-			version = *v
+			version = v
+			resolver.Version = v
 		} else if (version == "latest" || strings.Contains(version, "latest-")) && channel == "nightly" {
 			return fmt.Errorf("please set a specific version for downloading a nightly builds")
 		}
@@ -108,39 +70,36 @@ func MakeInstallNode() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-		filename := fmt.Sprintf("%s/%s.tar.gz", version, fmt.Sprintf("node-%s-linux-%s", version, dlArch))
-		dlURL := fmt.Sprintf("https://nodejs.org/download/%s/%s", channel, filename)
+		tools := get.MakeTools()
+		var tool *get.Tool
+		for _, t := range tools {
+			if t.Name == "node" {
+				tool = &t
+				break
+			}
+		}
 
-		fmt.Printf("Downloading from: %s\n", dlURL)
-		outPath, err := get.DownloadFileP(dlURL, progress)
+		if tool == nil {
+			return fmt.Errorf("unable to find node definition")
+		}
+
+		tool.VersionResolver = &get.NodeVersionResolver{
+			Channel: channel,
+			Version: version,
+		}
+
+		tempPath, err := get.DownloadNested(tool, arch, osVer, version, installPath, progress, !progress)
+		defer os.RemoveAll(tempPath)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(outPath)
-		fmt.Printf("Downloaded to: %s\n", outPath)
+		fmt.Printf("Temp Path: %s \n", tempPath)
 
-		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
+		err = get.MoveFromInternalDir(fmt.Sprintf("node-%s-linux-%s", version, dlArch), tempPath, installPath)
 		if err != nil {
 			return err
 		}
-		defer f.Close()
 
-		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), fmt.Sprintf("%s*", "node"))
-		if err != nil {
-			return err
-		}
-		defer os.RemoveAll(tempUnpackPath)
-		fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
-		if err = archive.UntarNested(f, tempUnpackPath, true, false); err != nil {
-			return err
-		}
-
-		fmt.Printf("Copying binaries to: %s\n", installPath)
-		nodeDir := fmt.Sprintf("%s/%s", tempUnpackPath, fmt.Sprintf("node-%s-linux-%s", version, dlArch))
-		if err := cp.Copy(nodeDir, installPath); err != nil {
-			return err
-		}
 		return nil
 	}
 	return command

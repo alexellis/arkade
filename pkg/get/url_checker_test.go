@@ -14,6 +14,8 @@ func Test_CheckTools(t *testing.T) {
 	tools := MakeTools()
 	toolsToSkip := []string{
 		"kumactl", // S3 bucket disallow HEAD requests
+		// https://github.com/vladimirvivien/ktop/issues/46
+		"ktop", // latest release does not include binary
 	}
 
 	os := "linux"

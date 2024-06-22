@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"maps"
 	"net"
 	"net/http"
 	"strings"
@@ -16,9 +17,6 @@ import (
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/env"
 )
-
-const GitHubVersionStrategy = "github"
-const k8sVersionStrategy = "k8s"
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
@@ -44,9 +42,6 @@ type Tool struct {
 	// if any only if only BinaryTemplate is specified.
 	Version string
 
-	// Bespoke approach for finding version when none is set.
-	VersionStrategy string
-
 	// Description of what the tool is used for.
 	Description string
 
@@ -64,6 +59,13 @@ type Tool struct {
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
+
+	// true if tool should be used as system install only
+	SystemOnly bool
+
+	// Provides custom mechanism to resolve version for different tools
+	// Bespoke approach for finding version when none is set.
+	VersionResolver VersionResolver
 }
 
 type ToolLocal struct {
@@ -73,6 +75,7 @@ type ToolLocal struct {
 
 var templateFuncs = map[string]interface{}{
 	"HasPrefix": func(s, prefix string) bool { return strings.HasPrefix(s, prefix) },
+	"ToLower":   func(s string) string { return strings.ToLower(s) },
 }
 
 func (tool Tool) IsArchive(quiet bool) (bool, error) {
@@ -142,30 +145,23 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 
 func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
+	var resolver VersionResolver
+	resolver = tool.VersionResolver
+	if resolver == nil {
+		resolver = &GithubVersionResolver{tool.Owner, tool.Repo}
+	}
+
 	if len(version) == 0 {
 
 		if !quiet {
 			log.Printf("Looking up version for %s", tool.Name)
 		}
 
-		if len(tool.URLTemplate) == 0 ||
-			strings.Contains(tool.URLTemplate, "https://github.com/") ||
-			tool.VersionStrategy == GitHubVersionStrategy {
-
-			v, err := FindGitHubRelease(tool.Owner, tool.Repo)
-			if err != nil {
-				return "", err
-			}
-			version = v
+		v, err := resolver.GetVersion()
+		if err != nil {
+			return "", err
 		}
-
-		if tool.VersionStrategy == k8sVersionStrategy {
-			v, err := FindK8sRelease()
-			if err != nil {
-				return "", err
-			}
-			version = v
-		}
+		version = v
 
 		if !quiet {
 			log.Printf("Found: %s", version)
@@ -173,7 +169,7 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 	}
 
 	if len(tool.URLTemplate) > 0 {
-		return getByDownloadTemplate(tool, os, arch, version)
+		return getByDownloadTemplate(tool, os, arch, version, resolver.Inputs())
 	}
 
 	return getURLByGithubTemplate(tool, os, arch, version)
@@ -209,75 +205,8 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 }
 
 func FindGitHubRelease(owner, repo string) (string, error) {
-	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
-
-	client := makeHTTPClient(&githubTimeout, false)
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return http.ErrUseLastResponse
-	}
-
-	req, err := http.NewRequest(http.MethodHead, url, nil)
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-
-	if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
-		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
-	}
-
-	loc := res.Header.Get("Location")
-	if len(loc) == 0 {
-		return "", fmt.Errorf("unable to determine release of tool")
-	}
-
-	version := loc[strings.LastIndex(loc, "/")+1:]
-	return version, nil
-}
-
-func FindK8sRelease() (string, error) {
-	url := "https://cdn.dl.k8s.io/release/stable.txt"
-
-	timeout := time.Second * 5
-	client := makeHTTPClient(&timeout, false)
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return http.ErrUseLastResponse
-	}
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	if res.Body == nil {
-		return "", fmt.Errorf("unable to determine release of tool")
-	}
-
-	defer res.Body.Close()
-	bodyBytes, err := io.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-
-	version := string(bodyBytes)
-	return version, nil
+	resolver := &GithubVersionResolver{Owner: owner, Repo: repo}
+	return resolver.GetVersion()
 }
 
 func getBinaryURL(owner, repo, version, downloadName string) string {
@@ -291,7 +220,7 @@ func getBinaryURL(owner, repo, version, downloadName string) string {
 		owner, repo, version, downloadName)
 }
 
-func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) {
+func getByDownloadTemplate(tool Tool, os, arch, version string, resolverInputs map[string]string) (string, error) {
 	var err error
 	t := template.New(tool.Name)
 	t = t.Funcs(templateFuncs)
@@ -310,6 +239,7 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		"Owner":         tool.Owner,
 		"Name":          tool.Name,
 	}
+	maps.Copy(inputs, resolverInputs)
 
 	if err := t.Execute(&buf, inputs); err != nil {
 		return "", err

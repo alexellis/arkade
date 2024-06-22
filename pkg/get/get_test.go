@@ -6924,12 +6924,6 @@ func Test_Download1Password(t *testing.T) {
 		},
 		{
 			os:      "linux",
-			arch:    arch64bit,
-			version: "",
-			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_amd64_v2.17.0.zip",
-		},
-		{
-			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
 			url:     "https://cache.agilebits.com/dist/1P/op2/pkg/v2.17.0/op_linux_arm_v2.17.0.zip",
@@ -7658,19 +7652,6 @@ func Test_DownloadKeploy(t *testing.T) {
 	tool := getTool(name, tools)
 
 	const toolVersion = "v2.3.0"
-	// keploy_darwin_all.tar.gz
-	// 20.4 MB
-	// 1 hour ago
-	// keploy_linux_amd64.tar.gz
-	// 12.4 MB
-	// 1 hour ago
-	// keploy_linux_arm64.tar.gz
-	// 11.4 MB
-	// 1 hour ago
-	// keploy_windows_amd64.tar.gz
-	// 10.4 MB
-	// 1 hour ago
-	// keploy_windows_arm64.tar.gz
 
 	tests := []test{
 		{
@@ -7806,6 +7787,7 @@ func Test_Download_labctl(t *testing.T) {
 			url:     "https://github.com/iximiuz/labctl/releases/download/v0.1.8/labctl_linux_amd64.tar.gz",
 		},
 	}
+
 	for _, tc := range tests {
 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
@@ -7815,4 +7797,235 @@ func Test_Download_labctl(t *testing.T) {
 			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
 		}
 	}
+
+}
+
+func Test_DownloadPowershell(t *testing.T) {
+	tools := MakeTools()
+	name := "pwsh"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v7.4.3"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-x64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm32.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm32.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-osx-x64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-osx-arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/PowerShell-7.4.3-win-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/PowerShell-7.4.3-win-x64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloadNode(t *testing.T) {
+	tools := MakeTools()
+	name := "node"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v22.8.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-linux-x64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-linux-arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-linux-armv7l.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-darwin-x64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-darwin-arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-win-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://nodejs.org/download/release/v22.8.0/node-v22.8.0-win-x64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloadGo(t *testing.T) {
+	tools := MakeTools()
+	name := "go"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.22.4"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-armv6l.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-armv6l.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-armv6l.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-armv6l.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-amd64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-armv6l.zip",
+		},
+		{
+			os:      "ming",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-armv6l.zip",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+
 }

@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/Masterminds/semver"
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/spf13/cobra"
@@ -48,17 +47,21 @@ func MakeInstallPowershell() *cobra.Command {
 			arch, _ = cmd.Flags().GetString("arch")
 		}
 
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "x64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		} else if arch == "armv7" || arch == "armv7l" {
-			dlArch = "arm32"
+		tools := get.MakeTools()
+		var tool *get.Tool
+		for _, t := range tools {
+			if t.Name == "pwsh" {
+				tool = &t
+				break
+			}
+		}
+
+		if tool == nil {
+			return fmt.Errorf("unable to find powershell definition")
 		}
 
 		if version == "" {
-			v, err := get.FindGitHubRelease("PowerShell", "PowerShell")
+			v, err := get.FindGitHubRelease(tool.Owner, tool.Repo)
 			if err != nil {
 				return err
 			}
@@ -67,14 +70,8 @@ func MakeInstallPowershell() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-
 		semVer := semver.MustParse(version)
 		majorVersion := semVer.Major()
-		// semVer := strings.TrimPrefix(version, "v")
-
-		// majorVerDemlimiter := strings.Index(semVer, ".")
-		// majorVersion := semVer[:majorVerDemlimiter]
 
 		installPath = fmt.Sprintf("%s/%d", installPath, majorVersion)
 
@@ -82,33 +79,14 @@ func MakeInstallPowershell() *cobra.Command {
 
 		installPath = strings.ReplaceAll(installPath, "$HOME", os.Getenv("HOME"))
 
-		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
-			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
-		}
-
-		filename := fmt.Sprintf("powershell-%s-linux-%s.tar.gz", semVer, dlArch)
-		dlURL := fmt.Sprintf(githubDownloadTemplate, "PowerShell", "PowerShell", version, filename)
-
-		fmt.Printf("Downloading from: %s\n", dlURL)
-
 		progress, _ := cmd.Flags().GetBool("progress")
-		outPath, err := get.DownloadFileP(dlURL, progress)
+		tempPath, err := get.DownloadNested(tool, arch, osVer, version, installPath, progress, !progress)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(outPath)
 
-		fmt.Printf("Downloaded to: %s\n", outPath)
-
-		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
+		err = get.MoveTo(tempPath, installPath)
 		if err != nil {
-			return err
-		}
-		defer f.Close()
-
-		fmt.Printf("Unpacking Powershell to: %s\n", installPath)
-
-		if err := archive.Untar(f, installPath, true, true); err != nil {
 			return err
 		}
 

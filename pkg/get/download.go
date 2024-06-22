@@ -15,6 +15,7 @@ import (
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/cheggaaa/pb/v3"
+	cp "github.com/otiai10/copy"
 )
 
 const (
@@ -27,6 +28,67 @@ type ErrNotFound struct {
 
 func (e *ErrNotFound) Error() string {
 	return "server returned status: 404"
+}
+
+// DownloadNested Returns the temporary location of unarchived directory
+func DownloadNested(tool *Tool, arch, operatingSystem, version string, movePath string, displayProgress, quiet bool) (string, error) {
+	downloadURL, err := GetDownloadURL(tool,
+		strings.ToLower(operatingSystem),
+		strings.ToLower(arch),
+		version, quiet)
+	if err != nil {
+		return "", err
+	}
+
+	if !quiet {
+		fmt.Printf("Downloading: %s\n", downloadURL)
+	}
+
+	outPath, err := DownloadFileP(downloadURL, displayProgress)
+	if err != nil {
+		return "", err
+	}
+	defer os.Remove(outPath)
+
+	fmt.Printf("Downloaded to: %s\n", outPath)
+
+	f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
+	if err != nil {
+		return "", err
+	}
+	defer f.Close()
+
+	tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "arkade-*")
+	if err != nil {
+		return "", err
+	}
+	tempUnpackPath = fmt.Sprintf("%s/%s", tempUnpackPath, tool.Name)
+
+	fmt.Printf("Unpacking %s to: %s\n", tool.Name, tempUnpackPath)
+	if err = archive.UntarNested(f, tempUnpackPath, true, true); err != nil {
+		return "", err
+	}
+
+	return tempUnpackPath, nil
+}
+
+func MoveTo(srcPath, dstPath string) error {
+	if err := os.MkdirAll(dstPath, 0755); err != nil && !os.IsExist(err) {
+		fmt.Printf("Error creating directory %s, error: %s\n", dstPath, err.Error())
+	}
+
+	fmt.Printf("Copying binaries to: %s\n", dstPath)
+	opts := cp.Options{
+		AddPermission: 0755,
+	}
+	if err := cp.Copy(srcPath, dstPath, opts); err != nil {
+		return err
+	}
+	return nil
+}
+
+func MoveFromInternalDir(internalDir, srcPath, dstPath string) error {
+	return MoveTo(fmt.Sprintf("%s/%s", srcPath, internalDir), dstPath)
 }
 
 func Download(tool *Tool, arch, operatingSystem, version string, movePath string, displayProgress, quiet bool) (string, string, error) {

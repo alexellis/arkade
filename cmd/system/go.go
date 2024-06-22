@@ -5,14 +5,10 @@ package system
 
 import (
 	"fmt"
-	"io"
-	"net/http"
 	"os"
 	"path"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/alexellis/arkade/pkg/get"
 	"github.com/spf13/cobra"
@@ -53,51 +49,31 @@ func MakeInstallGo() *cobra.Command {
 			return fmt.Errorf("this app only supports Linux")
 		}
 
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "amd64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		} else if arch == "armv7" || arch == "armv7l" {
-			dlArch = "armv6l"
-		}
-
-		if len(version) == 0 {
-			v, err := getGoVersion()
-			if err != nil {
-				return err
+		tools := get.MakeTools()
+		var tool *get.Tool
+		for _, t := range tools {
+			if t.Name == "go" {
+				tool = &t
+				break
 			}
-
-			version = v
-		} else if !strings.HasPrefix(version, "go") {
-			version = "go" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
-
-		dlURL := fmt.Sprintf("https://go.dev/dl/%s.%s-%s.tar.gz", version, strings.ToLower(osVer), dlArch)
-		fmt.Printf("Downloading from: %s\n", dlURL)
+		if tool == nil {
+			return fmt.Errorf("unable to find go definition")
+		}
 
 		progress, _ := cmd.Flags().GetBool("progress")
-		outPath, err := get.DownloadFileP(dlURL, progress)
+		tempPath, err := get.DownloadNested(tool, arch, osVer, version, installPath, progress, !progress)
 		if err != nil {
 			return err
 		}
-		defer os.Remove(outPath)
 
-		fmt.Printf("Downloaded to: %s\n", outPath)
-
-		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
+		err = get.MoveTo(tempPath, installPath)
 		if err != nil {
 			return err
 		}
-		defer f.Close()
 
-		fmt.Printf("Unpacking Go to: %s\n", path.Join(installPath, "go"))
-
-		if err := archive.UntarNested(f, installPath, true, false); err != nil {
-			return err
-		}
+		fmt.Printf("Downloaded to: %sgo\n", installPath)
 
 		fmt.Printf("\nexport PATH=$PATH:%s:$HOME/go/bin\n"+
 			"export GOPATH=$HOME/go/\n", path.Join(installPath, "go", "bin"))
@@ -106,37 +82,4 @@ func MakeInstallGo() *cobra.Command {
 	}
 
 	return command
-}
-
-func getGoVersion() (string, error) {
-	req, err := http.NewRequest(http.MethodGet, "https://go.dev/VERSION?m=text", nil)
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	if res.Body == nil {
-		return "", fmt.Errorf("unexpected empty body")
-	}
-
-	defer res.Body.Close()
-	body, _ := io.ReadAll(res.Body)
-
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status code: %d", res.StatusCode)
-	}
-
-	content := strings.TrimSpace(string(body))
-	version, _, ok := strings.Cut(content, "\n")
-	if !ok {
-		return "", fmt.Errorf("format unexpected: %q", content)
-	}
-
-	return version, nil
 }
