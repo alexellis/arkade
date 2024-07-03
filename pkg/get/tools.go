@@ -3089,7 +3089,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 				{{$ext = ".zip"}}
 				{{- end -}}
 
-				{{- if eq .Arch "aarch64" -}}
+				{{- if eq .Arch "x86_64" -}}
+				{{$arch = "amd64"}}
+				{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 				{{$arch = "arm64"}}
 				{{- end -}}
 
