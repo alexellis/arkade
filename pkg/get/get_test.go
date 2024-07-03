@@ -5496,13 +5496,13 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
@@ -5514,7 +5514,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_x86_64.zip",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_amd64.zip",
 		},
 	}
 
