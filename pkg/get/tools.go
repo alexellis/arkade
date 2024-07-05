@@ -4268,24 +4268,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Repo}}
 					{{ $ext := "tar.gz" }}
 
 					{{- if eq .Arch "aarch64" -}}
-					{{$arch = "arm64"}}
+						{{$arch = "arm64"}}
 					{{- else if eq .Arch "arm64" -}}
-					{{ $arch = "arm64" }}
-					{{- else if eq .Arch "x86_64" -}}
-					{{ $arch = "amd64" }}
+						{{ $arch = "arm64" }}
+					{{- else if eq .Arch "armv6l" -}}
+						{{ $arch = "armv6" }}
+					{{- else if eq .Arch "armv7l" -}}
+						{{ $arch = "armv7" }}
 					{{- end -}}
 
 					{{ if HasPrefix .OS "ming" -}}
-					{{$os = "windows"}}
-					{{$ext = "zip"}}
+						{{$os = "windows"}}
+						{{$ext = "tar.gz"}}
 					{{- end -}}
 
 					{{- if eq .OS "darwin" -}}
-					{{$os = "darwin_all"}}
+						{{$os = "darwin"}}
+						{{ $arch = "all" }}
 					{{- else if eq .OS "linux" -}}
-					{{ $os = "linux" }}
+						{{ $os = "linux" }}
 					{{- end -}}
-					keploy_{{$os}}.{{$ext}}
+					keploy_{{$os}}_{{$arch}}.{{$ext}}
 					`,
 		})
 

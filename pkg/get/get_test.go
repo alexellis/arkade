@@ -7753,43 +7753,31 @@ func Test_DownloadKeploy(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_linux_amd64.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_linux_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_linux_arm64.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_linux_arm64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_darwin_all.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_darwin_all.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_windows_amd64.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_amd64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_Windows_x86_64.tar.gz",
-		},
-		{
-			os:      "ming",
-			arch:    "armv6l",
-			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_Windows_armv6.tar.gz",
-		},
-		{
-			os:      "ming",
-			arch:    archARM7,
-			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha6/keploy_Windows_armv7.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_arm64.tar.gz",
 		},
 	}
 
