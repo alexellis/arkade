@@ -7746,7 +7746,7 @@ func Test_DownloadKeploy(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v2.2.0"
+	const toolVersion = "v2.2.0-alpha19"
 
 	tests := []test{
 		{
@@ -7771,13 +7771,13 @@ func Test_DownloadKeploy(t *testing.T) {
 			os:      "ming",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_amd64.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_arm64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_arm64.tar.gz",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_amd64.tar.gz",
 		},
 	}
 
