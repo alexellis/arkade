@@ -8,7 +8,7 @@ require (
 	github.com/alexellis/go-execute/v2 v2.2.1
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/docker/go-units v0.5.0
-	github.com/google/go-containerregistry v0.19.2
+	github.com/google/go-containerregistry v0.20.0
 	github.com/morikuni/aec v1.0.0
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/otiai10/copy v1.14.0
