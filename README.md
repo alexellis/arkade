@@ -254,7 +254,7 @@ Run the following to see what's available `arkade system install`:
   prometheus      Install Prometheus
   pwsh            Install Powershell
   registry        Install registry
-  tc-redirect-tap Install tc-redirect-tap      
+  tc-redirect-tap Install tc-redirect-tap
 ```
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
@@ -714,12 +714,10 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | influxdb                | Install influxdb                                                    |
 | ingress-nginx           | Install ingress-nginx                                               |
 | inlets-operator         | Install inlets-operator                                             |
-| inlets-tcp-client       | Install inlets PRO TCP client                                       |
 | istio                   | Install istio                                                       |
 | jenkins                 | Install jenkins                                                     |
 | kafka                   | Install Confluent Platform Kafka                                    |
 | kafka-connector         | Install kafka-connector for OpenFaaS                                |
-| kanister                | Install kanister for application-level data management              |
 | kong-ingress            | Install kong-ingress for OpenFaaS                                   |
 | kube-image-prefetch     | Install kube-image-prefetch                                         |
 | kube-state-metrics      | Install kube-state-metrics                                          |
@@ -735,12 +733,10 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | mqtt-connector          | Install mqtt-connector for OpenFaaS                                 |
 | nats-connector          | Install OpenFaaS connector for NATS                                 |
 | nfs-provisioner         | Install nfs subdir external provisioner                             |
-| nginx-inc               | Install nginx-inc for OpenFaaS                                      |
 | opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
 | openfaas                | Install openfaas                                                    |
 | openfaas-ingress        | Install openfaas ingress with TLS                                   |
 | openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
-| osm                     | Install osm                                                         |
 | portainer               | Install portainer to visualise and manage containers                |
 | postgresql              | Install postgresql                                                  |
 | prometheus              | Install Prometheus for monitoring                                   |
@@ -754,9 +750,9 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | vault                   | Install vault                                                       |
 | waypoint                | Install Waypoint                                                    |
 
-There are 56 apps that you can install on your cluster.
+There are 52 apps that you can install on your cluster.
 
-> Note to contributors, run `arkade install --print-table` to generate this list
+> Note to contributors, run `go build && ./arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
 
@@ -824,14 +820,11 @@ There are 56 apps that you can install on your cluster.
 | [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                                           |
 | [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                                        |
 | [k0sctl](https://github.com/k0sproject/k0sctl)                               | A bootstrapping and management tool for k0s clusters                                                                                                            |
-| [k10tools](https://github.com/kastenhq/external-tools)                       | Tools for evaluating and debugging K10.                                                                                                                         |
 | [k3d](https://github.com/k3d-io/k3d)                                         | Helper to run Rancher Lab's k3s in Docker.                                                                                                                      |
 | [k3s](https://github.com/k3s-io/k3s)                                         | Lightweight Kubernetes                                                                                                                                          |
 | [k3sup](https://github.com/alexellis/k3sup)                                  | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                                                 |
 | [k9s](https://github.com/derailed/k9s)                                       | Provides a terminal UI to interact with your Kubernetes clusters.                                                                                               |
 | [kail](https://github.com/boz/kail)                                          | Kubernetes log viewer.                                                                                                                                          |
-| [kanctl](https://github.com/kanisterio/kanister)                             | Framework for application-level data management on Kubernetes.                                                                                                  |
-| [keploy](https://github.com/keploy/keploy)                                   | Test generation for Developers. Generate tests and stubs for your application that work.                   
 | [kgctl](https://github.com/squat/kilo)                                       | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                                             |
 | [kim](https://github.com/rancher/kim)                                        | Build container images inside of Kubernetes. (Experimental)                                                                                                     |
 | [kind](https://github.com/kubernetes-sigs/kind)                              | Run local Kubernetes clusters using Docker container nodes.                                                                                                     |
@@ -851,7 +844,6 @@ There are 56 apps that you can install on your cluster.
 | [kubens](https://github.com/ahmetb/kubectx)                                  | Switch between Kubernetes namespaces smoothly.                                                                                                                  |
 | [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA                          |
 | [kubeseal](https://github.com/bitnami-labs/sealed-secrets)                   | A Kubernetes controller and tool for one-way encrypted Secrets                                                                                                  |
-| [kubestr](https://github.com/kastenhq/kubestr)                               | Kubestr discovers, validates and evaluates your Kubernetes storage options.                                                                                     |
 | [kubetail](https://github.com/johanhaleby/kubetail)                          | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                                        |
 | [kubeval](https://github.com/instrumenta/kubeval)                            | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                                             |
 | [kumactl](https://github.com/kumahq/kuma)                                    | kumactl is a CLI to interact with Kuma and its data                                                                                                             |
@@ -918,6 +910,6 @@ There are 56 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 155 tools, use `arkade get NAME` to download one.
+There are 152 tools, use `arkade get NAME` to download one.
 
-> Note to contributors, run `arkade get --format markdown` to generate this list
+> Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
