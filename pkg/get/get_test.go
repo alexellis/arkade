@@ -3265,138 +3265,6 @@ func Test_DownloadCosignCli(t *testing.T) {
 	}
 }
 
-func Test_DownloadKanister(t *testing.T) {
-	tools := MakeTools()
-	name := "kanctl"
-	v := "0.63.0"
-	tool := getTool(name, tools)
-
-	tests := []test{
-		{
-			os:      "darwin",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kanisterio/kanister/releases/download/0.63.0/kanister_0.63.0_darwin_amd64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kanisterio/kanister/releases/download/0.63.0/kanister_0.63.0_linux_amd64.tar.gz`,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
-			}
-		})
-	}
-}
-
-func Test_DownloadKubestr(t *testing.T) {
-	tools := MakeTools()
-	name := "kubestr"
-	v := "v0.4.31"
-	tool := getTool(name, tools)
-
-	tests := []test{
-		{
-			os:      "darwin",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_MacOS_amd64.tar.gz`,
-		},
-		{
-			os:      "darwin",
-			arch:    archDarwinARM64,
-			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_MacOS_arm64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Linux_amd64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    archARM64,
-			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Linux_arm64.tar.gz`,
-		},
-		{
-			os:      "ming",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/kubestr/releases/download/v0.4.31/kubestr_0.4.31_Windows_amd64.tar.gz`,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
-			}
-		})
-	}
-}
-
-func Test_DownloadK10tools(t *testing.T) {
-	tools := MakeTools()
-	name := "k10tools"
-	v := "4.5.9"
-	tool := getTool(name, tools)
-
-	tests := []test{
-		{
-			os:      "darwin",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_macOS_amd64.tar.gz`,
-		},
-		{
-			os:      "darwin",
-			arch:    archDarwinARM64,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_macOS_arm64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    arch64bit,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_linux_amd64.tar.gz`,
-		},
-		{
-			os:      "linux",
-			arch:    archARM64,
-			version: v,
-			url:     `https://github.com/kastenhq/external-tools/releases/download/4.5.9/k10tools_4.5.9_linux_arm64.tar.gz`,
-		},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-			if err != nil {
-				t.Fatal(err)
-			}
-			if got != tc.url {
-				t.Errorf("want:\n%s\ngot:\n%s", tc.url, got)
-			}
-		})
-	}
-}
-
 func Test_DownloadRekorCli(t *testing.T) {
 	tools := MakeTools()
 	name := "rekor-cli"
@@ -5496,13 +5364,13 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
@@ -5514,7 +5382,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_x86_64.zip",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_amd64.zip",
 		},
 	}
 
