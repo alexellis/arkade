@@ -21,6 +21,17 @@ func (t Tools) Less(i, j int) bool {
 
 type Tools []Tool
 
+func MakeToolsWithoutSystemApp() Tools {
+	allTools := MakeTools()
+	tools := []Tool{}
+	for _, tool := range allTools {
+		if !tool.SystemOnly {
+			tools = append(tools, tool)
+		}
+	}
+	return tools
+}
+
 func MakeTools() Tools {
 	tools := []Tool{}
 
@@ -4182,6 +4193,68 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}
 
 			{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "go",
+			Repo:            "go",
+			Name:            "go",
+			SystemOnly:      true,
+			VersionStrategy: goVersionStrategy,
+			Description:     "Build simple, secure, scalable systems with Go",
+			URLTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := "tar.gz"}}
+	
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+								{{$arch = "arm64"}}
+							{{- else if eq .Arch "x86_64" -}}
+								{{ $arch = "amd64" }}
+							{{- else if eq .Arch "armv7l" -}}
+								{{ $arch = "armv6l" }}
+							{{- end -}}
+	
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = "zip"}}
+							{{- end -}}
+	
+							https://{{.Name}}.dev/dl/{{.Name}}{{.VersionNumber}}.{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "PowerShell",
+			Repo:            "PowerShell",
+			Name:            "pwsh",
+			VersionStrategy: GitHubVersionStrategy,
+			SystemOnly:      true,
+			Description:     "PowerShell is a cross-platform automation and configuration tool/framework",
+			URLTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+					{{$zipPrefix := ToLower .Repo}}
+
+					{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "x86_64" -}}
+						{{ $arch = "x64" }}
+					{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+						{{ $arch = "arm32" }}
+					{{- end -}}
+
+					{{- if eq .OS "darwin" -}}
+						{{$os = "osx"}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "win"}}
+						{{$ext = "zip"}}
+						{{$zipPrefix = .Repo}}
+					{{- end -}}
+
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$zipPrefix}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 	return tools
 }

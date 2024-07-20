@@ -7607,3 +7607,169 @@ func Test_DownloadLazyDocker(t *testing.T) {
 	}
 
 }
+
+func Test_DownloadGo(t *testing.T) {
+	tools := MakeTools()
+	name := "go"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "1.22.4"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-armv6l.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.linux-armv6l.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-armv6l.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.darwin-armv6l.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-amd64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-armv6l.zip",
+		},
+		{
+			os:      "ming",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://go.dev/dl/go1.22.4.windows-armv6l.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloadPowershell(t *testing.T) {
+	tools := MakeTools()
+	name := "pwsh"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v7.4.3"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-x64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm32.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-linux-arm32.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-osx-x64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/powershell-7.4.3-osx-arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/PowerShell-7.4.3-win-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/PowerShell/PowerShell/releases/download/v7.4.3/PowerShell-7.4.3-win-x64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}
