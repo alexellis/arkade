@@ -5364,13 +5364,13 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_x86_64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
@@ -5382,7 +5382,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_x86_64.zip",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_amd64.zip",
 		},
 	}
 
@@ -7593,6 +7593,59 @@ func Test_DownloadLazyDocker(t *testing.T) {
 			arch:    archARM7,
 			version: toolVersion,
 			url:     "https://github.com/jesseduffield/lazydocker/releases/download/v0.23.3/lazydocker_0.23.3_Windows_armv7.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
+		}
+	}
+
+}
+
+func Test_DownloadKeploy(t *testing.T) {
+	tools := MakeTools()
+	name := "keploy"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.2.0-alpha19"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_darwin_all.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/keploy/keploy/releases/download/v2.2.0-alpha19/keploy_windows_amd64.tar.gz",
 		},
 	}
 
