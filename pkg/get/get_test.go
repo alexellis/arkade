@@ -5927,38 +5927,38 @@ func Test_DownloaClusterawsadm(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v2.0.2"
+	const toolVersion = "v2.6.1"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-linux-amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-darwin-amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-linux-arm64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-darwin-arm64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_windows_amd64.exe`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-windows-amd64.exe`,
 		},
 	}
 
