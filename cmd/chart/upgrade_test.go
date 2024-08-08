@@ -36,6 +36,18 @@ func Test_tagIsUpgradable(t *testing.T) {
 			expected: false,
 		},
 		{
+			title:    "current is rootless",
+			current:  "1.0.0-rootless",
+			latest:   "1.1.0",
+			expected: false,
+		},
+		{
+			title:    "latest is rootless",
+			current:  "1.0.0",
+			latest:   "1.1.0-rootless",
+			expected: false,
+		},
+		{
 			title:    "current is 'latest'",
 			current:  "latest",
 			latest:   "1.0.0",
