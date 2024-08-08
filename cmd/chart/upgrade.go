@@ -207,6 +207,6 @@ func tagIsUpgradeable(currentTag, latestTag string) bool {
 	currentSemVer, _ := semver.NewVersion(currentTag)
 	latestSemVer, _ := semver.NewVersion(latestTag)
 
-	return latestTag != currentTag && len(latestSemVer.Prerelease()) == 0 && len(currentSemVer.Prerelease()) == 0
+	return latestSemVer.Compare(currentSemVer) == 1 && latestSemVer.Prerelease() == currentSemVer.Prerelease()
 
 }
