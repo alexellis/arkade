@@ -845,6 +845,7 @@ There are 52 apps that you can install on your cluster.
 | [kubescape](https://github.com/kubescape/kubescape)                          | kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA                          |
 | [kubeseal](https://github.com/bitnami-labs/sealed-secrets)                   | A Kubernetes controller and tool for one-way encrypted Secrets                                                                                                  |
 | [kubetail](https://github.com/johanhaleby/kubetail)                          | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                                        |
+| [kubetrim](https://github.com/alexellis/kubetrim)                            | Tidy up old Kubernetes clusters from kubeconfig.                                                                                                                |
 | [kubeval](https://github.com/instrumenta/kubeval)                            | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                                             |
 | [kumactl](https://github.com/kumahq/kuma)                                    | kumactl is a CLI to interact with Kuma and its data                                                                                                             |
 | [kustomize](https://github.com/kubernetes-sigs/kustomize)                    | Customization of kubernetes YAML configurations                                                                                                                 |
@@ -910,6 +911,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 152 tools, use `arkade get NAME` to download one.
+There are 153 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
