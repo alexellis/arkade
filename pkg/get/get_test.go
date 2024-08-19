@@ -362,6 +362,49 @@ func Test_DownloadArkade(t *testing.T) {
 	}
 }
 
+func Test_DownloadKubetrim(t *testing.T) {
+	tools := MakeTools()
+	name := "kubetrim"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim.exe"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-darwin"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-darwin-arm64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-armhf"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_Download_RunJob(t *testing.T) {
 	tools := MakeTools()
 	name := "run-job"

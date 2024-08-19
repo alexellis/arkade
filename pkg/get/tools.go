@@ -403,6 +403,29 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 	tools = append(tools,
 		Tool{
 			Owner:       "alexellis",
+			Repo:        "kubetrim",
+			Name:        "kubetrim",
+			Description: "Tidy up old Kubernetes clusters from kubeconfig.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+				{{.Name}}.exe
+				{{- else if eq .OS "darwin" -}}
+					{{ if eq .Arch "arm64" -}}
+					{{.Name}}-darwin-arm64
+					{{- else -}}
+					{{.Name}}-darwin
+					{{- end -}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{.Name}}-armhf
+				{{- else if eq .Arch "aarch64" -}}
+				{{.Name}}-arm64
+				{{- else -}}
+				{{.Name}}
+				{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "alexellis",
 			Repo:        "run-job",
 			Name:        "run-job",
 			Description: "Run a Kubernetes Job and get the logs when it's done.",
