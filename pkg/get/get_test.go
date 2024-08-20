@@ -6855,6 +6855,33 @@ func Test_Copacetic(t *testing.T) {
 
 }
 
+func Test_Crossplane(t *testing.T) {
+	tools := MakeTools()
+	name := "crossplane"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = ""
+
+	test := test{
+		os:      "linux",
+		arch:    arch64bit,
+		version: toolVersion,
+		url:     `https://releases.crossplane.io/stable/current/bin/linux_amd64/crank`,
+	}
+
+	t.Run(test.os+" "+test.arch+" "+test.version, func(r *testing.T) {
+		got, err := tool.GetURL(test.os, test.arch, test.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != test.url {
+			t.Errorf("want: %s, got: %s", test.url, got)
+		}
+	})
+
+}
+
 func Test_DownloadTask(t *testing.T) {
 	tools := MakeTools()
 	name := "task"
