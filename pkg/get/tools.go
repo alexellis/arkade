@@ -3167,16 +3167,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{$arch = "arm64"}}
 					{{- end -}}
 
-					{{$osStr := ""}}
+					{{$osStr := .OS}}
 					{{ if HasPrefix .OS "ming" -}}
-						{{$osStr = "Windows"}}
-					{{- else if eq .OS "linux" -}}
-						{{$osStr = "Linux"}}
+						{{$osStr = "windows"}}
 					{{- else if eq .OS "darwin" -}}
-						{{$osStr = "Darwin"}}
+						{{$osStr = "macos"}}
 					{{- end -}}
 
-					{{.Name}}_{{$osStr}}_{{$arch}}.{{$ext}}
+					{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.{{$ext}}
 					`,
 		})
 
