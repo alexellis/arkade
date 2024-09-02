@@ -7701,13 +7701,13 @@ func Test_DownloadKeploy(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.3.0/keploy_windows_amd64.zip",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.3.0/keploy_windows_amd64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/keploy/keploy/releases/download/v2.3.0/keploy_windows_arm64.zip",
+			url:     "https://github.com/keploy/keploy/releases/download/v2.3.0/keploy_windows_arm64.tar.gz",
 		},
 	}
 
