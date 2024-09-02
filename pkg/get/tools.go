@@ -403,6 +403,29 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 	tools = append(tools,
 		Tool{
 			Owner:       "alexellis",
+			Repo:        "kubetrim",
+			Name:        "kubetrim",
+			Description: "Tidy up old Kubernetes clusters from kubeconfig.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+				{{.Name}}.exe
+				{{- else if eq .OS "darwin" -}}
+					{{ if eq .Arch "arm64" -}}
+					{{.Name}}-darwin-arm64
+					{{- else -}}
+					{{.Name}}-darwin
+					{{- end -}}
+				{{- else if eq .Arch "armv7l" -}}
+				{{.Name}}-armhf
+				{{- else if eq .Arch "aarch64" -}}
+				{{.Name}}-arm64
+				{{- else -}}
+				{{.Name}}
+				{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "alexellis",
 			Repo:        "run-job",
 			Name:        "run-job",
 			Description: "Run a Kubernetes Job and get the logs when it's done.",
@@ -3017,9 +3040,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".zip"}}
 				{{- end -}}
 
-				{{- if eq .Arch "x86_64" -}}
-				{{$arch = "amd64"}}
-				{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+				{{- if eq .Arch "aarch64" -}}
 				{{$arch = "arm64"}}
 				{{- end -}}
 
@@ -3146,16 +3167,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{$arch = "arm64"}}
 					{{- end -}}
 
-					{{$osStr := ""}}
+					{{$osStr := .OS}}
 					{{ if HasPrefix .OS "ming" -}}
-						{{$osStr = "Windows"}}
-					{{- else if eq .OS "linux" -}}
-						{{$osStr = "Linux"}}
+						{{$osStr = "windows"}}
 					{{- else if eq .OS "darwin" -}}
-						{{$osStr = "Darwin"}}
+						{{$osStr = "macos"}}
 					{{- end -}}
 
-					{{.Name}}_{{$osStr}}_{{$arch}}.{{$ext}}
+					{{.Name}}-{{.Version}}-{{$osStr}}-{{$arch}}.{{$ext}}
 					`,
 		})
 
@@ -3346,11 +3365,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$ext = ".exe"}}
 				{{- end -}}
 
-				clusterawsadm_{{.Version}}_{{$os}}_{{$arch}}{{$ext}}
+				clusterawsadm-{{$os}}-{{$arch}}{{$ext}}
 				`,
 		})
-	// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.5.0/clusterawsadm-v2.5.0-linux_amd64
-	// https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.5.0/clusterawsadm_v2.5.0_linux_amd64
 	tools = append(tools,
 		Tool{
 			Owner:       "schollz",

@@ -200,6 +200,13 @@ func updateImages(iName string, v bool) (bool, string, error) {
 
 func tagIsUpgradeable(currentTag, latestTag string) bool {
 
-	return latestTag != currentTag && !strings.Contains(strings.ToLower(latestTag), "-rc") && !strings.EqualFold(currentTag, "latest")
+	if strings.EqualFold(currentTag, "latest") {
+		return false
+	}
+
+	currentSemVer, _ := semver.NewVersion(currentTag)
+	latestSemVer, _ := semver.NewVersion(latestTag)
+
+	return latestSemVer.Compare(currentSemVer) == 1 && latestSemVer.Prerelease() == currentSemVer.Prerelease()
 
 }

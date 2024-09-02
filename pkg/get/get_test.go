@@ -362,6 +362,49 @@ func Test_DownloadArkade(t *testing.T) {
 	}
 }
 
+func Test_DownloadKubetrim(t *testing.T) {
+	tools := MakeTools()
+	name := "kubetrim"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim.exe"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-darwin"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-darwin-arm64"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim"},
+		{os: "linux",
+			arch:    "armv7l",
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-armhf"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "0.8.28",
+			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_Download_RunJob(t *testing.T) {
 	tools := MakeTools()
 	name := "run-job"
@@ -5364,13 +5407,13 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_amd64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_macOS_x86_64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_amd64.tar.gz",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Linux_x86_64.tar.gz",
 		},
 		{
 			os:      "linux",
@@ -5382,7 +5425,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_amd64.zip",
+			url:     "https://github.com/superfly/flyctl/releases/download/v0.0.388/flyctl_0.0.388_Windows_x86_64.zip",
 		},
 	}
 
@@ -5586,31 +5629,31 @@ func Test_DownloadViddy(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Darwin_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy-v0.3.6-macos-x86_64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Darwin_arm64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy-v0.3.6-macos-arm64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Linux_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy-v0.3.6-linux-x86_64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Linux_arm64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy-v0.3.6-linux-arm64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy_Windows_x86_64.tar.gz",
+			url:     "https://github.com/sachaos/viddy/releases/download/v0.3.6/viddy-v0.3.6-windows-x86_64.tar.gz",
 		},
 	}
 
@@ -5927,38 +5970,38 @@ func Test_DownloaClusterawsadm(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v2.0.2"
+	const toolVersion = "v2.6.1"
 
 	tests := []test{
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-linux-amd64`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_amd64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-darwin-amd64`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_linux_arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-linux-arm64`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_darwin_arm64`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-darwin-arm64`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.0.2/clusterawsadm_v2.0.2_windows_amd64.exe`,
+			url:     `https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases/download/v2.6.1/clusterawsadm-windows-amd64.exe`,
 		},
 	}
 
