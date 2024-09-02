@@ -4213,6 +4213,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{ $os := .OS }}
 						{{ $arch := .Arch }}
 						{{ $ext := "tar.gz" }}
+
 						{{- if eq .Arch "aarch64" -}}
 						{{$arch = "arm64"}}
 						{{- else if eq .Arch "arm64" -}}
@@ -4220,18 +4221,19 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{- else if eq .Arch "x86_64" -}}
 						{{ $arch = "amd64" }}
 						{{- end -}}
+
 						{{ if HasPrefix .OS "ming" -}}
 						{{$os = "windows"}}
 						{{$ext = "zip"}}
 						{{- end -}}
 						{{- if eq .OS "darwin" -}}
-						{{$os = "darwin_all"}}
+						{{$os = "darwin"}}
+						{{$arch = "all"}}
 						{{- else if eq .OS "linux" -}}
 						{{ $os = "linux" }}
 						{{- end -}}
-						keploy_{{$os}}.{{$ext}}
+						keploy_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
-
 	return tools
 }
