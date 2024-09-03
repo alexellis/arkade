@@ -7,7 +7,7 @@
 
 export VERIFY_CHECKSUM=0
 export ALIAS_NAME="ark"
-export OWNER=alexellis
+export OWNER=lmasiero
 export REPO=arkade
 export BINLOCATION="/usr/local/bin"
 export SUCCESS_CMD="$BINLOCATION/$REPO version"
