@@ -1,6 +1,6 @@
 Version := $(shell git describe --tags --dirty)
 GitCommit := $(shell git rev-parse HEAD)
-LDFLAGS := "-s -w -X github.com/alexellis/arkade/pkg.Version=$(Version) -X github.com/alexellis/arkade/pkg.GitCommit=$(GitCommit)"
+LDFLAGS := "-s -w -X github.com/lmasiero/arkade/pkg.Version=$(Version) -X github.com/lmasiero/arkade/pkg.GitCommit=$(GitCommit)"
 PLATFORM := $(shell ./hack/platform-tag.sh)
 SOURCE_DIRS = cmd pkg main.go
 export GO111MODULE=on
@@ -22,7 +22,7 @@ test:
 
 .PHONY: e2e
 e2e:
-	CGO_ENABLED=0 go test github.com/alexellis/arkade/pkg/get -cover --tags e2e -v
+	CGO_ENABLED=0 go test github.com/lmasiero/arkade/pkg/get -cover --tags e2e -v
 
 .PHONY: dist
 dist:
