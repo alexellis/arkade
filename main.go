@@ -6,9 +6,9 @@ package main
 import (
 	"os"
 
-	"github.com/alexellis/arkade/cmd"
-	"github.com/alexellis/arkade/cmd/chart"
-	"github.com/alexellis/arkade/cmd/system"
+	"github.com/lmasiero/arkade/cmd"
+	"github.com/lmasiero/arkade/cmd/chart"
+	"github.com/lmasiero/arkade/cmd/system"
 	"github.com/spf13/cobra"
 )
 
