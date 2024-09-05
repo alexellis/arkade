@@ -407,19 +407,19 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 			Name:        "kubetrim",
 			Description: "Tidy up old Kubernetes clusters from kubeconfig.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-				{{.Name}}.exe
+				{{.Name}}.exe.tgz
 				{{- else if eq .OS "darwin" -}}
 					{{ if eq .Arch "arm64" -}}
-					{{.Name}}-darwin-arm64
+					{{.Name}}-darwin-arm64.tgz
 					{{- else -}}
-					{{.Name}}-darwin
+					{{.Name}}-darwin.tgz
 					{{- end -}}
 				{{- else if eq .Arch "armv7l" -}}
-				{{.Name}}-armhf
+				{{.Name}}-armhf.tgz
 				{{- else if eq .Arch "aarch64" -}}
-				{{.Name}}-arm64
+				{{.Name}}-arm64.tgz
 				{{- else -}}
-				{{.Name}}
+				{{.Name}}.tgz
 				{{- end -}}`,
 		})
 
