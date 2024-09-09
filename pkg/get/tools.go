@@ -3812,12 +3812,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "crossplane",
-			Repo:        "crossplane",
-			Name:        "crossplane",
-			Description: "Simplify some development and administration aspects of Crossplane.",
+			Owner:           "crossplane",
+			Repo:            "crossplane",
+			Name:            "crossplane",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Simplify some development and administration aspects of Crossplane.",
 			URLTemplate: `
 				{{$arch := .Arch}}
+				{{$ext := "" }}
 				{{$version := .Version}}
 
 				{{- if eq .Version "" -}}
@@ -3830,8 +3832,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- else if eq .Arch "armv7l" -}}
 					{{ $arch = "arm" }}
 				{{- end -}}
-
-				https://releases.crossplane.io/stable/{{$version}}/bin/{{.OS}}_{{$arch}}/crank`,
+				
+				{{$os := .OS}}
+				{{ if HasPrefix .OS "ming" -}}
+				{{$ext = ".exe" }}
+				{{$os = "windows"}}
+				{{- end -}}
+				
+				https://releases.crossplane.io/stable/{{$version}}/bin/{{$os}}_{{$arch}}/crank{{$ext}}`,
 		})
 
 	tools = append(tools,

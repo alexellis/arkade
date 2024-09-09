@@ -6861,24 +6861,93 @@ func Test_Crossplane(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = ""
+	const currentVersion = ""
+	const toolVersion = "v1.17.0"
 
-	test := test{
-		os:      "linux",
-		arch:    arch64bit,
-		version: toolVersion,
-		url:     `https://releases.crossplane.io/stable/current/bin/linux_amd64/crank`,
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/darwin_amd64/crank`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/darwin_amd64/crank`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/darwin_arm64/crank`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/darwin_arm64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/linux_amd64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/linux_amd64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/linux_arm64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/linux_arm64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/linux_arm/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/linux_arm/crank`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: currentVersion,
+			url:     `https://releases.crossplane.io/stable/current/bin/windows_amd64/`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.0/bin/windows_amd64/`,
+		},
 	}
 
-	t.Run(test.os+" "+test.arch+" "+test.version, func(r *testing.T) {
-		got, err := tool.GetURL(test.os, test.arch, test.version, false)
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
-		if got != test.url {
-			t.Errorf("want: %s, got: %s", test.url, got)
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
-	})
+	}
 
 }
 
