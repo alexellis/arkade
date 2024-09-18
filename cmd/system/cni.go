@@ -29,6 +29,7 @@ func MakeInstallCNI() *cobra.Command {
 	command.Flags().StringP("version", "v", "v1.4.0", "The version for CNI to install")
 	command.Flags().StringP("path", "p", "/opt/cni/bin/", "Installation path, where a go subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
+	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
@@ -45,6 +46,10 @@ func MakeInstallCNI() *cobra.Command {
 		}
 
 		arch, osVer := env.GetClientArch()
+		if cmd.Flags().Changed("arch") {
+			archFlag, _ := cmd.Flags().GetString("arch")
+			arch = archFlag
+		}
 
 		if strings.ToLower(osVer) != "linux" {
 			return fmt.Errorf("this app only supports Linux")
