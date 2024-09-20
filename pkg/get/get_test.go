@@ -7722,3 +7722,59 @@ func Test_DownloadKeploy(t *testing.T) {
 	}
 
 }
+
+func Test_Download_k0sctl(t *testing.T) {
+	tools := MakeTools()
+	name := "k0sctl"
+	const toolVersion = "v0.19.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-win-amd64.exe",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-darwin-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    "armv7l",
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-linux-arm",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/k0sproject/k0sctl/releases/download/v0.19.0/k0sctl-linux-arm64",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
