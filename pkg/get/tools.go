@@ -1965,9 +1965,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Repo:        "k0sctl",
 			Name:        "k0sctl",
 			Description: "A bootstrapping and management tool for k0s clusters",
-			BinaryTemplate: `{{$arch := "x64"}}
-	{{- if eq .Arch "aarch64" -}}
+			BinaryTemplate: `{{$arch := "amd64"}}
+	{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 	{{$arch = "arm64"}}
+	{{- else if eq .Arch "armv7l" -}}
+	{{$arch = "arm"}}
 	{{- end -}}
 
 	{{$os := .OS}}
