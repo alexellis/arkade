@@ -43,6 +43,13 @@ func MakeInstallCaddyServer() *cobra.Command {
 
 		arch, osVer := env.GetClientArch()
 
+		if cmd.Flags().Changed("os") {
+			osVer, _ = cmd.Flags().GetString("os")
+		}
+		if cmd.Flags().Changed("arch") {
+			arch, _ = cmd.Flags().GetString("arch")
+		}
+
 		if strings.ToLower(osVer) != "linux" {
 			return fmt.Errorf("this app only supports Linux")
 		}
