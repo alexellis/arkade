@@ -4240,5 +4240,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						keploy_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:       "iximiuz",
+			Repo:        "labctl",
+			Name:        "labctl",
+			Description: "iximiuz Labs control - start remote microVM playgrounds from the command line.",
+			BinaryTemplate: `
+							{{ $os := .OS }}
+							{{ $arch := .Arch }}
+							{{ $ext := "tar.gz" }}
+	
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							    {{ $arch = "arm64" }}
+							{{- else if eq .Arch "x86_64" -}}
+								{{ $arch = "amd64" }}
+							{{- end -}}
+							
+							{{- if eq .OS "darwin" -}}
+								{{$os = "darwin"}}
+							{{- else if eq .OS "linux" -}}
+								{{ $os = "linux" }}
+							{{- end -}}
+	
+							labctl_{{$os}}_{{$arch}}.{{$ext}}
+							`,
+		})
 	return tools
 }
