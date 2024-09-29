@@ -7778,3 +7778,41 @@ func Test_Download_k0sctl(t *testing.T) {
 		}
 	}
 }
+
+func Test_Download_labctl(t *testing.T) {
+	tools := MakeTools()
+	name := "labctl"
+	const toolVersion = "v0.1.8"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/iximiuz/labctl/releases/download/v0.1.8/labctl_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/iximiuz/labctl/releases/download/v0.1.8/labctl_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/iximiuz/labctl/releases/download/v0.1.8/labctl_linux_amd64.tar.gz",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}

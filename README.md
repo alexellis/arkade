@@ -824,8 +824,8 @@ There are 52 apps that you can install on your cluster.
 | [k3s](https://github.com/k3s-io/k3s)                                         | Lightweight Kubernetes                                                                                                                                          |
 | [k3sup](https://github.com/alexellis/k3sup)                                  | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                                                 |
 | [k9s](https://github.com/derailed/k9s)                                       | Provides a terminal UI to interact with your Kubernetes clusters.                                                                                               |
-| [kail](https://github.com/boz/kail)                                          | Kubernetes log viewer.                                                                                                                       
-| [keploy](https://github.com/keploy/keploy)                                    | Generate tests and stubs for your application that actually work!                                                                                                                                           |
+| [kail](https://github.com/boz/kail)                                          | Kubernetes log viewer.                                                                                                                                          |
+| [keploy](https://github.com/keploy/keploy)                                   | Test generation for Developers. Generate tests and stubs for your application that actually work!                                                               |
 | [kgctl](https://github.com/squat/kilo)                                       | A CLI to manage Kilo, a multi-cloud network overlay built on WireGuard and designed for Kubernetes.                                                             |
 | [kim](https://github.com/rancher/kim)                                        | Build container images inside of Kubernetes. (Experimental)                                                                                                     |
 | [kind](https://github.com/kubernetes-sigs/kind)                              | Run local Kubernetes clusters using Docker container nodes.                                                                                                     |
@@ -853,6 +853,7 @@ There are 52 apps that you can install on your cluster.
 | [kwok](https://github.com/kubernetes-sigs/kwok)                              | KWOK stands for Kubernetes WithOut Kubelet, responsible for simulating the lifecycle of fake nodes, pods, and other Kubernetes API resources                    |
 | [kwokctl](https://github.com/kubernetes-sigs/kwok)                           | CLI tool designed to streamline the creation and management of clusters, with nodes simulated by `kwok`                                                         |
 | [kyverno](https://github.com/kyverno/kyverno)                                | CLI to apply and test Kyverno policies outside a cluster.                                                                                                       |
+| [labctl](https://github.com/iximiuz/labctl)                                  | iximiuz Labs control - start remote microVM playgrounds from the command line.                                                                                  |
 | [lazydocker](https://github.com/jesseduffield/lazydocker)                    | A simple terminal UI for both docker and docker-compose, written in Go with the gocui library.                                                                  |
 | [lazygit](https://github.com/jesseduffield/lazygit)                          | A simple terminal UI for git commands.                                                                                                                          |
 | [linkerd2](https://github.com/linkerd/linkerd2)                              | Ultralight, security-first service mesh for Kubernetes.                                                                                                         |
@@ -912,6 +913,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 153 tools, use `arkade get NAME` to download one.
+There are 155 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
