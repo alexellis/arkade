@@ -1088,6 +1088,42 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:           "gitlab-org",
+			Repo:            "cli",
+			Name:            "glab",
+			VersionStrategy: GitLabVersionStrategy,
+			Description:     "A GitLab CLI tool bringing GitLab to your command line.",
+			URLTemplate: `
+            {{$arch := .Arch}}
+            {{- if eq .Arch "x86_64" -}}
+            {{$arch = "amd64"}}
+            {{- else if eq .Arch "armv6l" -}}
+            {{$arch = "armv6"}}
+            {{- else if eq .Arch "aarch64" -}}
+            {{$arch = "arm64"}}
+            {{- else if eq .Arch "i386" -}}
+            {{$arch = "386"}}
+            {{- end -}}
+
+            {{$osStr := ""}}
+            {{- if eq .OS "linux" -}}
+            {{$osStr = "linux"}}
+            {{- else if eq .OS "darwin" -}}
+            {{$osStr = "darwin"}}
+            {{- else if HasPrefix .OS "ming" -}}
+            {{$osStr = "windows"}}
+            {{- end -}}
+
+            {{$extStr := "tar.gz"}}
+            {{- if HasPrefix .OS "ming" -}}
+            {{$extStr = "zip"}}
+            {{- end -}}
+
+            https://gitlab.com/{{.Owner}}/{{.Repo}}/-/releases/{{.Version}}/downloads/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "buildpacks",
 			Repo:        "pack",
 			Name:        "pack",

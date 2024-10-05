@@ -1725,6 +1725,58 @@ func Test_DownloadGH(t *testing.T) {
 	}
 }
 
+func Test_DownloadGlab(t *testing.T) {
+	tools := MakeTools()
+	name := "glab"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.47.0"
+
+	tests := []test{
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://gitlab.com/gitlab-org/cli/-/releases/v1.47.0/downloads/glab_1.47.0_windows_amd64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://gitlab.com/gitlab-org/cli/-/releases/v1.47.0/downloads/glab_1.47.0_linux_am64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://gitlab.com/gitlab-org/cli/-/releases/v1.47.0/downloads/glab_1.47.0_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://gitlab.com/gitlab-org/cli/-/releases/v1.47.0/downloads/glab_1.47.0_darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://gitlab.com/gitlab-org/cli/-/releases/v1.47.0/downloads/glab_1.47.0_linux_arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadPack(t *testing.T) {
 	tools := MakeTools()
 	name := "pack"
