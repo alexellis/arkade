@@ -24,7 +24,7 @@ import (
 
 // MakeGet creates the Get command to download software
 func MakeGet() *cobra.Command {
-	tools := get.MakeTools()
+	tools := get.MakeToolsWithoutSystemApp()
 	sort.Sort(tools)
 	var validToolOptions []string = make([]string, len(tools))
 	for _, t := range tools {

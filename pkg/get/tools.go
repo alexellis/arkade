@@ -21,6 +21,17 @@ func (t Tools) Less(i, j int) bool {
 
 type Tools []Tool
 
+func MakeToolsWithoutSystemApp() Tools {
+	allTools := MakeTools()
+	tools := []Tool{}
+	for _, tool := range allTools {
+		if !tool.SystemOnly {
+			tools = append(tools, tool)
+		}
+	}
+	return tools
+}
+
 func MakeTools() Tools {
 	tools := []Tool{}
 
@@ -51,11 +62,10 @@ func MakeTools() Tools {
 
 	tools = append(tools,
 		Tool{
-			Owner:           "helm",
-			Repo:            "helm",
-			Name:            "helm",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
+			Owner:       "helm",
+			Repo:        "helm",
+			Name:        "helm",
+			Description: "The Kubernetes Package Manager: Think of it like apt/yum/homebrew for Kubernetes.",
 			URLTemplate: `
 						{{$os := .OS}}
 						{{$arch := .Arch}}
@@ -153,7 +163,7 @@ func MakeTools() Tools {
 			Owner:           "kubernetes",
 			Repo:            "kubernetes",
 			Name:            "kubectl",
-			VersionStrategy: k8sVersionStrategy,
+			VersionResolver: &K8VersionResolver{},
 			Description:     "Run commands against Kubernetes clusters",
 			URLTemplate: `{{$arch := "arm"}}
 
@@ -665,11 +675,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "digitalocean",
-			Repo:            "doctl",
-			Name:            "doctl",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "Official command line interface for the DigitalOcean API.",
+			Owner:       "digitalocean",
+			Repo:        "doctl",
+			Name:        "doctl",
+			Description: "Official command line interface for the DigitalOcean API.",
 			BinaryTemplate: `
 		{{$osStr := .OS}}
 		{{ if HasPrefix .OS "ming" -}}
@@ -842,11 +851,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "hashicorp",
-			Repo:            "consul",
-			Name:            "consul",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "A solution to connect and configure applications across dynamic, distributed infrastructure",
+			Owner:       "hashicorp",
+			Repo:        "consul",
+			Name:        "consul",
+			Description: "A solution to connect and configure applications across dynamic, distributed infrastructure",
 			URLTemplate: `
 				{{$arch := ""}}
 				{{- if eq .Arch "x86_64" -}}
@@ -867,11 +875,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "hashicorp",
-			Repo:            "terraform",
-			Name:            "terraform",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "Infrastructure as Code for major cloud providers.",
+			Owner:       "hashicorp",
+			Repo:        "terraform",
+			Name:        "terraform",
+			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
@@ -1005,11 +1012,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "hashicorp",
-			Repo:            "packer",
-			Name:            "packer",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "Build identical machine images for multiple platforms from a single source configuration.",
+			Owner:       "hashicorp",
+			Repo:        "packer",
+			Name:        "packer",
+			Description: "Build identical machine images for multiple platforms from a single source configuration.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
@@ -1030,11 +1036,10 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "hashicorp",
-			Repo:            "waypoint",
-			Name:            "waypoint",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "Easy application deployment for Kubernetes and Amazon ECS",
+			Owner:       "hashicorp",
+			Repo:        "waypoint",
+			Name:        "waypoint",
+			Description: "Easy application deployment for Kubernetes and Amazon ECS",
 			URLTemplate: `
 			{{$arch := .Arch}}
 			{{- if eq .Arch "x86_64" -}}
@@ -2908,11 +2913,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "hashicorp",
-			Repo:            "vault",
-			Name:            "vault",
-			VersionStrategy: GitHubVersionStrategy,
-			Description:     "A tool for secrets management, encryption as a service, and privileged access management.",
+			Owner:       "hashicorp",
+			Repo:        "vault",
+			Name:        "vault",
+			Description: "A tool for secrets management, encryption as a service, and privileged access management.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}
@@ -3842,14 +3846,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "1password",
 			Name:        "op",
 			Description: "1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.",
+			Version:     "v2.17.0",
 			URLTemplate: `
 				{{$os := .OS}}
 				{{$arch := .Arch}}
 				{{$version := .Version}}
-
-				{{- if eq .Version "" -}}
-					{{ $version = "v2.17.0" }}
-				{{- end -}}
 
 				{{- if eq .Arch "aarch64" -}}
 					{{ $arch = "arm64" }}
@@ -4265,6 +4266,96 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	
 							labctl_{{$os}}_{{$arch}}.{{$ext}}
 							`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "go",
+			Repo:            "go",
+			Name:            "go",
+			SystemOnly:      true,
+			VersionResolver: &GoVersionResolver{},
+			Description:     "Build simple, secure, scalable systems with Go",
+			URLTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := "tar.gz"}}
+	
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+								{{$arch = "arm64"}}
+							{{- else if eq .Arch "x86_64" -}}
+								{{ $arch = "amd64" }}
+							{{- else if eq .Arch "armv7l" -}}
+								{{ $arch = "armv6l" }}
+							{{- end -}}
+	
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = "zip"}}
+							{{- end -}}
+	
+							https://{{.Name}}.dev/dl/{{.Name}}{{.VersionNumber}}.{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "PowerShell",
+			Repo:        "PowerShell",
+			Name:        "pwsh",
+			SystemOnly:  true,
+			Description: "PowerShell is a cross-platform automation and configuration tool/framework",
+			URLTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := "tar.gz"}}
+					{{$zipPrefix := ToLower .Repo}}
+
+					{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "x86_64" -}}
+						{{ $arch = "x64" }}
+					{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+						{{ $arch = "arm32" }}
+					{{- end -}}
+
+					{{- if eq .OS "darwin" -}}
+						{{$os = "osx"}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "win"}}
+						{{$ext = "zip"}}
+						{{$zipPrefix = .Repo}}
+					{{- end -}}
+
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$zipPrefix}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:      "node",
+			Repo:       "node",
+			Name:       "node",
+			SystemOnly: true,
+			VersionResolver: &NodeVersionResolver{
+				Channel: "release",
+			},
+			Description: "Node.js is a JavaScript runtime built on Chrome's V8 JavaScript engine",
+			URLTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "tar.gz"}}
+		
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+									{{ $arch = "x64" }}
+								{{- end -}}
+		
+								{{ if HasPrefix .OS "ming" -}}
+								{{$os = "win"}}
+								{{$ext = "zip"}}
+								{{- end -}}
+
+								https://nodejs.org/download/{{.Channel}}/{{.Version}}/node-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 	return tools
 }
