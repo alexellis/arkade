@@ -788,6 +788,7 @@ There are 52 apps that you can install on your cluster.
 | [dive](https://github.com/wagoodman/dive)                                    | A tool for exploring each layer in a docker image                                                                                                               |
 | [docker-compose](https://github.com/docker/compose)                          | Define and run multi-container applications with Docker.                                                                                                        |
 | [doctl](https://github.com/digitalocean/doctl)                               | Official command line interface for the DigitalOcean API.                                                                                                       |
+| [duplik8s](https://github.com/Telemaco019/duplik8s)                          | kubectl plugin to duplicate resources in a Kubernetes cluster.                                                                                                  |
 | [eksctl](https://github.com/eksctl-io/eksctl)                                | Amazon EKS Kubernetes cluster management                                                                                                                        |
 | [eksctl-anywhere](https://github.com/aws/eks-anywhere)                       | Run Amazon EKS on your own infrastructure                                                                                                                       |
 | [etcd](https://github.com/etcd-io/etcd)                                      | Distributed reliable key-value store for the most critical data of a distributed system.                                                                        |
@@ -913,6 +914,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                       |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
-There are 155 tools, use `arkade get NAME` to download one.
+There are 156 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
