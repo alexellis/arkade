@@ -4297,5 +4297,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
             https://gitlab.com/{{.Owner}}/{{.Repo}}/-/releases/{{.Version}}/downloads/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "Telemaco019",
+			Repo:        "duplik8s",
+			Name:        "duplik8s",
+			Description: "kubectl plugin to duplicate resources in a Kubernetes cluster.",
+			BinaryTemplate: `
+							{{ $os := .OS }}
+							{{ $arch := .Arch }}
+							{{ $ext := "tar.gz" }}
+	
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							    {{ $arch = "arm64" }}
+							{{- end -}}
+	
+							{{ if HasPrefix .OS "ming" -}}
+								{{$os = "Windows"}}
+								{{ $ext = "zip" }}
+							{{- end -}}
+							
+							{{- if eq .OS "darwin" -}}
+								{{$os = "Darwin"}}
+							{{- else if eq .OS "linux" -}}
+								{{ $os = "Linux" }}
+							{{- end -}}
+	
+							duplik8s_{{$os}}_{{$arch}}.{{$ext}}
+							`,
+		})
 	return tools
 }

@@ -7905,3 +7905,59 @@ func Test_Download_glab(t *testing.T) {
 		}
 	}
 }
+
+func Test_Download_duplik8s(t *testing.T) {
+	tools := MakeTools()
+	name := "duplik8s"
+	const toolVersion = "v0.3.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Darwin_x86_64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Linux_x86_64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Linux_arm64.tar.gz",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Windows_x86_64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/Telemaco019/duplik8s/releases/download/v0.3.0/duplik8s_Windows_arm64.zip",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
