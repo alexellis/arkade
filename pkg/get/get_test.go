@@ -70,6 +70,40 @@ func TestGetToolVersion(t *testing.T) {
 	}
 }
 
+func Test_FormatUrl(t *testing.T) {
+	tests := []struct {
+		name     string
+		url      string
+		owner    string
+		repo     string
+		expected string
+	}{
+		{
+			name:     "URL with placeholders",
+			url:      "https://github.com/%s/%s",
+			owner:    "ownerName",
+			repo:     "repoName",
+			expected: "https://github.com/ownerName/repoName",
+		},
+		{
+			name:     "URL without placeholders",
+			url:      "https://github.com/example",
+			owner:    "ownerName",
+			repo:     "repoName",
+			expected: "https://github.com/example",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := formatUrl(tc.url, tc.owner, tc.repo)
+			if result != tc.expected {
+				t.Fatalf("\nwant: %s\ngot:  %s", tc.expected, result)
+			}
+		})
+	}
+}
+
 func Test_MakeSureNoDuplicates(t *testing.T) {
 	count := map[string]int{}
 	tools := MakeTools()
@@ -7804,6 +7838,56 @@ func Test_Download_labctl(t *testing.T) {
 			arch:    arch64bit,
 			version: toolVersion,
 			url:     "https://github.com/iximiuz/labctl/releases/download/v0.1.8/labctl_linux_amd64.tar.gz",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download_glab(t *testing.T) {
+	tools := MakeTools()
+	name := "glab"
+	const toolVersion = "v1.48.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://gitlab.com/gitlab-org/cli/-/releases/v1.48.0/downloads/glab_1.48.0_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://gitlab.com/gitlab-org/cli/-/releases/v1.48.0/downloads/glab_1.48.0_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://gitlab.com/gitlab-org/cli/-/releases/v1.48.0/downloads/glab_1.48.0_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://gitlab.com/gitlab-org/cli/-/releases/v1.48.0/downloads/glab_1.48.0_linux_arm64.tar.gz",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://gitlab.com/gitlab-org/cli/-/releases/v1.48.0/downloads/glab_1.48.0_windows_amd64.zip",
 		},
 	}
 	for _, tc := range tests {

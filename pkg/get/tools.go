@@ -4266,5 +4266,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							labctl_{{$os}}_{{$arch}}.{{$ext}}
 							`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "gitlab-org",
+			Repo:            "cli",
+			Name:            "glab",
+			Description:     "A GitLab CLI tool bringing GitLab to your command line.",
+			VersionStrategy: GitLabVersionStrategy,
+			URLTemplate: `
+			{{ $osStr := .OS }}
+            {{ $arch := .Arch }}
+			{{ $extStr := "tar.gz" }}
+
+            {{- if eq .Arch "x86_64" -}}
+            {{$arch = "amd64"}}
+            {{- else if eq .Arch "armv6l" -}}
+            {{$arch = "armv6"}}
+            {{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+			{{$arch = "arm64"}}
+            {{- end -}}
+
+            {{- if HasPrefix .OS "ming" -}}
+            {{$osStr = "windows"}}
+			{{$extStr = "zip"}}
+            {{- end -}}
+
+            https://gitlab.com/{{.Owner}}/{{.Repo}}/-/releases/{{.Version}}/downloads/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
 	return tools
 }
