@@ -1419,6 +1419,9 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
   {{- end }}
 {{- else if eq .OS "darwin" -}}
 {{$osStr = "darwin"}}
+{{- if eq .Arch "arm64" -}}
+{{ $arch = "aarch64"}}
+{{- end -}}
 {{- end -}}
 {{$ext := ""}}
 {{ if HasPrefix .OS "ming" -}}
