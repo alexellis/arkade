@@ -3,6 +3,7 @@ package get
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -18,6 +19,7 @@ import (
 )
 
 const GitHubVersionStrategy = "github"
+const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
@@ -25,6 +27,7 @@ var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "ar
 
 // githubTimeout expanded from the original 5 seconds due to #693
 var githubTimeout = time.Second * 10
+var gitlabTimeout = time.Second * 5
 
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
@@ -157,6 +160,14 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 				return "", err
 			}
 			version = v
+		} else if strings.Contains(tool.URLTemplate, "https://gitlab.com/") ||
+			tool.VersionStrategy == GitLabVersionStrategy {
+
+			v, err := FindGitLabRelease(tool.Owner, tool.Repo)
+			if err != nil {
+				return "", fmt.Errorf("failed to find GitLab release: %w", err)
+			}
+			version = v
 		}
 
 		if tool.VersionStrategy == k8sVersionStrategy {
@@ -243,6 +254,45 @@ func FindGitHubRelease(owner, repo string) (string, error) {
 
 	version := loc[strings.LastIndex(loc, "/")+1:]
 	return version, nil
+}
+
+func FindGitLabRelease(owner, repo string) (string, error) {
+	url := fmt.Sprintf("https://gitlab.com/api/v4/projects/%s%%2F%s/releases", owner, repo)
+
+	client := makeHTTPClient(&gitlabTimeout, false)
+	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return http.ErrUseLastResponse
+	}
+
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", err
+	}
+
+	req.Header.Set("User-Agent", "arkade")
+
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+	}
+
+	var releases []struct {
+		TagName string `json:"tag_name"`
+	}
+
+	if err := json.NewDecoder(res.Body).Decode(&releases); err != nil {
+		return "", err
+	}
+
+	if len(releases) == 0 {
+		return "", fmt.Errorf("no releases found for the repository")
+	}
+
+	return releases[0].TagName, nil
 }
 
 func FindK8sRelease() (string, error) {
