@@ -18,13 +18,11 @@ import (
 )
 
 const GitHubVersionStrategy = "github"
+const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
-
-// githubTimeout expanded from the original 5 seconds due to #693
-var githubTimeout = time.Second * 10
 
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
@@ -64,6 +62,30 @@ type Tool struct {
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
+}
+
+type ReleaseLocation struct {
+	Url     string
+	Timeout time.Duration
+	Method  string
+}
+
+var releaseLocations = map[string]ReleaseLocation{
+	GitHubVersionStrategy: {
+		Url:     "https://github.com/%s/%s/releases/latest",
+		Timeout: time.Second * 10,
+		Method:  http.MethodHead,
+	},
+	GitLabVersionStrategy: {
+		Url:     "https://gitlab.com/%s/%s/-/releases/permalink/latest",
+		Timeout: time.Second * 5,
+		Method:  http.MethodHead,
+	},
+	k8sVersionStrategy: {
+		Url:     "https://cdn.dl.k8s.io/release/stable.txt",
+		Timeout: time.Second * 5,
+		Method:  http.MethodGet,
+	},
 }
 
 type ToolLocal struct {
@@ -110,12 +132,12 @@ func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, e
 }
 
 func GetToolVersion(tool *Tool, version string) string {
-	ver := tool.Version
+
 	if len(version) > 0 {
-		ver = version
+		return version
 	}
 
-	return ver
+	return tool.Version
 }
 
 func (tool Tool) Head(uri string) (int, string, http.Header, error) {
@@ -148,19 +170,21 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 			log.Printf("Looking up version for %s", tool.Name)
 		}
 
+		var releaseType string
 		if len(tool.URLTemplate) == 0 ||
-			strings.Contains(tool.URLTemplate, "https://github.com/") ||
-			tool.VersionStrategy == GitHubVersionStrategy {
+			strings.Contains(tool.URLTemplate, "https://github.com/") {
 
-			v, err := FindGitHubRelease(tool.Owner, tool.Repo)
-			if err != nil {
-				return "", err
-			}
-			version = v
+			releaseType = GitHubVersionStrategy
+
 		}
 
-		if tool.VersionStrategy == k8sVersionStrategy {
-			v, err := FindK8sRelease()
+		if len(tool.VersionStrategy) > 0 {
+			releaseType = tool.VersionStrategy
+		}
+
+		if _, supported := releaseLocations[releaseType]; supported {
+
+			v, err := FindRelease(releaseType, tool.Owner, tool.Repo)
 			if err != nil {
 				return "", err
 			}
@@ -209,52 +233,19 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 }
 
 func FindGitHubRelease(owner, repo string) (string, error) {
-	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", owner, repo)
-
-	client := makeHTTPClient(&githubTimeout, false)
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		return http.ErrUseLastResponse
-	}
-
-	req, err := http.NewRequest(http.MethodHead, url, nil)
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
-
-	if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
-		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
-	}
-
-	loc := res.Header.Get("Location")
-	if len(loc) == 0 {
-		return "", fmt.Errorf("unable to determine release of tool")
-	}
-
-	version := loc[strings.LastIndex(loc, "/")+1:]
-	return version, nil
+	return FindRelease(GitHubVersionStrategy, owner, repo)
 }
 
-func FindK8sRelease() (string, error) {
-	url := "https://cdn.dl.k8s.io/release/stable.txt"
+func FindRelease(location, owner, repo string) (string, error) {
+	url := formatUrl(releaseLocations[location].Url, owner, repo)
 
-	timeout := time.Second * 5
-	client := makeHTTPClient(&timeout, false)
+	clientTimeout := releaseLocations[location].Timeout
+	client := makeHTTPClient(&clientTimeout, false)
 	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
 		return http.ErrUseLastResponse
 	}
 
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequest(releaseLocations[location].Method, url, nil)
 	if err != nil {
 		return "", err
 	}
@@ -264,13 +255,29 @@ func FindK8sRelease() (string, error) {
 	res, err := client.Do(req)
 	if err != nil {
 		return "", err
+	}
+
+	defer res.Body.Close()
+
+	if releaseLocations[location].Method == http.MethodHead {
+
+		if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
+			return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+		}
+
+		loc := res.Header.Get("Location")
+		if len(loc) == 0 {
+			return "", fmt.Errorf("unable to determine release of tool")
+		}
+
+		version := loc[strings.LastIndex(loc, "/")+1:]
+		return version, nil
 	}
 
 	if res.Body == nil {
 		return "", fmt.Errorf("unable to determine release of tool")
 	}
 
-	defer res.Body.Close()
 	bodyBytes, err := io.ReadAll(res.Body)
 	if err != nil {
 		return "", err
@@ -278,6 +285,13 @@ func FindK8sRelease() (string, error) {
 
 	version := string(bodyBytes)
 	return version, nil
+}
+
+func formatUrl(url, owner, repo string) string {
+	if strings.Contains(url, "%s") {
+		return fmt.Sprintf(url, owner, repo)
+	}
+	return url
 }
 
 func getBinaryURL(owner, repo, version, downloadName string) string {
@@ -481,7 +495,7 @@ func ValidateOS(name string) error {
 		}
 	}
 
-	return fmt.Errorf("operating system %q is not supported. Available prefixes: %s.",
+	return fmt.Errorf("operating system %q is not supported. Available prefixes: %s",
 		name, strings.Join(supportedOS[:], ", "))
 }
 
@@ -492,6 +506,6 @@ func ValidateArch(name string) error {
 			return nil
 		}
 	}
-	return fmt.Errorf("cpu architecture %q is not supported. Available: %s.",
+	return fmt.Errorf("cpu architecture %q is not supported. Available: %s",
 		name, strings.Join(supportedArchitectures[:], ", "))
 }
