@@ -8020,3 +8020,59 @@ func Test_Crossplane(t *testing.T) {
 	}
 
 }
+
+func Test_Download_rosa(t *testing.T) {
+	tools := MakeTools()
+	name := "rosa"
+	const toolVersion = "v1.2.46"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Darwin_x86_64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Linux_x86_64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Linux_arm64.tar.gz",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Windows_x86_64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/openshift/rosa/releases/download/v1.2.46/rosa_Windows_arm64.zip",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
