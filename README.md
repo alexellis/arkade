@@ -885,6 +885,7 @@ There are 52 apps that you can install on your cluster.
 | [regctl](https://github.com/regclient/regclient)                             | Utility for accessing docker registries                                                                                                                         |
 | [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                                          |
 | [replicated](https://github.com/replicatedhq/replicated)                     | CLI for interacting with the Replicated Vendor API                                                                                                              |
+| [rosa](https://github.com/openshift/rosa)                                    | Red Hat OpenShift on AWS (ROSA) command line tool                                                                                                               |
 | [rpk](https://github.com/redpanda-data/redpanda)                             | Kafka compatible streaming platform for mission critical workloads.                                                                                             |
 | [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                                           |
 | [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                                              |
@@ -917,6 +918,6 @@ There are 52 apps that you can install on your cluster.
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                           |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                           |
 
-There are 158 tools, use `arkade get NAME` to download one.
+There are 159 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list

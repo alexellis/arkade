@@ -4353,5 +4353,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					
 					https://releases.crossplane.io/stable/{{.Version}}/bin/{{$os}}_{{$arch}}/crank{{$ext}}`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "openshift",
+			Repo:            "rosa",
+			Name:            "rosa",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Red Hat OpenShift on AWS (ROSA) command line tool",
+			BinaryTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := "tar.gz"}}
+				
+							{{- if eq .OS "darwin" -}}
+								{{$os = "Darwin"}}
+							{{- else if eq .OS "linux" -}}
+								{{$os = "Linux"}}
+							{{- else if HasPrefix .OS "ming" -}}
+								{{$os = "Windows"}}
+								{{$ext = "zip"}}
+							{{- end -}}
+		
+							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+								{{$arch = "arm64"}}
+							{{- end -}}
+		
+						rosa_{{$os}}_{{$arch}}.{{$ext}}
+						`,
+		})
 	return tools
 }
