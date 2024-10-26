@@ -4327,5 +4327,31 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							duplik8s_{{$os}}_{{$arch}}.{{$ext}}
 							`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:           "crossplane",
+			Repo:            "crossplane",
+			Name:            "crossplane",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Simplify some development and administration aspects of Crossplane.",
+			URLTemplate: `
+					{{$arch := .Arch}}
+					{{$ext := "" }}
+					{{- if (or (eq .Arch "x86_64") (eq .Arch "amd64")) -}}
+						{{$arch = "amd64"}}
+					{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "armv7l" -}}
+						{{ $arch = "arm" }}
+					{{- end -}}
+					
+					{{$os := .OS}}
+					{{ if HasPrefix .OS "ming" -}}
+					{{$ext = ".exe" }}
+					{{$os = "windows"}}
+					{{- end -}}
+					
+					https://releases.crossplane.io/stable/{{.Version}}/bin/{{$os}}_{{$arch}}/crank{{$ext}}`,
+		})
 	return tools
 }
