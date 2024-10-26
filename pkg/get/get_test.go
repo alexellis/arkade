@@ -7961,3 +7961,62 @@ func Test_Download_duplik8s(t *testing.T) {
 		}
 	}
 }
+
+func Test_Crossplane(t *testing.T) {
+	tools := MakeTools()
+	name := "crossplane"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.17.2"
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/darwin_amd64/crank`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/darwin_arm64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/linux_amd64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/linux_arm64/crank`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/linux_arm/crank`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://releases.crossplane.io/stable/v1.17.2/bin/windows_amd64/crank.exe`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+
+}
