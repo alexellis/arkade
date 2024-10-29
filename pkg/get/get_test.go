@@ -6,7 +6,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 )
 
 var faasCLIVersionConstraint, _ = semver.NewConstraint(">= 0.13.2")

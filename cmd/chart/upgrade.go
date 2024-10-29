@@ -10,7 +10,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/google/go-containerregistry/pkg/crane"
 	"github.com/spf13/cobra"
@@ -157,14 +157,14 @@ func splitImageName(reposName string) (string, string) {
 func updateImages(iName string, v bool) (bool, string, error) {
 
 	imageName, tag := splitImageName(iName)
-	ref, err := crane.ListTags(imageName)
+	refs, err := crane.ListTags(imageName)
 	if err != nil {
 		return false, iName, errors.New("unable to list tags for " + imageName)
 	}
 
 	var vs []*semver.Version
-	for _, r := range ref {
-		v, err := semver.NewVersion(r)
+	for _, ref := range refs {
+		v, err := semver.NewVersion(ref)
 		if err == nil {
 			vs = append(vs, v)
 		}
@@ -176,11 +176,7 @@ func updateImages(iName string, v bool) (bool, string, error) {
 
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
-	latestTag := vs[0].String()
-	// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
-	if strings.HasPrefix(tag, "v") {
-		latestTag = "v" + latestTag
-	}
+	latestTag := vs[0].Original()
 
 	laterVersionB := false
 

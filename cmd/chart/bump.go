@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/Masterminds/semver"
+	"github.com/Masterminds/semver/v3"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/alexellis/go-execute/v2"
 	"github.com/spf13/cobra"
