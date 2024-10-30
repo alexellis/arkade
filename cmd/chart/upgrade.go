@@ -176,11 +176,7 @@ func updateImages(iName string, v bool) (bool, string, error) {
 
 	sort.Sort(sort.Reverse(semver.Collection(vs)))
 
-	latestTag := vs[0].String()
-	// Semver is "eating" the "v" prefix, so we need to add it back, if it was there in first place
-	if strings.HasPrefix(tag, "v") {
-		latestTag = "v" + latestTag
-	}
+	latestTag := vs[0].Original()
 
 	laterVersionB := false
 
