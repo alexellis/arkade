@@ -162,21 +162,11 @@ func updateImages(iName string, v bool) (bool, string, error) {
 		return false, iName, errors.New("unable to list tags for " + imageName)
 	}
 
-	var vs []*semver.Version
-	for _, r := range ref {
-		v, err := semver.NewVersion(r)
-		if err == nil {
-			vs = append(vs, v)
-		}
-	}
+	latestTag, hasSemVerTag := getLatestTag(ref)
 
-	if len(vs) == 0 {
+	if !hasSemVerTag {
 		return false, iName, fmt.Errorf("no valid semver tags found for %s", imageName)
 	}
-
-	sort.Sort(sort.Reverse(semver.Collection(vs)))
-
-	latestTag := vs[0].Original()
 
 	laterVersionB := false
 
@@ -204,5 +194,24 @@ func tagIsUpgradeable(currentTag, latestTag string) bool {
 	latestSemVer, _ := semver.NewVersion(latestTag)
 
 	return latestSemVer.Compare(currentSemVer) == 1 && latestSemVer.Prerelease() == currentSemVer.Prerelease()
+
+}
+
+func getLatestTag(discoveredTags []string) (string, bool) {
+
+	var vs []*semver.Version
+	for _, tag := range discoveredTags {
+		v, err := semver.NewVersion(tag)
+		if err == nil {
+			vs = append(vs, v)
+		}
+	}
+
+	if len(vs) > 0 {
+		sort.Sort(sort.Reverse(semver.Collection(vs)))
+		return vs[0].Original(), true
+	}
+
+	return "", false
 
 }
