@@ -103,3 +103,58 @@ func Test_tagIsUpgradable(t *testing.T) {
 		})
 	}
 }
+
+func TestGetLatestTag(t *testing.T) {
+	tests := []struct {
+		name             string
+		discoveredTags   []string
+		expectedTagVal   string
+		expectedIsSemVer bool
+	}{
+		{
+			name:             "Valid semantic tags",
+			discoveredTags:   []string{"v1.0.0", "v2.1.0", "v2.3.4", "v2.3.3"},
+			expectedTagVal:   "v2.3.4",
+			expectedIsSemVer: true,
+		},
+		{
+			name:             "No valid semantic tags",
+			discoveredTags:   []string{"invalid", "v.a.b", "xyz"},
+			expectedTagVal:   "",
+			expectedIsSemVer: false,
+		},
+		{
+			name:             "Empty list",
+			discoveredTags:   []string{},
+			expectedTagVal:   "",
+			expectedIsSemVer: false,
+		},
+		{
+			name:             "Mixed valid and invalid tags",
+			discoveredTags:   []string{"v1.0.0", "invalid", "v2.1.0-beta", "v1.2.3"},
+			expectedTagVal:   "v2.1.0-beta",
+			expectedIsSemVer: true,
+		},
+		{
+			name:             "similar tag values",
+			discoveredTags:   []string{"17", "17.0", "17.0.0"},
+			expectedTagVal:   "17",
+			expectedIsSemVer: true,
+		},
+		{
+			name:             "similar tag values different arrival order",
+			discoveredTags:   []string{"17.0", "17", "17.0.0"},
+			expectedTagVal:   "17.0",
+			expectedIsSemVer: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			tagVal, isSemVer := getLatestTag(tc.discoveredTags)
+			if tagVal != tc.expectedTagVal || isSemVer != tc.expectedIsSemVer {
+				t.Fatalf("\nwant: (%s, %v) \n got: (%s, %v)\n", tc.expectedTagVal, tc.expectedIsSemVer, tagVal, isSemVer)
+			}
+		})
+	}
+}
