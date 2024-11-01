@@ -16,6 +16,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type tagAttributes struct {
+	hasSuffix bool
+	hasMajor  bool
+	hasMinor  bool
+	hasPatch  bool
+	original  string
+}
+
+func (c *tagAttributes) attributesMatch(n tagAttributes) bool {
+	return c.hasMajor == n.hasMajor &&
+		c.hasMinor == n.hasMinor &&
+		c.hasPatch == n.hasPatch &&
+		c.hasSuffix == n.hasSuffix
+}
+
 func MakeUpgrade() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "upgrade",
@@ -162,56 +177,78 @@ func updateImages(iName string, v bool) (bool, string, error) {
 		return false, iName, errors.New("unable to list tags for " + imageName)
 	}
 
-	latestTag, hasSemVerTag := getLatestTag(ref)
+	candidateTag, hasSemVerTag := getCandidateTag(ref, tag)
 
 	if !hasSemVerTag {
-		return false, iName, fmt.Errorf("no valid semver tags found for %s", imageName)
+		return false, iName, fmt.Errorf("no valid semver tags of current format found for %s", imageName)
 	}
 
 	laterVersionB := false
 
 	// AE: Don't upgrade to an RC tag, even if it's newer.
-	if tagIsUpgradeable(tag, latestTag) {
+	if tagIsUpgradeable(tag, candidateTag) {
 
 		laterVersionB = true
 
-		iName = fmt.Sprintf("%s:%s", imageName, latestTag)
+		iName = fmt.Sprintf("%s:%s", imageName, candidateTag)
 		if v {
-			log.Printf("[%s] %s => %s", imageName, tag, latestTag)
+			log.Printf("[%s] %s => %s", imageName, tag, candidateTag)
 		}
 	}
 
 	return laterVersionB, iName, nil
 }
 
-func tagIsUpgradeable(currentTag, latestTag string) bool {
+func tagIsUpgradeable(current, candidate string) bool {
 
-	if strings.EqualFold(currentTag, "latest") {
+	if strings.EqualFold(current, "latest") {
 		return false
 	}
 
-	currentSemVer, _ := semver.NewVersion(currentTag)
-	latestSemVer, _ := semver.NewVersion(latestTag)
+	currentSemVer, _ := semver.NewVersion(current)
+	candidateSemVer, _ := semver.NewVersion(candidate)
 
-	return latestSemVer.Compare(currentSemVer) == 1 && latestSemVer.Prerelease() == currentSemVer.Prerelease()
+	return candidateSemVer.Compare(currentSemVer) == 1 && candidateSemVer.Prerelease() == currentSemVer.Prerelease()
 
 }
 
-func getLatestTag(discoveredTags []string) (string, bool) {
+func getCandidateTag(discoveredTags []string, currentTag string) (string, bool) {
 
-	var vs []*semver.Version
+	var candidateTags []*semver.Version
 	for _, tag := range discoveredTags {
 		v, err := semver.NewVersion(tag)
 		if err == nil {
-			vs = append(vs, v)
+			candidateTags = append(candidateTags, v)
 		}
 	}
 
-	if len(vs) > 0 {
-		sort.Sort(sort.Reverse(semver.Collection(vs)))
-		return vs[0].Original(), true
+	if len(candidateTags) > 0 {
+
+		currentTagAttr := getTagAttributes(currentTag)
+		sort.Sort(sort.Reverse(semver.Collection(candidateTags)))
+
+		for _, candidate := range candidateTags {
+			candidateTagAttr := getTagAttributes(candidate.Original())
+			if currentTagAttr.attributesMatch(candidateTagAttr) {
+				return candidate.Original(), true
+			}
+		}
 	}
 
 	return "", false
 
+}
+
+func getTagAttributes(t string) tagAttributes {
+
+	tagParts := strings.Split(t, "-")
+	tagLevels := strings.Split(tagParts[0], ".")
+
+	return tagAttributes{
+		hasSuffix: len(tagParts) > 1,
+		hasMajor:  len(tagLevels) >= 1 && tagLevels[0] != "",
+		hasMinor:  len(tagLevels) >= 2,
+		hasPatch:  len(tagLevels) == 3,
+		original:  t,
+	}
 }
