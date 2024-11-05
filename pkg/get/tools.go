@@ -4382,5 +4382,90 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						rosa_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "sbstp",
+			Repo:            "kubie",
+			Name:            "kubie",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A more powerful alternative to kubectx and kubens",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+			
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+                                    {{$arch = "amd64"}}
+								{{- else if eq .Arch "armv7l" -}}
+                                    {{$arch = "arm32"}}
+								{{- end -}}
+			
+							kubie-{{$os}}-{{$arch}}
+							`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "awslabs",
+			Repo:            "eks-node-viewer",
+			Name:            "eks-node-viewer",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "eks-node-viewer is a tool for visualizing dynamic node usage within an EKS cluster.",
+			BinaryTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$ext := ""}}
+
+									{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$arch = "arm64"}}
+									{{- end -}}
+						
+									{{- if eq .OS "darwin" -}}
+										{{$os = "Darwin"}}
+										{{$arch = "all"}}
+									{{- else if eq .OS "linux" -}}
+										{{$os = "Linux"}}
+									{{- else if HasPrefix .OS "ming" -}}
+										{{$os = "Windows"}}
+										{{$ext = ".exe"}}
+									{{- end -}}
+				
+								eks-node-viewer_{{$os}}_{{$arch}}{{$ext}}
+								`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "rclone",
+			Repo:            "rclone",
+			Name:            "rclone",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "'rsync for cloud storage' - Google Drive, S3, Dropbox, Backblaze B2, One Drive, Swift, Hubic, Wasabi, Google Cloud Storage, Azure Blob, Azure Files, Yandex Files",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "zip"}}
+					
+								{{- if eq .OS "darwin" -}}
+									{{$os = "osx"}}
+								{{- else if eq .OS "linux" -}}
+									{{$os = "linux"}}
+								{{- else if HasPrefix .OS "ming" -}}
+									{{$os = "windows"}}
+								{{- end -}}
+			
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+                                    {{$arch = "amd64"}}
+								{{- else if eq .Arch "armv7l" -}}
+                                    {{$arch = "arm-v7"}}
+								{{- end -}}
+			
+							rclone-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
+							`,
+		})
 	return tools
 }
