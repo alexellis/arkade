@@ -8076,3 +8076,164 @@ func Test_Download_rosa(t *testing.T) {
 		}
 	}
 }
+func Test_Download_kubie(t *testing.T) {
+	tools := MakeTools()
+	name := "kubie"
+	const toolVersion = "v0.24.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-darwin-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-arm32",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download_EKSNodeViewer(t *testing.T) {
+	tools := MakeTools()
+	name := "eks-node-viewer"
+	const toolVersion = "v0.7.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.0/eks-node-viewer_Darwin_all",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.0/eks-node-viewer_Darwin_all",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.0/eks-node-viewer_Linux_x86_64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.0/eks-node-viewer_Linux_arm64",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/awslabs/eks-node-viewer/releases/download/v0.7.0/eks-node-viewer_Windows_x86_64.exe",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download_rclone(t *testing.T) {
+	tools := MakeTools()
+	name := "rclone"
+	const toolVersion = "v1.68.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-osx-amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-osx-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-linux-amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-linux-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-linux-arm-v7.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-windows-amd64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/rclone/rclone/releases/download/v1.68.1/rclone-v1.68.1-windows-arm64.zip",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
