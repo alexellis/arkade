@@ -5,6 +5,8 @@ package apps
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg"
@@ -27,6 +29,7 @@ func MakeInstallCertManager() *cobra.Command {
 	certManager.Flags().StringP("version", "v", "v1.5.4", "The version of cert-manager to install, has to be >= v1.0.0")
 	certManager.Flags().Bool("update-repo", true, "Update the helm repo")
 	certManager.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set key=value)")
+	certManager.Flags().StringArray("dns-server", []string{}, "Use custom flags or override existing flags \n(example --dns-servers key=value)")
 
 	certManager.RunE = func(command *cobra.Command, args []string) error {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
@@ -45,10 +48,35 @@ func MakeInstallCertManager() *cobra.Command {
 		overrides := map[string]string{}
 		overrides["installCRDs"] = "true"
 
+		dnsServers, err := command.Flags().GetStringArray("dns-server")
+		if err != nil {
+			return err
+		}
+
+		if len(dnsServers) > 0 {
+
+			for _, v := range dnsServers {
+				if !strings.Contains(v, ":") {
+					return fmt.Errorf("dns-server need a a specific port i.e. 8.8.8.8:53")
+				}
+			}
+
+			st := ""
+			if len(dnsServers) > 1 {
+				st = `"` + strings.Join(dnsServers, ",") + `"`
+			} else {
+				st = dnsServers[0]
+			}
+
+			overrides["dns01RecursiveNameservers"] = st
+			overrides["dns01RecursiveNameserversOnly"] = "true"
+		}
+
 		customFlags, err := command.Flags().GetStringArray("set")
 		if err != nil {
 			return err
 		}
+
 		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
