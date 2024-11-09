@@ -325,8 +325,8 @@ The directory that contains the Helm chart should be a Git repository. If the fl
 
 There are two commands built into arkade designed for software vendors and open source maintainers.
 
-* `arkade helm chart upgrade` - run this command to scan for container images and update them automatically by querying a remote registry. 
-* `arkade helm chart verify` - after changing the contents of a values.yaml or docker-compose.yaml file, this command will check each image exists on a remote registry
+* `arkade chart upgrade` - run this command to scan for container images and update them automatically by querying a remote registry. 
+* `arkade chart verify` - after changing the contents of a values.yaml or docker-compose.yaml file, this command will check each image exists on a remote registry
 
 Whilst end-users may use a GitOps-style tool to deploy charts and update their versions, maintainers need to make conscious decisions about when and which images to change within a Helm chart or compose file.
 
@@ -375,6 +375,45 @@ arkade chart upgrade -f \
   ~/go/src/github.com/openfaas/faasd/docker-compose.yaml \
   --write
 ```
+
+### Holding image versions within a Helm chart
+
+With the command `arkade chart upgrade` you can add a `.hold` associated with a `values.yaml` file, e.g. `values.yaml.hold` to exclude the specified images from the version update.
+
+Original YAML file:
+
+```yaml
+stan:
+  # Image used for nats deployment when using async with NATS-Streaming.
+  image: nats-streaming:0.24.6
+
+db:
+  image: postgres:16
+```
+
+Associated hold file:
+
+```
+postgres:16
+```
+
+```bash
+arkade chart upgrade -f \
+  ~/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yaml \
+  --verbose
+
+2023/01/03 10:12:47 Verifying images in: /home/alex/go/src/github.com/openfaas/faas-netes/chart/openfaas/values.yaml
+2023/01/03 10:12:47 Found 18 images
+2023/01/03 10:12:47 Found 1 image to hold/ignore in values.yaml.hold
+2023/01/03 10:12:47 Processing 17 images
+2023/01/03 10:12:48 [natsio/prometheus-nats-exporter] 0.8.0 => 0.10.1
+2023/01/03 10:12:50 [nats-streaming] 0.24.6 => 0.25.2
+2023/01/03 10:12:52 [prom/prometheus] v2.38.0 => 2.41.0
+2023/01/03 10:12:54 [prom/alertmanager] v0.24.0 => 0.25.0
+2023/01/03 10:12:54 [nats] 2.9.2 => 2.9.10
+```
+
+Within the uprgade activity `postgres:16` is no longer included.
 
 Supported:
 

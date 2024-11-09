@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -368,6 +369,178 @@ func TestGetTagAttributes(t *testing.T) {
 			result := getTagAttributes(tc.tag)
 			if result != tc.expected {
 				t.Fatalf("\nwant: %v \n got: %v\n", tc.expected, result)
+			}
+		})
+	}
+}
+
+func TestRemoveHoldImages(t *testing.T) {
+	tests := []struct {
+		name     string
+		fullset  map[string]string
+		held     []string
+		expected map[string]string
+	}{
+		{
+			name: "Basic exclusion",
+			fullset: map[string]string{
+				"registry/img1:16": "going",
+				"registry/img1:17": "staying",
+				"registry/img1:18": "staying",
+			},
+			held: []string{
+				"img1:16",
+			},
+			expected: map[string]string{
+				"registry/img1:17": "staying",
+				"registry/img1:18": "staying",
+			},
+		},
+		{
+			name: "Basic exclusion / muli-match",
+			fullset: map[string]string{
+				"registry/img1:16": "going",
+				"registry/img1:17": "going",
+				"registry/img1:18": "staying",
+			},
+			held: []string{
+				"img1:16",
+				"img1:17",
+			},
+			expected: map[string]string{
+				"registry/img1:18": "staying",
+			},
+		},
+		{
+			name: "No match",
+			fullset: map[string]string{
+				"registry/img1:17": "staying",
+				"registry/img1:18": "staying",
+				"registry/img1:19": "staying",
+			},
+			held: []string{
+				"img1:16",
+			},
+			expected: map[string]string{
+				"registry/img1:17": "staying",
+				"registry/img1:18": "staying",
+				"registry/img1:19": "staying",
+			},
+		},
+		{
+			name: "Different Repos images match",
+			fullset: map[string]string{
+				"registry/repo/img1:16":  "going",
+				"registry/repo2/img1:16": "going",
+				"registry/repo3/img1:18": "staying",
+			},
+			held: []string{
+				"img1:16",
+			},
+			expected: map[string]string{
+				"registry/repo3/img1:18": "staying",
+			},
+		},
+		{
+			name: "Different Repos images match / full path exclude",
+			fullset: map[string]string{
+				"registry/repo/img1:16":  "going",
+				"registry/repo2/img1:16": "staying",
+				"registry/repo3/img1:18": "staying",
+			},
+			held: []string{
+				"registry/repo/img1:16",
+			},
+			expected: map[string]string{
+				"registry/repo2/img1:16": "staying",
+				"registry/repo3/img1:18": "staying",
+			},
+		},
+		{
+			name: "Different Repos images match / two exclude",
+			fullset: map[string]string{
+				"registry/repo/img1:16":  "going",
+				"registry/repo2/img1:16": "going",
+				"registry/repo3/img1:18": "staying",
+			},
+			held: []string{
+				"registry/repo/img1:16",
+				"img1:16",
+			},
+			expected: map[string]string{
+				"registry/repo3/img1:18": "staying",
+			},
+		},
+		{
+			name:    "Empty fullset",
+			fullset: map[string]string{},
+			held: []string{
+				"hold",
+			},
+			expected: map[string]string{},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := removeHoldImages(tc.fullset, tc.held)
+			if !reflect.DeepEqual(result, tc.expected) {
+				t.Errorf("\n%s \n  got = %v\n want = %v", tc.name, result, tc.expected)
+			}
+		})
+	}
+}
+
+func TestPluralise(t *testing.T) {
+	tests := []struct {
+		name     string
+		count    int
+		expected string
+		failTest bool
+	}{
+		{
+			name:     "Singular (1)",
+			count:    1,
+			expected: "",
+			failTest: false,
+		},
+		{
+			name:     "Plural (2)",
+			count:    2,
+			expected: "s",
+			failTest: false,
+		},
+		{
+			name:     "Zero",
+			count:    0,
+			expected: "s",
+			failTest: false,
+		},
+		{
+			name:     "Negative count",
+			count:    -1,
+			expected: "s",
+			failTest: false,
+		},
+		{
+			name:     "Large plural",
+			count:    100,
+			expected: "s",
+			failTest: false,
+		},
+		{
+			name:     "Large plural wrong expected",
+			count:    100,
+			expected: "",
+			failTest: true,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := pluralise(tc.count)
+			if result != tc.expected && !tc.failTest {
+				t.Errorf("\n%s \n  got = %v\n want = %v", tc.name, result, tc.expected)
 			}
 		})
 	}

@@ -1,6 +1,7 @@
 package chart
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"log"
@@ -23,6 +24,8 @@ type tagAttributes struct {
 	hasPatch  bool
 	original  string
 }
+
+const holdFileExt = "hold"
 
 func (c *tagAttributes) attributesMatch(n tagAttributes) bool {
 	return c.hasMajor == n.hasMajor &&
@@ -96,9 +99,22 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 		}
 
 		if verbose {
-			if len(filtered) > 0 {
-				log.Printf("Found %d images\n", len(filtered))
-			}
+			log.Printf("Found %d image%s\n", len(filtered), pluralise(len(filtered)))
+		}
+
+		holdfile := fmt.Sprintf("%s.%s", file, holdFileExt)
+		imagesToHold, err := readFileLines(holdfile)
+		if err != nil {
+			return err
+		}
+
+		if verbose {
+			log.Printf("Found %d image%s to hold/ignore in %s", len(imagesToHold), pluralise(len(imagesToHold)), holdfile)
+		}
+
+		filtered = removeHoldImages(filtered, imagesToHold)
+		if verbose {
+			log.Printf("Processing %d image%s\n", len(filtered), pluralise(len(filtered)))
 		}
 
 		wg := sync.WaitGroup{}
@@ -155,7 +171,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			if err := os.WriteFile(file, []byte(rawValues), 0600); err != nil {
 				return err
 			}
-			log.Printf("Wrote %d updates to: %s", len(updatedImages), file)
+			log.Printf("Wrote %d update%s to: %s", len(updatedImages), pluralise(len(updatedImages)), file)
 		}
 
 		return nil
@@ -251,4 +267,50 @@ func getTagAttributes(t string) tagAttributes {
 		hasPatch:  len(tagLevels) == 3,
 		original:  t,
 	}
+}
+
+func readFileLines(filename string) ([]string, error) {
+
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		return nil, nil
+	}
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return nil, fmt.Errorf("failed to open file: %w", err)
+	}
+	defer file.Close()
+
+	var lines []string
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+
+	if err := scanner.Err(); err != nil {
+		return nil, fmt.Errorf("error reading file: %w", err)
+	}
+
+	return lines, nil
+}
+
+func removeHoldImages(fullset map[string]string, held []string) map[string]string {
+
+	for _, h := range held {
+		for k := range fullset {
+			if strings.EqualFold(h, k[len(k)-len(h):]) {
+				delete(fullset, k)
+			}
+		}
+	}
+
+	return fullset
+}
+
+func pluralise(count int) string {
+
+	if count == 1 {
+		return ""
+	}
+	return "s"
 }
