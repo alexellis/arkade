@@ -760,6 +760,7 @@ There are 52 apps that you can install on your cluster.
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                                                     |
+| [alloy](https://github.com/grafana/alloy)                                    | OpenTelemetry Collector distribution with programmable pipelines                                                                                                  |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                                                      |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                                        |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite DevOps CLIs and installing helm charts, with a single command.                                                |
@@ -920,6 +921,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 162 tools, use `arkade get NAME` to download one.
+There are 163 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
