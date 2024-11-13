@@ -8,4 +8,4 @@ mc
 /arkade-*
 /faas-cli*
 test.out
-docker-compose.yaml
+docker-compose.yaml*
