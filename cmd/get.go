@@ -74,17 +74,17 @@ and provides a fast and easy alternative to a package manager.`,
 
 			if len(format) > 0 {
 				if get.TableFormat(format) == get.MarkdownStyle {
-					get.CreateToolsTable(tools, get.MarkdownStyle)
+					fmt.Print(get.CreateToolsTable(tools, get.MarkdownStyle))
 				} else if get.TableFormat(format) == get.ListStyle {
 					for _, r := range tools {
 						fmt.Printf("%s\n", r.Name)
 					}
 
 				} else {
-					get.CreateToolsTable(tools, get.TableStyle)
+					fmt.Print(get.CreateToolsTable(tools, get.TableStyle))
 				}
 			} else {
-				get.CreateToolsTable(tools, get.TableStyle)
+				fmt.Print(get.CreateToolsTable(tools, get.TableStyle))
 			}
 			return nil
 		}

@@ -5,8 +5,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"sort"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
@@ -46,27 +46,7 @@ command.`,
 		printTable, _ := command.Flags().GetBool("print-table")
 
 		if printTable {
-			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"Tool", "Description"})
-
-			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-			table.SetCenterSeparator("|")
-			table.SetAutoWrapText(false)
-
-			appSortedList := make([]string, 0, len(appList))
-
-			for a := range appList {
-				appSortedList = append(appSortedList, a)
-			}
-			sort.Strings(appSortedList)
-
-			for _, k := range appSortedList {
-				table.Append([]string{k, appList[k].Installer().Short})
-			}
-
-			table.Render()
-
-			fmt.Printf("\nThere are %d apps that you can install on your cluster.\n", len(appList))
+			fmt.Print(CreateAppsTable(appList))
 			return nil
 		}
 
@@ -180,4 +160,32 @@ func NewArkadeApp(cmd func() *cobra.Command, msg string) ArkadeApp {
 		Installer:   cmd,
 		InfoMessage: msg,
 	}
+}
+
+func CreateAppsTable(apps map[string]ArkadeApp) string {
+
+	tableString := &strings.Builder{}
+	table := tablewriter.NewWriter(tableString)
+	table.SetHeader([]string{"App", "Description"})
+	table.SetCaption(true,
+		fmt.Sprintf("\nThere are %d apps that you can install on your cluster.\n", len(apps)))
+
+	table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
+	table.SetCenterSeparator("|")
+	table.SetAutoWrapText(false)
+
+	appSortedList := make([]string, 0, len(apps))
+
+	for a := range apps {
+		appSortedList = append(appSortedList, a)
+	}
+	sort.Strings(appSortedList)
+
+	for _, k := range appSortedList {
+		table.Append([]string{k, apps[k].Installer().Short})
+	}
+
+	table.Render()
+
+	return tableString.String()
 }
