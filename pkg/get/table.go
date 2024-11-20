@@ -2,7 +2,7 @@ package get
 
 import (
 	"fmt"
-	"os"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 )
@@ -16,8 +16,10 @@ const (
 )
 
 // CreateToolTable creates table to show the avaiable CLI tools
-func CreateToolsTable(tools Tools, format TableFormat) {
-	table := tablewriter.NewWriter(os.Stdout)
+func CreateToolsTable(tools Tools, format TableFormat) string {
+
+	tableString := &strings.Builder{}
+	table := tablewriter.NewWriter(tableString)
 
 	table.SetCaption(true,
 		fmt.Sprintf("There are %d tools, use `arkade get NAME` to download one.", len(tools)))
@@ -50,4 +52,5 @@ func CreateToolsTable(tools Tools, format TableFormat) {
 	}
 
 	table.Render()
+	return tableString.String()
 }
