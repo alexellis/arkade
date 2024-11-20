@@ -10,6 +10,7 @@ import (
 	"github.com/alexellis/arkade/cmd/chart"
 	"github.com/alexellis/arkade/cmd/oci"
 	"github.com/alexellis/arkade/cmd/system"
+	"github.com/alexellis/arkade/cmd/update"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +28,7 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeInstall())
 	rootCmd.AddCommand(cmd.MakeVersion())
 	rootCmd.AddCommand(cmd.MakeInfo())
-	rootCmd.AddCommand(cmd.MakeUpdate())
+	rootCmd.AddCommand(update.MakeUpdate())
 	rootCmd.AddCommand(cmd.MakeGet())
 	rootCmd.AddCommand(cmd.MakeUninstall())
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
