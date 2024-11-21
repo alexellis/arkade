@@ -59,18 +59,22 @@ func ReplaceValuesInHelmValuesFile(values map[string]string, yamlPath string) (s
 
 // FilterImagesUptoDepth takes a ValuesMap and returns a map of images that
 // were found upto max level
-func FilterImagesUptoDepth(values ValuesMap, depth int) map[string]string {
+func FilterImagesUptoDepth(values ValuesMap, depth int, level int, component string) map[string]string {
 	images := map[string]string{}
 
 	for k, v := range values {
 
+		if level == 1 {
+			component = k
+		}
+
 		if k == "image" && reflect.TypeOf(v).Kind() == reflect.String {
 			imageUrl := v.(string)
-			images[imageUrl] = imageUrl
+			images[component] = imageUrl
 		}
 
 		if c, ok := v.(ValuesMap); ok && depth > 0 {
-			images = mergeMaps(images, FilterImagesUptoDepth(c, depth-1))
+			images = mergeMaps(images, FilterImagesUptoDepth(c, depth-1, level+1, component))
 		}
 	}
 	return images
