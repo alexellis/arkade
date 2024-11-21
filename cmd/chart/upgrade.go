@@ -93,7 +93,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			return err
 		}
 
-		filtered := helm.FilterImagesUptoDepth(values, depth)
+		filtered := helm.FilterImagesUptoDepth(values, depth, 0, "")
 		if len(filtered) == 0 {
 			return fmt.Errorf("no images found in %s", file)
 		}
@@ -144,8 +144,8 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			}()
 		}
 
-		for k := range filtered {
-			workChan <- k
+		for _, v := range filtered {
+			workChan <- v
 		}
 
 		close(workChan)
@@ -297,8 +297,9 @@ func readFileLines(filename string) ([]string, error) {
 func removeHoldImages(fullset map[string]string, held []string) map[string]string {
 
 	for _, h := range held {
+		serviceName := strings.TrimSuffix(h, ".image")
 		for k := range fullset {
-			if strings.EqualFold(h, k[len(k)-len(h):]) {
+			if strings.EqualFold(serviceName, k) {
 				delete(fullset, k)
 			}
 		}

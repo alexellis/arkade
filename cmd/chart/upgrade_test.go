@@ -384,91 +384,47 @@ func TestRemoveHoldImages(t *testing.T) {
 		{
 			name: "Basic exclusion",
 			fullset: map[string]string{
-				"registry/img1:16": "going",
-				"registry/img1:17": "staying",
-				"registry/img1:18": "staying",
+				"going":    "registry/img1:16",
+				"staying1": "registry/img1:17",
+				"staying2": "registry/img1:18",
 			},
 			held: []string{
-				"img1:16",
+				"going.image",
 			},
 			expected: map[string]string{
-				"registry/img1:17": "staying",
-				"registry/img1:18": "staying",
+				"staying1": "registry/img1:17",
+				"staying2": "registry/img1:18",
 			},
 		},
 		{
 			name: "Basic exclusion / muli-match",
 			fullset: map[string]string{
-				"registry/img1:16": "going",
-				"registry/img1:17": "going",
-				"registry/img1:18": "staying",
+				"going1":  "registry/img1:16",
+				"going2":  "registry/img1:17",
+				"staying": "registry/img1:18",
 			},
 			held: []string{
-				"img1:16",
-				"img1:17",
+				"going1.image",
+				"going2.image",
 			},
 			expected: map[string]string{
-				"registry/img1:18": "staying",
+				"staying": "registry/img1:18",
 			},
 		},
 		{
 			name: "No match",
 			fullset: map[string]string{
-				"registry/img1:17": "staying",
-				"registry/img1:18": "staying",
-				"registry/img1:19": "staying",
+				"staying1": "registry/img1:17",
+				"staying2": "registry/img1:18",
+				"staying3": "registry/img1:19",
 			},
 			held: []string{
-				"img1:16",
+				"going.image",
 			},
 			expected: map[string]string{
-				"registry/img1:17": "staying",
-				"registry/img1:18": "staying",
-				"registry/img1:19": "staying",
-			},
-		},
-		{
-			name: "Different Repos images match",
-			fullset: map[string]string{
-				"registry/repo/img1:16":  "going",
-				"registry/repo2/img1:16": "going",
-				"registry/repo3/img1:18": "staying",
-			},
-			held: []string{
-				"img1:16",
-			},
-			expected: map[string]string{
-				"registry/repo3/img1:18": "staying",
-			},
-		},
-		{
-			name: "Different Repos images match / full path exclude",
-			fullset: map[string]string{
-				"registry/repo/img1:16":  "going",
-				"registry/repo2/img1:16": "staying",
-				"registry/repo3/img1:18": "staying",
-			},
-			held: []string{
-				"registry/repo/img1:16",
-			},
-			expected: map[string]string{
-				"registry/repo2/img1:16": "staying",
-				"registry/repo3/img1:18": "staying",
-			},
-		},
-		{
-			name: "Different Repos images match / two exclude",
-			fullset: map[string]string{
-				"registry/repo/img1:16":  "going",
-				"registry/repo2/img1:16": "going",
-				"registry/repo3/img1:18": "staying",
-			},
-			held: []string{
-				"registry/repo/img1:16",
-				"img1:16",
-			},
-			expected: map[string]string{
-				"registry/repo3/img1:18": "staying",
+				"staying1": "registry/img1:17",
+				"staying2": "registry/img1:18",
+				"staying3": "registry/img1:19",
 			},
 		},
 		{

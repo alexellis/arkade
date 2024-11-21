@@ -72,7 +72,7 @@ autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
 			return err
 		}
 
-		filtered := helm.FilterImagesUptoDepth(values, depth)
+		filtered := helm.FilterImagesUptoDepth(values, depth, 0, "")
 		if len(filtered) == 0 {
 			return fmt.Errorf("no images found in %s", file)
 		}

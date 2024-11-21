@@ -394,7 +394,7 @@ db:
 Associated hold file:
 
 ```
-postgres:16
+db.image
 ```
 
 ```bash
@@ -413,7 +413,7 @@ arkade chart upgrade -f \
 2023/01/03 10:12:54 [nats] 2.9.2 => 2.9.10
 ```
 
-Within the uprgade activity `postgres:16` is no longer included.
+Within the upgrade activity `postgres:16` is no longer included.
 
 Supported:
 
