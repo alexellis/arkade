@@ -167,7 +167,7 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 	if len(version) == 0 {
 
 		if !quiet {
-			log.Printf("Looking up version for %s", tool.Name)
+			log.Printf("Looking up version for: %s", tool.Name)
 		}
 
 		var releaseType string

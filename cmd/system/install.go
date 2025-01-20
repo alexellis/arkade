@@ -3,7 +3,9 @@
 
 package system
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/spf13/cobra"
+)
 
 func MakeInstall() *cobra.Command {
 
