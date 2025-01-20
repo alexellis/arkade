@@ -20,6 +20,6 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@master
         with:
-          go-version: 1.22.x
+          go-version: 1.23.x
       - name: Run URL checker tests
         run: make e2e
