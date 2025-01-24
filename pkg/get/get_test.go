@@ -8237,3 +8237,53 @@ func Test_Download_rclone(t *testing.T) {
 		}
 	}
 }
+
+func Test_Download_alloy(t *testing.T) {
+	tools := MakeTools()
+	name := "alloy"
+	const toolVersion = "v1.4.3"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/alloy/releases/download/v1.4.3/alloy-darwin-amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/grafana/alloy/releases/download/v1.4.3/alloy-darwin-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/alloy/releases/download/v1.4.3/alloy-linux-amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/grafana/alloy/releases/download/v1.4.3/alloy-linux-arm64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/alloy/releases/download/v1.4.3/alloy-windows-amd64.exe.zip",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
