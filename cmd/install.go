@@ -4,14 +4,17 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"sort"
+	"strings"
 
 	"github.com/olekukonko/tablewriter"
 	"github.com/spf13/cobra"
 
 	"github.com/alexellis/arkade/cmd/apps"
+	"github.com/alexellis/arkade/pkg/get"
 )
 
 type ArkadeApp struct {
@@ -100,7 +103,7 @@ To request a new app, raise a GitHub issue at:
 			}
 		}
 		if app == nil {
-			return fmt.Errorf("no such app: %s, run \"arkade install --help\" for a list of apps", name)
+			return errors.New(checkForTool(name, get.MakeTools()))
 		}
 
 		return nil
@@ -180,4 +183,14 @@ func NewArkadeApp(cmd func() *cobra.Command, msg string) ArkadeApp {
 		Installer:   cmd,
 		InfoMessage: msg,
 	}
+}
+
+func checkForTool(appName string, tools []get.Tool) string {
+
+	for _, tool := range tools {
+		if strings.EqualFold(tool.Name, appName) {
+			return fmt.Sprintf("no such app. %s is available as a tool, run \"arkade get %s\" to get it", appName, appName)
+		}
+	}
+	return fmt.Sprintf("no such app: %s, run \"arkade install --help\" for a list of apps", appName)
 }
