@@ -11,6 +11,7 @@ import (
 	"sync"
 
 	"github.com/Masterminds/semver"
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/google/go-containerregistry/pkg/crane"
 	"github.com/spf13/cobra"
@@ -41,13 +42,32 @@ Container images must be specified at the top level, or one level down in the
 
 Returns exit code zero if all images were found on the remote registry.
 
-Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
-		Example: `arkade upgrade -f ./chart/values.yaml
-  arkade upgrade --verbose -f ./chart/values.yaml`,
+Otherwise, it returns a non-zero exit code and the updated values.yaml file.
+
+An arkade.yaml file can be colocated with the values.yaml file or specified via
+--ignore-file flag
+
+The contents should be in YAML given as:
+
+ignore:
+- image
+- component1.image
+- component2.image
+`,
+		Example: `  # Upgrade and write the changes
+  arkade chart upgrade -f ./chart/values.yaml --write
+
+  # Dry-run mode, don't write the changes (default) 
+  arkade chart upgrade --verbose -f ./chart/values.yaml
+
+  # Use an arkade config file to load an ignore list
+  arkade chart upgrade --ignore-file ./chart/arkade.yaml  -f ./chart/values.yaml`,
 		SilenceUsage: true,
 	}
 
 	command.Flags().StringP("file", "f", "", "Path to values.yaml file")
+	command.Flags().StringP("ignore-file", "i", "", "Path to an arkade.yaml config file with a list of image paths to ignore defined")
+
 	command.Flags().BoolP("verbose", "v", false, "Verbose output")
 	command.Flags().BoolP("write", "w", false, "Write the updated values back to the file, or stdout when set to false")
 	command.Flags().IntP("depth", "d", 3, "how many levels deep into the YAML structure to walk looking for image: tags")
@@ -67,6 +87,8 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			return fmt.Errorf("invalid value for flag --file")
 		}
 
+		ignoreFile, _ := cmd.Flags().GetString("ignore-file")
+
 		writeFile, _ := cmd.Flags().GetBool("write")
 
 		verbose, _ := cmd.Flags().GetBool("verbose")
@@ -81,6 +103,31 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			return fmt.Errorf("--file must be a YAML file")
 		}
 
+		if len(ignoreFile) > 0 {
+			if _, err := os.Stat(ignoreFile); os.IsNotExist(err) {
+				return fmt.Errorf("ignore file %s does not exist", ignoreFile)
+			}
+		} else {
+			basePath := path.Dir(file)
+			defaultConfig := path.Join(basePath, "arkade.yaml")
+
+			if _, err := os.Stat(defaultConfig); err == nil {
+				ignoreFile = defaultConfig
+			}
+		}
+
+		var arkadeCfg *config.ArkadeConfig
+
+		if len(ignoreFile) > 0 {
+			var err error
+			arkadeCfg, err = config.Load(ignoreFile)
+			if err != nil {
+				return err
+			}
+		} else {
+			arkadeCfg = &config.ArkadeConfig{}
+		}
+
 		if verbose {
 			log.Printf("Verifying images in: %s\n", file)
 		}
@@ -90,7 +137,7 @@ Otherwise, it returns a non-zero exit code and the updated values.yaml file.`,
 			return err
 		}
 
-		filtered := helm.FilterImagesUptoDepth(values, depth)
+		filtered := helm.FilterImagesUptoDepth(values, depth, "", arkadeCfg)
 		if len(filtered) == 0 {
 			return fmt.Errorf("no images found in %s", file)
 		}

@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/alexellis/arkade/pkg/config"
 	"gopkg.in/yaml.v3"
 )
 
@@ -59,18 +60,35 @@ func ReplaceValuesInHelmValuesFile(values map[string]string, yamlPath string) (s
 
 // FilterImagesUptoDepth takes a ValuesMap and returns a map of images that
 // were found upto max level
-func FilterImagesUptoDepth(values ValuesMap, depth int) map[string]string {
+func FilterImagesUptoDepth(values ValuesMap, depth int, path string, cfg *config.ArkadeConfig) map[string]string {
 	images := map[string]string{}
-
 	for k, v := range values {
 
+		prefix := ""
+		if len(path) > 0 {
+			prefix = path + "."
+		}
+
 		if k == "image" && reflect.TypeOf(v).Kind() == reflect.String {
-			imageUrl := v.(string)
-			images[imageUrl] = imageUrl
+			fullPath := prefix + k
+
+			ignoreItem := false
+			if cfg != nil {
+				for _, ignore := range cfg.Ignore {
+					if fullPath == ignore {
+						ignoreItem = true
+					}
+				}
+			}
+
+			if !ignoreItem {
+				imageUrl := v.(string)
+				images[imageUrl] = imageUrl
+			}
 		}
 
 		if c, ok := v.(ValuesMap); ok && depth > 0 {
-			images = mergeMaps(images, FilterImagesUptoDepth(c, depth-1))
+			images = mergeMaps(images, FilterImagesUptoDepth(c, depth-1, prefix+k, cfg))
 		}
 	}
 	return images
