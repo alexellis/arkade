@@ -77,6 +77,7 @@ func FilterImagesUptoDepth(values ValuesMap, depth int, path string, cfg *config
 				for _, ignore := range cfg.Ignore {
 					if fullPath == ignore {
 						ignoreItem = true
+						break
 					}
 				}
 			}
