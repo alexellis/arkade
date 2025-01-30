@@ -6,6 +6,7 @@ import (
 	"path"
 	"text/tabwriter"
 
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/helm"
 	"github.com/spf13/cobra"
 
@@ -71,8 +72,8 @@ autoscaler          ghcr.io/openfaasltd/autoscaler:0.2.5
 		if err != nil {
 			return err
 		}
-
-		filtered := helm.FilterImagesUptoDepth(values, depth)
+		cfg := &config.ArkadeConfig{}
+		filtered := helm.FilterImagesUptoDepth(values, depth, "", cfg)
 		if len(filtered) == 0 {
 			return fmt.Errorf("no images found in %s", file)
 		}
