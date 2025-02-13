@@ -4467,5 +4467,51 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							rclone-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 							`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "grafana",
+			Repo:            "alloy",
+			Name:            "alloy",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "OpenTelemetry Collector distribution with programmable pipelines",
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "linux" -}}
+	{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+	    {{$fileName = "alloy-linux-arm64.zip"}}
+	{{ else if eq .Arch "x86_64" -}}
+        {{$fileName = "alloy-linux-amd64.zip"}}
+    {{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+	{{$fileName = "alloy-darwin-arm64.zip"}}
+	{{ else if eq .Arch "x86_64" -}}
+	{{$fileName = "alloy-darwin-amd64.zip"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+    {{$fileName = "alloy-windows-amd64.exe.zip"}}
+{{- end -}}
+
+https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
+
+			BinaryTemplate: `
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{.Name}}-linux-amd64
+	{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+		{{.Name}}-linux-arm64
+		{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{.Name}}-darwin-amd64
+	{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+		{{.Name}}-darwin-arm64
+		{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	                                  {{.Name}}-windows-amd64
+									{{- end -}}
+								`,
+		})
 	return tools
 }
