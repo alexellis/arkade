@@ -4549,5 +4549,30 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 									{{- end -}}
 								`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "dotenv-linter",
+			Repo:            "dotenv-linter",
+			Name:            "dotenv-linter",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A lightning-fast linter for .env files.",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "tar.gz"}}
+
+								{{- if HasPrefix .OS "ming" -}}
+									{{$os = "win"}}
+									{{- if eq .Arch "x86_64" -}}
+										{{$arch = "x64"}}
+									{{- end -}}
+									{{$ext = "zip"}}
+								{{- end -}}
+
+							dotenv-linter-{{$os}}-{{$arch}}.{{$ext}}
+							`,
+		})
+
 	return tools
 }
