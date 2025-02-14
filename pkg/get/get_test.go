@@ -8287,3 +8287,61 @@ func Test_Download_alloy(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadDotenvLinter(t *testing.T) {
+	tools := MakeTools()
+	name := "dotenv-linter"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v3.3.0"
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-darwin-x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-darwin-arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-linux-x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-linux-aarch64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-win-x64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/dotenv-linter/dotenv-linter/releases/download/v3.3.0/dotenv-linter-win-aarch64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
