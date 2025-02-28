@@ -84,7 +84,7 @@ func MakeInstallFirecracker() *cobra.Command {
 		}
 		defer f.Close()
 
-		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "firecracker*")
+		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "firecracker-*")
 		if err != nil {
 			return err
 		}

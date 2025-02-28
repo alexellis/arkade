@@ -98,7 +98,7 @@ func MakeInstallCNI() *cobra.Command {
 		}
 		defer f.Close()
 
-		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "cni-plugins*")
+		tempUnpackPath, err := os.MkdirTemp(os.TempDir(), "cni-plugins-*")
 		if err != nil {
 			return err
 		}
