@@ -39,6 +39,8 @@ OCI image.`,
 	command.Flags().String("path", "/usr/local/bin", "Installation path, where a buildkitd subfolder will be created")
 	command.Flags().Bool("progress", true, "Show download progress")
 	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
+	command.Flags().String("os", "", "OS i.e. linux")
+
 	command.Flags().BoolP("gzipped", "g", false, "Is this a gzipped tarball?")
 	command.Flags().Bool("quiet", false, "Suppress progress output")
 
@@ -76,10 +78,15 @@ OCI image.`,
 			clientArch, _ = cmd.Flags().GetString("arch")
 		}
 
-		tempFile, err := os.CreateTemp(os.TempDir(), "arkade-oci-")
+		if cmd.Flags().Changed("os") {
+			clientOS, _ = cmd.Flags().GetString("os")
+		}
+
+		tempFile, err := os.CreateTemp(os.TempDir(), "arkade-oci-*")
 		if err != nil {
 			return fmt.Errorf("failed to create temp file: %w", err)
 		}
+
 		defer os.Remove(tempFile.Name())
 
 		f, err := os.Create(tempFile.Name())
