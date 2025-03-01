@@ -5709,10 +5709,10 @@ func Test_DownloadViddy(t *testing.T) {
 	}
 }
 
-func Test_DownloadTctl(t *testing.T) {
+func Test_DownloadTemporalCLI(t *testing.T) {
 	tools := MakeTools()
-	name := "tctl"
-	version := "v1.16.3"
+	name := "temporal"
+	version := "v1.3.0"
 
 	tool := getTool(name, tools)
 
@@ -5721,31 +5721,37 @@ func Test_DownloadTctl(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/temporalio/tctl/releases/download/v1.16.3/tctl_1.16.3_darwin_amd64.tar.gz",
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_darwin_amd64.tar.gz",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     "https://github.com/temporalio/tctl/releases/download/v1.16.3/tctl_1.16.3_darwin_arm64.tar.gz",
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_darwin_arm64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/temporalio/tctl/releases/download/v1.16.3/tctl_1.16.3_linux_amd64.tar.gz",
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_linux_amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/temporalio/tctl/releases/download/v1.16.3/tctl_1.16.3_linux_arm64.tar.gz",
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_linux_arm64.tar.gz",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/temporalio/tctl/releases/download/v1.16.3/tctl_1.16.3_windows_amd64.zip",
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_windows_amd64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/temporalio/cli/releases/download/v1.3.0/temporal_cli_1.3.0_windows_arm64.zip",
 		},
 	}
 
@@ -5756,7 +5762,7 @@ func Test_DownloadTctl(t *testing.T) {
 				t.Fatal(err)
 			}
 			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
+				t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 			}
 		})
 	}
