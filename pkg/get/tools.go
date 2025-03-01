@@ -3186,8 +3186,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 	tools = append(tools,
 		Tool{
 			Owner:       "temporalio",
-			Repo:        "tctl",
-			Name:        "tctl",
+			Repo:        "cli",
+			Name:        "temporal",
 			Description: "Temporal CLI.",
 			BinaryTemplate: `
 						{{$os := .OS}}
@@ -3206,7 +3206,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$ext = "zip"}}
 						{{- end -}}
 
-						{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+						{{.Name}}_cli_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
 
