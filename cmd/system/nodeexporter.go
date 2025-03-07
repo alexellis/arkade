@@ -101,7 +101,7 @@ func installNodeExporterE(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		fmt.Printf("Wrote: %s\n", systemdUnit)
+		fmt.Printf("Wrote: %s\n", unitName)
 
 		if _, err = executeShellCmd(context.Background(), "systemctl", "daemon-reload"); err != nil {
 			return err
@@ -111,7 +111,13 @@ func installNodeExporterE(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		fmt.Printf("Started node_exporter\n")
+		fmt.Printf(`Started service: node_exporter
+
+Check status with: sudo journalctl -u node_exporter -f
+
+View metrics at: http://127.0.0.1:9100/metrics
+
+`)
 
 	}
 	return nil
@@ -123,7 +129,7 @@ Description=Node Exporter
 After=network.target
 
 [Service]
-ExecStart=%s/node_exporter
+ExecStart=%s
 
 [Install]
 WantedBy=multi-user.target
