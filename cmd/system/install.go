@@ -37,5 +37,7 @@ func MakeInstall() *cobra.Command {
 	command.AddCommand(MakeInstallPowershell())
 	command.AddCommand(MakeInstallCaddyServer())
 
+	command.AddCommand(MakeInstallNodeExporter())
+
 	return command
 }
