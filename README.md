@@ -251,6 +251,7 @@ Run the following to see what's available `arkade system install`:
   gitlab-runner   Install GitLab Runner
   go              Install Go
   node            Install Node.js
+  node_exporter   Install Node Exporter
   prometheus      Install Prometheus
   pwsh            Install Powershell
   registry        Install registry
