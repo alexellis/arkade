@@ -2527,9 +2527,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `
 				{{ $archStr := "" }}
 				{{ $osStr := "linux" }}
+				 {{ $ext := "tar.gz" }}
 
 				{{ if HasPrefix .OS "ming" -}}
 				{{ $osStr = "windows" }}
+				 {{ $ext = "zip" }}
 				{{- else if eq .OS "darwin" -}}
 				{{ $osStr = "darwin" }}
 				{{- end -}}
@@ -2544,7 +2546,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ $archStr = "arm7" }}
 				{{- end -}}
 
-				{{ .Name }}-{{ .Version }}-{{ $osStr }}-{{ $archStr }}.zip
+				{{ .Name }}-{{ .Version }}-{{ $osStr }}-{{ $archStr }}.{{$ext}}
 				`,
 		})
 
@@ -4570,8 +4572,31 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 									{{$ext = "zip"}}
 								{{- end -}}
 
-							dotenv-linter-{{$os}}-{{$arch}}.{{$ext}}
+							{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}
 							`,
+		})
+	tools = append(tools,
+		Tool{
+			Owner:           "sinclairtarget",
+			Repo:            "git-who",
+			Name:            "git-who",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Git blame for file trees.",
+			BinaryTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$ext := "tar.gz"}}
+	
+									{{- if eq .Arch "x86_64" -}}
+											{{$arch = "amd64"}}
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+											{{$arch = "arm64"}}
+									{{- else if eq .Arch "armv7l" -}}
+                                            {{$arch = "arm"}}
+									{{- end -}}
+	
+								gitwho_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}
+								`,
 		})
 
 	return tools

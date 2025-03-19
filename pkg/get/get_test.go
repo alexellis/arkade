@@ -4329,7 +4329,7 @@ func Test_DownloadCaddy(t *testing.T) {
 func Test_DownloadNatsServer(t *testing.T) {
 	tools := MakeTools()
 	name := "nats-server"
-	version := "v2.7.4"
+	version := "v2.11.0"
 
 	tool := getTool(name, tools)
 
@@ -4338,37 +4338,37 @@ func Test_DownloadNatsServer(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-darwin-amd64.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-darwin-amd64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-darwin-arm64.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-darwin-arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-linux-amd64.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-linux-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-linux-arm64.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-linux-arm7.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-linux-arm7.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/nats-io/nats-server/releases/download/v2.7.4/nats-server-v2.7.4-windows-amd64.zip`,
+			url:     `https://github.com/nats-io/nats-server/releases/download/v2.11.0/nats-server-v2.11.0-windows-amd64.zip`,
 		},
 	}
 
@@ -8347,7 +8347,57 @@ func Test_DownloadDotenvLinter(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
+			t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
+func Test_Download_gitwho(t *testing.T) {
+	tools := MakeTools()
+	name := "git-who"
+	const toolVersion = "v0.6"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sinclairtarget/git-who/releases/download/v0.6/gitwho_v0.6_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/sinclairtarget/git-who/releases/download/v0.6/gitwho_v0.6_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sinclairtarget/git-who/releases/download/v0.6/gitwho_v0.6_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/sinclairtarget/git-who/releases/download/v0.6/gitwho_v0.6_linux_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/sinclairtarget/git-who/releases/download/v0.6/gitwho_v0.6_linux_arm.tar.gz",
+		},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("\nwant: %s\ngot:  %s", tc.url, got)
 		}
 	}
 }
