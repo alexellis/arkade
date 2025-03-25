@@ -23,7 +23,7 @@ import (
 const (
 	// A default Istio version, get the latest from:
 	// https://github.com/istio/istio/releases/latest
-	istioVer = "1.16.1"
+	istioVer = "1.25.0"
 )
 
 func MakeInstallIstio() *cobra.Command {
@@ -150,17 +150,14 @@ func MakeInstallIstio() *cobra.Command {
 		}
 
 		w := bufio.NewWriter(file)
-		_, err = w.WriteString(res.Stdout)
-		if err != nil {
+		if _, err := w.WriteString(res.Stdout); err != nil {
 			return err
 		}
 		w.Flush()
 
 		defer os.Remove(file.Name())
 
-		verifyFlags := mergeFlagsSlices([]string{"verify-install"}, defaultFlags)
-		_, err = istioCli(verifyFlags...)
-		if err != nil {
+		if _, err := istioCli(defaultFlags...); err != nil {
 			return err
 		}
 
@@ -172,7 +169,9 @@ func MakeInstallIstio() *cobra.Command {
 }
 
 const IstioInfoMsg = `# Find out more at:
-# https://github.com/istio/`
+# https://github.com/istio/
+# https://istio.io/latest/docs/
+`
 
 const istioPostInstallMsg = `=======================================================================
 = Istio has been installed.                                        =
