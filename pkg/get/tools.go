@@ -1585,6 +1585,9 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 				{{$versionString = "win"}}
 				{{- else if eq .OS "darwin" -}}
 				{{$versionString = "osx"}}
+					{{ if eq .Arch "arm64" -}}
+					{{$versionString = "osx-arm64"}}
+					{{- end -}}
 				{{- end -}}
 
 				{{$ext := ".tar.gz"}}
