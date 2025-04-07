@@ -889,6 +889,7 @@ There are 52 apps that you can install on your cluster.
 | [popeye](https://github.com/derailed/popeye)                                 | Scans live Kubernetes cluster and reports potential issues with deployed resources and configurations.                                                            |
 | [porter](https://github.com/getporter/porter)                                | With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.                                                   |
 | [promtool](https://github.com/prometheus/prometheus)                         | Prometheus rule tester and debugging utility                                                                                                                      |
+| [pulumi](https://github.com/pulumi/pulumi)                                   | Infrastructure as Code in any programming language.                                                                                                               |
 | [rclone](https://github.com/rclone/rclone)                                   | 'rsync for cloud storage' - Google Drive, S3, Dropbox, Backblaze B2, One Drive, Swift, Hubic, Wasabi, Google Cloud Storage, Azure Blob, Azure Files, Yandex Files |
 | [regctl](https://github.com/regclient/regclient)                             | Utility for accessing docker registries                                                                                                                           |
 | [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                                            |
@@ -925,5 +926,5 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 166 tools, use `arkade get NAME` to download one.
+There are 167 tools, use `arkade get NAME` to download one.
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
