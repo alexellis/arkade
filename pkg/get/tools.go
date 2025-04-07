@@ -4601,6 +4601,31 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 								gitwho_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}
 								`,
 		})
-
+	tools = append(tools,
+		Tool{
+			Owner:           "pulumi",
+			Repo:            "pulumi",
+			Name:            "pulumi",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Infrastructure as Code in any programming language.",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "tar.gz"}}
+		
+								{{- if eq .Arch "x86_64" -}}
+									{{$arch = "x64"}}
+								{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- end -}}
+								
+								{{- if HasPrefix .OS "ming" -}}
+									{{$os = "windows"}}
+									{{$ext = "zip"}}
+								{{- end -}}
+		
+								{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
+									`,
+		})
 	return tools
 }
