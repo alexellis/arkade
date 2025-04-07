@@ -1,7 +1,7 @@
 // Copyright (c) arkade author(s) 2022. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-package cmd
+package update
 
 import (
 	"fmt"
@@ -62,7 +62,10 @@ version twice.`,
 		fmt.Println("\n", aec.Bold.Apply(pkg.SupportMessageShort))
 
 		return nil
+
 	}
+
+	command.AddCommand(MakeReadme())
 	return command
 }
 

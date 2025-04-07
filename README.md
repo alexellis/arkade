@@ -239,24 +239,27 @@ arkade system install containerd \
   --systemd
 ```
 
-Run the following to see what's available `arkade system install`:
+### Catalog of System Installs:
+<!-- start system content -->
+| SYSTEM INSTALL  |          DESCRIPTION          |
+|-----------------|-------------------------------|
+| actions-runner  | Install GitHub Actions Runner |
+| buildkitd       | Install Buildkitd             |
+| caddy           | Install Caddy Server          |
+| cni             | Install CNI plugins           |
+| containerd      | Install containerd            |
+| firecracker     | Install Firecracker           |
+| gitlab-runner   | Install GitLab Runner         |
+| go              | Install Go                    |
+| node            | Install Node.js               |
+| node_exporter   | Install Node Exporter         |
+| prometheus      | Install Prometheus            |
+| pwsh            | Install Powershell            |
+| registry        | Install registry              |
+| tc-redirect-tap | Install tc-redirect-tap       |
+ There are 14 system installations available. 
 
-```
-  actions-runner  Install GitHub Actions Runner
-  buildkitd       Install Buildkitd
-  caddy           Install Caddy Server
-  cni             Install CNI plugins
-  containerd      Install containerd
-  firecracker     Install Firecracker
-  gitlab-runner   Install GitLab Runner
-  go              Install Go
-  node            Install Node.js
-  node_exporter   Install Node Exporter
-  prometheus      Install Prometheus
-  pwsh            Install Powershell
-  registry        Install registry
-  tc-redirect-tap Install tc-redirect-tap
-```
+<!-- end system content -->
 
 The initial set of system apps is now complete, learn more in the original proposal: [Feature: system packages for Linux servers, CI and workstations #654](https://github.com/alexellis/arkade/issues/654)
 
@@ -695,8 +698,8 @@ An app is software or an add-on for your Kubernetes cluster.
 A CLI or "tool" is a command line tool that you run directly on your own workstation or a CI runner.
 
 ### Catalog of Apps
-
-|          TOOL           |                             DESCRIPTION                             |
+<!-- start apps content -->
+|           APP           |                             DESCRIPTION                             |
 |-------------------------|---------------------------------------------------------------------|
 | argocd                  | Install argocd                                                      |
 | cassandra               | Install cassandra                                                   |
@@ -750,13 +753,13 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | traefik2                | Install traefik2                                                    |
 | vault                   | Install vault                                                       |
 | waypoint                | Install Waypoint                                                    |
+ There are 52 apps that you can install on your cluster. 
 
-There are 52 apps that you can install on your cluster.
-
+<!-- end apps content -->
 > Note to contributors, run `go build && ./arkade install --print-table` to generate this list
 
 ### Catalog of CLIs
-
+<!-- start tools content -->
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
@@ -926,4 +929,6 @@ There are 52 apps that you can install on your cluster.
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
 There are 166 tools, use `arkade get NAME` to download one.
-> Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
+
+<!-- end tools content -->
+> Note to contributors, run `go build && ./arkade update readme` to update this list
