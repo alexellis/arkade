@@ -2784,44 +2784,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Name:        "just",
-			Owner:       "casey",
-			Repo:        "just",
-			Description: "Just a command runner",
-			URLTemplate: `
-				{{ $os := "unknown-linux" }}
-				{{ $arch := "x86_64" }}
-				{{ $ext := "-musl.tar.gz" }}
-
-				{{- if eq .Arch "aarch64" -}}
-				{{ $arch = "aarch64" }}
-				{{- else if eq .Arch "arm64" -}}
-				{{ $arch = "aarch64" }}
-				{{- else if eq .Arch "armv7l" -}}
-				{{ $arch = "armv7" }}
-				{{ $ext = "-musleabihf.tar.gz" }}
-				{{- end -}}
-
-				{{ if HasPrefix .OS "ming" -}}
-				{{ $os = "pc-windows" }}
-				{{ $ext = "-msvc.zip" }}
-				{{- else if eq .OS "darwin" -}}
-				{{  $os = "apple-darwin" }}
-				{{ $ext = ".tar.gz" }}
-				{{- end -}}
-			https://github.com/{{ .Owner }}/{{ .Repo }}/releases/download/{{ .VersionNumber }}/{{ .Name }}-{{ .VersionNumber }}-{{ $arch }}-{{ $os }}{{ $ext }}
-			`,
-			BinaryTemplate: `
-			{{- if HasPrefix .OS "ming" -}}
-			{{ .Name }}.exe
-			{{- else -}}
-			{{ .Name }}
-			{{- end -}}
-			`,
-		})
-
-	tools = append(tools,
-		Tool{
 			Owner:       "prometheus",
 			Repo:        "prometheus",
 			Name:        "promtool",
@@ -4755,7 +4717,6 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 								{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 									`,
 		})
-
 	tools = append(tools,
 		Tool{
 			Owner:          "BurntSushi",
@@ -4830,6 +4791,37 @@ https://github.com/BurntSushi/ripgrep/releases/download/{{.Version}}/ripgrep-{{.
 									{{- end -}}
 			
 									https://github.com/grafana/loki/releases/download/{{.Version}}/{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "casey",
+			Repo:            "just",
+			Name:            "just",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A handy way to save and run project-specific commands",
+			BinaryTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$ext := "tar.gz"}}
+			
+									{{- if eq .Arch "armv7l" -}}
+                                        {{$arch = "armv7"}}
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$arch = "aarch64"}}
+									{{- end -}}
+									
+									{{- if eq .OS "linux" -}}
+										{{$os = "unknown-linux-musl"}}
+									{{- else if eq .OS "darwin" -}}
+									    {{$os = "apple-darwin"}}
+									{{- else if HasPrefix .OS "ming" -}}
+										{{$os = "pc-windows-msvc"}}
+										{{$ext = "zip"}}
+									{{- end -}}
+			
+									{{.Name}}-{{.VersionNumber}}-{{$arch}}-{{$os}}.{{$ext}}
+										`,
 		})
 
 	return tools
