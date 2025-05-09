@@ -4627,5 +4627,27 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 								{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 									`,
 		})
+
+	tools = append(tools,
+		Tool{
+			Owner:           "kagent-dev",
+			Repo:            "kagent",
+			Name:            "kagent",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Cloud Native Agentic AI.",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := ""}}
+		
+								{{- if eq .Arch "x86_64" -}}
+									{{$arch = "amd64"}}
+								{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- end -}}
+	
+								{{.Name}}-{{$os}}-{{$arch}}
+									`,
+		})
 	return tools
 }
