@@ -160,7 +160,7 @@ func createIngress(domain, email, ingressClass, ingressName string, staging bool
 	}
 
 	if res.ExitCode != 0 {
-		return fmt.Errorf(`Unable to apply YAML files.
+		return fmt.Errorf(`unable to apply YAML files.
 Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 or higher installed in cert-manager namespace? %s`,
 			res.Stderr)
 	}
@@ -170,10 +170,8 @@ Have you got OpenFaaS running in the openfaas namespace and cert-manager 1.0.0 o
 func createTempDirectory(directory string) (string, error) {
 	tempDirectory := filepath.Join(os.TempDir(), directory)
 	if _, err := os.Stat(tempDirectory); os.IsNotExist(err) {
-		log.Printf(tempDirectory)
-		errr := os.Mkdir(tempDirectory, 0744)
-		if errr != nil {
-			log.Printf("couldnt make dir %s", err)
+
+		if err := os.Mkdir(tempDirectory, 0744); err != nil {
 			return "", err
 		}
 	}
