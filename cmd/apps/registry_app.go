@@ -4,6 +4,7 @@
 package apps
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -57,7 +58,7 @@ Or the Open Source Docker registry https://github.com/distribution/distribution`
 		}
 		namespace, _ := command.Flags().GetString("namespace")
 		if namespace != "default" {
-			return fmt.Errorf(`to override the "default", install via helm directly`)
+			return errors.New(`to override the "default", install via helm directly`)
 		}
 
 		outputFile, _ := command.Flags().GetString("write-file")
@@ -152,7 +153,7 @@ Or the Open Source Docker registry https://github.com/distribution/distribution`
 
 			fmt.Printf("See %s for credentials\n", outputFile)
 		} else {
-			fmt.Printf(fmt.Sprintf("Registry credentials: %s %s\nexport PASSWORD=%s\n", username, pass, pass))
+			fmt.Printf("Registry credentials: %s %s\nexport PASSWORD=%s\n", username, pass, pass)
 		}
 
 		return nil

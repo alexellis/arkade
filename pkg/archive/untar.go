@@ -117,17 +117,6 @@ func untar(r io.Reader, dir string, gzip bool, quiet bool) (err error) {
 	return nil
 }
 
-func validRelativeDir(dir string) bool {
-	if strings.Contains(dir, `\`) || path.IsAbs(dir) {
-		return false
-	}
-	dir = path.Clean(dir)
-	if strings.HasPrefix(dir, "../") || strings.HasSuffix(dir, "/..") || dir == ".." {
-		return false
-	}
-	return true
-}
-
 func validRelPath(p string) bool {
 	if p == "" || strings.Contains(p, `\`) || strings.HasPrefix(p, "/") || strings.Contains(p, "../") {
 		return false

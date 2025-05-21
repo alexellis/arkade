@@ -4,6 +4,7 @@
 package apps
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -46,7 +47,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		fmt.Printf("Node architecture: %q\n", arch)
 
 		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
+			return errors.New(OnlyIntelArch)
 		}
 
 		userPath, err := config.InitUserDir()

@@ -5,11 +5,7 @@ import (
 	"reflect"
 	"sort"
 	"testing"
-
-	"github.com/Masterminds/semver"
 )
-
-var faasCLIVersionConstraint, _ = semver.NewConstraint(">= 0.13.2")
 
 const arch64bit = "x86_64"
 const archARM7 = "armv7l"

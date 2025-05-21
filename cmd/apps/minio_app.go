@@ -15,7 +15,6 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg"
-	"github.com/alexellis/arkade/pkg/env"
 	"github.com/sethvargo/go-password/password"
 	"github.com/spf13/cobra"
 )
@@ -112,10 +111,16 @@ func MakeInstallMinio() *cobra.Command {
 		if len(rootUser) == 0 {
 			fmt.Printf("Access Key not provided, one will be generated for you\n")
 			rootUser, err = gen.Generate(20, 10, 0, false, true)
+			if err != nil {
+				return err
+			}
 		}
 		if len(rootPassword) == 0 {
 			fmt.Printf("Secret Key not provided, one will be generated for you\n")
 			rootPassword, err = gen.Generate(40, 10, 5, false, true)
+			if err != nil {
+				return err
+			}
 		}
 
 		overrides["auth.rootUser"] = rootUser
@@ -149,8 +154,6 @@ func MakeInstallMinio() *cobra.Command {
 
 	return minio
 }
-
-var _, clientOS = env.GetClientArch()
 
 var MinioInfoMsg = `# Forward the minio port to your machine
 kubectl port-forward -n default svc/minio 9000:9000 &

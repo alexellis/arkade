@@ -4,7 +4,9 @@
 package apps
 
 import (
+	"errors"
 	"fmt"
+
 	"github.com/alexellis/arkade/pkg/config"
 
 	"github.com/alexellis/arkade/pkg"
@@ -62,7 +64,7 @@ func MakeInstallCassandra() *cobra.Command {
 
 		arch := k8s.GetNodeArchitecture()
 		if arch != IntelArch {
-			return fmt.Errorf(OnlyIntelArch)
+			return errors.New(OnlyIntelArch)
 		}
 
 		return nil

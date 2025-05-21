@@ -284,13 +284,15 @@ func getValuesSuffix(arch string) string {
 	switch arch {
 	case "arm":
 		valuesSuffix = "-armhf"
-		break
+
 	case "arm64", "aarch64":
 		valuesSuffix = "-arm64"
-		break
+
 	default:
 		valuesSuffix = ""
+
 	}
+
 	return valuesSuffix
 }
 
