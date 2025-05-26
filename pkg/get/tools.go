@@ -611,11 +611,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kubernetes-sigs",
-			Repo:        "kustomize",
-			Name:        "kustomize",
-			Description: "Customization of kubernetes YAML configurations",
-			Version:     "v5.0.3",
+			Owner:           "kubernetes-sigs",
+			Repo:            "kustomize",
+			Name:            "kustomize",
+			Description:     "Customization of kubernetes YAML configurations",
+			VersionStrategy: GitHubVersionStrategy,
 			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{$ext := "tar.gz"}}
