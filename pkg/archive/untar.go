@@ -24,6 +24,12 @@ func Untar(r io.Reader, dir string, gzip bool, quiet bool) error {
 	return untar(r, dir, gzip, quiet)
 }
 
+// UntarXZ reads the (xz-compressed) tar file from r and writes it into dir.
+// This is a wrapper for the implementation in xz.go
+func UntarXZ(r io.Reader, dir string, quiet bool) error {
+	return untarXZ(r, dir, quiet)
+}
+
 func untar(r io.Reader, dir string, gzip bool, quiet bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
