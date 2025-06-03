@@ -98,7 +98,7 @@ func MakeInstallBuildkitd() *cobra.Command {
 
 		fmt.Printf("Unpacking Buildkitd to: %s\n", path.Join(installPath, "buildkitd"))
 
-		if err := archive.Untar(f, installPath, true, true); err != nil {
+		if err := archive.Untar(f, installPath, true, false, true); err != nil {
 			return err
 		}
 

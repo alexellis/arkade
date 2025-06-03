@@ -108,7 +108,7 @@ func MakeInstallPowershell() *cobra.Command {
 
 		fmt.Printf("Unpacking Powershell to: %s\n", installPath)
 
-		if err := archive.Untar(f, installPath, true, true); err != nil {
+		if err := archive.Untar(f, installPath, true, false, true); err != nil {
 			return err
 		}
 
