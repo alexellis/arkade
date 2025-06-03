@@ -243,11 +243,15 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 
 	forceQuiet := true
 
-	if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-		if err := archive.Untar(archiveFile, outFilePathDir, true, forceQuiet); err != nil {
-			return "", err
-		}
-	} else if strings.HasSuffix(downloadURL, "zip") {
+	   if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
+			   if err := archive.Untar(archiveFile, outFilePathDir, true, forceQuiet); err != nil {
+					   return "", err
+			   }
+	   } else if strings.HasSuffix(downloadURL, "tar.xz") {
+			   if err := archive.UntarXZ(archiveFile, outFilePathDir, forceQuiet); err != nil {
+					   return "", err
+			   }
+	   } else if strings.HasSuffix(downloadURL, "zip") {
 		fInfo, err := archiveFile.Stat()
 		if err != nil {
 			return "", err
