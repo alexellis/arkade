@@ -6828,6 +6828,58 @@ func Test_DownloadOpenshiftCLI(t *testing.T) {
 	}
 }
 
+func Test_DownloadCRC(t *testing.T) {
+	tools := MakeTools()
+	name := "crc"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "2.51.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.51.0/crc-linux-amd64.tar.xz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.51.0/crc-linux-arm64.tar.xz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.51.0/crc-macos-installer.pkg`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.51.0/crc-macos-installer.pkg`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.51.0/crc-windows-installer.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadAtuin(t *testing.T) {
 	tools := MakeTools()
 	name := "atuin"
