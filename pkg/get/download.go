@@ -266,5 +266,17 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		}
 	}
 
+	if strings.Contains(strings.ToLower(operatingSystem), "mingw") {
+		if files, err := os.ReadDir(outFilePathDir); err == nil {
+			for _, file := range files {
+				if strings.HasSuffix(strings.ToLower(file.Name()), ".msi") {
+					fmt.Printf("\n\nNote: arkade ONLY supports downloading .exe binaries but not installer packages (.msi).\n")
+					fmt.Printf("Please manually run the installer: %s\n", filepath.Join(outFilePathDir, file.Name()))
+					continue
+				}
+			}
+		}
+	}
+
 	return outFilePath, nil
 }

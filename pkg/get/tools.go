@@ -3808,6 +3808,37 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "crc-org",
+			Repo:        "crc",
+			Name:        "crc",
+			Description: "CRC manages local VMs to run an OpenShift 4.x cluster, Microshift or Podman optimized for testing and development purposes.",
+			URLTemplate: `
+			{{$os := .OS}}
+			{{$arch := .Arch}}
+			{{$version := .VersionNumber}}
+
+			{{- if eq $version "" -}}
+				{{$version = "latest"}}
+			{{- end -}}
+
+			{{- if eq $arch "aarch64" -}}
+				{{$arch = "arm64"}}
+			{{- else if eq $arch "x86_64" -}}
+				{{$arch = "amd64"}}
+			{{- end -}}
+
+			{{- if eq $os "linux" -}}
+				https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-linux-{{$arch}}.tar.xz
+			{{- else if eq $os "darwin" -}}
+				https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-macos-installer.pkg
+			{{- else if HasPrefix $os "ming" -}}
+				https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-windows-installer.zip
+			{{- end -}}
+		`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "atuinsh",
 			Repo:        "atuin",
 			Name:        "atuin",

@@ -75,7 +75,7 @@ Do not add ARMv6 support, or 32-bit architecture.
 
 FreeBSD and other operating systems are not supported at this time.
 
-Binaries that are packaged as `.zip`, `.tgz` or `.tar.gz` are also supported, look at previous apps to find an example
+Binaries that are packaged as `.zip`, `.tgz`, `tar.xz` or `.tar.gz` are also supported, look at previous apps to find an example
 to copy.
 
 Always write a unit tests for your tool in the `pkg/get/get_test.go`.
