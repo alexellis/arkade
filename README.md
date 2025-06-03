@@ -17,11 +17,12 @@ With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
 - [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
   - [Support arkade 👋](#support-arkade-)
   - [Should you try arkade?](#should-you-try-arkade)
+  - [Demo](#demo)
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
   - [Download CLI tools with arkade](#download-cli-tools-with-arkade)
   - [Install System Packages](#install-system-packages)
-  - [Install packages from OCI images](#install-packages-from-oci-images)
+  - [Install Packages from OCI images](#install-packages-from-oci-images)
   - [Install CLIs during CI with GitHub Actions](#install-clis-during-ci-with-github-actions)
   - [Bump Helm chart versions](#bump-helm-chart-versions)
   - [Verify and upgrade images in Helm charts](#verify-and-upgrade-images-in-helm-charts)
@@ -784,6 +785,7 @@ There are 52 apps that you can install on your cluster.
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                                                   |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                                                 |
 | [crane](https://github.com/google/go-containerregistry)                      | crane is a tool for interacting with remote images and registries                                                                                                 |
+| [crc](https://github.com/crc-org/crc)                                        | CRC manages local VMs to run an OpenShift 4.x cluster, Microshift or Podman optimized for testing and development purposes.                                       |
 | [croc](https://github.com/schollz/croc)                                      | Easily and securely send things from one computer to another                                                                                                      |
 | [crossplane](https://github.com/crossplane/crossplane)                       | Simplify some development and administration aspects of Crossplane.                                                                                               |
 | [dagger](https://github.com/dagger/dagger)                                   | A portable devkit for CI/CD pipelines.                                                                                                                            |
@@ -926,5 +928,5 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 167 tools, use `arkade get NAME` to download one.
+There are 168 tools, use `arkade get NAME` to download one.
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
