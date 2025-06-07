@@ -825,7 +825,7 @@ There are 52 apps that you can install on your cluster.
 | [inletsctl](https://github.com/inlets/inletsctl)                             | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                                                     |
 | [istioctl](https://github.com/istio/istio)                                   | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                                                |
 | [jq](https://github.com/jqlang/jq)                                           | jq is a lightweight and flexible command-line JSON processor                                                                                                      |
-| [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                                             |
+| [just](https://github.com/casey/just)                                        | A handy way to save and run project-specific commands                                                                                                             |
 | [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                                          |
 | [k0sctl](https://github.com/k0sproject/k0sctl)                               | A bootstrapping and management tool for k0s clusters                                                                                                              |
 | [k3d](https://github.com/k3d-io/k3d)                                         | Helper to run Rancher Lab's k3s in Docker.                                                                                                                        |
@@ -927,4 +927,5 @@ There are 52 apps that you can install on your cluster.
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
 There are 167 tools, use `arkade get NAME` to download one.
+
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
