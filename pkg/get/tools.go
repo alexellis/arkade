@@ -611,11 +611,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kubernetes-sigs",
-			Repo:        "kustomize",
-			Name:        "kustomize",
-			Description: "Customization of kubernetes YAML configurations",
-			Version:     "v5.0.3",
+			Owner:           "kubernetes-sigs",
+			Repo:            "kustomize",
+			Name:            "kustomize",
+			Description:     "Customization of kubernetes YAML configurations",
+			VersionStrategy: GitHubVersionStrategy,
 			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{$ext := "tar.gz"}}
@@ -623,13 +623,18 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 	{{- if eq .Arch "x86_64" -}}
 	{{$osStr = "linux_amd64"}}
 	{{- else if eq .Arch "aarch64" -}}
-  {{$osStr = "linux_arm64"}}
+	{{$osStr = "linux_arm64"}}
 	{{- end -}}
 	{{- else if eq .OS "darwin" -}}
 	{{$osStr = "darwin_amd64"}}
 	{{- end -}}
-	{{ if HasPrefix .OS "ming" -}}
+	{{- if HasPrefix .OS "ming" -}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}
 	{{$osStr = "windows_amd64"}}
+	{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}} {{/* Check for both aarch64 and arm64 for Windows */}}
+	{{$osStr = "windows_arm64"}}
+	{{- end -}}
 	{{- end -}}
 	kustomize%2F{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}.{{$ext}}`,
 		})
