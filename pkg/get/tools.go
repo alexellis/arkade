@@ -522,7 +522,7 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 			Owner:       "bitnami-labs",
 			Repo:        "sealed-secrets",
 			Name:        "kubeseal",
-			Version:     "v0.19.5",
+			Version:     "v0.30.0",
 			Description: "A Kubernetes controller and tool for one-way encrypted Secrets",
 			BinaryTemplate: `{{$arch := ""}}
 		{{- if eq .Arch "aarch64" -}}
