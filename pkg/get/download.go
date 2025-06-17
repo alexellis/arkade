@@ -244,7 +244,11 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 	forceQuiet := true
 
 	if strings.HasSuffix(downloadURL, "tar.gz") || strings.HasSuffix(downloadURL, "tgz") {
-		if err := archive.Untar(archiveFile, outFilePathDir, true, forceQuiet); err != nil {
+		if err := archive.Untar(archiveFile, outFilePathDir, true, false, forceQuiet); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(downloadURL, "tar.xz") {
+		if err := archive.Untar(archiveFile, outFilePathDir, false, true, forceQuiet); err != nil {
 			return "", err
 		}
 	} else if strings.HasSuffix(downloadURL, "zip") {
@@ -259,6 +263,18 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 
 		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir, forceQuiet); err != nil {
 			return "", err
+		}
+	}
+
+	if strings.Contains(strings.ToLower(operatingSystem), "mingw") {
+		if files, err := os.ReadDir(outFilePathDir); err == nil {
+			for _, file := range files {
+				if strings.HasSuffix(strings.ToLower(file.Name()), ".msi") {
+					fmt.Printf("\n\nNote: arkade ONLY supports downloading .exe binaries but not installer packages (.msi).\n")
+					fmt.Printf("Please manually run the installer: %s\n", filepath.Join(outFilePathDir, file.Name()))
+					continue
+				}
+			}
 		}
 	}
 
