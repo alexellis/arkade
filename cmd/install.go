@@ -6,11 +6,14 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"sort"
 	"strings"
 
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/renderer"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/spf13/cobra"
 
 	"github.com/alexellis/arkade/cmd/apps"
@@ -49,27 +52,7 @@ command.`,
 		printTable, _ := command.Flags().GetBool("print-table")
 
 		if printTable {
-			table := tablewriter.NewWriter(os.Stdout)
-			table.SetHeader([]string{"Tool", "Description"})
-
-			table.SetBorders(tablewriter.Border{Left: true, Top: false, Right: true, Bottom: false})
-			table.SetCenterSeparator("|")
-			table.SetAutoWrapText(false)
-
-			appSortedList := make([]string, 0, len(appList))
-
-			for a := range appList {
-				appSortedList = append(appSortedList, a)
-			}
-			sort.Strings(appSortedList)
-
-			for _, k := range appSortedList {
-				table.Append([]string{k, appList[k].Installer().Short})
-			}
-
-			table.Render()
-
-			fmt.Printf("\nThere are %d apps that you can install on your cluster.\n", len(appList))
+			renderTable(os.Stdout, appList)
 			return nil
 		}
 
@@ -193,4 +176,50 @@ func checkForTool(appName string, tools []get.Tool) string {
 		}
 	}
 	return fmt.Sprintf("no such app: %s, run \"arkade install --help\" for a list of apps", appName)
+}
+
+func renderTable(w io.Writer, appMap map[string]ArkadeApp) {
+
+	symbols := tw.NewSymbolCustom("Lines").
+		WithRow("-").
+		WithColumn("|").
+		WithCenter("|").
+		WithMidLeft("|").
+		WithMidRight("|")
+
+	outline := tw.Border{
+		Left:   tw.On,
+		Right:  tw.On,
+		Top:    tw.Off,
+		Bottom: tw.Off,
+	}
+
+	table := tablewriter.NewTable(w,
+		tablewriter.WithRenderer(renderer.NewBlueprint(
+			tw.Rendition{
+				Borders: outline,
+				Symbols: symbols,
+			})),
+		tablewriter.WithConfig(tablewriter.Config{
+			Row: tw.CellConfig{
+				Formatting: tw.CellFormatting{AutoWrap: tw.WrapNone},
+			},
+		}),
+	)
+	table.Header([]string{"Tool", "Description"})
+	appCount := len(appMap)
+
+	appSortedList := make([]string, 0, appCount)
+
+	for a := range appMap {
+		appSortedList = append(appSortedList, a)
+	}
+	sort.Strings(appSortedList)
+
+	for _, k := range appSortedList {
+		table.Append([]string{k, appMap[k].Installer().Short})
+	}
+
+	table.Render()
+	fmt.Fprintf(w, "\nThere are %d apps that you can install on your cluster.\n", appCount)
 }

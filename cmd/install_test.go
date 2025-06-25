@@ -4,9 +4,12 @@
 package cmd
 
 import (
+	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/alexellis/arkade/pkg/get"
+	"github.com/spf13/cobra"
 )
 
 type Tool = get.Tool
@@ -87,5 +90,41 @@ func TestCheckForTool(t *testing.T) {
 					tc.name, tc.want, got)
 			}
 		})
+	}
+}
+
+func TestRenderTable(t *testing.T) {
+
+	var buf bytes.Buffer
+
+	appMap := map[string]ArkadeApp{
+		"argocd": {
+			Name: "argocd",
+			Installer: func() *cobra.Command {
+				return &cobra.Command{Short: "Install Argo CD"}
+			},
+		},
+		"cert-manager": {
+			Name: "cert-manager",
+			Installer: func() *cobra.Command {
+				return &cobra.Command{Short: "Install Cert Manager"}
+			},
+		},
+	}
+	expected := `|     TOOL     |     DESCRIPTION      |
+|--------------|----------------------|
+| argocd       | Install Argo CD      |
+| cert-manager | Install Cert Manager |
+
+There are 2 apps that you can install on your cluster.
+`
+	renderTable(&buf, appMap)
+	actual := buf.String()
+
+	want := strings.TrimSpace(expected)
+	got := strings.TrimSpace(actual)
+
+	if actual != expected {
+		t.Errorf("Output did not match expected.\nwant:\n%s\n\ngot:\n%s", want, got)
 	}
 }
