@@ -128,3 +128,46 @@ There are 2 apps that you can install on your cluster.
 		t.Errorf("Output did not match expected.\nwant:\n%s\n\ngot:\n%s", want, got)
 	}
 }
+
+func TestFindAppByName(t *testing.T) {
+	apps := map[string]ArkadeApp{
+		"nginx": {Name: "nginx"},
+		"helm":  {Name: "helm"},
+	}
+
+	tests := []struct {
+		name       string
+		searchName string
+		want       *ArkadeApp
+	}{
+		{
+			name:       "App exists",
+			searchName: "nginx",
+			want:       &ArkadeApp{Name: "nginx"},
+		},
+		{
+			name:       "App does not exist",
+			searchName: "notAnApp",
+			want:       nil,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := findAppByName(tt.searchName, apps)
+
+			if tt.want == nil && got != nil {
+				t.Errorf("want %+v\n got %+v\n", *tt.want, *got)
+			}
+
+			if tt.want != nil {
+				if got == nil {
+					t.Errorf("want: %+v\n got nil\n", *tt.want)
+				}
+				if got.Name != tt.want.Name {
+					t.Errorf("failed to find app by name.\nwant:%s\ngot:\n%s", tt.want.Name, got.Name)
+				}
+			}
+		})
+	}
+}
