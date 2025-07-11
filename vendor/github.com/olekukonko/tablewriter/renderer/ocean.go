@@ -1,6 +1,7 @@
 package renderer
 
 import (
+	"github.com/olekukonko/tablewriter/pkg/twwidth"
 	"io"
 	"strings"
 
@@ -106,17 +107,9 @@ func (o *Ocean) Header(headers [][]string, ctx tw.Formatting) {
 	if !o.widthsFinalized {
 		o.tryFinalizeWidths(ctx)
 	}
-	// The batch renderer (table.go/renderHeader) will call Line() for the top border
-	// and for the header separator if its main config t.config says so.
-	// So, Ocean.Header should *not* draw these itself when in batch mode.
-	// For true streaming, table.go's streamRenderHeader would make these Line() calls.
-
-	// Decision: Ocean.Header *only* renders header content.
-	// Lines (top border, header separator) are managed by the caller (batch or stream logic in table.go).
 
 	if !o.widthsFinalized {
 		o.logger.Error("Ocean.Header: Cannot render content, widths are not finalized.")
-		// o.headerContentRendered = true; // No, content wasn't rendered.
 		return
 	}
 
@@ -133,10 +126,7 @@ func (o *Ocean) Header(headers [][]string, ctx tw.Formatting) {
 		o.headerContentRendered = true
 	} else {
 		o.logger.Debug("Ocean.Header: No actual header content lines to render.")
-		// If header is empty, table.go's renderHeader might still call Line() for the separator.
-		// o.headerContentRendered remains false if no content.
 	}
-	// DO NOT draw the header separator line here. Let table.go's renderHeader or streamRenderHeader call o.Line().
 }
 
 func (o *Ocean) Row(row []string, ctx tw.Formatting) {
@@ -145,15 +135,6 @@ func (o *Ocean) Row(row []string, ctx tw.Formatting) {
 	if !o.widthsFinalized {
 		o.tryFinalizeWidths(ctx)
 	}
-	// Top border / header separator logic:
-	// If this is the very first output, table.go's batch renderHeader (or streamRenderHeader)
-	// should have already called Line() for top border and header separator.
-	// If Header() was called but rendered no content, table.go's renderHeader would still call Line() for the separator.
-	// If Header() was never called by table.go (e.g. streaming rows directly after Start()),
-	// then table.go's streamAppendRow needs to handle initial lines.
-
-	// Decision: Ocean.Row *only* renders row content.
-
 	if !o.widthsFinalized {
 		o.logger.Error("Ocean.Row: Cannot render content, widths are not finalized.")
 		return
@@ -171,11 +152,6 @@ func (o *Ocean) Footer(footers [][]string, ctx tw.Formatting) {
 		o.tryFinalizeWidths(ctx)
 		o.logger.Warn("Ocean.Footer: Widths finalized at Footer stage (unusual).")
 	}
-	// Separator line before footer:
-	// This should be handled by table.go's renderFooter or streamRenderFooter calling o.Line().
-
-	// Decision: Ocean.Footer *only* renders footer content.
-
 	if !o.widthsFinalized {
 		o.logger.Error("Ocean.Footer: Cannot render content, widths are not finalized.")
 		return
@@ -194,24 +170,19 @@ func (o *Ocean) Footer(footers [][]string, ctx tw.Formatting) {
 	} else {
 		o.logger.Debug("Ocean.Footer: No actual footer content lines to render.")
 	}
-	// DO NOT draw the bottom border here. Let table.go's main Close or batch renderFooter call o.Line().
 }
 
 func (o *Ocean) Line(ctx tw.Formatting) {
-	// This method is now called EXTERNALLY by table.go's batch or stream logic
-	// to draw all horizontal lines (top border, header sep, footer sep, bottom border).
 	if !o.widthsFinalized {
-		// If Line is called before widths are known (e.g. table.go's batch renderHeader trying to draw top border)
-		// we must try to finalize widths from this context.
 		o.tryFinalizeWidths(ctx)
 		if !o.widthsFinalized {
 			o.logger.Error("Ocean.Line: Called but widths could not be finalized. Skipping line rendering.")
 			return
 		}
 	}
+
 	// Ensure Line uses the consistent fixedWidths for drawing
 	ctx.Row.Widths = o.fixedWidths
-
 	o.logger.Debugf("Ocean.Line DRAWING: Level=%v, Loc=%s, Pos=%s, IsSubRow=%t, WidthsLen=%d", ctx.Level, ctx.Row.Location, ctx.Row.Position, ctx.IsSubRow, ctx.Row.Widths.Len())
 
 	jr := NewJunction(JunctionContext{
@@ -262,7 +233,7 @@ func (o *Ocean) Line(ctx tw.Formatting) {
 			if segmentChar == tw.Empty {
 				segmentChar = o.config.Symbols.Row()
 			}
-			segmentDisplayWidth := tw.DisplayWidth(segmentChar)
+			segmentDisplayWidth := twwidth.Width(segmentChar)
 			if segmentDisplayWidth <= 0 {
 				segmentDisplayWidth = 1
 			}
@@ -296,12 +267,6 @@ func (o *Ocean) Line(ctx tw.Formatting) {
 
 func (o *Ocean) Close() error {
 	o.logger.Debug("Ocean.Close() called.")
-	// The actual bottom border drawing is expected to be handled by table.go's
-	// batch render logic (renderFooter) or stream logic (streamRenderBottomBorder)
-	// by making an explicit call to o.Line() with the correct context.
-	// Ocean.Close() itself does not draw the bottom border to avoid duplication.
-
-	// Only reset state.
 	o.resetState()
 	return nil
 }
@@ -374,7 +339,7 @@ func (o *Ocean) renderContentLine(ctx tw.Formatting, lineData []string) {
 					}
 
 					if k < hSpan-1 && o.config.Settings.Separators.BetweenColumns.Enabled() {
-						currentMergeTotalRenderWidth += tw.DisplayWidth(o.config.Symbols.Column())
+						currentMergeTotalRenderWidth += twwidth.Width(o.config.Symbols.Column())
 					}
 				}
 				actualCellWidthToRender = currentMergeTotalRenderWidth
@@ -428,7 +393,7 @@ func (o *Ocean) formatCellContent(content string, cellVisualWidth int, padding t
 		return tw.Empty
 	}
 
-	contentDisplayWidth := tw.DisplayWidth(content)
+	contentDisplayWidth := twwidth.Width(content)
 
 	padLeftChar := padding.Left
 	if padLeftChar == tw.Empty {
@@ -439,8 +404,8 @@ func (o *Ocean) formatCellContent(content string, cellVisualWidth int, padding t
 		padRightChar = tw.Space
 	}
 
-	padLeftDisplayWidth := tw.DisplayWidth(padLeftChar)
-	padRightDisplayWidth := tw.DisplayWidth(padRightChar)
+	padLeftDisplayWidth := twwidth.Width(padLeftChar)
+	padRightDisplayWidth := twwidth.Width(padRightChar)
 
 	spaceForContentAndAlignment := cellVisualWidth - padLeftDisplayWidth - padRightDisplayWidth
 	if spaceForContentAndAlignment < 0 {
@@ -448,8 +413,8 @@ func (o *Ocean) formatCellContent(content string, cellVisualWidth int, padding t
 	}
 
 	if contentDisplayWidth > spaceForContentAndAlignment {
-		content = tw.TruncateString(content, spaceForContentAndAlignment)
-		contentDisplayWidth = tw.DisplayWidth(content)
+		content = twwidth.Truncate(content, spaceForContentAndAlignment)
+		contentDisplayWidth = twwidth.Width(content)
 	}
 
 	remainingSpace := spaceForContentAndAlignment - contentDisplayWidth
@@ -477,7 +442,7 @@ func (o *Ocean) formatCellContent(content string, cellVisualWidth int, padding t
 	sb.WriteString(PR)
 	sb.WriteString(padRightChar)
 
-	currentFormattedWidth := tw.DisplayWidth(sb.String())
+	currentFormattedWidth := twwidth.Width(sb.String())
 	if currentFormattedWidth < cellVisualWidth {
 		if align == tw.AlignRight {
 			prefixSpaces := strings.Repeat(tw.Space, cellVisualWidth-currentFormattedWidth)
@@ -490,7 +455,7 @@ func (o *Ocean) formatCellContent(content string, cellVisualWidth int, padding t
 	} else if currentFormattedWidth > cellVisualWidth {
 		tempStr := sb.String()
 		sb.Reset()
-		sb.WriteString(tw.TruncateString(tempStr, cellVisualWidth))
+		sb.WriteString(twwidth.Truncate(tempStr, cellVisualWidth))
 		o.logger.Warnf("formatCellContent: Final string '%s' (width %d) exceeded target %d. Force truncated.", tempStr, currentFormattedWidth, cellVisualWidth)
 	}
 	return sb.String()

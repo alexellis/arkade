@@ -1,7 +1,9 @@
 package tablewriter
 
 import (
+	"github.com/mattn/go-runewidth"
 	"github.com/olekukonko/ll"
+	"github.com/olekukonko/tablewriter/pkg/twwidth"
 	"github.com/olekukonko/tablewriter/tw"
 	"reflect"
 )
@@ -613,6 +615,31 @@ func WithRendition(rendition tw.Rendition) Option {
 	}
 }
 
+// WithEastAsian configures the global East Asian width calculation setting.
+//   - enable=true: Enables East Asian width calculations. CJK and ambiguous characters
+//     are typically measured as double width.
+//   - enable=false: Disables East Asian width calculations. Characters are generally
+//     measured as single width, subject to Unicode standards.
+//
+// This setting affects all subsequent display width calculations using the twdw package.
+func WithEastAsian(enable bool) Option {
+	return func(target *Table) {
+		twwidth.SetEastAsian(enable)
+	}
+}
+
+// WithCondition provides a way to set a custom global runewidth.Condition
+// that will be used for all subsequent display width calculations by the twwidth (twdw) package.
+//
+// The runewidth.Condition object allows for more fine-grained control over how rune widths
+// are determined, beyond just toggling EastAsianWidth. This could include settings for
+// ambiguous width characters or other future properties of runewidth.Condition.
+func WithCondition(condition *runewidth.Condition) Option {
+	return func(target *Table) {
+		twwidth.SetCondition(condition)
+	}
+}
+
 // WithSymbols sets the symbols used for drawing table borders and separators.
 // The symbols are applied to the table's renderer configuration, if a renderer is set.
 // If no renderer is set (target.renderer is nil), this option has no effect. .
@@ -682,11 +709,18 @@ func defaultConfig() Config {
 				PerColumn: []tw.Align{},
 			},
 		},
-		Stream: tw.StreamConfig{},
-		Debug:  false,
+		Stream: tw.StreamConfig{
+			Enable:        false,
+			StrictColumns: false,
+		},
+		Debug: false,
 		Behavior: tw.Behavior{
 			AutoHide:  tw.Off,
 			TrimSpace: tw.On,
+			Structs: tw.Struct{
+				AutoHeader: tw.Off,
+				Tags:       []string{"json", "db"},
+			},
 		},
 	}
 }
@@ -814,6 +848,14 @@ func mergeConfig(dst, src Config) Config {
 	dst.Behavior.Compact = src.Behavior.Compact
 	dst.Behavior.Header = src.Behavior.Header
 	dst.Behavior.Footer = src.Behavior.Footer
+	dst.Behavior.Footer = src.Behavior.Footer
+
+	dst.Behavior.Structs.AutoHeader = src.Behavior.Structs.AutoHeader
+
+	// check lent of tags
+	if len(src.Behavior.Structs.Tags) > 0 {
+		dst.Behavior.Structs.Tags = src.Behavior.Structs.Tags
+	}
 
 	if src.Widths.Global != 0 {
 		dst.Widths.Global = src.Widths.Global
@@ -842,6 +884,8 @@ func mergeStreamConfig(dst, src tw.StreamConfig) tw.StreamConfig {
 	if src.Enable {
 		dst.Enable = true
 	}
+
+	dst.StrictColumns = src.StrictColumns
 	return dst
 }
 
