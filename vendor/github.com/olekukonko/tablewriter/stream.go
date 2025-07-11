@@ -1,8 +1,8 @@
 package tablewriter
 
 import (
-	"fmt"
 	"github.com/olekukonko/errors"
+	"github.com/olekukonko/tablewriter/pkg/twwidth"
 	"github.com/olekukonko/tablewriter/tw"
 	"math"
 )
@@ -89,7 +89,7 @@ func (t *Table) Start() error {
 	if !t.renderer.Config().Streaming {
 		// Check if the configured renderer actually supports streaming.
 		t.logger.Error("Configured renderer does not support streaming.")
-		return fmt.Errorf("renderer does not support streaming")
+		return errors.Newf("renderer does not support streaming")
 	}
 
 	//t.renderer.Start(t.writer)
@@ -207,7 +207,7 @@ func (t *Table) streamAppendRow(row interface{}) error {
 	rawCellsSlice, err := t.convertCellsToStrings(row, t.config.Row)
 	if err != nil {
 		t.logger.Errorf("streamAppendRow: Failed to convert row to strings: %v", err)
-		return fmt.Errorf("failed to convert row to strings: %w", err)
+		return errors.Newf("failed to convert row to strings").Wrap(err)
 	}
 
 	if len(rawCellsSlice) == 0 {
@@ -220,21 +220,34 @@ func (t *Table) streamAppendRow(row interface{}) error {
 	}
 
 	if err := t.ensureStreamWidthsCalculated(rawCellsSlice, t.config.Row); err != nil {
-		return err
+		return errors.New("failed to establish stream column count/widths").Wrap(err)
 	}
 
-	if t.streamNumCols > 0 && len(rawCellsSlice) != t.streamNumCols {
-		t.logger.Warnf("streamAppendRow: Input row column count (%d) != stream column count (%d). Padding/Truncating.", len(rawCellsSlice), t.streamNumCols)
-		if len(rawCellsSlice) < t.streamNumCols {
-			paddedCells := make([]string, t.streamNumCols)
-			copy(paddedCells, rawCellsSlice)
-			for i := len(rawCellsSlice); i < t.streamNumCols; i++ {
-				paddedCells[i] = tw.Empty
+	// Now, check for column mismatch if a column count has been established.
+	if t.streamNumCols > 0 {
+		if len(rawCellsSlice) != t.streamNumCols {
+			if t.config.Stream.StrictColumns {
+				err := errors.Newf("input row column count (%d) does not match established stream column count (%d) and StrictColumns is enabled", len(rawCellsSlice), t.streamNumCols)
+				t.logger.Error(err.Error())
+				return err
 			}
-			rawCellsSlice = paddedCells
-		} else {
-			rawCellsSlice = rawCellsSlice[:t.streamNumCols]
+			// If not strict, retain the old lenient behavior (warn and pad/truncate)
+			t.logger.Warnf("streamAppendRow: Input row column count (%d) != stream column count (%d). Padding/Truncating (StrictColumns is false).", len(rawCellsSlice), t.streamNumCols)
+			if len(rawCellsSlice) < t.streamNumCols {
+				paddedCells := make([]string, t.streamNumCols)
+				copy(paddedCells, rawCellsSlice)
+				for i := len(rawCellsSlice); i < t.streamNumCols; i++ {
+					paddedCells[i] = tw.Empty
+				}
+				rawCellsSlice = paddedCells
+			} else {
+				rawCellsSlice = rawCellsSlice[:t.streamNumCols]
+			}
 		}
+	} else if len(rawCellsSlice) > 0 && t.config.Stream.StrictColumns {
+		err := errors.Newf("failed to establish stream column count from first data row (%d cells) and StrictColumns is enabled", len(rawCellsSlice))
+		t.logger.Error(err.Error())
+		return err
 	}
 
 	if t.streamNumCols == 0 {
@@ -511,7 +524,7 @@ func (t *Table) streamCalculateWidths(sampling []string, config tw.CellConfig) i
 
 		ellipsisWidthBuffer := 0
 		if autoWrapForWidthCalc == tw.WrapTruncate {
-			ellipsisWidthBuffer = tw.DisplayWidth(tw.CharEllipsis)
+			ellipsisWidthBuffer = twwidth.Width(tw.CharEllipsis)
 		}
 		varianceBuffer := 2 // Your suggested variance
 		minTotalColWidth := tw.MinimumColumnWidth
@@ -525,14 +538,14 @@ func (t *Table) streamCalculateWidths(sampling []string, config tw.CellConfig) i
 			if i < len(sampling) {
 				sampleContent = t.Trimmer(sampling[i])
 			}
-			sampleContentDisplayWidth := tw.DisplayWidth(sampleContent)
+			sampleContentDisplayWidth := twwidth.Width(sampleContent)
 
 			colPad := paddingForWidthCalc.Global
 			if i < len(paddingForWidthCalc.PerColumn) && paddingForWidthCalc.PerColumn[i].Paddable() {
 				colPad = paddingForWidthCalc.PerColumn[i]
 			}
-			currentPadLWidth := tw.DisplayWidth(colPad.Left)
-			currentPadRWidth := tw.DisplayWidth(colPad.Right)
+			currentPadLWidth := twwidth.Width(colPad.Left)
+			currentPadRWidth := twwidth.Width(colPad.Right)
 			currentTotalPaddingWidth := currentPadLWidth + currentPadRWidth
 
 			// Start with the target content width logic
@@ -595,7 +608,7 @@ func (t *Table) streamCalculateWidths(sampling []string, config tw.CellConfig) i
 		if t.renderer != nil {
 			rendererConfig := t.renderer.Config()
 			if rendererConfig.Settings.Separators.BetweenColumns.Enabled() {
-				separatorWidth = tw.DisplayWidth(rendererConfig.Symbols.Column())
+				separatorWidth = twwidth.Width(rendererConfig.Symbols.Column())
 			}
 		} else {
 			separatorWidth = 1 // Default if renderer not available yet
