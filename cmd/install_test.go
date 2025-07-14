@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/alexellis/arkade/pkg/get"
+	"github.com/spf13/cobra"
 )
 
 type Tool = get.Tool
@@ -88,4 +89,41 @@ func TestCheckForTool(t *testing.T) {
 			}
 		})
 	}
+}
+
+func dummyCommand(name string) *cobra.Command {
+	return &cobra.Command{
+		Use:   name,
+		Short: name + " description",
+	}
+}
+func TestFindAppByName(t *testing.T) {
+
+	apps := map[string]ArkadeApp{
+		"openfaas": {
+			Installer:   func() *cobra.Command { return dummyCommand("openfaas") },
+			InfoMessage: "OpenFaaS info",
+		},
+		"grafana": {
+			Installer:   func() *cobra.Command { return dummyCommand("grafana") },
+			InfoMessage: "Grafana info",
+		},
+	}
+
+	t.Run("find existing app", func(t *testing.T) {
+		app := findAppByName("openfaas", apps)
+		if app == nil {
+			t.Fatal("\nwant: 'openfaas'\n got: nil")
+		}
+		if app.InfoMessage != "OpenFaaS info" {
+			t.Errorf("\nwant: 'OpenFaaS info'\n  got: '%s'", app.InfoMessage)
+		}
+	})
+
+	t.Run("find non-existing app", func(t *testing.T) {
+		app := findAppByName("doesnotexist", apps)
+		if app != nil {
+			t.Errorf("\nwant: nil\n got: '%s'", app.InfoMessage)
+		}
+	})
 }
