@@ -925,6 +925,45 @@ func Test_DownloadK3sup(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadGhaBump(t *testing.T) {
+	tools := MakeTools()
+	name := "gha-bump"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.0.1",
+			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.0.1",
+			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.0.1",
+			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump-darwin"},
+		{os: "linux",
+			arch:    archARM7,
+			version: "v0.0.1",
+			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump-armhf"},
+		{os: "linux",
+			arch:    "aarch64",
+			version: "v0.0.1",
+			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump-arm64"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
 func Test_DownloadAutok3s(t *testing.T) {
 	tools := MakeTools()
 	name := "autok3s"
