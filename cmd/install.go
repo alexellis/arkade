@@ -75,18 +75,12 @@ To request a new app, raise a GitHub issue at:
 			return nil
 		}
 
-		name := args[0]
-		var app *ArkadeApp
 		if len(args) == 1 {
-			for _, a := range appList {
-				if a.Name == name {
-					app = &a
-					break
-				}
+			name := args[0]
+			app := findAppByName(name, appList)
+			if app == nil {
+				return errors.New(checkForTool(name, get.MakeTools()))
 			}
-		}
-		if app == nil {
-			return errors.New(checkForTool(name, get.MakeTools()))
 		}
 
 		return nil
@@ -103,58 +97,57 @@ To request a new app, raise a GitHub issue at:
 
 func GetApps() map[string]ArkadeApp {
 	arkadeApps := map[string]ArkadeApp{}
-	arkadeApps["mongodb"] = NewArkadeApp(apps.MakeInstallMongoDB, apps.MongoDBInfoMsg)
-	arkadeApps["metrics-server"] = NewArkadeApp(apps.MakeInstallMetricsServer, apps.MetricsInfoMsg)
-	arkadeApps["linkerd"] = NewArkadeApp(apps.MakeInstallLinkerd, apps.LinkerdInfoMsg)
+	arkadeApps["argocd"] = NewArkadeApp(apps.MakeInstallArgoCD, apps.ArgoCDInfoMsg)
+	arkadeApps["cassandra"] = NewArkadeApp(apps.MakeInstallCassandra, apps.CassandraInfoMsg)
+	arkadeApps["cert-manager"] = NewArkadeApp(apps.MakeInstallCertManager, apps.CertManagerInfoMsg)
+	arkadeApps["cockroachdb"] = NewArkadeApp(apps.MakeInstallCockroachdb, apps.CockroachdbInfoMsg)
+	arkadeApps["consul-connect"] = NewArkadeApp(apps.MakeInstallConsul, apps.ConsulInfoMsg)
 	arkadeApps["cron-connector"] = NewArkadeApp(apps.MakeInstallCronConnector, apps.CronConnectorInfoMsg)
+	arkadeApps["crossplane"] = NewArkadeApp(apps.MakeInstallCrossplane, apps.CrossplaneInfoMsg)
+	arkadeApps["docker-registry"] = NewArkadeApp(apps.MakeInstallRegistry, apps.RegistryInfoMsg)
+	arkadeApps["docker-registry-ingress"] = NewArkadeApp(apps.MakeInstallRegistryIngress, apps.RegistryIngressInfoMsg)
+	arkadeApps["falco"] = NewArkadeApp(apps.MakeInstallFalco, apps.FalcoInfoMsg)
+	arkadeApps["gitea"] = NewArkadeApp(apps.MakeInstallGitea, apps.GiteaInfoMsg)
+	arkadeApps["gitlab"] = NewArkadeApp(apps.MakeInstallGitLab, apps.GitlabInfoMsg)
+	arkadeApps["grafana"] = NewArkadeApp(apps.MakeInstallGrafana, apps.GrafanaInfoMsg)
+	arkadeApps["influxdb"] = NewArkadeApp(apps.MakeInstallinfluxdb, apps.InfluxdbInfoMsg)
+	arkadeApps["ingress-nginx"] = NewArkadeApp(apps.MakeInstallNginx, apps.NginxIngressInfoMsg)
+	arkadeApps["inlets-operator"] = NewArkadeApp(apps.MakeInstallInletsOperator, apps.InletsOperatorInfoMsg)
+	arkadeApps["istio"] = NewArkadeApp(apps.MakeInstallIstio, apps.IstioInfoMsg)
+	arkadeApps["jenkins"] = NewArkadeApp(apps.MakeInstallJenkins, apps.JenkinsInfoMsg)
+	arkadeApps["kafka"] = NewArkadeApp(apps.MakeInstallConfluentPlatformKafka, apps.KafkaInfoMsg)
 	arkadeApps["kafka-connector"] = NewArkadeApp(apps.MakeInstallKafkaConnector, apps.KafkaConnectorInfoMsg)
+	arkadeApps["kong-ingress"] = NewArkadeApp(apps.MakeInstallKongIngress, apps.KongIngressInfoMsg)
+	arkadeApps["kube-image-prefetch"] = NewArkadeApp(apps.MakeInstallKubeImagePrefetch, apps.KubeImagePrefetchInfoMsg)
 	arkadeApps["kube-state-metrics"] = NewArkadeApp(apps.MakeInstallKubeStateMetrics, apps.KubeStateMetricsInfoMsg)
 	arkadeApps["kubernetes-dashboard"] = NewArkadeApp(apps.MakeInstallKubernetesDashboard, apps.KubernetesDashboardInfoMsg)
-	arkadeApps["istio"] = NewArkadeApp(apps.MakeInstallIstio, apps.IstioInfoMsg)
-	arkadeApps["crossplane"] = NewArkadeApp(apps.MakeInstallCrossplane, apps.CrossplaneInfoMsg)
-	arkadeApps["docker-registry-ingress"] = NewArkadeApp(apps.MakeInstallRegistryIngress, apps.RegistryIngressInfoMsg)
-	arkadeApps["postgresql"] = NewArkadeApp(apps.MakeInstallPostgresql, apps.PostgresqlInfoMsg)
+	arkadeApps["kuma"] = NewArkadeApp(apps.MakeInstallKuma, apps.KumaInfoMsg)
+	arkadeApps["kyverno"] = NewArkadeApp(apps.MakeInstallKyverno, apps.KyvernoInfoMsg)
+	arkadeApps["linkerd"] = NewArkadeApp(apps.MakeInstallLinkerd, apps.LinkerdInfoMsg)
+	arkadeApps["loki"] = NewArkadeApp(apps.MakeInstallLoki, apps.LokiInfoMsg)
+	arkadeApps["metallb-arp"] = NewArkadeApp(apps.MakeInstallMetalLB, apps.MetalLBInfoMsg)
+	arkadeApps["metrics-server"] = NewArkadeApp(apps.MakeInstallMetricsServer, apps.MetricsInfoMsg)
 	arkadeApps["minio"] = NewArkadeApp(apps.MakeInstallMinio, apps.MinioInfoMsg)
+	arkadeApps["mongodb"] = NewArkadeApp(apps.MakeInstallMongoDB, apps.MongoDBInfoMsg)
+	arkadeApps["mqtt-connector"] = NewArkadeApp(apps.MakeInstallMQTTConnector, apps.MQTTConnectorInfoMsg)
+	arkadeApps["nats-connector"] = NewArkadeApp(apps.MakeInstallNATSConnector, apps.NATSConnectorInfoMsg)
+	arkadeApps["nfs-provisioner"] = NewArkadeApp(apps.MakeInstallNfsProvisioner, apps.NfsClientProvisioneriInfoMsg)
+	arkadeApps["opa-gatekeeper"] = NewArkadeApp(apps.MakeInstallOPAGateKeeper, apps.OPAGatekeeperInfoMsg)
 	arkadeApps["openfaas"] = NewArkadeApp(apps.MakeInstallOpenFaaS, apps.OpenFaaSInfoMsg)
-	arkadeApps["ingress-nginx"] = NewArkadeApp(apps.MakeInstallNginx, apps.NginxIngressInfoMsg)
-	arkadeApps["cert-manager"] = NewArkadeApp(apps.MakeInstallCertManager, apps.CertManagerInfoMsg)
 	arkadeApps["openfaas-ingress"] = NewArkadeApp(apps.MakeInstallOpenFaaSIngress, apps.OpenfaasIngressInfoMsg)
 	arkadeApps["openfaas-loki"] = NewArkadeApp(apps.MakeInstallOpenFaaSLoki, apps.LokiOFInfoMsg)
-	arkadeApps["loki"] = NewArkadeApp(apps.MakeInstallLoki, apps.LokiInfoMsg)
-	arkadeApps["redis"] = NewArkadeApp(apps.MakeInstallRedis, apps.RedisInfoMsg)
-	arkadeApps["nats-connector"] = NewArkadeApp(apps.MakeInstallNATSConnector, apps.NATSConnectorInfoMsg)
-	arkadeApps["jenkins"] = NewArkadeApp(apps.MakeInstallJenkins, apps.JenkinsInfoMsg)
 	arkadeApps["portainer"] = NewArkadeApp(apps.MakeInstallPortainer, apps.PortainerInfoMsg)
-	arkadeApps["argocd"] = NewArkadeApp(apps.MakeInstallArgoCD, apps.ArgoCDInfoMsg)
-	arkadeApps["grafana"] = NewArkadeApp(apps.MakeInstallGrafana, apps.GrafanaInfoMsg)
+	arkadeApps["postgresql"] = NewArkadeApp(apps.MakeInstallPostgresql, apps.PostgresqlInfoMsg)
+	arkadeApps["prometheus"] = NewArkadeApp(apps.MakeInstallPrometheus, apps.PrometheusInfoMsg)
+	arkadeApps["qemu-static"] = NewArkadeApp(apps.MakeInstallQemuStatic, apps.QemuStaticInfoMsg)
+	arkadeApps["rabbitmq"] = NewArkadeApp(apps.MakeInstallRabbitmq, apps.RabbitmqInfoMsg)
+	arkadeApps["redis"] = NewArkadeApp(apps.MakeInstallRedis, apps.RedisInfoMsg)
+	arkadeApps["registry-creds"] = NewArkadeApp(apps.MakeInstallRegistryCredsOperator, apps.RegistryCredsOperatorInfoMsg)
+	arkadeApps["sealed-secret"] = NewArkadeApp(apps.MakeInstallSealedSecrets, apps.SealedSecretsInfoMsg)
 	arkadeApps["tekton"] = NewArkadeApp(apps.MakeInstallTekton, apps.TektonInfoMsg)
 	arkadeApps["traefik2"] = NewArkadeApp(apps.MakeInstallTraefik2, apps.Traefik2InfoMsg)
-	arkadeApps["inlets-operator"] = NewArkadeApp(apps.MakeInstallInletsOperator, apps.InletsOperatorInfoMsg)
-	arkadeApps["nfs-provisioner"] = NewArkadeApp(apps.MakeInstallNfsProvisioner, apps.NfsClientProvisioneriInfoMsg)
-	arkadeApps["docker-registry"] = NewArkadeApp(apps.MakeInstallRegistry, apps.RegistryInfoMsg)
-	arkadeApps["kube-image-prefetch"] = NewArkadeApp(apps.MakeInstallKubeImagePrefetch, apps.KubeImagePrefetchInfoMsg)
-	arkadeApps["registry-creds"] = NewArkadeApp(apps.MakeInstallRegistryCredsOperator, apps.RegistryCredsOperatorInfoMsg)
-	arkadeApps["gitea"] = NewArkadeApp(apps.MakeInstallGitea, apps.GiteaInfoMsg)
-	arkadeApps["kong-ingress"] = NewArkadeApp(apps.MakeInstallKongIngress, apps.KongIngressInfoMsg)
-	arkadeApps["sealed-secret"] = NewArkadeApp(apps.MakeInstallSealedSecrets, apps.SealedSecretsInfoMsg)
-	arkadeApps["consul-connect"] = NewArkadeApp(apps.MakeInstallConsul, apps.ConsulInfoMsg)
-	arkadeApps["sealed-secret"] = NewArkadeApp(apps.MakeInstallSealedSecrets, apps.SealedSecretsInfoMsg)
-	arkadeApps["gitlab"] = NewArkadeApp(apps.MakeInstallGitLab, apps.GitlabInfoMsg)
-	arkadeApps["opa-gatekeeper"] = NewArkadeApp(apps.MakeInstallOPAGateKeeper, apps.OPAGatekeeperInfoMsg)
-	arkadeApps["mqtt-connector"] = NewArkadeApp(apps.MakeInstallMQTTConnector, apps.MQTTConnectorInfoMsg)
-	arkadeApps["falco"] = NewArkadeApp(apps.MakeInstallFalco, apps.FalcoInfoMsg)
-	arkadeApps["influxdb"] = NewArkadeApp(apps.MakeInstallinfluxdb, apps.InfluxdbInfoMsg)
-	arkadeApps["kafka"] = NewArkadeApp(apps.MakeInstallConfluentPlatformKafka, apps.KafkaInfoMsg)
-	arkadeApps["kyverno"] = NewArkadeApp(apps.MakeInstallKyverno, apps.KyvernoInfoMsg)
-	arkadeApps["rabbitmq"] = NewArkadeApp(apps.MakeInstallRabbitmq, apps.RabbitmqInfoMsg)
-	arkadeApps["cassandra"] = NewArkadeApp(apps.MakeInstallCassandra, apps.CassandraInfoMsg)
-	arkadeApps["metallb-arp"] = NewArkadeApp(apps.MakeInstallMetalLB, apps.MetalLBInfoMsg)
-	arkadeApps["cockroachdb"] = NewArkadeApp(apps.MakeInstallCockroachdb, apps.CockroachdbInfoMsg)
-	arkadeApps["prometheus"] = NewArkadeApp(apps.MakeInstallPrometheus, apps.PrometheusInfoMsg)
-	arkadeApps["waypoint"] = NewArkadeApp(apps.MakeInstallWaypoint, apps.WaypointInfoMsg)
-	arkadeApps["kuma"] = NewArkadeApp(apps.MakeInstallKuma, apps.KumaInfoMsg)
-	arkadeApps["qemu-static"] = NewArkadeApp(apps.MakeInstallQemuStatic, apps.QemuStaticInfoMsg)
 	arkadeApps["vault"] = NewArkadeApp(apps.MakeInstallVault, apps.VaultInfoMsg)
+	arkadeApps["waypoint"] = NewArkadeApp(apps.MakeInstallWaypoint, apps.WaypointInfoMsg)
 
 	// Special "chart" app - let a user deploy any helm chart
 	arkadeApps["chart"] = NewArkadeApp(apps.MakeInstallChart, "")
@@ -222,4 +215,11 @@ func renderTable(w io.Writer, appMap map[string]ArkadeApp) {
 
 	table.Render()
 	fmt.Fprintf(w, "\nThere are %d apps that you can install on your cluster.\n", appCount)
+}
+
+func findAppByName(name string, apps map[string]ArkadeApp) *ArkadeApp {
+	if app, exists := apps[name]; exists {
+		return &app
+	}
+	return nil
 }
