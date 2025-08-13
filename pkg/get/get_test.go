@@ -5681,7 +5681,7 @@ func Test_DownloadKubeval(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-Windows-amd64.zip",
+			url:     "https://github.com/instrumenta/kubeval/releases/download/v0.16.1/kubeval-windows-amd64.zip",
 		},
 	}
 
