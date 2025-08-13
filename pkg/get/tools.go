@@ -47,6 +47,27 @@ func MakeTools() Tools {
 {{- else -}}
 {{.Name}}
 {{- end -}}`,
+		},
+
+		// opencode AI CLI
+		Tool{
+			Owner:       "sst",
+			Repo:        "opencode",
+			Name:        "opencode",
+			Description: "The opencode CLI for running AI agents and tools.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-x64.zip
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}-darwin-arm64.zip
+  {{- else -}}
+{{.Name}}-darwin-x64.zip
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}-linux-arm64.zip
+{{- else -}}
+{{.Name}}-linux-x64.zip
+{{- end -}}`,
 		})
 
 	tools = append(tools,

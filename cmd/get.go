@@ -41,7 +41,7 @@ and provides a fast and easy alternative to a package manager.`,
 		Example: `  arkade get helm
 
   # Options for the download
-  arkade get linkerd2 --stash=false
+  arkade get linkerd2
   arkade get kubectl --progress=false
 
   # Override the version

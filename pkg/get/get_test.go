@@ -8498,3 +8498,55 @@ func Test_Download_pulumi(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadOpencode(t *testing.T) {
+	tools := MakeTools()
+	name := "opencode"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.4.41"
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-darwin-x64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-darwin-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-x64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-arm64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-windows-x64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

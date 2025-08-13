@@ -881,6 +881,7 @@ There are 52 apps that you can install on your cluster.
 | [oh-my-posh](https://github.com/jandedobbeleer/oh-my-posh)                   | A prompt theme engine for any shell that can display kubernetes information.                                                                                      |
 | [op](https://github.com/1password/)                                          | 1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.                                        |
 | [opa](https://github.com/open-policy-agent/opa)                              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                                                     |
+| [opencode](https://github.com/sst/opencode)                                  | The opencode CLI for running AI agents and tools.                                                                                                                 |
 | [openshift-install](https://github.com/openshift/installer)                  | CLI to install an OpenShift 4.x cluster.                                                                                                                          |
 | [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                                                      |
 | [osm](https://github.com/openservicemesh/osm)                                | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                                                     |
@@ -927,7 +928,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 168 tools, use `arkade get NAME` to download one.
-
+There are 169 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
