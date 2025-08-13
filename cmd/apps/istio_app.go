@@ -23,7 +23,7 @@ import (
 const (
 	// A default Istio version, get the latest from:
 	// https://github.com/istio/istio/releases/latest
-	istioVer = "1.25.0"
+	istioVer = "1.26.0"
 )
 
 func MakeInstallIstio() *cobra.Command {
