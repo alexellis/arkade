@@ -3218,22 +3218,26 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "instrumenta",
 			Repo:        "kubeval",
 			Name:        "kubeval",
+			Version:     "v0.16.1",
 			Description: "Validate your Kubernetes configuration files, supports multiple Kubernetes versions",
 			BinaryTemplate: `
 				{{$os := .OS}}
 				{{$arch := .Arch}}
 				{{$ext := "tar.gz"}}
 
-				{{$arch := .Arch}}
 				{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 				{{$arch = "arm64"}}
 				{{- else if eq .Arch "x86_64" -}}
-				{{ $arch = "amd64" }}
+				{{$arch = "amd64"}}
 				{{- end -}}
 
 				{{ if HasPrefix .OS "ming" -}}
-				{{$os = "Windows"}}
+				{{$os = "windows"}}
 				{{$ext = "zip"}}
+				{{- else if eq .OS "darwin" -}}
+				{{$os = "darwin"}}
+				{{- else -}}
+				{{$os = "linux"}}
 				{{- end -}}
 
 				{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}
