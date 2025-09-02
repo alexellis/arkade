@@ -3547,6 +3547,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ else if HasPrefix .OS "ming" -}}
 				{{$ext = ".exe"}}
 				{{- end -}}
+
+				{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "alexellis",
+			Repo:        "ssync",
+			Name:        "ssync",
+			Description: "Sync files from one machine to another.",
+			BinaryTemplate: `
+				{{$arch := ""}}
+				{{$os := ""}}
+				{{$ext := ""}}
+
+				{{- if eq .Arch "aarch64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if eq .Arch "arm64" -}}
+				{{$arch = "-arm64"}}
+				{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+				{{$arch = "-armhf"}}
+				{{- end -}}
+
+				{{ if eq .OS "darwin" -}}
+				{{$os = "-darwin"}}
+				{{ else if HasPrefix .OS "ming" -}}
+				{{$ext = ".exe"}}
+				{{- end -}}
+
 				{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
 

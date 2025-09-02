@@ -6282,6 +6282,69 @@ func Test_DownloadFstail(t *testing.T) {
 
 }
 
+func Test_DownloadSsync(t *testing.T) {
+	tools := MakeTools()
+	name := "ssync"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync.exe`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync-arm64`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync-armhf`,
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync-armhf`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync-darwin`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: "0.0.1-rc1",
+			url:     `https://github.com/alexellis/ssync/releases/download/0.0.1-rc1/ssync-darwin-arm64`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
+
 func Test_DownloadYt(t *testing.T) {
 	tools := MakeTools()
 	name := "yt-dlp"
