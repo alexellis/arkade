@@ -333,6 +333,28 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
+			Owner:       "loft-sh",
+			Repo:        "devpod",
+			Name:        "devpod",
+			Version:     "v0.7.0-alpha.34",
+			Description: "Codespaces but open-source, client-only and unopinionated: Works with any IDE and lets you use any cloud, kubernetes or just localhost docker.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64.exe
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}-darwin-arm64
+  {{- else -}}
+{{.Name}}-darwin-amd64
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}-linux-arm64
+{{- else -}}
+{{.Name}}-linux-amd64
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "tilt-dev",
 			Repo:        "tilt",
 			Name:        "tilt",
