@@ -4724,5 +4724,41 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 								{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 									`,
 		})
+	tools = append(tools,
+		Tool{
+			Owner:           "BurntSushi",
+			Repo:            "ripgrep",
+			Name:            "rg",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Recursively search directories for a regex pattern while respecting your gitignore.",
+			BinaryTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$ext := "tar.gz"}}
+			
+									{{- if eq .Arch "x86_64" -}}
+										{{$arch = "x86_64"}}
+										{{- if eq .OS "linux" -}}
+											{{$os = "unknown-linux-musl"}}
+										{{- end -}}	
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$arch = "aarch64"}}
+										{{- if eq .OS "linux" -}}
+											{{$os = "unknown-linux-gnu"}}
+										{{- end -}}	
+									{{- end -}}
+									
+									{{- if eq .OS "darwin" -}}
+										{{$os = "apple-darwin"}}
+									{{- end -}}	
+
+									{{- if HasPrefix .OS "ming" -}}
+										{{$os = "pc-windows-gnu"}}
+										{{$ext = "zip"}}
+									{{- end -}}
+			
+									ripgrep-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}
+										`,
+		})
 	return tools
 }
