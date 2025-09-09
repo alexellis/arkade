@@ -84,7 +84,6 @@ func Test_DownloadRipgrep(t *testing.T) {
 	}
 }
 
-
 func TestGetToolVersion(t *testing.T) {
 
 	testCases := []struct {
