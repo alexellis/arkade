@@ -168,9 +168,7 @@ func MakeTools() Tools {
 				{{- end -}}`,
 		})
 
-
-
- 	// https://dl.k8s.io/release/v1.22.2/bin/darwin/amd64/kubectl
+	// https://dl.k8s.io/release/v1.22.2/bin/darwin/amd64/kubectl
 	tools = append(tools,
 		Tool{
 			Owner:           "kubernetes",
@@ -4729,10 +4727,10 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 
 	tools = append(tools,
 		Tool{
-			Owner:       "BurntSushi",
-			Repo:        "ripgrep",
-			Name:        "rg",
-			Description: "ripgrep recursively searches directories for a regex pattern while respecting your gitignore",
+			Owner:          "BurntSushi",
+			Repo:           "ripgrep",
+			Name:           "rg",
+			Description:    "ripgrep recursively searches directories for a regex pattern while respecting your gitignore",
 			BinaryTemplate: `rg`,
 			URLTemplate: `
 {{$target := ""}}
