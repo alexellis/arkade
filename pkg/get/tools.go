@@ -3333,6 +3333,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "grafana",
 			Repo:        "agent",
 			Name:        "grafana-agent",
+			Version:     "v0.44.2",
 			Description: "Grafana Agent is a telemetry collector for sending metrics, logs, and trace data to the opinionated Grafana observability stack.",
 			URLTemplate: `
 						{{$os := .OS}}
