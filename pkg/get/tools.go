@@ -2195,28 +2195,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "wagoodman",
-			Repo:        "dive",
-			Name:        "dive",
-			Version:     "0.10.0",
-			Description: "A tool for exploring each layer in a docker image",
-			URLTemplate: `{{$osStr := ""}}
-			{{- if HasPrefix .OS "ming" -}}
-			{{$osStr = "windows"}}
-			{{- else if eq .OS "linux" -}}
-			{{$osStr = "linux"}}
-			{{- else if eq .OS "darwin" -}}
-			{{$osStr = "darwin"}}
-			{{- end -}}
+			Owner:           "wagoodman",
+			Repo:            "dive",
+			Name:            "dive",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A tool for exploring each layer in a docker image",
+			BinaryTemplate: `
+							{{$os := .OS}}
+							{{$arch := .Arch}}
+							{{$ext := ".tar.gz"}}
+				
+							{{- if HasPrefix .OS "ming" -}}
+								{{$os = "windows"}}
+								{{$ext = ".zip"}}
+							{{- end -}}
+		
+							{{- if eq .Arch "x86_64" -}}
+		                        {{$arch = "amd64"}}
+							{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+								{{$arch = "arm64"}}
+							{{- end -}}
 
-			{{$archiveStr := ""}}
-			{{- if HasPrefix .OS "ming" -}}
-			{{$archiveStr = ".zip"}}
-			{{- else -}}
-			{{$archiveStr = ".tar.gz"}}
-			{{- end -}}
-
-			https://github.com/{{.Owner}}/{{.Name}}/releases/download/v{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_amd64{{$archiveStr}}`,
+			{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}{{$ext}}`,
 		},
 	)
 
