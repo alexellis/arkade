@@ -3595,7 +3595,7 @@ func Test_DownloadTFSecCli(t *testing.T) {
 func Test_DownloadDive(t *testing.T) {
 	tools := MakeTools()
 	name := "dive"
-	version := "0.10.0"
+	version := "v0.13.1"
 
 	tool := getTool(name, tools)
 
@@ -3604,31 +3604,37 @@ func Test_DownloadDive(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_darwin_amd64.tar.gz`,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_darwin_amd64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_darwin_amd64.tar.gz`,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_darwin_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz`,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_linux_amd64.tar.gz`,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_linux_arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/wagoodman/dive/releases/download/v0.10.0/dive_0.10.0_windows_amd64.zip`,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_windows_amd64.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/wagoodman/dive/releases/download/v0.13.1/dive_0.13.1_windows_arm64.zip`,
 		},
 	}
 
@@ -3639,7 +3645,7 @@ func Test_DownloadDive(t *testing.T) {
 				t.Fatal(err)
 			}
 			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
 			}
 		})
 	}
@@ -8713,7 +8719,7 @@ func Test_DownloadOpencode(t *testing.T) {
 			t.Fatal(err)
 		}
 		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
+			t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
 		}
 	}
 }
