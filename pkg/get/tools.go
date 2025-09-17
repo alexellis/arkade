@@ -4759,5 +4759,48 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 https://github.com/BurntSushi/ripgrep/releases/download/{{.Version}}/ripgrep-{{.Version}}-{{$target}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:           "grafana",
+			Repo:            "loki",
+			Name:            "logcli",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "LogCLI is the command-line interface to Grafana Loki. It facilitates running LogQL queries against a Loki instance.",
+			BinaryTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$target := ""}}
+
+									{{- if eq .Arch "x86_64" -}}
+										{{$arch = "amd64"}}
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$arch = "arm64"}}
+									{{- end -}}
+									
+									{{- if HasPrefix .OS "ming" -}}
+										{{$os = "windows"}}
+									{{- end -}}
+			
+				{{.Name}}-{{$os}}-{{$arch}}`,
+			URLTemplate: `
+									{{$os := .OS}}
+									{{$arch := .Arch}}
+									{{$ext := "zip"}}
+									{{$target := ""}}
+
+									{{- if eq .Arch "x86_64" -}}
+										{{$arch = "amd64"}}
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$arch = "arm64"}}
+									{{- end -}}
+									
+									{{- if HasPrefix .OS "ming" -}}
+										{{$os = "windows"}}
+										{{$ext = "exe.zip"}}
+									{{- end -}}
+			
+									https://github.com/grafana/loki/releases/download/{{.Version}}/{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
 	return tools
 }

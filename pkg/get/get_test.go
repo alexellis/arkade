@@ -8723,3 +8723,57 @@ func Test_DownloadOpencode(t *testing.T) {
 		}
 	}
 }
+
+func Test_LogCLI(t *testing.T) {
+	tools := MakeTools()
+	name := "logcli"
+	version := "v3.5.5"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/loki/releases/download/v3.5.5/logcli-darwin-amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/grafana/loki/releases/download/v3.5.5/logcli-darwin-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/loki/releases/download/v3.5.5/logcli-linux-amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/grafana/loki/releases/download/v3.5.5/logcli-linux-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/grafana/loki/releases/download/v3.5.5/logcli-windows-amd64.exe.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
