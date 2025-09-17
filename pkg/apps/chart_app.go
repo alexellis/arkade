@@ -67,7 +67,7 @@ func MakeInstallChart(options *types.InstallerOptions) (*types.InstallerOutput, 
 	if err := installer(
 		name,
 		options.Namespace,
-		options.Helm.ValuesFile,
+		options.Helm.ValuesFiles,
 		options.Helm.Repo.Version,
 		options.Helm.Overrides,
 		options.Helm.Wait); err != nil {

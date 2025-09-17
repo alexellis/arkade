@@ -42,12 +42,12 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().String("pull-policy", "IfNotPresent", "Pull policy for OpenFaaS core services")
 	openfaas.Flags().String("function-pull-policy", "Always", "Pull policy for functions")
 
-	openfaas.Flags().Bool("operator", false, "Create OpenFaaS Operator")
+	openfaas.Flags().Bool("operator", true, "Create OpenFaaS Operator")
 	openfaas.Flags().Bool("clusterrole", false, "Create a ClusterRole for OpenFaaS instead of a limited scope Role")
 	openfaas.Flags().Bool("direct-functions", false, "Invoke functions directly from the gateway, or load-balance via endpoint IPs when set to false")
-	openfaas.Flags().Bool("autoscaler", false, "Deploy OpenFaaS with the autoscaler enabled")
-	openfaas.Flags().Bool("jetstream", false, "Deploy OpenFaaS with jetstream queue mode")
-	openfaas.Flags().Bool("dashboard", false, "Deploy OpenFaaS with the dashboard enabled")
+	openfaas.Flags().Bool("autoscaler", true, "Deploy OpenFaaS with the autoscaler enabled")
+	openfaas.Flags().String("queue-mode", "static", "Configure the consumer mode for the queue-worker: \"static\" or \"function\"")
+	openfaas.Flags().Bool("dashboard", true, "Deploy OpenFaaS with the dashboard enabled")
 
 	openfaas.Flags().Int("queue-workers", 1, "Replicas of queue-worker for HA")
 	openfaas.Flags().Int("max-inflight", 1, "Max tasks for queue-worker to process in parallel")
@@ -60,6 +60,8 @@ func MakeInstallOpenFaaS() *cobra.Command {
 	openfaas.Flags().StringArray("set", []string{}, "Use custom flags or override existing flags \n(example --set gateway.replicas=2)")
 
 	openfaas.Flags().String("license-file", "", "Path to OpenFaaS Pro license file")
+
+	openfaas.Flags().StringArrayP("values", "f", []string{}, "Specify one or more local values.yaml files for overrides.")
 
 	openfaas.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
@@ -77,18 +79,16 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		clusterRole, _ := command.Flags().GetBool("clusterrole")
 		directFunctions, _ := command.Flags().GetBool("direct-functions")
 		autoscaler, _ := command.Flags().GetBool("autoscaler")
-		jetstream, _ := command.Flags().GetBool("jetstream")
 		dashboard, _ := command.Flags().GetBool("dashboard")
 		gateways, _ := command.Flags().GetInt("gateways")
 		maxInflight, _ := command.Flags().GetInt("max-inflight")
 		queueWorkers, _ := command.Flags().GetInt("queue-workers")
 		ingressOperator, _ := command.Flags().GetBool("ingress-operator")
 		lb, _ := command.Flags().GetBool("load-balancer")
+		queueMode, _ := command.Flags().GetString("queue-mode")
+		valuesFiles, _ := command.Flags().GetStringArray("values")
 
 		overrides := map[string]string{}
-
-		arch := k8s.GetNodeArchitecture()
-		valuesSuffix := getValuesSuffix(arch)
 
 		_, err := k8s.KubectlTask("apply", "-f",
 			"https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml")
@@ -120,16 +120,13 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			overrides["gateway.logsProviderURL"] = logUrl
 		}
 
-		// If license file is sent, then we assume to set the --pro flag and create the secret
-		if len(licenseFile) != 0 {
-			overrides["openfaasPro"] = "true"
-			secretData := []types.SecretsData{
-				{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
-			}
-
-			proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
-			appOpts.WithSecret(proLicense)
+		overrides["openfaasPro"] = "true"
+		secretData := []types.SecretsData{
+			{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
 		}
+
+		proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
+		appOpts.WithSecret(proLicense)
 
 		if dashboard {
 			privateKey, publicKey, err := generateJWTKeyPair()
@@ -146,31 +143,55 @@ func MakeInstallOpenFaaS() *cobra.Command {
 			appOpts.WithSecret(dashboardJWT)
 		}
 
-		overrides["clusterRole"] = strconv.FormatBool(clusterRole)
-		overrides["gateway.directFunctions"] = strconv.FormatBool(directFunctions)
-		overrides["operator.create"] = strconv.FormatBool(createOperator)
-		overrides["openfaasImagePullPolicy"] = pullPolicy
-		overrides["faasnetes.imagePullPolicy"] = functionPullPolicy
-		overrides["basicAuthPlugin.replicas"] = "1"
-		overrides["gateway.replicas"] = fmt.Sprintf("%d", gateways)
-		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
-		overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
-		overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
-		overrides["autoscaler.enabled"] = strconv.FormatBool(autoscaler)
-		overrides["dashboard.enabled"] = strconv.FormatBool(dashboard)
-		overrides["dashboard.publicURL"] = "http://127.0.0.1:8080"
+		overrides["jetstreamQueueWorker.mode"] = queueMode
 
-		// the value in the template is "basic_auth" not the more usual basicAuth
-		overrides["basic_auth"] = strconv.FormatBool(basicAuthEnabled)
+		if command.Flags().Changed("clusterrole") {
+			overrides["clusterRole"] = strconv.FormatBool(clusterRole)
+		}
+
+		if command.Flags().Changed("direct-functions") {
+			overrides["gateway.directFunctions"] = strconv.FormatBool(directFunctions)
+		}
+
+		if command.Flags().Changed("operator") {
+			overrides["operator.create"] = strconv.FormatBool(createOperator)
+		}
+
+		if command.Flags().Changed("pull-policy") {
+			overrides["openfaasImagePullPolicy"] = pullPolicy
+			overrides["faasnetes.imagePullPolicy"] = functionPullPolicy
+		}
+
+		if command.Flags().Changed("gateways") {
+			overrides["gateway.replicas"] = fmt.Sprintf("%d", gateways)
+		}
+
+		if command.Flags().Changed("queue-workers") {
+			overrides["queueWorker.replicas"] = fmt.Sprintf("%d", queueWorkers)
+		}
+
+		if command.Flags().Changed("max-inflight") {
+			overrides["queueWorker.maxInflight"] = fmt.Sprintf("%d", maxInflight)
+		}
+
+		if command.Flags().Changed("autoscaler") {
+			overrides["autoscaler.enabled"] = strconv.FormatBool(autoscaler)
+		}
+
+		if command.Flags().Changed("dashboard") {
+			overrides["dashboard.enabled"] = strconv.FormatBool(dashboard)
+		}
+
+		overrides["ingressOperator.create"] = strconv.FormatBool(ingressOperator)
+
+		if command.Flags().Changed("basic-auth") {
+			overrides["basic_auth"] = strconv.FormatBool(basicAuthEnabled)
+		}
 
 		overrides["serviceType"] = "NodePort"
 
 		if lb {
 			overrides["serviceType"] = "LoadBalancer"
-		}
-
-		if jetstream {
-			overrides["queueMode"] = "jetstream"
 		}
 
 		customFlags, _ := command.Flags().GetStringArray("set")
@@ -180,14 +201,18 @@ func MakeInstallOpenFaaS() *cobra.Command {
 
 		appOpts.
 			WithKubeconfigPath(kubeConfigPath).
+			WithValuesFiles([]string{`https://raw.githubusercontent.com/openfaas/faas-netes/refs/heads/master/chart/openfaas/values-pro.yaml`}).
 			WithOverrides(overrides).
-			WithValuesFile(fmt.Sprintf("values%s.yaml", valuesSuffix)).
 			WithHelmURL("https://openfaas.github.io/faas-netes/").
 			WithHelmRepo("openfaas/openfaas").
 			WithHelmUpdateRepo(updateRepo).
 			WithNamespace(namespace).
 			WithInstallNamespace(false).
 			WithWait(wait)
+
+		if len(valuesFiles) > 0 {
+			appOpts.WithValuesFiles(valuesFiles)
+		}
 
 		if _, err := apps.MakeInstallChart(appOpts); err != nil {
 			return err
@@ -234,11 +259,6 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		_, err = cmd.Flags().GetBool("autoscaler")
-		if err != nil {
-			return err
-		}
-
-		_, err = cmd.Flags().GetBool("jetstream")
 		if err != nil {
 			return err
 		}
@@ -321,8 +341,14 @@ func generateJWTKeyPair() ([]byte, []byte, error) {
 	return privOut.Bytes(), pubOut.Bytes(), nil
 }
 
-const OpenFaaSInfoMsg = `# Get the faas-cli
-curl -SLsf https://cli.openfaas.com | sudo sh
+const OpenFaaSInfoMsg = `# You've installed OpenFaaS Pro 👍
+# OpenFaaS Standard or for Enterprises is now running (depending on your license)
+
+# Read the EULA before continuing:
+https://github.com/openfaas/faas/blob/master/pro/EULA.md
+
+# Get the faas-cli
+arkade get faas-cli
 
 # Forward the gateway to your machine
 kubectl rollout status -n openfaas deploy/gateway
@@ -332,18 +358,12 @@ kubectl port-forward -n openfaas svc/gateway 8080:8080 &
 PASSWORD=$(kubectl get secret -n openfaas basic-auth -o jsonpath="{.data.basic-auth-password}" | base64 --decode; echo)
 echo -n $PASSWORD | faas-cli login --username admin --password-stdin
 
-faas-cli store deploy figlet
+faas-cli store deploy env
 faas-cli list
-
-# For Raspberry Pi
-faas-cli store list \
- --platform armhf
-
-faas-cli store deploy figlet \
- --platform armhf
+faas-cli describe env
 
 # Find out more at:
-# https://github.com/openfaas/faas`
+# https://docs.openfaas.com/`
 
 const openfaasPostInstallMsg = `=======================================================================
 = OpenFaaS has been installed.                                        =

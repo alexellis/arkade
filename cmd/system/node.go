@@ -69,14 +69,22 @@ func MakeInstallNode() *cobra.Command {
 	command.Flags().StringP("channel", "c", "release", "The channel to install from, can be 'release' or 'nightly',")
 	command.Flags().Bool("progress", true, "Show download progress")
 	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
+	command.Flags().Bool("quiet", false, "Suppress most output (implies --progress=false unless explicitly set)")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
 		version, _ := cmd.Flags().GetString("version")
 		progress, _ := cmd.Flags().GetBool("progress")
 		channel, _ := cmd.Flags().GetString("channel")
+		quiet, _ := cmd.Flags().GetBool("quiet")
 
-		fmt.Printf("Installing Node.js to: %s\n", installPath)
+		if quiet && !cmd.Flags().Changed("progress") {
+			progress = false
+		}
+
+		if !quiet {
+			fmt.Printf("Installing Node.js to: %s\n", installPath)
+		}
 
 		arch, osVer := env.GetClientArch()
 
@@ -108,17 +116,23 @@ func MakeInstallNode() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
+		if !quiet {
+			fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
+		}
 		filename := fmt.Sprintf("%s/%s.tar.gz", version, fmt.Sprintf("node-%s-linux-%s", version, dlArch))
 		dlURL := fmt.Sprintf("https://nodejs.org/download/%s/%s", channel, filename)
 
-		fmt.Printf("Downloading from: %s\n", dlURL)
+		if !quiet {
+			fmt.Printf("Downloading from: %s\n", dlURL)
+		}
 		outPath, err := get.DownloadFileP(dlURL, progress)
 		if err != nil {
 			return err
 		}
 		defer os.Remove(outPath)
-		fmt.Printf("Downloaded to: %s\n", outPath)
+		if !quiet {
+			fmt.Printf("Downloaded to: %s\n", outPath)
+		}
 
 		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
 		if err != nil {
@@ -131,12 +145,16 @@ func MakeInstallNode() *cobra.Command {
 			return err
 		}
 		defer os.RemoveAll(tempUnpackPath)
-		fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
+		if !quiet {
+			fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
+		}
 		if err = archive.UntarNested(f, tempUnpackPath, true, false); err != nil {
 			return err
 		}
 
-		fmt.Printf("Copying binaries to: %s\n", installPath)
+		if !quiet {
+			fmt.Printf("Copying binaries to: %s\n", installPath)
+		}
 		nodeDir := fmt.Sprintf("%s/%s", tempUnpackPath, fmt.Sprintf("node-%s-linux-%s", version, dlArch))
 		if err := cp.Copy(nodeDir, installPath); err != nil {
 			return err

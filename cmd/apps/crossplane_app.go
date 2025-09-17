@@ -97,7 +97,7 @@ schedule workloads to any Kubernetes cluster`,
 		}
 
 		err = helm.Helm3Upgrade("crossplane-alpha/crossplane",
-			namespace, "values.yaml", "", values, wait)
+			namespace, []string{"values.yaml"}, "", values, wait)
 		if err != nil {
 			return err
 		}

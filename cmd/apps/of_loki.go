@@ -59,7 +59,7 @@ func MakeInstallOpenFaaSLoki() *cobra.Command {
 
 		// The default options includes the `values.yaml` file but this is already
 		// implied when using the OCI chart.
-		lokiOptions.Helm.ValuesFile = ""
+		lokiOptions.Helm.ValuesFiles = []string{}
 
 		_, err := apps.MakeInstallChart(lokiOptions)
 		if err != nil {

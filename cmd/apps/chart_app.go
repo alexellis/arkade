@@ -36,7 +36,7 @@ before using the generic helm chart installer command.`,
 
 	chartCmd.Flags().StringP("namespace", "n", "default", "The namespace to install the chart")
 	chartCmd.Flags().String("repo", "", "The chart repo to install from")
-	chartCmd.Flags().String("values-file", "", "Give the values.yaml file to use from the upstream chart repo")
+	chartCmd.Flags().StringArrayP("values", "f", []string{"values.yaml"}, "Give the values.yaml file to use from the upstream chart repo")
 	chartCmd.Flags().String("repo-name", "", "Chart name")
 	chartCmd.Flags().String("repo-url", "", "Chart repo")
 
@@ -119,8 +119,10 @@ before using the generic helm chart installer command.`,
 			}
 		}
 
+		valuesFlag, _ := chartCmd.Flags().GetStringArray("values")
+
 		err = helm.Helm3Upgrade(chartRepoName, namespace,
-			"values.yaml",
+			valuesFlag,
 			defaultVersion,
 			setMap,
 			false)

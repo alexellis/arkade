@@ -96,7 +96,7 @@ func MakeInstallMongoDB() *cobra.Command {
 		}
 
 		err = helm.Helm3Upgrade("bitnami/mongodb",
-			namespace, "values.yaml", defaultVersion, overrides, wait)
+			namespace, []string{"values.yaml"}, defaultVersion, overrides, wait)
 		if err != nil {
 			return fmt.Errorf("unable to mongodb chart with helm %s", err)
 		}
