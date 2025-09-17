@@ -134,7 +134,7 @@ Or the Open Source Docker registry https://github.com/distribution/distribution`
 		ns := "default"
 
 		err = helm.Helm3Upgrade("twuni/docker-registry", ns,
-			"values.yaml",
+			[]string{"values.yaml"},
 			defaultVersion,
 			overrides,
 			wait)

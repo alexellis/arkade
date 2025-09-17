@@ -1,6 +1,10 @@
 package types
 
-import "github.com/alexellis/arkade/pkg/config"
+import (
+	"slices"
+
+	"github.com/alexellis/arkade/pkg/config"
+)
 
 type InstallerOptions struct {
 	Namespace       string
@@ -26,13 +30,13 @@ type SecretsData struct {
 }
 
 type HelmConfig struct {
-	Repo       *HelmRepo
-	Helm3      bool
-	HelmPath   string
-	Overrides  map[string]string
-	UpdateRepo bool
-	Wait       bool
-	ValuesFile string
+	Repo        *HelmRepo
+	Helm3       bool
+	HelmPath    string
+	Overrides   map[string]string
+	UpdateRepo  bool
+	Wait        bool
+	ValuesFiles []string
 }
 
 type HelmRepo struct {
@@ -84,8 +88,14 @@ func (o *InstallerOptions) WithOverrides(overrides map[string]string) *Installer
 	return o
 }
 
-func (o *InstallerOptions) WithValuesFile(filename string) *InstallerOptions {
-	o.Helm.ValuesFile = filename
+func (o *InstallerOptions) WithValuesFiles(filenames []string) *InstallerOptions {
+
+	for _, filename := range filenames {
+		if !slices.Contains(o.Helm.ValuesFiles, filename) {
+			o.Helm.ValuesFiles = append(o.Helm.ValuesFiles, filename)
+		}
+	}
+
 	return o
 }
 
@@ -109,9 +119,9 @@ func DefaultInstallOptions() *InstallerOptions {
 			Repo: &HelmRepo{
 				Version: "",
 			},
-			ValuesFile: "values.yaml",
-			Helm3:      true,
-			Wait:       false,
+			ValuesFiles: []string{"values.yaml"},
+			Helm3:       true,
+			Wait:        false,
 		},
 		Verbose: false,
 	}
