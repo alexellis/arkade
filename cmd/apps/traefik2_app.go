@@ -95,7 +95,7 @@ func MakeInstallTraefik2() *cobra.Command {
 		}
 
 		err = helm.Helm3Upgrade("traefik/traefik", namespace,
-			"values.yaml",
+			[]string{"values.yaml"},
 			"",
 			overrides,
 			wait)

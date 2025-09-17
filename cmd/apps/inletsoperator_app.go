@@ -213,7 +213,7 @@ IngressController`,
 		}
 
 		err = helm.Helm3Upgrade("inlets/inlets-operator",
-			namespace, "values.yaml", "", overrides, wait)
+			namespace, []string{"values.yaml"}, "", overrides, wait)
 		if err != nil {
 			return err
 		}

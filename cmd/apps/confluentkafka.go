@@ -112,7 +112,7 @@ func MakeInstallConfluentPlatformKafka() *cobra.Command {
 		appOpts.
 			WithKubeconfigPath(kubeConfigPath).
 			WithOverrides(overrides).
-			WithValuesFile("values.yaml").
+			WithValuesFiles([]string{"values.yaml"}).
 			WithHelmURL("https://confluentinc.github.io/cp-helm-charts/").
 			WithHelmRepo("confluentinc/cp-helm-charts").
 			WithHelmUpdateRepo(updateRepo).

@@ -179,7 +179,7 @@ func IsOCI(chart string) bool {
 	return strings.HasPrefix(chart, "oci://")
 }
 
-func Helm3Upgrade(chart, namespace, values, version string, overrides map[string]string, wait bool) error {
+func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, overrides map[string]string, wait bool) error {
 
 	chartName := chart
 	if index := strings.Index(chartName, "/"); index > -1 {
@@ -197,13 +197,13 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 		args = append(args, "--wait")
 	}
 
-	fmt.Println("VALUES", values)
-	if len(values) > 0 {
+	fmt.Println("VALUES", valuesFile)
+	for _, valueFile := range valuesFile {
 		args = append(args, "--values")
-		if !strings.HasPrefix(values, "/") {
-			args = append(args, path.Join(basePath, values))
+		if !strings.HasPrefix(valueFile, "/") {
+			args = append(args, path.Join(basePath, valueFile))
 		} else {
-			args = append(args, values)
+			args = append(args, valueFile)
 		}
 	}
 
@@ -238,7 +238,7 @@ func Helm3Upgrade(chart, namespace, values, version string, overrides map[string
 	return nil
 }
 
-func Helm3OCIUpgrade(chart, namespace, values, version string, overrides map[string]string, wait bool) error {
+func Helm3OCIUpgrade(chart, namespace string, valuesFiles []string, version string, overrides map[string]string, wait bool) error {
 
 	if !IsOCI(chart) {
 		return fmt.Errorf("chart %s is not an OCI chart URL", chart)
@@ -259,9 +259,9 @@ func Helm3OCIUpgrade(chart, namespace, values, version string, overrides map[str
 		args = append(args, "--wait")
 	}
 
-	fmt.Println("VALUES", values)
-	if len(values) > 0 {
-		args = append(args, "--values", values)
+	fmt.Println("VALUES", valuesFiles)
+	for _, valueFile := range valuesFiles {
+		args = append(args, "--values", valueFile)
 	}
 
 	for k, v := range overrides {
