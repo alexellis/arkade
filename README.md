@@ -591,7 +591,7 @@ ark --help
 
 Examples:
   arkade install
-  arkade install openfaas --helm3 --gateways=2
+  arkade install openfaas-ce --helm3 --gateways=2
   arkade install inlets-operator --token-file $HOME/do-token
 ```
 
