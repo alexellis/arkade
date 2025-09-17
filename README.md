@@ -737,6 +737,7 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | nfs-provisioner         | Install nfs subdir external provisioner                             |
 | opa-gatekeeper          | Install Open Policy Agent (OPA) Gatekeeper                          |
 | openfaas                | Install openfaas                                                    |
+| openfaas-ce             | Install openfaas-ce                                                 |
 | openfaas-ingress        | Install openfaas ingress with TLS                                   |
 | openfaas-loki           | Install Loki-OpenFaaS and Configure Loki logs provider for OpenFaaS |
 | portainer               | Install portainer to visualise and manage containers                |
@@ -752,7 +753,7 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | vault                   | Install vault                                                       |
 | waypoint                | Install Waypoint                                                    |
 
-There are 52 apps that you can install on your cluster.
+There are 53 apps that you can install on your cluster.
 
 > Note to contributors, run `go build && ./arkade install --print-table` to generate this list
 
@@ -932,6 +933,6 @@ There are 52 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 172 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+There are 172 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
