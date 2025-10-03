@@ -1152,6 +1152,36 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "charmbracelet",
+			Repo:        "glow",
+			Name:        "glow",
+			Description: "Render markdown on the CLI, with pizzazz! 💅🏻",
+			BinaryTemplate: `{{$extStr := "tar.gz"}}
+{{ if HasPrefix .OS "ming" -}}
+{{$extStr = "zip"}}
+{{- end -}}
+
+{{$osStr := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$osStr = "Windows"}}
+{{- else if eq .OS "linux" -}}
+{{$osStr = "Linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$osStr = "Darwin"}}
+{{- end -}}
+
+{{$archStr := .Arch}}
+{{- if eq .Arch "aarch64" -}}
+{{$archStr = "arm64"}}
+{{- else if eq .Arch "x86_64" -}}
+{{$archStr = "x86_64"}}
+{{- end -}}
+
+{{.Version}}/glow_{{.VersionNumber}}_{{$osStr}}_{{$archStr}}.{{$extStr}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "buildpacks",
 			Repo:        "pack",
 			Name:        "pack",
