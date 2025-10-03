@@ -5896,6 +5896,59 @@ func Test_DownloadFirectl(t *testing.T) {
 	}
 }
 
+func Test_DownloadGlow(t *testing.T) {
+	tools := MakeTools()
+	name := "glow"
+	version := "v2.1.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Darwin_x86_64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Linux_arm64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Linux_x86_64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/charmbracelet/glow/releases/download/v2.1.1/glow_2.1.1_Windows_x86_64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
+			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+}
+
 func Test_GrafanaAgent(t *testing.T) {
 	tools := MakeTools()
 	name := "grafana-agent"

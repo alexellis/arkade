@@ -811,6 +811,7 @@ There are 53 apps that you can install on your cluster.
 | [gha-bump](https://github.com/alexellis/gha-bump)                            | GitHub Actions dependency bump tool.                                                                                                                              |
 | [git-who](https://github.com/sinclairtarget/git-who)                         | Git blame for file trees.                                                                                                                                         |
 | [glab](https://github.com/gitlab-org/cli)                                    | A GitLab CLI tool bringing GitLab to your command line.                                                                                                           |
+| [glow](https://github.com/charmbracelet/glow)                                | Render markdown on the CLI, with pizzazz! 💅🏻                                                                                                                      |
 | [golangci-lint](https://github.com/golangci/golangci-lint)                   | Go linters aggregator.                                                                                                                                            |
 | [gomplate](https://github.com/hairyhenderson/gomplate)                       | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                                                |
 | [goreleaser](https://github.com/goreleaser/goreleaser)                       | Deliver Go binaries as fast and easily as possible                                                                                                                |
@@ -934,6 +935,6 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 173 tools, use `arkade get NAME` to download one.                                                        
+There are 174 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
