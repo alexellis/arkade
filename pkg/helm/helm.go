@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/url"
 	"os"
 	"path"
 	"strings"
@@ -179,6 +180,19 @@ func IsOCI(chart string) bool {
 	return strings.HasPrefix(chart, "oci://")
 }
 
+// processValuesFiles handles URL-based values files by ensuring they are passed through unchanged
+// since Helm supports URLs in --values flags
+func processValuesFiles(valuesFiles []string) ([]string, error) {
+	// No processing needed - Helm handles URLs directly
+	return valuesFiles, nil
+}
+
+// isURL checks if a string is a URL
+func isURL(str string) bool {
+	u, err := url.Parse(str)
+	return err == nil && u.Scheme != "" && u.Host != ""
+}
+
 func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, overrides map[string]string, wait bool) error {
 
 	chartName := chart
@@ -187,6 +201,12 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 	}
 
 	basePath := path.Join(os.TempDir(), "charts", chartName)
+
+	// Process values files to download any URLs
+	processedValuesFiles, err := processValuesFiles(valuesFile)
+	if err != nil {
+		return err
+	}
 
 	args := []string{"upgrade", "--install", chartName, chart, "--namespace", namespace}
 	if len(version) > 0 {
@@ -197,10 +217,13 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 		args = append(args, "--wait")
 	}
 
-	fmt.Println("VALUES", valuesFile)
-	for _, valueFile := range valuesFile {
+	fmt.Println("VALUES", processedValuesFiles)
+	for _, valueFile := range processedValuesFiles {
 		args = append(args, "--values")
-		if !strings.HasPrefix(valueFile, "/") {
+		if isURL(valueFile) {
+			// Helm supports URLs directly, pass through unchanged
+			args = append(args, valueFile)
+		} else if !strings.HasPrefix(valueFile, "/") {
 			args = append(args, path.Join(basePath, valueFile))
 		} else {
 			args = append(args, valueFile)
@@ -250,6 +273,12 @@ func Helm3OCIUpgrade(chart, namespace string, valuesFiles []string, version stri
 	}
 	name := chart[index+1:]
 
+	// Process values files to download any URLs
+	processedValuesFiles, err := processValuesFiles(valuesFiles)
+	if err != nil {
+		return err
+	}
+
 	args := []string{"upgrade", "--install", name, chart, "--namespace", namespace}
 	if len(version) > 0 {
 		args = append(args, "--version", version)
@@ -259,9 +288,10 @@ func Helm3OCIUpgrade(chart, namespace string, valuesFiles []string, version stri
 		args = append(args, "--wait")
 	}
 
-	fmt.Println("VALUES", valuesFiles)
-	for _, valueFile := range valuesFiles {
-		args = append(args, "--values", valueFile)
+	// fmt.Println("VALUES", processedValuesFiles)
+	for _, valueFile := range processedValuesFiles {
+		args = append(args, "--values")
+		args = append(args, valueFile)
 	}
 
 	for k, v := range overrides {
