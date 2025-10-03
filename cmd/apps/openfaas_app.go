@@ -11,6 +11,8 @@ import (
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strconv"
 
 	"github.com/alexellis/arkade/pkg/apps"
@@ -121,12 +123,26 @@ func MakeInstallOpenFaaS() *cobra.Command {
 		}
 
 		overrides["openfaasPro"] = "true"
-		secretData := []types.SecretsData{
-			{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
+
+		// Check for license file: use provided path, or default to ~/.openfaas/LICENSE
+		if licenseFile == "" {
+			homeDir, err := os.UserHomeDir()
+			if err == nil {
+				defaultLicensePath := filepath.Join(homeDir, ".openfaas", "LICENSE")
+				if _, err := os.Stat(defaultLicensePath); err == nil {
+					licenseFile = defaultLicensePath
+				}
+			}
 		}
 
-		proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
-		appOpts.WithSecret(proLicense)
+		if licenseFile != "" {
+			secretData := []types.SecretsData{
+				{Type: types.FromFileSecret, Key: "license", Value: licenseFile},
+			}
+
+			proLicense := types.NewGenericSecret("openfaas-license", namespace, secretData)
+			appOpts.WithSecret(proLicense)
+		}
 
 		if dashboard {
 			privateKey, publicKey, err := generateJWTKeyPair()
