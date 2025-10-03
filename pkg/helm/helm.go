@@ -217,7 +217,6 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 		args = append(args, "--wait")
 	}
 
-	fmt.Println("VALUES", processedValuesFiles)
 	for _, valueFile := range processedValuesFiles {
 		args = append(args, "--values")
 		if isURL(valueFile) {
@@ -288,7 +287,6 @@ func Helm3OCIUpgrade(chart, namespace string, valuesFiles []string, version stri
 		args = append(args, "--wait")
 	}
 
-	// fmt.Println("VALUES", processedValuesFiles)
 	for _, valueFile := range processedValuesFiles {
 		args = append(args, "--values")
 		args = append(args, valueFile)
