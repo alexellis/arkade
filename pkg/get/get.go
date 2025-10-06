@@ -83,7 +83,7 @@ var releaseLocations = map[string]ReleaseLocation{
 	},
 	k8sVersionStrategy: {
 		Url:     "https://cdn.dl.k8s.io/release/stable.txt",
-		Timeout: time.Second * 5,
+		Timeout: time.Second * 10,
 		Method:  http.MethodGet,
 	},
 }
