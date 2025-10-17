@@ -900,6 +900,41 @@ func Test_DownloadDevspace(t *testing.T) {
 	}
 }
 
+func Test_DownloadDiscordUpdater(t *testing.T) {
+	tools := MakeTools()
+	name := "discord-updater"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.0.2",
+			url:     "https://github.com/alexellis/discord-updater/releases/download/v0.0.2/discord-updater"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "v0.0.2",
+			url:     "https://github.com/alexellis/discord-updater/releases/download/v0.0.2/discord-updater-arm64"},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "v0.0.2",
+			url:     "https://github.com/alexellis/discord-updater/releases/download/v0.0.2/discord-updater-not-available"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.0.2",
+			url:     "https://github.com/alexellis/discord-updater/releases/download/v0.0.2/discord-updater-not-available"},
+	}
+	for _, tc := range tests {
+		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadTilt(t *testing.T) {
 	tools := MakeTools()
 	name := "tilt"
