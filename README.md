@@ -790,6 +790,7 @@ There are 53 apps that you can install on your cluster.
 | [crossplane](https://github.com/crossplane/crossplane)                       | Simplify some development and administration aspects of Crossplane.                                                                                               |
 | [dagger](https://github.com/dagger/dagger)                                   | A portable devkit for CI/CD pipelines.                                                                                                                            |
 | [devpod](https://github.com/loft-sh/devpod)                                  | Codespaces but open-source, client-only and unopinionated: Works with any IDE and lets you use any cloud, kubernetes or just localhost docker.                    |
+| [discord-updater](https://github.com/alexellis/discord-updater)              | Discord updater tool.                                                                                                                                            |
 | [devspace](https://github.com/devspace-sh/devspace)                          | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                                                  |
 | [dive](https://github.com/wagoodman/dive)                                    | A tool for exploring each layer in a docker image                                                                                                                 |
 | [docker-compose](https://github.com/docker/compose)                          | Define and run multi-container applications with Docker.                                                                                                          |
@@ -935,6 +936,6 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 174 tools, use `arkade get NAME` to download one.
+There are 175 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list

@@ -355,6 +355,23 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
+			Owner:       "alexellis",
+			Repo:        "discord-updater",
+			Name:        "discord-updater",
+			Description: "Discord updater tool.",
+			BinaryTemplate: `{{$binary := "discord-updater-not-available"}}
+{{- if eq .OS "linux" -}}
+  {{- if eq .Arch "aarch64" -}}
+    {{$binary = "discord-updater-arm64"}}
+  {{- else -}}
+    {{$binary = "discord-updater"}}
+  {{- end -}}
+{{- end -}}
+{{$binary}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "tilt-dev",
 			Repo:        "tilt",
 			Name:        "tilt",
