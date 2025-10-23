@@ -36,6 +36,7 @@ func MakeInstallRegistry() *cobra.Command {
 	cmd.Flags().String("bind-addr", "0.0.0.0", "Bind address for the registry server (only for 'mirror' type)")
 	cmd.Flags().String("storage", "/var/lib/registry", "Path to registry storage (only for 'mirror' type)")
 	cmd.Flags().String("tls", "", "Give \"actuated\" or leave empty.")
+	cmd.Flags().String("remote-url", "https://registry-1.docker.io", "The remote registry URL to mirror from (only for 'mirror' type)")
 
 	cmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		_, err := cmd.Flags().GetString("path")
@@ -160,9 +161,10 @@ func MakeInstallRegistry() *cobra.Command {
 			storage, _ := cmd.Flags().GetString("storage")
 			username, _ := cmd.Flags().GetString("username")
 			tls, _ := cmd.Flags().GetString("tls")
+			remoteURL, _ := cmd.Flags().GetString("remote-url")
 
 			fmt.Printf("Setting up registry mirror service\n")
-			if err := setupRegistryMirrorService(installPath, accessToken, accessTokenFile, bindAddr, storage, username, tls); err != nil {
+			if err := setupRegistryMirrorService(installPath, accessToken, accessTokenFile, bindAddr, storage, username, tls, remoteURL); err != nil {
 				return err
 			}
 			fmt.Printf(`View logs:
@@ -177,7 +179,7 @@ func MakeInstallRegistry() *cobra.Command {
 	return cmd
 }
 
-func setupRegistryMirrorService(installPath, accessToken, accessTokenFile, bindAddr, storagePath, username, tls string) error {
+func setupRegistryMirrorService(installPath, accessToken, accessTokenFile, bindAddr, storagePath, username, tls, remoteURL string) error {
 
 	registryEtc := "/etc/registry"
 	os.MkdirAll(registryEtc, 0755)
@@ -215,7 +217,8 @@ func setupRegistryMirrorService(installPath, accessToken, accessTokenFile, bindA
 		"TOKEN":      token,
 		"BRIDGE":     bindAddr,
 		"TLS":        tls,
-		"REMOTE_URL": "https://registry-1.docker.io",
+		"REMOTE_URL": remoteURL,
+		"STORAGE":    storagePath,
 	}); err != nil {
 		return err
 	}
@@ -289,7 +292,7 @@ log:
 
 storage:
   filesystem:
-    rootdirectory: /var/lib/registry
+    rootdirectory: {{ .STORAGE }}
 
 proxy:
   remoteurl: {{ .REMOTE_URL }}
