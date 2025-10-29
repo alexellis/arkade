@@ -72,9 +72,9 @@ func Test_DownloadRipgrep(t *testing.T) {
 			url:     "https://github.com/BurntSushi/ripgrep/releases/download/14.1.1/ripgrep-14.1.1-x86_64-pc-windows-msvc.zip",
 		},
 	}
-
+	verify := false
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -385,7 +385,7 @@ func Test_GetDownloadURLs(t *testing.T) {
 			}
 
 			tool := toolList[0]
-			got, err := tool.GetURL(tc.os, tc.arch, tool.Version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tool.Version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -434,7 +434,7 @@ func Test_DownloadArkade(t *testing.T) {
 			url:     "https://github.com/alexellis/arkade/releases/download/0.8.28/arkade-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -477,7 +477,7 @@ func Test_DownloadKubetrim(t *testing.T) {
 			url:     "https://github.com/alexellis/kubetrim/releases/download/0.8.28/kubetrim-arm64.tgz"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -524,7 +524,7 @@ func Test_Download_RunJob(t *testing.T) {
 			url:     "https://github.com/alexellis/run-job/releases/download/0.0.1/run-job-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -559,7 +559,7 @@ func Test_Download_ActuatedCLI(t *testing.T) {
 			url:     "https://github.com/self-actuated/actuated-cli/releases/download/0.0.1/actuated-cli"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -606,7 +606,7 @@ func Test_Download_mixctl(t *testing.T) {
 			url:     "https://github.com/inlets/mixctl/releases/download/0.0.1/mixctl-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -642,7 +642,7 @@ func Test_DownloadKubectl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -657,7 +657,7 @@ func Test_DownloadKubectx(t *testing.T) {
 	name := "kubectx"
 	tool := getTool(name, tools)
 
-	got, err := tool.GetURL("linux", arch64bit, "v0.9.4", false)
+	got, _, err := tool.GetURL("linux", arch64bit, "v0.9.4", false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -672,7 +672,7 @@ func Test_DownloadKubens(t *testing.T) {
 	name := "kubens"
 	tool := getTool(name, tools)
 
-	got, err := tool.GetURL("linux", arch64bit, tool.Version, false)
+	got, _, err := tool.GetURL("linux", arch64bit, tool.Version, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -715,7 +715,7 @@ func Test_DownloadKubeseal(t *testing.T) {
 			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm64.tar.gz"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -758,7 +758,7 @@ func Test_DownloadKind(t *testing.T) {
 			url:     "https://github.com/kubernetes-sigs/kind/releases/download/v0.11.0/kind-linux-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -797,7 +797,7 @@ func Test_DownloadK3d(t *testing.T) {
 			url:     "https://github.com/k3d-io/k3d/releases/download/v3.0.0/k3d-linux-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -824,7 +824,7 @@ func Test_DownloadK3s(t *testing.T) {
 			url:     "https://github.com/k3s-io/k3s/releases/download/v1.21.4+k3s1/k3s-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -851,7 +851,7 @@ func Test_DownloadK0s(t *testing.T) {
 			url:     "https://github.com/k0sproject/k0s/releases/download/v1.27.4+k0s.0/k0s-v1.27.4+k0s.0-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -890,7 +890,7 @@ func Test_DownloadDevspace(t *testing.T) {
 			url:     "https://github.com/devspace-sh/devspace/releases/download/v5.15.0/devspace-linux-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -925,7 +925,7 @@ func Test_DownloadDiscordUpdater(t *testing.T) {
 			url:     "https://github.com/alexellis/discord-updater/releases/download/v0.0.2/discord-updater-not-available"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -964,7 +964,7 @@ func Test_DownloadTilt(t *testing.T) {
 			url:     "https://github.com/tilt-dev/tilt/releases/download/v0.33.10/tilt.0.33.10.linux.arm64.tar.gz"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1003,7 +1003,7 @@ func Test_DownloadK3sup(t *testing.T) {
 			url:     "https://github.com/alexellis/k3sup/releases/download/0.9.2/k3sup-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1042,7 +1042,7 @@ func Test_DownloadGhaBump(t *testing.T) {
 			url:     "https://github.com/alexellis/gha-bump/releases/download/v0.0.1/gha-bump-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1080,7 +1080,7 @@ func Test_DownloadAutok3s(t *testing.T) {
 			url:     "https://github.com/cnrancher/autok3s/releases/download/v0.4.4/autok3s_linux_arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1134,7 +1134,7 @@ func Test_DownloadInletsctl(t *testing.T) {
 			binary:  "inletsctl-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1173,7 +1173,7 @@ func Test_DownloadKubebuilder(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1216,7 +1216,7 @@ func Test_DownloadKustomize(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1258,7 +1258,7 @@ func Test_DownloadCrane(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1323,7 +1323,7 @@ func Test_DownloadDigitalOcean(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1369,7 +1369,7 @@ func Test_DownloadEKSCTL(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1399,7 +1399,7 @@ func Test_DownloadEKSCTLANYWHERE(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1451,7 +1451,7 @@ func Test_DownloadK9s(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1509,7 +1509,7 @@ func Test_DownloadPopeye(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1561,7 +1561,7 @@ func Test_DownloadEtcd(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1603,7 +1603,7 @@ func Test_DownloadCivo(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1650,7 +1650,7 @@ func Test_DownloadWaypoint(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1708,7 +1708,7 @@ func Test_DownloadConsul(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1766,7 +1766,7 @@ func Test_DownloadTerraform(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1824,7 +1824,7 @@ func Test_DownloadPacker(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1871,7 +1871,7 @@ func Test_DownloadGH(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1905,7 +1905,7 @@ func Test_DownloadPack(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, "", tc.version, false)
+		got, _, err := tool.GetURL(tc.os, "", tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -1963,7 +1963,7 @@ func Test_DownloadBuildx(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2015,7 +2015,7 @@ func Test_DownloadDockerCompose(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2052,7 +2052,7 @@ func Test_DownloadHelmfile(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2086,7 +2086,7 @@ func Test_DownloadOpa(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, "", tc.version, false)
+		got, _, err := tool.GetURL(tc.os, "", tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2164,7 +2164,7 @@ func Test_DownloadMinikube(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2247,7 +2247,7 @@ func Test_DownloadStern(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -2305,7 +2305,7 @@ func Test_DownloadMinio(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, "", false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, "", false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -2362,7 +2362,7 @@ func Test_DownloadNats(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2397,7 +2397,7 @@ func Test_DownloadLinkerd(t *testing.T) {
 			url:     "https://github.com/linkerd/linkerd2/releases/download/stable-2.9.1/linkerd2-cli-stable-2.9.1-linux-arm64"},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2441,7 +2441,7 @@ func Test_DownloadArgocd(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2476,7 +2476,7 @@ func Test_DownloadNerdctl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2551,7 +2551,7 @@ func Test_DownloadIstioCtl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -2596,7 +2596,7 @@ func Test_DownloadTektonCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2640,7 +2640,7 @@ func Test_DownloadInfluxCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2704,7 +2704,7 @@ func Test_DownloadInletsProCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2768,7 +2768,7 @@ func Test_DownloadFaaSCLI(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2814,7 +2814,7 @@ func Test_DownloadKim(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				r.Fatal(err)
 			}
@@ -2859,7 +2859,7 @@ func Test_DownloadTrivyCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2904,7 +2904,7 @@ func Test_DownloadFluxCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -2950,7 +2950,7 @@ func Test_DownloadPolarisCli(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3003,7 +3003,7 @@ func Test_DownloadHelm(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				r.Fatal(err)
 			}
@@ -3043,7 +3043,7 @@ func Test_DownloadArgoCDAutopilotCli(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3090,7 +3090,7 @@ func Test_DownloadNovaCli(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3137,7 +3137,7 @@ func Test_DownloadKubetailCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3193,7 +3193,7 @@ func Test_DownloadKgctl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3251,7 +3251,7 @@ func Test_DownloadEquinixMetalCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3291,7 +3291,7 @@ func Test_DownloadPorterCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3379,7 +3379,7 @@ func Test_DownloadJq(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3417,7 +3417,7 @@ func Test_DownloadOperatorSDK(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3464,7 +3464,7 @@ func Test_DownloadCosignCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3510,7 +3510,7 @@ func Test_DownloadRekorCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3564,7 +3564,7 @@ func Test_DownloadTflint(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3616,7 +3616,7 @@ func Test_DownloadTFSecCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3675,7 +3675,7 @@ func Test_DownloadDive(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3727,7 +3727,7 @@ func Test_DownloadGoReleaserCli(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3765,7 +3765,7 @@ func Test_DownloadKubescape(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3823,7 +3823,7 @@ func Test_DownloadKrew(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -3857,7 +3857,7 @@ func Test_DownloadKubeBench(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3907,7 +3907,7 @@ func Test_DownloadClusterctl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -3957,7 +3957,7 @@ func Test_DownloadvCluster(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4014,7 +4014,7 @@ func Test_DownloadHostcl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4060,7 +4060,7 @@ func Test_DownloadKubecm(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4113,7 +4113,7 @@ func Test_DownloadMkcert(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4165,7 +4165,7 @@ func Test_DownloadSOPS(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4216,7 +4216,7 @@ func Test_DownloadDagger(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4267,7 +4267,7 @@ func Test_DownloadOhMyPosh(t *testing.T) {
 		}}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4275,7 +4275,7 @@ func Test_DownloadOhMyPosh(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4309,7 +4309,7 @@ func Test_DownloadKumactl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4317,7 +4317,7 @@ func Test_DownloadKumactl(t *testing.T) {
 				t.Errorf("want: %s, got: %s", tc.url, got)
 			}
 		})
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -4325,7 +4325,7 @@ func Test_DownloadKumactl(t *testing.T) {
 			t.Errorf("want: %s, got: %s", tc.url, got)
 		}
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4384,7 +4384,7 @@ func Test_DownloadHey(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4449,7 +4449,7 @@ func Test_DownloadCaddy(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4508,7 +4508,7 @@ func Test_DownloadNatsServer(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4561,7 +4561,7 @@ func Test_DownloadCilium(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4620,7 +4620,7 @@ func Test_DownloadTerraformDocs(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4674,7 +4674,7 @@ func Test_DownloadOpentofu(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4727,7 +4727,7 @@ func Test_DownloadTerragrunt(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4792,7 +4792,7 @@ func Test_DownloadFzf(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4845,7 +4845,7 @@ func Test_DownloadHubble(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4904,7 +4904,7 @@ func Test_DownloadGomplate(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -4963,7 +4963,7 @@ func Test_DownloadJust(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5028,7 +5028,7 @@ func Test_DownloadPromtool(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5087,7 +5087,7 @@ func Test_DownloadTalosctl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5139,7 +5139,7 @@ func Test_DownloadTerrascan(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5198,7 +5198,7 @@ func Test_DownloadGolangciLint(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5245,7 +5245,7 @@ func Test_DownloadBun(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5298,7 +5298,7 @@ func Test_DownloadLazygit(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5346,7 +5346,7 @@ func Test_DownloadRpk(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5405,7 +5405,7 @@ func Test_DownloadVault(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -5463,7 +5463,7 @@ func Test_DownloadCr(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5510,7 +5510,7 @@ func Test_DownloadHadolint(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5557,7 +5557,7 @@ func Test_DownloadButane(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5604,7 +5604,7 @@ func Test_DownloadFlyctl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5651,7 +5651,7 @@ func Test_DownloadKubeconform(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5692,7 +5692,7 @@ func Test_DownloadKubeLinter(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5739,7 +5739,7 @@ func Test_DownloadConftest(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5780,7 +5780,7 @@ func Test_DownloadKubeval(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5832,7 +5832,7 @@ func Test_DownloadViddy(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5891,7 +5891,7 @@ func Test_DownloadTemporalCLI(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5920,7 +5920,7 @@ func Test_DownloadFirectl(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -5973,7 +5973,7 @@ func Test_DownloadGlow(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6027,7 +6027,7 @@ func Test_GrafanaAgent(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6081,7 +6081,7 @@ func Test_ScalewayCli(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6133,7 +6133,7 @@ func Test_DownloadSyft(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6185,7 +6185,7 @@ func Test_DownloadGrype(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6238,7 +6238,7 @@ func Test_DownloaClusterawsadm(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6296,7 +6296,7 @@ func Test_DownloaCroc(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6354,7 +6354,7 @@ func Test_DownloaCroc(t *testing.T) {
 // 	}
 
 // 	for _, tc := range tests {
-// 		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+// 		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 // 		if err != nil {
 // 			t.Fatal(err)
 // 		}
@@ -6417,7 +6417,7 @@ func Test_DownloadFstail(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6480,7 +6480,7 @@ func Test_DownloadSsync(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6532,7 +6532,7 @@ func Test_DownloadYt(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6595,7 +6595,7 @@ func Test_DownloadActuatedCLI(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6660,7 +6660,7 @@ func Test_DownloadCmctl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6718,7 +6718,7 @@ func Test_DownloadTimoni(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6770,7 +6770,7 @@ func Test_DownloadSeaweedFS(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6822,7 +6822,7 @@ func Test_DownloadKyverno(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6863,7 +6863,7 @@ func Test_DownloadBuildKit(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -6916,7 +6916,7 @@ func Test_DownloadKtop(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -6968,7 +6968,7 @@ func Test_DownloadKubeBurner(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7014,7 +7014,7 @@ func Test_DownloadOpenshiftInstall(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7066,7 +7066,7 @@ func Test_DownloadOpenshiftCLI(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7112,7 +7112,7 @@ func Test_DownloadAtuin(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7139,7 +7139,7 @@ func Test_Copacetic(t *testing.T) {
 	}
 
 	t.Run(test.os+" "+test.arch+" "+test.version, func(r *testing.T) {
-		got, err := tool.GetURL(test.os, test.arch, test.version, false)
+		got, _, err := tool.GetURL(test.os, test.arch, test.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7192,7 +7192,7 @@ func Test_DownloadTask(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7244,7 +7244,7 @@ func Test_Download1Password(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7296,7 +7296,7 @@ func Test_VHS(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7354,7 +7354,7 @@ func Test_DownloaSkupper(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7412,7 +7412,7 @@ func Test_DownloadKwok(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7464,7 +7464,7 @@ func Test_DownloadDevpod(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7510,7 +7510,7 @@ func Test_DownloadKwokctl(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7572,7 +7572,7 @@ func Test_DownloadSnowMachine(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7604,7 +7604,7 @@ func Test_DownloadCloudHypervisor(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7636,7 +7636,7 @@ func Test_DownloadCloudHypervisorRemote(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7686,7 +7686,7 @@ func Test_DownloadGPTScript(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7736,7 +7736,7 @@ func Test_DownloadRegCtl(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7775,7 +7775,7 @@ func Test_DownloadFaasd(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7833,7 +7833,7 @@ func Test_DownloadKubeScore(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7892,7 +7892,7 @@ func Test_DownloadKubeColor(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -7987,7 +7987,7 @@ func Test_DownloadLazyDocker(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8059,7 +8059,7 @@ func Test_DownloadKeploy(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8116,7 +8116,7 @@ func Test_Download_k0sctl(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8154,7 +8154,7 @@ func Test_Download_labctl(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8204,7 +8204,7 @@ func Test_Download_glab(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8260,7 +8260,7 @@ func Test_Download_duplik8s(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8318,7 +8318,7 @@ func Test_Crossplane(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8375,7 +8375,7 @@ func Test_Download_rosa(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8424,7 +8424,7 @@ func Test_Download_kubie(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8474,7 +8474,7 @@ func Test_Download_EKSNodeViewer(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8536,7 +8536,7 @@ func Test_Download_rclone(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8586,7 +8586,7 @@ func Test_Download_alloy(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8644,7 +8644,7 @@ func Test_DownloadDotenvLinter(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8694,7 +8694,7 @@ func Test_Download_gitwho(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8750,7 +8750,7 @@ func Test_Download_pulumi(t *testing.T) {
 		},
 	}
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8802,7 +8802,7 @@ func Test_DownloadOpencode(t *testing.T) {
 	}
 
 	for _, tc := range tests {
-		got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -8855,7 +8855,7 @@ func Test_LogCLI(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
 
-			got, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}
