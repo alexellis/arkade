@@ -1,6 +1,8 @@
 package get
 
 import (
+	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"io"
 	"log"
@@ -9,6 +11,8 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
+	"text/template"
+	"time"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/archive"
@@ -29,9 +33,9 @@ func (e *ErrNotFound) Error() string {
 	return "server returned status: 404"
 }
 
-func Download(tool *Tool, arch, operatingSystem, version string, movePath string, displayProgress, quiet bool) (string, string, error) {
+func Download(tool *Tool, arch, operatingSystem, version string, movePath string, displayProgress, quiet, verify bool) (string, string, error) {
 
-	downloadURL, err := GetDownloadURL(tool,
+	downloadURL, resolvedVersion, err := GetDownloadURL(tool,
 		strings.ToLower(operatingSystem),
 		strings.ToLower(arch),
 		version, quiet)
@@ -50,6 +54,45 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 
 	if !quiet {
 		fmt.Printf("%s written.\n", outFilePath)
+	}
+
+	if verify {
+		if tool.VerifyStrategy == HashicorpShasumStrategy {
+			st := time.Now()
+			tmpl := template.New(tool.Name + "sha")
+			tmpl = tmpl.Funcs(templateFuncs)
+			t, err := tmpl.Parse(tool.VerifyTemplate)
+			if err != nil {
+				return "", "", err
+			}
+
+			var buf bytes.Buffer
+			inputs := map[string]string{
+				"Name":          tool.Name,
+				"Owner":         tool.Owner,
+				"Repo":          tool.Repo,
+				"Version":       resolvedVersion,
+				"VersionNumber": strings.TrimPrefix(resolvedVersion, "v"),
+				"Arch":          arch,
+				"OS":            operatingSystem,
+			}
+
+			if err = t.Execute(&buf, inputs); err != nil {
+				return "", "", err
+			}
+
+			verifyURL := strings.TrimSpace(buf.String())
+			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			shaSum, err := fetchText(verifyURL)
+			if err != nil {
+				return "", "", err
+			}
+			if err := verifySHA(shaSum, outFilePath); err != nil {
+				return "", "", err
+			} else {
+				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
+			}
+		}
 	}
 
 	if isArchiveStr(downloadURL) {
@@ -263,4 +306,60 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 	}
 
 	return outFilePath, nil
+}
+
+func fetchText(url string) (string, error) {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Set("User-Agent", pkg.UserAgent())
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return "", err
+	}
+
+	var body []byte
+	if res.Body != nil {
+		defer res.Body.Close()
+		body, _ = io.ReadAll(res.Body)
+	}
+
+	if res.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("unexpected status code %d, body: %s", res.StatusCode, string(body))
+	}
+
+	return string(body), nil
+}
+
+func verifySHA(shaSum, outFilePath string) error {
+
+	outFileBaseName := filepath.Base(outFilePath)
+
+	lines := strings.Split(shaSum, "\n")
+
+	for _, line := range lines {
+		remoteHash, file, ok := strings.Cut(line, " ")
+		if ok {
+
+			if file == outFileBaseName {
+				calculated, err := getSHA256Checksum(outFilePath)
+				if err != nil {
+					return err
+				}
+				if calculated != remoteHash {
+					return fmt.Errorf("checksum mismatch, want: %s, but got: %s", remoteHash, calculated)
+				}
+			}
+		}
+	}
+	return nil
+}
+
+func getSHA256Checksum(path string) (string, error) {
+	f, err := os.ReadFile(path)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%x", sha256.Sum256(f)), nil
 }

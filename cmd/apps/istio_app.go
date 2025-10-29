@@ -201,7 +201,8 @@ func downloadIstio(userPath, arch, clientOS, version string) error {
 		)
 		defaultMovePath := ""
 
-		outPath, finalName, err := get.Download(tool, arch, clientOS, version, defaultMovePath, progress, quiet)
+		verify := false
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, defaultMovePath, progress, quiet, verify)
 		if err != nil {
 			return err
 		}

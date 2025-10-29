@@ -85,7 +85,9 @@ func MakeInstallCaddyServer() *cobra.Command {
 			version = "v" + version
 		}
 
-		outFilePath, _, err := get.Download(tool, arch, osVer, version, installPath, progress, !progress)
+		verify := false
+
+		outFilePath, _, err := get.Download(tool, arch, osVer, version, installPath, progress, !progress, verify)
 		if err != nil {
 			return err
 		}

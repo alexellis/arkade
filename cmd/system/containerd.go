@@ -100,7 +100,7 @@ func MakeInstallContainerd() *cobra.Command {
 			`,
 		}
 
-		url, err := containerdTool.GetURL(osVer, downloadArch, containerdTool.Version, !progress)
+		url, _, err := containerdTool.GetURL(osVer, downloadArch, containerdTool.Version, !progress)
 		if err != nil {
 			return err
 		}
