@@ -52,6 +52,7 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 			quiet    bool
 		)
 
+		verify := false
 		defaultMovePath := ""
 		outPath, finalName, err := get.Download(tool,
 			clientArch,
@@ -59,7 +60,8 @@ func DownloadHelm(userPath, clientArch, clientOS, subdir string) error {
 			tool.Version,
 			defaultMovePath,
 			progress,
-			quiet)
+			quiet,
+			verify)
 		if err != nil {
 			return err
 		}

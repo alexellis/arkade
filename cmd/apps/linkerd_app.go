@@ -152,8 +152,10 @@ func downloadLinkerd(userPath, arch, clientOS, version string) error {
 			quiet    bool
 		)
 
+		verify := false
+
 		defaultMovePath := ""
-		outPath, finalName, err := get.Download(tool, arch, clientOS, version, defaultMovePath, progress, quiet)
+		outPath, finalName, err := get.Download(tool, arch, clientOS, version, defaultMovePath, progress, quiet, verify)
 		if err != nil {
 			return err
 		}

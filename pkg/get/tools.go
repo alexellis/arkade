@@ -952,7 +952,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:            "terraform",
 			Name:            "terraform",
 			VersionStrategy: GitHubVersionStrategy,
-			Description:     "Infrastructure as Code for major cloud providers.",
+			VerifyStrategy:  HashicorpShasumStrategy,
+			VerifyTemplate: `
+https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_SHA256SUMS
+`,
+			Description: "Infrastructure as Code for major cloud providers.",
 			URLTemplate: `
 			{{$arch := ""}}
 			{{- if eq .Arch "x86_64" -}}

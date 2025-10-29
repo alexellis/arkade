@@ -21,6 +21,8 @@ const GitHubVersionStrategy = "github"
 const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 
+const HashicorpShasumStrategy = `hashicorp-sha`
+
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
 
@@ -62,6 +64,10 @@ type Tool struct {
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
+
+	VerifyTemplate string
+
+	VerifyStrategy string
 }
 
 type ReleaseLocation struct {
@@ -101,7 +107,7 @@ func (tool Tool) IsArchive(quiet bool) (bool, error) {
 	arch, operatingSystem := env.GetClientArch()
 	version := ""
 
-	downloadURL, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version, quiet)
+	downloadURL, _, err := GetDownloadURL(&tool, strings.ToLower(operatingSystem), strings.ToLower(arch), version, quiet)
 	if err != nil {
 		return false, err
 	}
@@ -120,15 +126,15 @@ func isArchiveStr(downloadURL string) bool {
 
 // GetDownloadURL fetches the download URL for a release of a tool
 // for a given os, architecture and version
-func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, error) {
+func GetDownloadURL(tool *Tool, os, arch, version string, quiet bool) (string, string, error) {
 	ver := GetToolVersion(tool, version)
 
-	dlURL, err := tool.GetURL(os, arch, ver, quiet)
+	dlURL, resolvedVersion, err := tool.GetURL(os, arch, ver, quiet)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return dlURL, nil
+	return dlURL, resolvedVersion, nil
 }
 
 func GetToolVersion(tool *Tool, version string) string {
@@ -162,7 +168,8 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 	return res.StatusCode, body, res.Header, nil
 }
 
-func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
+func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, string, error) {
+	resolvedVersion := version
 
 	if len(version) == 0 {
 
@@ -186,7 +193,7 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 
 			v, err := FindRelease(releaseType, tool.Owner, tool.Repo)
 			if err != nil {
-				return "", err
+				return "", "", err
 			}
 			version = v
 		}
@@ -196,11 +203,21 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, error) {
 		}
 	}
 
+	resolvedVersion = version
+
 	if len(tool.URLTemplate) > 0 {
-		return getByDownloadTemplate(tool, os, arch, version)
+		res, err := getByDownloadTemplate(tool, os, arch, version)
+		if err != nil {
+			return "", "", err
+		}
+		return res, resolvedVersion, nil
 	}
 
-	return getURLByGithubTemplate(tool, os, arch, version)
+	res, err := getURLByGithubTemplate(tool, os, arch, version)
+	if err != nil {
+		return "", "", err
+	}
+	return res, resolvedVersion, nil
 }
 
 func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error) {

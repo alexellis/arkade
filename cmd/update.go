@@ -92,7 +92,7 @@ func (u *urlResolver) GetDownloadURL(release string) (string, error) {
 		}
 	}
 
-	downloadUrl, err := get.GetDownloadURL(tool, operatingSystem, arch, release, false)
+	downloadUrl, _, err := get.GetDownloadURL(tool, operatingSystem, arch, release, false)
 	if err != nil {
 		return "", err
 	}

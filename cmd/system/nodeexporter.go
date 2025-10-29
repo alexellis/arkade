@@ -82,7 +82,8 @@ func installNodeExporterE(cmd *cobra.Command, args []string) error {
 		version = "v" + version
 	}
 
-	outFilePath, _, err := get.Download(tool, arch, osVer, version, installPath, progress, !progress)
+	verify := false
+	outFilePath, _, err := get.Download(tool, arch, osVer, version, installPath, progress, !progress, verify)
 	if err != nil {
 		return err
 	}

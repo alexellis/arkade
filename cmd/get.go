@@ -68,8 +68,11 @@ and provides a fast and easy alternative to a package manager.`,
 	command.Flags().String("arch", clientArch, "CPU architecture for the tool")
 	command.Flags().String("os", clientOS, "Operating system for the tool")
 	command.Flags().Bool("quiet", false, "Suppress most additional format")
+	command.Flags().Bool("verify", true, "Verify the checksum of the downloaded file where a download has a verify strategy defined")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
+		verify, _ := command.Flags().GetBool("verify")
+
 		if len(args) == 0 {
 			format, _ := command.Flags().GetString("format")
 
@@ -150,7 +153,8 @@ and provides a fast and easy alternative to a package manager.`,
 				version,
 				movePath,
 				progress,
-				quiet)
+				quiet,
+				verify)
 
 			// handle 404 error gracefully
 			if errors.Is(err, &get.ErrNotFound{}) {
