@@ -80,6 +80,10 @@ OCI image.`,
 
 		if cmd.Flags().Changed("os") {
 			clientOS, _ = cmd.Flags().GetString("os")
+		} else {
+			if strings.Contains(clientOS, "microsoft windows") {
+				clientOS = "windows"
+			}
 		}
 
 		tempFile, err := os.CreateTemp(os.TempDir(), "arkade-oci-*")
