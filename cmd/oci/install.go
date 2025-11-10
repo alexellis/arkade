@@ -60,6 +60,15 @@ OCI image.`,
 
 		imageName := args[0]
 
+		switch imageName {
+		case "vmmeter":
+			imageName = "ghcr.io/openfaasltd/vmmeter"
+		case "slicer":
+			imageName = "ghcr.io/openfaasltd/slicer"
+		case "k3sup-pro":
+			imageName = "ghcr.io/openfaasltd/k3sup-pro"
+		}
+
 		if !strings.Contains(imageName, ":") {
 			imageName = imageName + ":" + version
 		}
