@@ -13,8 +13,8 @@ func MakeOci() *cobra.Command {
 	command := &cobra.Command{
 		Use:     "oci",
 		Aliases: []string{"o"},
-		Short:   "oci apps",
-		Long:    `Apps from OCI images.`,
+		Short:   "Install files from OCI/container images",
+		Long:    `Install files from OCI/container images to a given path.`,
 		Example: `  arkade oci install [container image]
   arkade oci i [container image]`,
 		SilenceUsage: true,
