@@ -23,14 +23,17 @@ func MakeOciInstall() *cobra.Command {
 		Short:   "Install the contents of an OCI image to a given path",
 		Long: `Use this command to install binaries or packages distributed within an 
 OCI image.`,
-		Example: `  # Install vmmeter to /usr/local/bin
-  arkade oci install ghcr.io/openfaasltd/vmmeter
+		Example: `  # Install slicer to /usr/local/bin
+  arkade oci install ghcr.io/openfaasltd/slicer
 
-  # Install a specific version of vmmeter to /tmp/
-  arkade oci install ghcr.io/openfaasltd/vmmeter --path /tmp --version 0.1.0
+  # Install a specific version of slicer to /tmp/
+  arkade oci install ghcr.io/openfaasltd/slicer --path /tmp --version 0.1.0
 
-  # Install vmmeter for arm64 as an architecture override, instead of using uname
-  arkade oci install ghcr.io/openfaasltd/vmmeter --arch arm64
+  # Install slicer for arm64 as an architecture override, instead of using uname
+  arkade oci install ghcr.io/openfaasltd/slicer --arch arm64
+
+  # Use a shortcut for the image name (vmmeter, slicer, k3sup-pro)
+  arkade oci install k3sup-pro
 `,
 		SilenceUsage: true,
 	}
