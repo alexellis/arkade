@@ -11,17 +11,23 @@ github.com/alexellis/go-execute/v2
 ## explicit; go 1.18
 github.com/cheggaaa/pb/v3
 github.com/cheggaaa/pb/v3/termutil
-# github.com/clipperhouse/uax29/v2 v2.2.0
+# github.com/clipperhouse/displaywidth v0.3.1
+## explicit; go 1.18
+github.com/clipperhouse/displaywidth
+# github.com/clipperhouse/stringish v0.1.1
+## explicit; go 1.18
+github.com/clipperhouse/stringish
+# github.com/clipperhouse/uax29/v2 v2.3.0
 ## explicit; go 1.18
 github.com/clipperhouse/uax29/v2/graphemes
 github.com/clipperhouse/uax29/v2/internal/iterators
-# github.com/containerd/stargz-snapshotter/estargz v0.18.0
+# github.com/containerd/stargz-snapshotter/estargz v0.18.1
 ## explicit; go 1.24.0
 github.com/containerd/stargz-snapshotter/estargz
 github.com/containerd/stargz-snapshotter/estargz/errorutil
 # github.com/distribution/reference v0.6.0
 ## explicit; go 1.20
-# github.com/docker/cli v28.5.1+incompatible
+# github.com/docker/cli v29.0.1+incompatible
 ## explicit
 github.com/docker/cli/cli/config
 github.com/docker/cli/cli/config/configfile
@@ -112,7 +118,7 @@ github.com/olekukonko/errors
 github.com/olekukonko/ll
 github.com/olekukonko/ll/lh
 github.com/olekukonko/ll/lx
-# github.com/olekukonko/tablewriter v1.1.0
+# github.com/olekukonko/tablewriter v1.1.1
 ## explicit; go 1.21
 github.com/olekukonko/tablewriter
 github.com/olekukonko/tablewriter/pkg/twwarp
@@ -138,7 +144,6 @@ github.com/otiai10/mint/mquery
 github.com/pkg/errors
 # github.com/rivo/uniseg v0.4.7
 ## explicit; go 1.18
-github.com/rivo/uniseg
 # github.com/sethvargo/go-password v0.3.1
 ## explicit; go 1.21
 github.com/sethvargo/go-password/password
@@ -154,18 +159,18 @@ github.com/spf13/pflag
 # github.com/vbatts/tar-split v0.12.2
 ## explicit; go 1.17
 github.com/vbatts/tar-split/archive/tar
-# golang.org/x/crypto v0.43.0
+# golang.org/x/crypto v0.44.0
 ## explicit; go 1.24.0
 golang.org/x/crypto/bcrypt
 golang.org/x/crypto/blowfish
-# golang.org/x/mod v0.29.0
+# golang.org/x/mod v0.30.0
 ## explicit; go 1.24.0
 golang.org/x/mod/semver
-# golang.org/x/sync v0.17.0
+# golang.org/x/sync v0.18.0
 ## explicit; go 1.24.0
 golang.org/x/sync/errgroup
 golang.org/x/sync/semaphore
-# golang.org/x/sys v0.37.0
+# golang.org/x/sys v0.38.0
 ## explicit; go 1.24.0
 golang.org/x/sys/unix
 golang.org/x/sys/windows
