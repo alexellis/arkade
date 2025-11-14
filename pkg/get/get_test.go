@@ -1613,6 +1613,47 @@ func Test_DownloadCivo(t *testing.T) {
 	}
 }
 
+func Test_DownloadDufs(t *testing.T) {
+	tools := MakeTools()
+	name := "dufs"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.45.0"
+
+	tests := []test{
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sigoden/dufs/releases/download/v0.45.0/dufs-v0.45.0-x86_64-pc-windows-msvc.zip"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sigoden/dufs/releases/download/v0.45.0/dufs-v0.45.0-x86_64-unknown-linux-musl.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/sigoden/dufs/releases/download/v0.45.0/dufs-v0.45.0-aarch64-unknown-linux-musl.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sigoden/dufs/releases/download/v0.45.0/dufs-v0.45.0-x86_64-apple-darwin.tar.gz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/sigoden/dufs/releases/download/v0.45.0/dufs-v0.45.0-aarch64-apple-darwin.tar.gz"},
+	}
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadWaypoint(t *testing.T) {
 	tools := MakeTools()
 	name := "waypoint"

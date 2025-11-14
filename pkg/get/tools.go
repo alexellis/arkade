@@ -372,6 +372,21 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
+			Owner:       "sigoden",
+			Repo:        "dufs",
+			Name:        "dufs",
+			Description: "A file server that supports static serving, uploading",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-{{.Version}}-{{.Arch}}-pc-windows-msvc.zip
+{{- else if eq .OS "darwin" -}}
+{{.Name}}-{{.Version}}-{{if eq .Arch "arm64"}}aarch64{{else}}{{.Arch}}{{end}}-apple-darwin.tar.gz
+{{- else if eq .OS "linux" -}}
+{{.Name}}-{{.Version}}-{{if eq .Arch "arm64"}}aarch64{{else}}{{.Arch}}{{end}}-unknown-linux-musl.tar.gz
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "tilt-dev",
 			Repo:        "tilt",
 			Name:        "tilt",
