@@ -876,6 +876,25 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "kluctl",
+			Repo:        "kluctl",
+			Name:        "kluctl",
+			Description: "Kluctl is a tool to deploy applications declaratively to Kubernetes via a gitops approach.",
+			BinaryTemplate: `{{$os := .OS}}
+{{ if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{- end -}}
+{{$arch := .Arch}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+kluctl_{{.Version}}_{{$os}}_{{$arch}}.{{if HasPrefix .OS "ming"}}zip{{else}}tar.gz{{end}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "derailed",
 			Repo:        "popeye",
 			Name:        "popeye",
