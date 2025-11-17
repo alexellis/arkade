@@ -4827,6 +4827,39 @@ https://github.com/BurntSushi/ripgrep/releases/download/{{.Version}}/ripgrep-{{.
 
 	tools = append(tools,
 		Tool{
+			Owner:          "nushell",
+			Repo:           "nushell",
+			Name:           "nu",
+			Description:    "A new type of shell that can handle structured data like YAML really well",
+			BinaryTemplate: `nu`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-unknown-linux-musl"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "aarch64-unknown-linux-gnu"}}
+	{{ else if eq .Arch "armv7l" -}}
+		{{$target = "armv7-unknown-linux-musleabihf"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-apple-darwin"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "aarch64-apple-darwin"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-pc-windows-msvc"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/nu-{{.Version}}-{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",

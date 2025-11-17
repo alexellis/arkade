@@ -883,6 +883,7 @@ There are 53 apps that you can install on your cluster.
 | [nerdctl](https://github.com/containerd/nerdctl)                             | Docker-compatible CLI for containerd, with support for Compose                                                                                                    |
 | [node_exporter](https://github.com/prometheus/node_exporter)                 | Prometheus exporter for monitoring server metrics                                                                                                                 |
 | [nova](https://github.com/FairwindsOps/nova)                                 | Find outdated or deprecated Helm charts running in your cluster.                                                                                                  |
+| [nu](https://github.com/nushell/nushell)                                     | Nushell, a new type of shell that can handle structured data like YAML really well.                                                                               |
 | [oc](https://github.com/openshift/oc)                                        | Client to use an OpenShift 4.x cluster.                                                                                                                           |
 | [oh-my-posh](https://github.com/jandedobbeleer/oh-my-posh)                   | A prompt theme engine for any shell that can display kubernetes information.                                                                                      |
 | [op](https://github.com/1password/)                                          | 1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.                                        |
@@ -936,6 +937,6 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 175 tools, use `arkade get NAME` to download one.
+There are 176 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
