@@ -4939,6 +4939,36 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/opkssh-{{
 
 	tools = append(tools,
 		Tool{
+			Owner:          "Azure",
+			Repo:           "kubelogin",
+			Name:           "kubelogin",
+			Description:    "A Kubernetes credential (exec) plugin implementing azure authentication",
+			BinaryTemplate: `kubelogin`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "zip"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "linux-amd64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "linux-arm64"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "darwin-amd64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "darwin-arm64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "win-amd64"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/kubelogin-{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",
