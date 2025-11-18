@@ -9008,6 +9008,58 @@ func Test_DownloadOpkssh(t *testing.T) {
 	}
 }
 
+func Test_DownloadKubelogin(t *testing.T) {
+	tools := MakeTools()
+	name := "kubelogin"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.2.12"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Azure/kubelogin/releases/download/v0.2.12/kubelogin-linux-amd64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/Azure/kubelogin/releases/download/v0.2.12/kubelogin-linux-arm64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Azure/kubelogin/releases/download/v0.2.12/kubelogin-darwin-amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/Azure/kubelogin/releases/download/v0.2.12/kubelogin-darwin-arm64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/Azure/kubelogin/releases/download/v0.2.12/kubelogin-win-amd64.zip",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadOpencode(t *testing.T) {
 	tools := MakeTools()
 	name := "opencode"
