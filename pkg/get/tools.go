@@ -4879,6 +4879,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/nu-{{.Ver
 
 	tools = append(tools,
 		Tool{
+			Owner:          "starship",
+			Repo:           "starship",
+			Name:           "starship",
+			Description:    "The minimal, blazing-fast, and infinitely customizable prompt for any shell!",
+			BinaryTemplate: `starship`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-unknown-linux-musl"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "aarch64-unknown-linux-musl"}}
+	{{ else if eq .Arch "armv7l" -}}
+		{{$target = "armv7-unknown-linux-musleabihf"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-apple-darwin"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "aarch64-apple-darwin"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-pc-windows-msvc"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/starship-{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",
