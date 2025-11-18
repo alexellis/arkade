@@ -4879,6 +4879,37 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/nu-{{.Ver
 
 	tools = append(tools,
 		Tool{
+			Owner:          "direnv",
+			Repo:           "direnv",
+			Name:           "direnv",
+			Description:    "A tool to manage environment variables and unclutter your .profile",
+			BinaryTemplate: `direnv`,
+			URLTemplate: `
+{{$target := ""}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "linux-amd64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "linux-arm64"}}
+	{{ else if eq .Arch "armv7l" -}}
+		{{$target = "arm"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "darwin-amd64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "darwin-arm64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "windows-amd64"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/direnv.{{$target}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",

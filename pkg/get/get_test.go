@@ -8904,6 +8904,58 @@ func Test_DownloadNushell(t *testing.T) {
 	}
 }
 
+func Test_DownloadDirenv(t *testing.T) {
+	tools := MakeTools()
+	name := "direnv"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.37.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.darwin-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/direnv/direnv/releases/download/v2.37.1/direnv.windows-amd64",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadOpencode(t *testing.T) {
 	tools := MakeTools()
 	name := "opencode"
