@@ -5002,6 +5002,36 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/starship-
 
 	tools = append(tools,
 		Tool{
+			Owner:          "homeport",
+			Repo:           "dyff",
+			Name:           "dyff",
+			Description:    "diff tool for YAML files, and sometimes JSON",
+			BinaryTemplate: `dyff`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "linux_amd64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "linux_arm64"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "darwin_amd64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "darwin_arm64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "windows_amd64"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.VersionNumber}}_{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",
