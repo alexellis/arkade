@@ -4879,6 +4879,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/nu-{{.Ver
 
 	tools = append(tools,
 		Tool{
+			Owner:          "openpubkey",
+			Repo:           "opkssh",
+			Name:           "opkssh",
+			Description:    "A new type of shell that can handle structured data like YAML really well",
+			BinaryTemplate: `opkssh`,
+			URLTemplate: `
+{{$target := ""}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "linux-amd64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "linux-arm64"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "osx-amd64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "osx-arm64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "windows-amd64.exe"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/opkssh-{{$target}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",

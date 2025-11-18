@@ -8904,6 +8904,58 @@ func Test_DownloadNushell(t *testing.T) {
 	}
 }
 
+func Test_DownloadOpkssh(t *testing.T) {
+	tools := MakeTools()
+	name := "opkssh"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.10.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openpubkey/opkssh/releases/download/v0.10.0/opkssh-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/openpubkey/opkssh/releases/download/v0.10.0/opkssh-linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openpubkey/opkssh/releases/download/v0.10.0/opkssh-osx-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/openpubkey/opkssh/releases/download/v0.10.0/opkssh-osx-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/openpubkey/opkssh/releases/download/v0.10.0/opkssh-windows-amd64.exe",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadOpencode(t *testing.T) {
 	tools := MakeTools()
 	name := "opencode"
