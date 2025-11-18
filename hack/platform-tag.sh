@@ -2,7 +2,7 @@
 
 getPackage() {
     suffix=""
-    arch=$(uname -m)
+    arch="$(uname -m)"
     case $arch in
     "aarch64")
     suffix="-arm64"
