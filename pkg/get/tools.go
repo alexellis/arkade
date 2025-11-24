@@ -64,9 +64,9 @@ func MakeTools() Tools {
 {{.Name}}-darwin-x64.zip
   {{- end -}}
 {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
-{{.Name}}-linux-arm64.zip
+{{.Name}}-linux-arm64.tar.gz
 {{- else -}}
-{{.Name}}-linux-x64.zip
+{{.Name}}-linux-x64.tar.gz
 {{- end -}}`,
 		})
 
@@ -971,12 +971,12 @@ kluctl_{{.Version}}_{{$os}}_{{$arch}}.{{if HasPrefix .OS "ming"}}zip{{else}}tar.
 				{{- else if eq .Arch "armv7l" -}}
 				{{$arch = "arm"}}
 				{{- end -}}
-	
+
 				{{$os := .OS}}
 				{{ if HasPrefix .OS "ming" -}}
 				{{$os = "windows"}}
 				{{- end -}}
-	
+
 				https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`,
 		})
 
@@ -1108,18 +1108,18 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			Version:     "2.2.19",
 			Description: "Tool for building and distributing development environments.",
 			URLTemplate: `{{$arch := .Arch}}
-	
+
 	{{- if eq .Arch "x86_64" -}}
 	{{$arch = "amd64"}}
 	{{- else if eq .Arch "armv7l" -}}
 	{{$arch = "arm"}}
 	{{- end -}}
-	
+
 	{{$os := .OS}}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$os = "windows"}}
 	{{- end -}}
-	
+
 	https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
 
 	tools = append(tools,
@@ -2289,12 +2289,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$os := .OS}}
 							{{$arch := .Arch}}
 							{{$ext := ".tar.gz"}}
-				
+
 							{{- if HasPrefix .OS "ming" -}}
 								{{$os = "windows"}}
 								{{$ext = ".zip"}}
 							{{- end -}}
-		
+
 							{{- if eq .Arch "x86_64" -}}
 		                        {{$arch = "amd64"}}
 							{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
@@ -4238,11 +4238,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{ $os := .OS }}
 				{{ $arch := .Arch }}
 				{{ $ext := "" }}
-	
+
 				{{- if (eq .Arch "aarch64") -}}
 					{{ $ext = "-aarch64" }}
 				{{- end -}}
-	
+
 				cloud-hypervisor-static{{$ext}}`,
 		})
 
@@ -4256,11 +4256,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{ $os := .OS }}
 					{{ $arch := .Arch }}
 					{{ $ext := "" }}
-		
+
 					{{- if (eq .Arch "aarch64") -}}
 						{{ $ext = "-aarch64" }}
 					{{- end -}}
-		
+
 					ch-remote-static{{$ext}}`,
 		})
 
@@ -4322,7 +4322,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{ if HasPrefix .OS "ming" -}}
 					{{$os = "windows"}}
 					{{$ext = ".exe"}}
-					{{- end -}}	
+					{{- end -}}
 
 					regctl-{{$os}}-{{$arch}}{{$ext}}
 					`,
@@ -4382,18 +4382,18 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{$os := .OS}}
 				{{$arch := .Arch}}
 				{{$ext := "tar.gz"}}
-	
+
 				{{- if HasPrefix .OS "ming" -}}
 				{{ $os = "windows" }}
 				{{ $ext = "exe" }}
 			{{- end -}}
-	
+
 				{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 					{{$arch = "arm64"}}
 				{{- else if eq .Arch "x86_64" -}}
 					{{ $arch = "amd64" }}
 				{{- end -}}
-	
+
 				{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
 		})
 
@@ -4454,9 +4454,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{ if HasPrefix .OS "ming" -}}
 							{{$os = "windows"}}
 							{{ $ext := "tar.gz" }}
-						
+
 						{{- end -}}
-						
+
 						{{- if eq .OS "darwin" -}}
 							{{$os = "darwin"}}
 							{{$arch = "all"}}
@@ -4477,19 +4477,19 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{ $os := .OS }}
 							{{ $arch := .Arch }}
 							{{ $ext := "tar.gz" }}
-	
+
 							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 							    {{ $arch = "arm64" }}
 							{{- else if eq .Arch "x86_64" -}}
 								{{ $arch = "amd64" }}
 							{{- end -}}
-							
+
 							{{- if eq .OS "darwin" -}}
 								{{$os = "darwin"}}
 							{{- else if eq .OS "linux" -}}
 								{{ $os = "linux" }}
 							{{- end -}}
-	
+
 							labctl_{{$os}}_{{$arch}}.{{$ext}}
 							`,
 		})
@@ -4532,22 +4532,22 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{ $os := .OS }}
 							{{ $arch := .Arch }}
 							{{ $ext := "tar.gz" }}
-	
+
 							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 							    {{ $arch = "arm64" }}
 							{{- end -}}
-	
+
 							{{ if HasPrefix .OS "ming" -}}
 								{{$os = "Windows"}}
 								{{ $ext = "zip" }}
 							{{- end -}}
-							
+
 							{{- if eq .OS "darwin" -}}
 								{{$os = "Darwin"}}
 							{{- else if eq .OS "linux" -}}
 								{{ $os = "Linux" }}
 							{{- end -}}
-	
+
 							duplik8s_{{$os}}_{{$arch}}.{{$ext}}
 							`,
 		})
@@ -4568,13 +4568,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 					{{- else if eq .Arch "armv7l" -}}
 						{{ $arch = "arm" }}
 					{{- end -}}
-					
+
 					{{$os := .OS}}
 					{{ if HasPrefix .OS "ming" -}}
 					{{$ext = ".exe" }}
 					{{$os = "windows"}}
 					{{- end -}}
-					
+
 					https://releases.crossplane.io/stable/{{.Version}}/bin/{{$os}}_{{$arch}}/crank{{$ext}}`,
 		})
 
@@ -4589,7 +4589,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$os := .OS}}
 							{{$arch := .Arch}}
 							{{$ext := "tar.gz"}}
-				
+
 							{{- if eq .OS "darwin" -}}
 								{{$os = "Darwin"}}
 							{{- else if eq .OS "linux" -}}
@@ -4598,11 +4598,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{$os = "Windows"}}
 								{{$ext = "zip"}}
 							{{- end -}}
-		
+
 							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 								{{$arch = "arm64"}}
 							{{- end -}}
-		
+
 						rosa_{{$os}}_{{$arch}}.{{$ext}}
 						`,
 		})
@@ -4617,7 +4617,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `
 								{{$os := .OS}}
 								{{$arch := .Arch}}
-			
+
 								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 									{{$arch = "arm64"}}
 								{{- else if eq .Arch "x86_64" -}}
@@ -4625,7 +4625,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{- else if eq .Arch "armv7l" -}}
                                     {{$arch = "arm32"}}
 								{{- end -}}
-			
+
 							kubie-{{$os}}-{{$arch}}
 							`,
 		})
@@ -4645,7 +4645,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 									{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 										{{$arch = "arm64"}}
 									{{- end -}}
-						
+
 									{{- if eq .OS "darwin" -}}
 										{{$os = "Darwin"}}
 										{{$arch = "all"}}
@@ -4655,7 +4655,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 										{{$os = "Windows"}}
 										{{$ext = ".exe"}}
 									{{- end -}}
-				
+
 								eks-node-viewer_{{$os}}_{{$arch}}{{$ext}}
 								`,
 		})
@@ -4671,7 +4671,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{$os := .OS}}
 								{{$arch := .Arch}}
 								{{$ext := "zip"}}
-					
+
 								{{- if eq .OS "darwin" -}}
 									{{$os = "osx"}}
 								{{- else if eq .OS "linux" -}}
@@ -4679,7 +4679,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{- else if HasPrefix .OS "ming" -}}
 									{{$os = "windows"}}
 								{{- end -}}
-			
+
 								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 									{{$arch = "arm64"}}
 								{{- else if eq .Arch "x86_64" -}}
@@ -4687,7 +4687,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 								{{- else if eq .Arch "armv7l" -}}
                                     {{$arch = "arm-v7"}}
 								{{- end -}}
-			
+
 							rclone-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 							`,
 		})
@@ -4772,7 +4772,7 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 									{{$os := .OS}}
 									{{$arch := .Arch}}
 									{{$ext := "tar.gz"}}
-	
+
 									{{- if eq .Arch "x86_64" -}}
 											{{$arch = "amd64"}}
 									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
@@ -4780,7 +4780,7 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 									{{- else if eq .Arch "armv7l" -}}
                                             {{$arch = "arm"}}
 									{{- end -}}
-	
+
 								gitwho_{{.Version}}_{{$os}}_{{$arch}}.{{$ext}}
 								`,
 		})
@@ -4795,18 +4795,18 @@ https://github.com/grafana/alloy/releases/download/{{.Version}}/{{$fileName}}`,
 								{{$os := .OS}}
 								{{$arch := .Arch}}
 								{{$ext := "tar.gz"}}
-		
+
 								{{- if eq .Arch "x86_64" -}}
 									{{$arch = "x64"}}
 								{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 									{{$arch = "arm64"}}
 								{{- end -}}
-								
+
 								{{- if HasPrefix .OS "ming" -}}
 									{{$os = "windows"}}
 									{{$ext = "zip"}}
 								{{- end -}}
-		
+
 								{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}
 									`,
 		})
@@ -5047,11 +5047,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 										{{$arch = "arm64"}}
 									{{- end -}}
-									
+
 									{{- if HasPrefix .OS "ming" -}}
 										{{$os = "windows"}}
 									{{- end -}}
-			
+
 				{{.Name}}-{{$os}}-{{$arch}}`,
 			URLTemplate: `
 									{{$os := .OS}}
@@ -5064,12 +5064,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 										{{$arch = "arm64"}}
 									{{- end -}}
-									
+
 									{{- if HasPrefix .OS "ming" -}}
 										{{$os = "windows"}}
 										{{$ext = "exe.zip"}}
 									{{- end -}}
-			
+
 									https://github.com/grafana/loki/releases/download/{{.Version}}/{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 

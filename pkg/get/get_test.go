@@ -9189,13 +9189,13 @@ func Test_DownloadOpencode(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-x64.zip",
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-x64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-arm64.zip",
+			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-arm64.tar.gz",
 		},
 		{
 			os:      "mingw64_nt-10.0-18362",
