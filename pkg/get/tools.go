@@ -5107,6 +5107,44 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/starship-
 
 	tools = append(tools,
 		Tool{
+			Owner:           "smallstep",
+			Repo:            "cli",
+			Name:            "step",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A zero trust swiss army knife for working with X509, OAuth, JWT, OATH OTP, etc.",
+			BinaryTemplate:  `step`,
+			URLTemplate: `
+{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{$os = "linux"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$arch = "amd64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$arch = "arm64"}}
+	{{ else if eq .Arch "armv7l" -}}
+		{{$arch = "arm7"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{$os = "darwin"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$arch = "amd64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$arch = "arm64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$os = "windows"}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$arch = "amd64"}}
+	{{- end -}}
+{{- end -}}
+https://dl.smallstep.com/gh-release/cli/gh-release-header/{{.Version}}/step_{{$os}}_{{.VersionNumber}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:          "homeport",
 			Repo:           "dyff",
 			Name:           "dyff",

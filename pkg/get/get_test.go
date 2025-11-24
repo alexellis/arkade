@@ -9236,6 +9236,58 @@ func Test_DownloadStarship(t *testing.T) {
 	}
 }
 
+func Test_DownloadStep(t *testing.T) {
+	tools := MakeTools()
+	name := "step"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.28.7"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.28.7/step_linux_0.28.7_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.28.7/step_linux_0.28.7_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.28.7/step_darwin_0.28.7_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.28.7/step_darwin_0.28.7_arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://dl.smallstep.com/gh-release/cli/gh-release-header/v0.28.7/step_windows_0.28.7_amd64.zip",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadDyff(t *testing.T) {
 	tools := MakeTools()
 	name := "dyff"

@@ -936,6 +936,7 @@ There are 53 apps that you can install on your cluster.
 | [sops](https://github.com/getsops/sops)                                      | Simple and flexible tool for managing secrets                                                                                                                     |
 | [ssync](https://github.com/alexellis/ssync)                                  | Sync files from one machine to another.                                                                                                                           |
 | [starship](https://github.com/starship/starship)                             | The minimal, blazing-fast, and infinitely customizable prompt for any shell!                                                                                      |
+| [step](https://github.com/smallstep/cli)                                     | A zero trust swiss army knife for working with X509, OAuth, JWT, OATH OTP, etc.                                                                                   |
 | [stern](https://github.com/stern/stern)                                      | Multi pod and container log tailing for Kubernetes.                                                                                                               |
 | [syft](https://github.com/anchore/syft)                                      | CLI tool and library for generating a Software Bill of Materials from container images and filesystems                                                            |
 | [talosctl](https://github.com/siderolabs/talos)                              | The command-line tool for managing Talos Linux OS.                                                                                                                |
@@ -961,7 +962,6 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 191 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
-
+There are 192 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 
 > Note to contributors, run `go run . get --format markdown` to generate this list
