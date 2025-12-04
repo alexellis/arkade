@@ -7,7 +7,7 @@ require (
 	github.com/alexellis/go-execute/v2 v2.2.1
 	github.com/cheggaaa/pb/v3 v3.1.7
 	github.com/docker/go-units v0.5.0
-	github.com/google/go-containerregistry v0.20.6
+	github.com/google/go-containerregistry v0.20.7
 	github.com/morikuni/aec v1.0.0
 	github.com/olekukonko/tablewriter v1.1.1
 	github.com/otiai10/copy v1.14.1
@@ -25,7 +25,7 @@ require (
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.18.1 // indirect
-	github.com/docker/cli v29.0.1+incompatible // indirect
+	github.com/docker/cli v29.0.3+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.4 // indirect
 	github.com/fatih/color v1.18.0 // indirect
