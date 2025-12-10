@@ -627,6 +627,7 @@ See the full catalog of apps: [See all apps](#catalog-of-apps)
 * [Coffee chat: Easy way to install Kubernetes Apps - arkade (ark)](https://sachcode.com/tech/coffee-chat-easy-way-install-kubernetes-apps/) by Sachin Jha
 * [Arkade & OpenFaaS: serverless on the spot](https://zero2datadog.readthedocs.io/en/latest/faas.html) by Blaise Pabon
 * ["Tool of the Day" with Adrian Goins from Rancher Labs](https://youtu.be/IWtEtfpqoRg?t=1425)
+* [Third-party arkade-get feature for devcontainers](https://github.com/joebowbeer/devcontainers-features/blob/main/src/arkade-get/README.md) by Joe Bowbeer
 
 ### Suggest a new app
 
