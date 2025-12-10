@@ -9269,3 +9269,46 @@ func Test_LogCLI(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadHeadlamp(t *testing.T) {
+	tools := MakeTools()
+	name := "headlamp"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "ming",
+			arch:    arch64bit,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-win-x64.exe"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-linux-x64.tar.gz"},
+		{os: "linux",
+			arch:    archARM7,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-linux-armv7l.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-linux-arm64.tar.gz"},
+		{os: "darwin",
+			arch:    arch64bit,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-mac-x64.dmg"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: "v0.38.0",
+			url:     "https://github.com/kubernetes-sigs/headlamp/releases/download/v0.38.0/headlamp-0.38.0-mac-arm64.dmg"},
+	}
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

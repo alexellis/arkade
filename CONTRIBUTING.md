@@ -189,7 +189,7 @@ gofmt -w -s ./cmd
 # Run all the unit tests
 make test
 
-# Use e2e tests ot check that URLs can be downloaded for all tools
+# Use e2e tests to check that URLs can be downloaded for all tools
 make e2e
 ```
 

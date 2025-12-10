@@ -5073,5 +5073,35 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 									https://github.com/grafana/loki/releases/download/{{.Version}}/{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:           "kubernetes-sigs",
+			Repo:            "headlamp",
+			Name:            "headlamp",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "A Kubernetes web UI that is fully-featured, user-friendly and extensible.",
+			BinaryTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "tar.gz"}}
+
+								{{- if eq .OS "darwin" -}}
+									{{$os = "mac"}}
+									{{$ext = "dmg"}}
+								{{- else if HasPrefix .OS "ming" -}}
+									{{$os = "win"}}
+									{{$ext = "exe"}}
+								{{- end -}}
+
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+									{{ $arch = "x64" }}
+								{{- end -}}
+
+							{{.Name}}-{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
+							`,
+		})
+
 	return tools
 }
