@@ -3784,23 +3784,46 @@ func Test_DownloadKubescape(t *testing.T) {
 	tools := MakeTools()
 	name := "kubescape"
 
+	const toolVersion = "v3.0.47"
+
 	tool := getTool(name, tools)
 
 	tests := []test{
 		{
 			os:      "darwin",
-			version: "v1.0.69",
-			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-macos-latest`,
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_darwin_arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_darwin_amd64",
 		},
 		{
 			os:      "linux",
-			version: "v1.0.69",
-			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-ubuntu-latest`,
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_linux_arm64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_linux_amd64",
 		},
 		{
 			os:      "ming",
-			version: "v1.0.69",
-			url:     `https://github.com/kubescape/kubescape/releases/download/v1.0.69/kubescape-windows-latest`,
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_windows_arm64.exe",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/kubescape/kubescape/releases/download/v3.0.47/kubescape_3.0.47_windows_amd64.exe",
 		},
 	}
 
@@ -3811,7 +3834,7 @@ func Test_DownloadKubescape(t *testing.T) {
 				t.Fatal(err)
 			}
 			if got != tc.url {
-				t.Errorf("want: %s, got: %s", tc.url, got)
+				t.Errorf("\nwant: %s, \n got: %s", tc.url, got)
 			}
 		})
 	}
