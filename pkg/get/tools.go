@@ -2340,22 +2340,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kubescape",
-			Repo:        "kubescape",
-			Name:        "kubescape",
-			Description: "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA",
+			Owner:           "kubescape",
+			Repo:            "kubescape",
+			Name:            "kubescape",
+			Description:     "kubescape is the first tool for testing if Kubernetes is deployed securely as defined in Kubernetes Hardening Guidance by NSA and CISA",
+			VersionStrategy: GitHubVersionStrategy,
 			BinaryTemplate: `
-		{{$osStr := ""}}
-		{{ if HasPrefix .OS "ming" -}}
-		{{$osStr = "windows"}}
-		{{- else if eq .OS "linux" -}}
-		{{$osStr = "ubuntu"}}
-		{{- else if eq .OS "darwin" -}}
-		{{$osStr = "macos"}}
-		{{- end -}}
-
-
-		{{.Name}}-{{$osStr}}-latest`,
+								{{$arch := "amd64"}}
+								{{$osStr := .OS }}
+								{{$ext := ""}}
+	
+								{{if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+									{{$arch = "amd64"}}
+								{{- end -}}
+	
+								{{ if HasPrefix .OS "ming" -}}
+									{{$osStr = "windows"}}
+									{{$ext = ".exe"}}
+								{{- end -}}
+	
+								{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}{{$ext}}`,
 		})
 	tools = append(tools,
 		Tool{
