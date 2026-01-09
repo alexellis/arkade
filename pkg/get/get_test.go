@@ -9177,31 +9177,31 @@ func Test_DownloadOpencode(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-darwin-x64.zip",
+			url:     "https://github.com/anomalyco/opencode/releases/download/v0.4.41/opencode-darwin-x64.zip",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-darwin-arm64.zip",
+			url:     "https://github.com/anomalyco/opencode/releases/download/v0.4.41/opencode-darwin-arm64.zip",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-x64.tar.gz",
+			url:     "https://github.com/anomalyco/opencode/releases/download/v0.4.41/opencode-linux-x64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-linux-arm64.tar.gz",
+			url:     "https://github.com/anomalyco/opencode/releases/download/v0.4.41/opencode-linux-arm64.tar.gz",
 		},
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sst/opencode/releases/download/v0.4.41/opencode-windows-x64.zip",
+			url:     "https://github.com/anomalyco/opencode/releases/download/v0.4.41/opencode-windows-x64.zip",
 		},
 	}
 

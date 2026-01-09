@@ -51,7 +51,7 @@ func MakeTools() Tools {
 
 		// opencode AI CLI
 		Tool{
-			Owner:       "sst",
+			Owner:       "anomalyco",
 			Repo:        "opencode",
 			Name:        "opencode",
 			Description: "The opencode CLI for running AI agents and tools.",
