@@ -5079,5 +5079,57 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 									https://github.com/grafana/loki/releases/download/{{.Version}}/{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "FiloSottile",
+			Repo:        "age",
+			Name:        "age",
+			Description: "A simple, modern, and secure file encryption tool.",
+			BinaryTemplate: `
+							{{$os := ""}}
+							{{$ext := "tar.gz"}}
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = "zip"}}
+							{{- else if eq .OS "linux" -}}
+							{{$os = "linux"}}
+							{{- else if eq .OS "darwin" -}}
+							{{$os = "darwin"}}
+							{{- end -}}
+							{{$arch := .Arch}}
+							{{- if eq .Arch "x86_64" -}}
+							{{$arch = "amd64"}}
+							{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$arch = "arm64"}}
+							{{- end -}}
+							{{.Name}}-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "FiloSottile",
+			Repo:        "age",
+			Name:        "age-keygen",
+			Description: "Key generation tool for age encryption.",
+			BinaryTemplate: `
+							{{$os := ""}}
+							{{$ext := "tar.gz"}}
+							{{ if HasPrefix .OS "ming" -}}
+							{{$os = "windows"}}
+							{{$ext = "zip"}}
+							{{- else if eq .OS "linux" -}}
+							{{$os = "linux"}}
+							{{- else if eq .OS "darwin" -}}
+							{{$os = "darwin"}}
+							{{- end -}}
+							{{$arch := .Arch}}
+							{{- if eq .Arch "x86_64" -}}
+							{{$arch = "amd64"}}
+							{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$arch = "arm64"}}
+							{{- end -}}
+							age-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
 	return tools
 }

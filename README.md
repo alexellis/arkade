@@ -762,6 +762,7 @@ There are 53 apps that you can install on your cluster.
 
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [age](https://github.com/FiloSottile/age)                                    | A simple, modern and secure file encryption tool.                      |
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                                                     |
 | [alloy](https://github.com/grafana/alloy)                                    | OpenTelemetry Collector distribution with programmable pipelines                                                                                                  |
