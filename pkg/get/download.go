@@ -3,6 +3,7 @@ package get
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
@@ -57,7 +58,78 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 	}
 
 	if verify {
-		if tool.VerifyStrategy == HashicorpShasumStrategy {
+		if tool.VerifyStrategy == ClaudeShasumStrategy {
+			st := time.Now()
+			tmpl := template.New(tool.Name + "sha")
+			tmpl = tmpl.Funcs(templateFuncs)
+			t, err := tmpl.Parse(tool.VerifyTemplate)
+			if err != nil {
+				return "", "", err
+			}
+
+			var buf bytes.Buffer
+			inputs := map[string]string{
+				"Name":          tool.Name,
+				"Owner":         tool.Owner,
+				"Repo":          tool.Repo,
+				"Version":       resolvedVersion,
+				"VersionNumber": strings.TrimPrefix(resolvedVersion, "v"),
+				"Arch":          arch,
+				"OS":            operatingSystem,
+			}
+
+			if err = t.Execute(&buf, inputs); err != nil {
+				return "", "", err
+			}
+
+			verifyURL := strings.TrimSpace(buf.String())
+			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			shaSumManifest, err := fetchText(verifyURL)
+			if err != nil {
+				return "", "", err
+			}
+			// {
+			//   "version": "2.1.12",
+			//   "buildDate": "2026-01-17T15:42:38Z",
+			//   "platforms": {
+			//     "darwin-arm64": {
+			//       "checksum": "40be59519a84bd35eb1111aa46f72aa6b3443866d3f6336252a198fdcaefbbe5",
+			//       "size": 177846896
+			//     },
+
+			var manifest struct {
+				Version   string `json:"version"`
+				BuildDate string `json:"buildDate"`
+				Platforms map[string]struct {
+					Checksum string `json:"checksum"`
+					Size     int64  `json:"size"`
+				} `json:"platforms"`
+			}
+			if err := json.Unmarshal([]byte(shaSumManifest), &manifest); err != nil {
+				return "", "", err
+			}
+
+			var archMappingForClaude = map[string]string{
+				"amd64":   "amd64",
+				"x86_64":  "x64",
+				"arm64":   "arm64",
+				"aarch64": "arm64",
+			}
+
+			platformKey := fmt.Sprintf("%s-%s", strings.ToLower(operatingSystem), archMappingForClaude[arch])
+
+			platformInfo, found := manifest.Platforms[platformKey]
+			if !found {
+				return "", "", fmt.Errorf("no checksum info found for platform: %s", platformKey)
+			}
+
+			if err := verifySHA(platformInfo.Checksum, outFilePath); err != nil {
+				return "", "", err
+			} else {
+				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
+			}
+
+		} else if tool.VerifyStrategy == HashicorpShasumStrategy {
 			st := time.Now()
 			tmpl := template.New(tool.Name + "sha")
 			tmpl = tmpl.Funcs(templateFuncs)

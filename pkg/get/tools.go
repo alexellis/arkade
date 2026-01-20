@@ -70,6 +70,36 @@ func MakeTools() Tools {
 {{- end -}}`,
 		})
 
+	// Claude Code CLI
+	tools = append(tools,
+		Tool{
+			Owner:          "anthropic",
+			Repo:           "claude",
+			Name:           "claude",
+			Description:    "Claude Code.",
+			VerifyStrategy: ClaudeShasumStrategy,
+			VerifyTemplate: `https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.Version}}/manifest.json`, VersionStrategy: ClaudeStrategy,
+			URLTemplate: `
+{{$os := .OS}}
+{{$arch := .Arch}}
+
+{{ if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+{{ $arch = "x64" }}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{ $arch = "arm64" }}
+{{- end}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{ $os = "windows" }}
+{{- else if eq .OS "darwin" -}}
+{{ $os = "darwin" }}
+{{- else -}}
+{{ $os = "linux" }}
+{{- end -}}
+
+https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.Version}}/{{$os}}-{{$arch}}/claude
+`})
+
 	tools = append(tools,
 		Tool{
 			Owner:           "helm",
