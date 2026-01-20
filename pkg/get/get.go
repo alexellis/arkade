@@ -20,8 +20,10 @@ import (
 const GitHubVersionStrategy = "github"
 const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
+const ClaudeStrategy = `claude`
 
 const HashicorpShasumStrategy = `hashicorp-sha`
+const ClaudeShasumStrategy = `claude-sha`
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
@@ -90,6 +92,11 @@ var releaseLocations = map[string]ReleaseLocation{
 	k8sVersionStrategy: {
 		Url:     "https://cdn.dl.k8s.io/release/stable.txt",
 		Timeout: time.Second * 10,
+		Method:  http.MethodGet,
+	},
+	ClaudeStrategy: {
+		Url:     "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest",
+		Timeout: time.Second * 5,
 		Method:  http.MethodGet,
 	},
 }
