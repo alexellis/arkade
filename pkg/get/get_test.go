@@ -9273,6 +9273,7 @@ func Test_DownloadClaude(t *testing.T) {
 			url:     "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/2.1.12/linux-arm64/claude",
 		},
 		{
+			// Windows is not supported, but should resolve to a URL to get a 404.
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
