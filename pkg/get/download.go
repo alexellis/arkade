@@ -164,6 +164,41 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 			} else {
 				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
 			}
+		} else if tool.VerifyStrategy == AmpShasumStrategy {
+			st := time.Now()
+			tmpl := template.New(tool.Name + "sha")
+			tmpl = tmpl.Funcs(templateFuncs)
+			t, err := tmpl.Parse(tool.VerifyTemplate)
+			if err != nil {
+				return "", "", err
+			}
+
+			var buf bytes.Buffer
+			inputs := map[string]string{
+				"Name":          tool.Name,
+				"Owner":         tool.Owner,
+				"Repo":          tool.Repo,
+				"Version":       resolvedVersion,
+				"VersionNumber": strings.TrimPrefix(resolvedVersion, "v"),
+				"Arch":          arch,
+				"OS":            operatingSystem,
+			}
+
+			if err = t.Execute(&buf, inputs); err != nil {
+				return "", "", err
+			}
+
+			verifyURL := strings.TrimSpace(buf.String())
+			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			shaSum, err := fetchText(verifyURL)
+			if err != nil {
+				return "", "", err
+			}
+			if err := verifySHA(shaSum, outFilePath); err != nil {
+				return "", "", err
+			} else {
+				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
+			}
 		}
 	}
 
