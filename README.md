@@ -12,7 +12,7 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 120 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
+With over 185 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
 
 - [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
   - [Support arkade 👋](#support-arkade-)
@@ -767,6 +767,7 @@ There are 53 apps that you can install on your cluster.
 | [age](https://github.com/FiloSottile/age)                                    | A simple, modern, and secure file encryption tool.                                                                                                                |
 | [age-keygen](https://github.com/FiloSottile/age)                             | Key generation tool for age encryption.                                                                                                                           |
 | [alloy](https://github.com/grafana/alloy)                                    | OpenTelemetry Collector distribution with programmable pipelines                                                                                                  |
+| [amp](https://github.com/sourcegraph/amp)                                    | Amp - the frontier coding agent for your terminal and editor.                                                                                                     |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                                                      |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                                        |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite DevOps CLIs and installing helm charts, with a single command.                                                |
@@ -948,6 +949,6 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 186 tools, use `arkade get NAME` to download one.                                                                                      
+There are 187 tools, use `arkade get NAME` to download one.                                                                                      
 
 > Note to contributors, run `go build && ./arkade get --format markdown` to generate this list

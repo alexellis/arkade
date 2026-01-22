@@ -100,6 +100,56 @@ func MakeTools() Tools {
 https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.Version}}/{{$os}}-{{$arch}}/claude
 `})
 
+	// Amp CLI
+	tools = append(tools,
+		Tool{
+			Owner:           "sourcegraph",
+			Repo:            "amp",
+			Name:            "amp",
+			Description:     "Amp - the frontier coding agent for your terminal and editor.",
+			VerifyStrategy:  AmpShasumStrategy,
+			VersionStrategy: AmpStrategy,
+			VerifyTemplate: `{{$os := .OS}}
+{{$arch := .Arch}}
+
+{{ if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+{{ $arch = "x64" }}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{ $arch = "arm64" }}
+{{- end}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{ $os = "windows" }}
+{{- else if eq .OS "darwin" -}}
+{{ $os = "darwin" }}
+{{- else -}}
+{{ $os = "linux" }}
+{{- end -}}
+
+https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/{{$os}}-{{$arch}}-amp.sha256`,
+			URLTemplate: `
+{{$os := .OS}}
+{{$arch := .Arch}}
+{{$ext := ""}}
+
+{{ if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+{{ $arch = "x64" }}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{ $arch = "arm64" }}
+{{- end}}
+
+{{ if HasPrefix .OS "ming" -}}
+{{ $os = "windows" }}
+{{ $ext = ".exe" }}
+{{- else if eq .OS "darwin" -}}
+{{ $os = "darwin" }}
+{{- else -}}
+{{ $os = "linux" }}
+{{- end -}}
+
+https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/amp-{{$os}}-{{$arch}}{{$ext}}
+`})
+
 	tools = append(tools,
 		Tool{
 			Owner:           "helm",

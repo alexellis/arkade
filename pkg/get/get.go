@@ -21,9 +21,11 @@ const GitHubVersionStrategy = "github"
 const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 const ClaudeStrategy = `claude`
+const AmpStrategy = `amp`
 
 const HashicorpShasumStrategy = `hashicorp-sha`
 const ClaudeShasumStrategy = `claude-sha`
+const AmpShasumStrategy = `amp-sha`
 
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
@@ -96,6 +98,11 @@ var releaseLocations = map[string]ReleaseLocation{
 	},
 	ClaudeStrategy: {
 		Url:     "https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/latest",
+		Timeout: time.Second * 5,
+		Method:  http.MethodGet,
+	},
+	AmpStrategy: {
+		Url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/cli-version.txt",
 		Timeout: time.Second * 5,
 		Method:  http.MethodGet,
 	},
@@ -307,7 +314,7 @@ func FindRelease(location, owner, repo string) (string, error) {
 		return "", err
 	}
 
-	version := string(bodyBytes)
+	version := strings.TrimSpace(string(bodyBytes))
 	return version, nil
 }
 

@@ -9292,6 +9292,58 @@ func Test_DownloadClaude(t *testing.T) {
 	}
 }
 
+func Test_DownloadAmp(t *testing.T) {
+	tools := MakeTools()
+	name := "amp"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "0.0.1769091939-g843744"
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-darwin-x64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-darwin-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-linux-x64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-linux-arm64",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-windows-x64.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
 func Test_LogCLI(t *testing.T) {
 	tools := MakeTools()
 	name := "logcli"
