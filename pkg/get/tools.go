@@ -5211,5 +5211,407 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 							age-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "tealdeer-rs",
+			Repo:        "tealdeer",
+			Name:        "tldr",
+			Description: "A very fast implementation of tldr in Rust.",
+			NoExtension: true,
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+tealdeer-windows-x86_64-msvc.exe
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+tealdeer-macos-aarch64
+  {{- else -}}
+tealdeer-macos-x86_64
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+tealdeer-linux-aarch64-musl
+  {{- else -}}
+tealdeer-linux-x86_64-musl
+  {{- end -}}
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "micro-editor",
+			Repo:        "micro",
+			Name:        "micro",
+			Description: "A modern and intuitive terminal-based text editor.",
+			BinaryTemplate: `{{$ext := "tar.gz"}}
+{{$platform := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = "zip"}}
+{{$platform = "win64"}}
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$platform = "macos-arm64"}}
+  {{- else -}}
+{{$platform = "osx"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$platform = "linux-arm64"}}
+  {{- else -}}
+{{$platform = "linux64"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{.VersionNumber}}-{{$platform}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "zellij-org",
+			Repo:        "zellij",
+			Name:        "zellij",
+			Description: "A terminal workspace with batteries included.",
+			BinaryTemplate: `{{$target := ""}}
+{{- if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$target = "aarch64-apple-darwin"}}
+  {{- else -}}
+{{$target = "x86_64-apple-darwin"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$target = "aarch64-unknown-linux-musl"}}
+  {{- else -}}
+{{$target = "x86_64-unknown-linux-musl"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{$target}}.tar.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "sxyazi",
+			Repo:        "yazi",
+			Name:        "yazi",
+			Description: "Blazing fast terminal file manager written in Rust.",
+			BinaryTemplate: `{{$target := ""}}
+{{ if HasPrefix .OS "ming" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$target = "aarch64-pc-windows-msvc"}}
+  {{- else -}}
+{{$target = "x86_64-pc-windows-msvc"}}
+  {{- end -}}
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$target = "aarch64-apple-darwin"}}
+  {{- else -}}
+{{$target = "x86_64-apple-darwin"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$target = "aarch64-unknown-linux-gnu"}}
+  {{- else -}}
+{{$target = "x86_64-unknown-linux-gnu"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{$target}}.zip`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "gokcehan",
+			Repo:        "lf",
+			Name:        "lf",
+			Description: "Terminal file manager with vim-like bindings.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}-windows-amd64.zip
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}-darwin-arm64.tar.gz
+  {{- else -}}
+{{.Name}}-darwin-amd64.tar.gz
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}-linux-arm64.tar.gz
+{{- else -}}
+{{.Name}}-linux-amd64.tar.gz
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "PaulJuliusMartinez",
+			Repo:        "jless",
+			Name:        "jless",
+			Description: "A command-line JSON viewer designed for reading, exploring, and searching through JSON data.",
+			BinaryTemplate: `{{ if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}-{{.Version}}-aarch64-apple-darwin.zip
+  {{- else -}}
+{{.Name}}-{{.Version}}-x86_64-apple-darwin.zip
+  {{- end -}}
+{{- else -}}
+{{.Name}}-{{.Version}}-x86_64-unknown-linux-gnu.zip
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "trufflesecurity",
+			Repo:        "trufflehog",
+			Name:        "trufflehog",
+			Description: "Find and verify credentials in code repositories.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}_{{.VersionNumber}}_windows_arm64.tar.gz
+  {{- else -}}
+{{.Name}}_{{.VersionNumber}}_windows_amd64.tar.gz
+  {{- end -}}
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}_{{.VersionNumber}}_darwin_arm64.tar.gz
+  {{- else -}}
+{{.Name}}_{{.VersionNumber}}_darwin_amd64.tar.gz
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}_{{.VersionNumber}}_linux_arm64.tar.gz
+{{- else -}}
+{{.Name}}_{{.VersionNumber}}_linux_amd64.tar.gz
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "gitleaks",
+			Repo:        "gitleaks",
+			Name:        "gitleaks",
+			Description: "Protect and discover secrets using Gitleaks.",
+			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
+{{.Name}}_{{.VersionNumber}}_windows_x64.zip
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{.Name}}_{{.VersionNumber}}_darwin_arm64.tar.gz
+  {{- else -}}
+{{.Name}}_{{.VersionNumber}}_darwin_x64.tar.gz
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}_{{.VersionNumber}}_linux_arm64.tar.gz
+{{- else -}}
+{{.Name}}_{{.VersionNumber}}_linux_x64.tar.gz
+{{- end -}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "joshmedeski",
+			Repo:        "sesh",
+			Name:        "sesh",
+			Description: "Smart session manager for the terminal.",
+			BinaryTemplate: `{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "Windows"}}
+{{$ext = "zip"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "Darwin"}}
+{{- else if eq .OS "linux" -}}
+{{$os = "Linux"}}
+{{- end -}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$arch = "arm64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "jj-vcs",
+			Repo:        "jj",
+			Name:        "jj",
+			Description: "A Git-compatible VCS that is both simple and powerful.",
+			BinaryTemplate: `{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$ext = "zip"}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-pc-windows-msvc"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-pc-windows-msvc"}}
+  {{- end -}}
+{{- else if eq .OS "darwin" -}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-apple-darwin"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-apple-darwin"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-unknown-linux-musl"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-unknown-linux-musl"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{.Version}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "cantino",
+			Repo:        "mcfly",
+			Name:        "mcfly",
+			Description: "Fly through your shell history with context-aware suggestions.",
+			BinaryTemplate: `{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$ext = "zip"}}
+{{$arch = "x86_64-pc-windows-msvc"}}
+{{- else if eq .OS "darwin" -}}
+{{$arch = "x86_64-apple-darwin"}}
+{{- else if eq .OS "linux" -}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-unknown-linux-musl"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-unknown-linux-musl"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{.Version}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "Nukesor",
+			Repo:        "pueue",
+			Name:        "pueue",
+			Description: "Manage your shell commands as a task queue.",
+			NoExtension: true,
+			BinaryTemplate: `{{$arch := ""}}
+{{$ext := ""}}
+{{- if HasPrefix .OS "ming" -}}
+{{$arch = "x86_64-pc-windows-msvc"}}
+{{$ext = ".exe"}}
+{{- else if eq .OS "darwin" -}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-apple-darwin"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-apple-darwin"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64-unknown-linux-musl"}}
+  {{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64-unknown-linux-musl"}}
+  {{- end -}}
+{{- end -}}
+{{.Name}}-{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "mr-karan",
+			Repo:        "doggo",
+			Name:        "doggo",
+			Description: "Command-line DNS client for humans. Features include DoH, DoT, DoQ support.",
+			BinaryTemplate: `{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "Windows"}}
+{{$ext = "zip"}}
+{{- else if eq .OS "linux" -}}
+{{$os = "Linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "Darwin"}}
+{{- end -}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "x86_64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "hatoo",
+			Repo:        "oha",
+			Name:        "oha",
+			Description: "HTTP load generator, inspired by rakyll/hey with tui animation.",
+			NoExtension: true,
+			BinaryTemplate: `{{$os := ""}}
+{{$arch := ""}}
+{{$ext := ""}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{$ext = ".exe"}}
+{{- else if eq .OS "linux" -}}
+{{$os = "linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "macos"}}
+{{- end -}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}-{{$os}}-{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "wader",
+			Repo:        "fq",
+			Name:        "fq",
+			Description: "jq for binary formats - tool, language and decoders for working with binary data.",
+			BinaryTemplate: `{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "windows"}}
+{{$ext = "zip"}}
+{{- else if eq .OS "linux" -}}
+{{$os = "linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "macos"}}
+{{$ext = "zip"}}
+{{- end -}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "chmln",
+			Repo:        "sd",
+			Name:        "sd",
+			Description: "Intuitive find & replace CLI (sed alternative).",
+			BinaryTemplate: `{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$ext = "zip"}}
+{{- if eq .Arch "x86_64" -}}
+{{$target = "x86_64-pc-windows-gnu"}}
+{{- end -}}
+{{- else if eq .OS "linux" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$target = "x86_64-unknown-linux-musl"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$target = "aarch64-unknown-linux-musl"}}
+{{- end -}}
+{{- else if eq .OS "darwin" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$target = "x86_64-apple-darwin"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$target = "aarch64-apple-darwin"}}
+{{- end -}}
+{{- end -}}
+{{.Name}}-{{.Version}}-{{$target}}.{{$ext}}`,
+		})
+
 	return tools
 }

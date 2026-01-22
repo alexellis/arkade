@@ -9503,3 +9503,447 @@ func Test_DownloadAgeKeygen(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadDoggo(t *testing.T) {
+	tools := MakeTools()
+	name := "doggo"
+	const version = "v1.1.4"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/mr-karan/doggo/releases/download/v1.1.4/doggo_1.1.4_Linux_x86_64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/mr-karan/doggo/releases/download/v1.1.4/doggo_1.1.4_Linux_arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/mr-karan/doggo/releases/download/v1.1.4/doggo_1.1.4_Darwin_x86_64.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/mr-karan/doggo/releases/download/v1.1.4/doggo_1.1.4_Darwin_arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/mr-karan/doggo/releases/download/v1.1.4/doggo_1.1.4_Windows_x86_64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadOha(t *testing.T) {
+	tools := MakeTools()
+	name := "oha"
+	const version = "v1.12.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/hatoo/oha/releases/download/v1.12.1/oha-linux-amd64`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/hatoo/oha/releases/download/v1.12.1/oha-linux-arm64`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/hatoo/oha/releases/download/v1.12.1/oha-macos-amd64`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/hatoo/oha/releases/download/v1.12.1/oha-macos-arm64`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/hatoo/oha/releases/download/v1.12.1/oha-windows-amd64.exe`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadFq(t *testing.T) {
+	tools := MakeTools()
+	name := "fq"
+	const version = "v0.16.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/wader/fq/releases/download/v0.16.0/fq_0.16.0_linux_amd64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/wader/fq/releases/download/v0.16.0/fq_0.16.0_linux_arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/wader/fq/releases/download/v0.16.0/fq_0.16.0_macos_amd64.zip`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/wader/fq/releases/download/v0.16.0/fq_0.16.0_macos_arm64.zip`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/wader/fq/releases/download/v0.16.0/fq_0.16.0_windows_amd64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadSd(t *testing.T) {
+	tools := MakeTools()
+	name := "sd"
+	const version = "v1.0.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/chmln/sd/releases/download/v1.0.0/sd-v1.0.0-x86_64-unknown-linux-musl.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/chmln/sd/releases/download/v1.0.0/sd-v1.0.0-aarch64-unknown-linux-musl.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/chmln/sd/releases/download/v1.0.0/sd-v1.0.0-x86_64-apple-darwin.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/chmln/sd/releases/download/v1.0.0/sd-v1.0.0-aarch64-apple-darwin.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/chmln/sd/releases/download/v1.0.0/sd-v1.0.0-x86_64-pc-windows-gnu.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadSesh(t *testing.T) {
+	tools := MakeTools()
+	name := "sesh"
+	const version = "v2.21.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/joshmedeski/sesh/releases/download/v2.21.0/sesh_Linux_x86_64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/joshmedeski/sesh/releases/download/v2.21.0/sesh_Linux_arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/joshmedeski/sesh/releases/download/v2.21.0/sesh_Darwin_x86_64.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/joshmedeski/sesh/releases/download/v2.21.0/sesh_Darwin_arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/joshmedeski/sesh/releases/download/v2.21.0/sesh_Windows_x86_64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadJj(t *testing.T) {
+	tools := MakeTools()
+	name := "jj"
+	const version = "v0.37.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-x86_64-unknown-linux-musl.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-aarch64-unknown-linux-musl.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-x86_64-apple-darwin.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-aarch64-apple-darwin.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/jj-vcs/jj/releases/download/v0.37.0/jj-v0.37.0-x86_64-pc-windows-msvc.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadMcfly(t *testing.T) {
+	tools := MakeTools()
+	name := "mcfly"
+	const version = "v0.9.4"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/cantino/mcfly/releases/download/v0.9.4/mcfly-v0.9.4-x86_64-unknown-linux-musl.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/cantino/mcfly/releases/download/v0.9.4/mcfly-v0.9.4-aarch64-unknown-linux-musl.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/cantino/mcfly/releases/download/v0.9.4/mcfly-v0.9.4-x86_64-apple-darwin.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/cantino/mcfly/releases/download/v0.9.4/mcfly-v0.9.4-x86_64-pc-windows-msvc.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadPueue(t *testing.T) {
+	tools := MakeTools()
+	name := "pueue"
+	const version = "v4.0.2"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/Nukesor/pueue/releases/download/v4.0.2/pueue-x86_64-unknown-linux-musl`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/Nukesor/pueue/releases/download/v4.0.2/pueue-aarch64-unknown-linux-musl`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/Nukesor/pueue/releases/download/v4.0.2/pueue-x86_64-apple-darwin`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/Nukesor/pueue/releases/download/v4.0.2/pueue-aarch64-apple-darwin`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/Nukesor/pueue/releases/download/v4.0.2/pueue-x86_64-pc-windows-msvc.exe`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadTldr(t *testing.T) {
+	tools := MakeTools()
+	name := "tldr"
+	const version = "v1.8.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-linux-x86_64-musl`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-linux-aarch64-musl`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-macos-x86_64`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-macos-aarch64`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/tealdeer-rs/tealdeer/releases/download/v1.8.1/tealdeer-windows-x86_64-msvc.exe`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadMicro(t *testing.T) {
+	tools := MakeTools()
+	name := "micro"
+	const version = "v2.0.15"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/micro-editor/micro/releases/download/v2.0.15/micro-2.0.15-linux64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/micro-editor/micro/releases/download/v2.0.15/micro-2.0.15-linux-arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/micro-editor/micro/releases/download/v2.0.15/micro-2.0.15-osx.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/micro-editor/micro/releases/download/v2.0.15/micro-2.0.15-macos-arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/micro-editor/micro/releases/download/v2.0.15/micro-2.0.15-win64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadZellij(t *testing.T) {
+	tools := MakeTools()
+	name := "zellij"
+	const version = "v0.43.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_64-unknown-linux-musl.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-aarch64-unknown-linux-musl.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-x86_64-apple-darwin.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/zellij-org/zellij/releases/download/v0.43.1/zellij-aarch64-apple-darwin.tar.gz`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadYazi(t *testing.T) {
+	tools := MakeTools()
+	name := "yazi"
+	const version = "v26.1.22"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/sxyazi/yazi/releases/download/v26.1.22/yazi-x86_64-unknown-linux-gnu.zip`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/sxyazi/yazi/releases/download/v26.1.22/yazi-aarch64-unknown-linux-gnu.zip`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/sxyazi/yazi/releases/download/v26.1.22/yazi-x86_64-apple-darwin.zip`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/sxyazi/yazi/releases/download/v26.1.22/yazi-aarch64-apple-darwin.zip`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/sxyazi/yazi/releases/download/v26.1.22/yazi-x86_64-pc-windows-msvc.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadLf(t *testing.T) {
+	tools := MakeTools()
+	name := "lf"
+	const version = "r40"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/gokcehan/lf/releases/download/r40/lf-linux-amd64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/gokcehan/lf/releases/download/r40/lf-linux-arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/gokcehan/lf/releases/download/r40/lf-darwin-amd64.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/gokcehan/lf/releases/download/r40/lf-darwin-arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/gokcehan/lf/releases/download/r40/lf-windows-amd64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadJless(t *testing.T) {
+	tools := MakeTools()
+	name := "jless"
+	const version = "v0.9.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/PaulJuliusMartinez/jless/releases/download/v0.9.0/jless-v0.9.0-x86_64-unknown-linux-gnu.zip`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/PaulJuliusMartinez/jless/releases/download/v0.9.0/jless-v0.9.0-x86_64-apple-darwin.zip`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/PaulJuliusMartinez/jless/releases/download/v0.9.0/jless-v0.9.0-aarch64-apple-darwin.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadTrufflehog(t *testing.T) {
+	tools := MakeTools()
+	name := "trufflehog"
+	const version = "v3.92.5"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/trufflesecurity/trufflehog/releases/download/v3.92.5/trufflehog_3.92.5_linux_amd64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/trufflesecurity/trufflehog/releases/download/v3.92.5/trufflehog_3.92.5_linux_arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/trufflesecurity/trufflehog/releases/download/v3.92.5/trufflehog_3.92.5_darwin_amd64.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/trufflesecurity/trufflehog/releases/download/v3.92.5/trufflehog_3.92.5_darwin_arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/trufflesecurity/trufflehog/releases/download/v3.92.5/trufflehog_3.92.5_windows_amd64.tar.gz`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadGitleaks(t *testing.T) {
+	tools := MakeTools()
+	name := "gitleaks"
+	const version = "v8.30.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{os: "linux", arch: arch64bit, version: version, url: `https://github.com/gitleaks/gitleaks/releases/download/v8.30.0/gitleaks_8.30.0_linux_x64.tar.gz`},
+		{os: "linux", arch: archARM64, version: version, url: `https://github.com/gitleaks/gitleaks/releases/download/v8.30.0/gitleaks_8.30.0_linux_arm64.tar.gz`},
+		{os: "darwin", arch: arch64bit, version: version, url: `https://github.com/gitleaks/gitleaks/releases/download/v8.30.0/gitleaks_8.30.0_darwin_x64.tar.gz`},
+		{os: "darwin", arch: archDarwinARM64, version: version, url: `https://github.com/gitleaks/gitleaks/releases/download/v8.30.0/gitleaks_8.30.0_darwin_arm64.tar.gz`},
+		{os: "ming", arch: arch64bit, version: version, url: `https://github.com/gitleaks/gitleaks/releases/download/v8.30.0/gitleaks_8.30.0_windows_x64.zip`},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
