@@ -87,6 +87,8 @@ For each combination, verify the `file` command output:
 - Darwin arm64: `Mach-O 64-bit arm64 executable`
 - Windows amd64: `PE32+ executable (console) x86-64`
 
+Tools built with rust have `unknown` in their filename, that's OK. If deciding between GNU aka libc or musl, pick the non-musl version.
+
 **Include the full output of `./hack/test-tool.sh TOOL_NAME` in your PR description.**
 
 ### Step 5: Update Documentation
