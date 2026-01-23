@@ -36,8 +36,8 @@ Arkade provides several types of installers:
 
 **CRITICAL**: Before writing code, check the latest stable release on GitHub to see what OS/architecture combinations are available.
 
-1. Run a `curl -i -X HEAD https://github.com/OWNER/REPO/releases/latest` (adds `/latest` to go directly to the latest release) - change OWNER and REPO accordingly. The `location` header in the response will show the actual latest version tag without using up an API request.
-2. Examine ALL download URLs in the "Assets" section, you can obtain this via HTML, again to avoid consuming API requests: `https://github.com/OWNER/REPO/releases/expanded_assets/VERSION` - replace VERSION with the actual version tag from 1. and the OWNER/REPO accordingly.
+1. Run a `curl -i -X HEAD https://github.com/OWNER/REPO/releases/latest` (adds `/latest` to go directly to the latest release) - change OWNER and REPO accordingly. The `location` header in the response will show the actual latest version tag without using up an API request. To obtain the `location` header, you must not use the `-L` (follow redirects) flag.
+2. Examine ALL download URLs in the "Assets" section, you can obtain this via HTML, again to avoid consuming API requests: `https://github.com/OWNER/REPO/releases/expanded_assets/VERSION` - replace VERSION with the actual version tag from 1. and the OWNER/REPO accordingly. This returns HTML, you can grep it efficiently for anchor tags.
 3. Note available combinations:
    - Linux amd64 (x86_64)
    - Linux arm64 (aarch64)
