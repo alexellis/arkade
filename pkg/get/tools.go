@@ -5211,5 +5211,48 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 							age-{{.Version}}-{{$os}}-{{$arch}}.{{$ext}}`,
 		})
 
+	// Codex CLI
+	tools = append(tools,
+		Tool{
+			Owner:       "openai",
+			Repo:        "codex",
+			Name:        "codex",
+			Description: "Codex CLI from OpenAI.",
+			BinaryTemplate: `{{$arch := .Arch}}
+{{- if eq .Arch "amd64" -}}
+{{$arch = "x86_64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "aarch64"}}
+{{- end}}
+{{$os := .OS}}
+{{$ext := ".tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "pc-windows-msvc.exe"}}
+{{$ext = ".zip"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "apple-darwin"}}
+{{- else -}}
+{{$os = "unknown-linux-gnu"}}
+{{- end}}
+codex-{{$arch}}-{{$os}}{{$ext}}`,
+			URLTemplate: `{{$arch := .Arch}}
+{{- if eq .Arch "amd64" -}}
+{{$arch = "x86_64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "aarch64"}}
+{{- end}}
+{{$os := .OS}}
+{{$ext := ".tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "pc-windows-msvc.exe"}}
+{{$ext = ".zip"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "apple-darwin"}}
+{{- else -}}
+{{$os = "unknown-linux-gnu"}}
+{{- end}}
+https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{{$os}}{{$ext}}`,
+		})
+
 	return tools
 }

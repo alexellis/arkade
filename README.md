@@ -785,6 +785,7 @@ There are 53 apps that you can install on your cluster.
 | [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws) | Kubernetes Cluster API Provider AWS Management Utility                                                                                                            |
 | [clusterctl](https://github.com/kubernetes-sigs/cluster-api)                 | The clusterctl CLI tool handles the lifecycle of a Cluster API management cluster                                                                                 |
 | [cmctl](https://github.com/cert-manager/cmctl)                               | cmctl is a CLI tool that helps you manage cert-manager and its resources inside your cluster.                                                                     |
+| [codex](https://github.com/openai/codex)                                     | Codex CLI from OpenAI.                                                                                                                                            |
 | [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                                                 |
 | [consul](https://github.com/hashicorp/consul)                                | A solution to connect and configure applications across dynamic, distributed infrastructure                                                                       |
 | [copa](https://github.com/project-copacetic/copacetic)                       | CLI for patching container images                                                                                                                                 |
@@ -949,6 +950,5 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 187 tools, use `arkade get NAME` to download one.                                                                                      
-
-> Note to contributors, run `go build && ./arkade get --format markdown` to generate this list
+There are 188 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+> Note to contributors, run `go run . get --format markdown` to generate this list

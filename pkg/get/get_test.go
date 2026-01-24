@@ -2820,6 +2820,64 @@ func Test_DownloadFaaSCLI(t *testing.T) {
 
 }
 
+func Test_DownloadCodex(t *testing.T) {
+	tools := MakeTools()
+	name := "codex"
+	const version = "rust-v0.89.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-pc-windows-msvc.exe.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-pc-windows-msvc.exe.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-unknown-linux-gnu.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-unknown-linux-gnu.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-apple-darwin.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-apple-darwin.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+
+}
+
 func Test_DownloadKim(t *testing.T) {
 	tools := MakeTools()
 	name := "kim"
