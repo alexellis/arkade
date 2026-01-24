@@ -5225,16 +5225,14 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 {{$arch = "aarch64"}}
 {{- end}}
 {{$os := .OS}}
-{{$ext := ".tar.gz"}}
 {{- if HasPrefix .OS "ming" -}}
-{{$os = "pc-windows-msvc.exe"}}
-{{$ext = ".zip"}}
+{{$os = "pc-windows-msvc"}}
 {{- else if eq .OS "darwin" -}}
 {{$os = "apple-darwin"}}
 {{- else -}}
 {{$os = "unknown-linux-gnu"}}
 {{- end}}
-codex-{{$arch}}-{{$os}}{{$ext}}`,
+codex-{{$arch}}-{{$os}}`,
 			URLTemplate: `{{$arch := .Arch}}
 {{- if eq .Arch "amd64" -}}
 {{$arch = "x86_64"}}
