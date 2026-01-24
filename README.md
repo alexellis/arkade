@@ -760,6 +760,8 @@ There are 53 apps that you can install on your cluster.
 
 ### Catalog of CLIs
 
+<!-- start of tool list -->
+
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
@@ -950,5 +952,9 @@ There are 53 apps that you can install on your cluster.
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 188 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+There are 188 tools, use `arkade get NAME` to download one.
+
+
+<!-- end of tool list -->
+
 > Note to contributors, run `go run . get --format markdown` to generate this list
