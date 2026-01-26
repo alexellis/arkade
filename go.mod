@@ -7,15 +7,15 @@ require (
 	github.com/alexellis/go-execute/v2 v2.2.1
 	github.com/cheggaaa/pb/v3 v3.1.7
 	github.com/docker/go-units v0.5.0
-	github.com/google/go-containerregistry v0.20.6
+	github.com/google/go-containerregistry v0.20.7
 	github.com/morikuni/aec v1.0.0
 	github.com/olekukonko/tablewriter v1.1.1
 	github.com/otiai10/copy v1.14.1
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.3.1
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/crypto v0.45.0
-	golang.org/x/mod v0.30.0
+	golang.org/x/crypto v0.47.0
+	golang.org/x/mod v0.32.0
 	gopkg.in/yaml.v3 v3.0.1
 )
 
@@ -25,12 +25,12 @@ require (
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/containerd/stargz-snapshotter/estargz v0.18.1 // indirect
-	github.com/docker/cli v29.0.1+incompatible // indirect
+	github.com/docker/cli v29.0.3+incompatible // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.4 // indirect
 	github.com/fatih/color v1.18.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/klauspost/compress v1.18.3 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
@@ -45,5 +45,5 @@ require (
 	github.com/spf13/pflag v1.0.10 // indirect
 	github.com/vbatts/tar-split v0.12.2 // indirect
 	golang.org/x/sync v0.18.0 // indirect
-	golang.org/x/sys v0.38.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 )
