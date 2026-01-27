@@ -5252,5 +5252,34 @@ codex-{{$arch}}-{{$os}}`,
 https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{{$os}}{{$ext}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:          "vi",
+			Repo:           "websocat",
+			Name:           "websocat",
+			Description:    "Command-line client for WebSockets, like netcat/socat but for WebSockets",
+			BinaryTemplate: `websocat`,
+			URLTemplate: `
+{{$target := ""}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-unknown-linux-musl"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = "aarch64-unknown-linux-musl"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-apple-darwin"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = "aarch64-apple-darwin"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-pc-windows-gnu.exe"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/vi/websocat/releases/download/{{.Version}}/websocat.{{$target}}`,
+		})
+
 	return tools
 }

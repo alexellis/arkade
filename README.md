@@ -950,9 +950,10 @@ There are 53 apps that you can install on your cluster.
 | [vhs](https://github.com/charmbracelet/vhs)                                  | CLI for recording demos                                                                                                                                           |
 | [viddy](https://github.com/sachaos/viddy)                                    | A modern watch command. Time machine and pager etc.                                                                                                               |
 | [waypoint](https://github.com/hashicorp/waypoint)                            | Easy application deployment for Kubernetes and Amazon ECS                                                                                                         |
+| [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 188 tools, use `arkade get NAME` to download one.
+There are 189 tools, use `arkade get NAME` to download one.
 
 
 <!-- end of tool list -->

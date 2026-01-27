@@ -70,6 +70,8 @@ Add a test function in `pkg/get/get_test.go`. **Reference `Test_DownloadFaasCli`
 
 ### Step 4: Download and Verify Every OS/Arch Combination
 
+First test downloading the current OS/arch (no flags needed) i.e. `go run . get TOOL`. And run `file` on the output to verify the type and if it's valid or invalid i.e. a gzip, or a HTML page, or got a non zero exit code.
+
 **MANDATORY**: Download and verify EVERY combination using the `file` command.
 
 ```bash
@@ -87,13 +89,18 @@ For each combination, verify the `file` command output:
 - Darwin arm64: `Mach-O 64-bit arm64 executable`
 - Windows amd64: `PE32+ executable (console) x86-64`
 
-Tools built with rust have `unknown` in their filename, that's OK. If deciding between GNU aka libc or musl, pick the non-musl version.
+Tools built with Rust often have `unknown` in their filename, that's OK. If deciding between GNU aka libc or musl, pick the non-musl version, it might be named "unknown".
 
 **Include the full output of `./hack/test-tool.sh TOOL_NAME` in your PR description.**
 
 ### Step 5: Update Documentation
 
-The README.md file contains instructions for updating itself. Follow the note at the bottom of the "Catalog of CLIs" section: run `go build && ./arkade get --format markdown` to generate the updated table, then replace the existing catalog section.
+The README.md file contains instructions for updating itself. Follow the note at the bottom of the "Catalog of CLIs" section: run `go run . get --format markdown` to generate the updated table, then replace the existing catalog section. Write it to a file in the workspace that you delete after, to avoid needing extra permissions.
+
+There are two tokens in the README.md - replace al text between them with what you've generated.
+
+Start of replaceable block is inside: `<!-- start of tool list -->` and the end is inside: `<!-- end of tool list -->`.
+
 
 ### Step 6: Create Pull Request
 
