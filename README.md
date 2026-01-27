@@ -761,7 +761,6 @@ There are 53 apps that you can install on your cluster.
 ### Catalog of CLIs
 
 <!-- start of tool list -->
-
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
@@ -791,11 +790,13 @@ There are 53 apps that you can install on your cluster.
 | [conftest](https://github.com/open-policy-agent/conftest)                    | Write tests against structured configuration data using the Open Policy Agent Rego query language                                                                 |
 | [consul](https://github.com/hashicorp/consul)                                | A solution to connect and configure applications across dynamic, distributed infrastructure                                                                       |
 | [copa](https://github.com/project-copacetic/copacetic)                       | CLI for patching container images                                                                                                                                 |
+| [copilot](https://github.com/github/copilot-cli)                             | GitHub Copilot CLI - AI-powered command line assistant                                                                                                            |
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                                                   |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                                                 |
 | [crane](https://github.com/google/go-containerregistry)                      | crane is a tool for interacting with remote images and registries                                                                                                 |
 | [croc](https://github.com/schollz/croc)                                      | Easily and securely send things from one computer to another                                                                                                      |
 | [crossplane](https://github.com/crossplane/crossplane)                       | Simplify some development and administration aspects of Crossplane.                                                                                               |
+| [crush](https://github.com/charmbracelet/crush)                              | A delightful AI assistant for your terminal                                                                                                                       |
 | [dagger](https://github.com/dagger/dagger)                                   | A portable devkit for CI/CD pipelines.                                                                                                                            |
 | [devpod](https://github.com/loft-sh/devpod)                                  | Codespaces but open-source, client-only and unopinionated: Works with any IDE and lets you use any cloud, kubernetes or just localhost docker.                    |
 | [devspace](https://github.com/devspace-sh/devspace)                          | Automate your deployment workflow with DevSpace and develop software directly inside Kubernetes.                                                                  |
@@ -953,9 +954,7 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 189 tools, use `arkade get NAME` to download one.
+There are 191 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 
-
-<!-- end of tool list -->
 
 > Note to contributors, run `go run . get --format markdown` to generate this list

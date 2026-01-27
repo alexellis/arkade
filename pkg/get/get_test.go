@@ -9613,3 +9613,117 @@ func Test_DownloadAgeKeygen(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadCopilot(t *testing.T) {
+	tools := MakeTools()
+	name := "copilot"
+	const version = "v0.0.396"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-win32-x64.zip`,
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-win32-arm64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-linux-x64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-linux-arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-darwin-x64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/github/copilot-cli/releases/download/v0.0.396/copilot-darwin-arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadCrush(t *testing.T) {
+	tools := MakeTools()
+	name := "crush"
+	const version = "v0.36.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Windows_x86_64.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Linux_x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Linux_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Darwin_x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Darwin_arm64.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+

@@ -5281,5 +5281,57 @@ https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{
 https://github.com/vi/websocat/releases/download/{{.Version}}/websocat.{{$target}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "github",
+			Repo:        "copilot-cli",
+			Name:        "copilot",
+			Description: "GitHub Copilot CLI - AI-powered command line assistant",
+			BinaryTemplate: `
+{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "darwin" -}}
+	{{$os = "darwin"}}
+{{- else if eq .OS "linux" -}}
+	{{$os = "linux"}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$os = "win32"}}
+	{{$ext = "zip"}}
+{{- end -}}
+{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+	{{$arch = "x64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+	{{$arch = "arm64"}}
+{{- end -}}
+{{.Name}}-{{$os}}-{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "charmbracelet",
+			Repo:        "crush",
+			Name:        "crush",
+			Description: "A delightful AI assistant for your terminal",
+			URLTemplate: `
+{{$arch := .Arch}}
+{{- if eq .Arch "x86_64" -}}
+	{{$arch = "x86_64"}}
+{{- else if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+{{- end -}}
+{{$osStr := ""}}
+{{$extStr := "tar.gz"}}
+{{- if eq .OS "darwin" -}}
+	{{$osStr = "Darwin"}}
+{{- else if eq .OS "linux" -}}
+	{{$osStr = "Linux"}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$osStr = "Windows"}}
+	{{$extStr = "zip"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
+
 	return tools
 }
