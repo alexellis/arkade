@@ -15,6 +15,8 @@ import (
 	"text/template"
 	"time"
 
+	units "github.com/docker/go-units"
+
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/config"
@@ -45,16 +47,23 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 	}
 
 	if !quiet {
-		fmt.Printf("Downloading: %s\n", downloadURL)
+		log.Printf("Downloading: %s", downloadURL)
 	}
 
+	start := time.Now()
 	outFilePath, err := downloadFile(downloadURL, displayProgress)
 	if err != nil {
 		return "", "", err
 	}
 
 	if !quiet {
-		fmt.Printf("%s written.\n", outFilePath)
+		filename := path.Base(downloadURL)
+		stat, err := os.Stat(outFilePath)
+		size := ""
+		if err == nil {
+			size = "(" + units.HumanSize(float64(stat.Size())) + ")"
+		}
+		log.Printf("Downloaded %s %s in %s.", filename, size, time.Since(start).Round(time.Millisecond))
 	}
 
 	if verify {
@@ -210,7 +219,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 		}
 
 		outFilePath = outPath
-		if !quiet {
+		if v, ok := os.LookupEnv("ARK_DEBUG"); ok && v == "1" {
 			log.Printf("Extracted: %s", outFilePath)
 		}
 	}
@@ -233,7 +242,7 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 		localPath = filepath.Join(movePath, finalName)
 	}
 
-	if !quiet {
+	if v, ok := os.LookupEnv("ARK_DEBUG"); ok && v == "1" {
 		log.Printf("Copying %s to %s\n", outFilePath, localPath)
 	}
 
@@ -259,57 +268,58 @@ func DownloadFileP(downloadURL string, displayProgress bool) (string, error) {
 }
 
 func downloadFile(downloadURL string, displayProgress bool) (string, error) {
+	return retryWithBackoff(func() (string, error) {
+		req, err := http.NewRequest(http.MethodGet, downloadURL, nil)
+		if err != nil {
+			return "", err
+		}
 
-	req, err := http.NewRequest(http.MethodGet, downloadURL, nil)
-	if err != nil {
-		return "", err
-	}
+		req.Header.Set("User-Agent", pkg.UserAgent())
 
-	req.Header.Set("User-Agent", pkg.UserAgent())
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return "", err
+		}
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
+		if res.Body != nil {
+			defer res.Body.Close()
+		}
 
-	if res.Body != nil {
-		defer res.Body.Close()
-	}
+		if res.StatusCode == http.StatusNotFound {
+			return "", &ErrNotFound{}
+		}
 
-	if res.StatusCode == http.StatusNotFound {
-		return "", &ErrNotFound{}
-	}
+		if res.StatusCode != http.StatusOK {
+			return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+		}
 
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("server returned status: %d", res.StatusCode)
-	}
+		_, fileName := path.Split(downloadURL)
+		tmp := os.TempDir()
 
-	_, fileName := path.Split(downloadURL)
-	tmp := os.TempDir()
+		customTmp, err := os.MkdirTemp(tmp, "arkade-*")
+		if err != nil {
+			return "", err
+		}
 
-	customTmp, err := os.MkdirTemp(tmp, "arkade-*")
-	if err != nil {
-		return "", err
-	}
+		outFilePath := path.Join(customTmp, fileName)
+		wrappedReader := withProgressBar(res.Body, int(res.ContentLength), displayProgress)
 
-	outFilePath := path.Join(customTmp, fileName)
-	wrappedReader := withProgressBar(res.Body, int(res.ContentLength), displayProgress)
+		// Owner/Group read/write/execute
+		// World - execute
+		out, err := os.OpenFile(outFilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0775)
+		if err != nil {
+			return "", err
+		}
 
-	// Owner/Group read/write/execute
-	// World - execute
-	out, err := os.OpenFile(outFilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0775)
-	if err != nil {
-		return "", err
-	}
+		defer out.Close()
+		defer wrappedReader.Close()
 
-	defer out.Close()
-	defer wrappedReader.Close()
+		if _, err := io.Copy(out, wrappedReader); err != nil {
+			return "", err
+		}
 
-	if _, err := io.Copy(out, wrappedReader); err != nil {
-		return "", err
-	}
-
-	return outFilePath, nil
+		return outFilePath, nil
+	}, 10, 100*time.Millisecond)
 }
 
 func CopyFile(src, dst string) (int64, error) {
@@ -404,7 +414,7 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		}
 
 		if !quiet {
-			fmt.Printf("Name: %s, size: %d", fInfo.Name(), fInfo.Size())
+			log.Printf("Name: %s, size: %d", fInfo.Name(), fInfo.Size())
 		}
 
 		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir, forceQuiet); err != nil {
@@ -416,27 +426,29 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 }
 
 func fetchText(url string) (string, error) {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return "", err
-	}
-	req.Header.Set("User-Agent", pkg.UserAgent())
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", err
-	}
+	return retryWithBackoff(func() (string, error) {
+		req, err := http.NewRequest(http.MethodGet, url, nil)
+		if err != nil {
+			return "", err
+		}
+		req.Header.Set("User-Agent", pkg.UserAgent())
+		res, err := http.DefaultClient.Do(req)
+		if err != nil {
+			return "", err
+		}
 
-	var body []byte
-	if res.Body != nil {
-		defer res.Body.Close()
-		body, _ = io.ReadAll(res.Body)
-	}
+		var body []byte
+		if res.Body != nil {
+			defer res.Body.Close()
+			body, _ = io.ReadAll(res.Body)
+		}
 
-	if res.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected status code %d, body: %s", res.StatusCode, string(body))
-	}
+		if res.StatusCode != http.StatusOK {
+			return "", fmt.Errorf("unexpected status code %d, body: %s", res.StatusCode, string(body))
+		}
 
-	return string(body), nil
+		return string(body), nil
+	}, 10, 100*time.Millisecond)
 }
 
 func verifySHA(shaSum, outFilePath string) error {

@@ -31,6 +31,45 @@ const AmpShasumStrategy = `amp-sha`
 var supportedOS = [...]string{"linux", "darwin", "ming"}
 var supportedArchitectures = [...]string{"x86_64", "arm", "amd64", "armv6l", "armv7l", "arm64", "aarch64"}
 
+// retryWithBackoff implements exponential backoff with retry logic
+func retryWithBackoff(fn func() (string, error), maxRetries int, initialBackoff time.Duration) (string, error) {
+	var lastErr error
+	for attempt := 0; attempt <= maxRetries; attempt++ {
+		if attempt > 0 {
+			backoff := initialBackoff * time.Duration(1<<uint(attempt-1))
+			if backoff > 10*time.Second {
+				backoff = 10 * time.Second
+			}
+			log.Printf("Attempt %d: Retrying after %v due to: %v", attempt, backoff, lastErr)
+			time.Sleep(backoff)
+		}
+
+		result, err := fn()
+		if err == nil {
+			return result, nil
+		}
+
+		lastErr = err
+
+		// Don't retry permanent errors
+		if isPermanentError(err) {
+			return "", err
+		}
+	}
+	return "", fmt.Errorf("failed after %d attempts: %w", maxRetries+1, lastErr)
+}
+
+func isPermanentError(err error) bool {
+	// 404, 429 are permanent errors
+	if strings.Contains(err.Error(), "404") {
+		return true
+	}
+	if strings.Contains(err.Error(), "429") {
+		return true
+	}
+	return false
+}
+
 // Tool describes how to download a CLI tool from a binary
 // release - whether a single binary, or an archive.
 type Tool struct {
@@ -206,16 +245,32 @@ func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, string, e
 
 		if _, supported := releaseLocations[releaseType]; supported {
 
+			start := time.Now()
 			v, err := FindRelease(releaseType, tool.Owner, tool.Repo)
 			if err != nil {
 				return "", "", err
 			}
 			version = v
+			if !quiet {
+				log.Printf("Found %s version: %s (in %s)", tool.Name, version, time.Since(start).Round(time.Millisecond))
+			}
 		}
 
-		if !quiet {
-			log.Printf("Found: %s", version)
+		resolvedVersion = version
+
+		if len(tool.URLTemplate) > 0 {
+			res, err := getByDownloadTemplate(tool, os, arch, version)
+			if err != nil {
+				return "", "", err
+			}
+			return res, resolvedVersion, nil
 		}
+
+		res, err := getURLByGithubTemplate(tool, os, arch, version)
+		if err != nil {
+			return "", "", err
+		}
+		return res, resolvedVersion, nil
 	}
 
 	resolvedVersion = version
@@ -277,46 +332,48 @@ func FindRelease(location, owner, repo string) (string, error) {
 		return http.ErrUseLastResponse
 	}
 
-	req, err := http.NewRequest(releaseLocations[location].Method, url, nil)
-	if err != nil {
-		return "", err
-	}
-
-	req.Header.Set("User-Agent", pkg.UserAgent())
-
-	res, err := client.Do(req)
-	if err != nil {
-		return "", err
-	}
-
-	defer res.Body.Close()
-
-	if releaseLocations[location].Method == http.MethodHead {
-
-		if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
-			return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+	return retryWithBackoff(func() (string, error) {
+		req, err := http.NewRequest(releaseLocations[location].Method, url, nil)
+		if err != nil {
+			return "", err
 		}
 
-		loc := res.Header.Get("Location")
-		if len(loc) == 0 {
+		req.Header.Set("User-Agent", pkg.UserAgent())
+
+		res, err := client.Do(req)
+		if err != nil {
+			return "", err
+		}
+
+		defer res.Body.Close()
+
+		if releaseLocations[location].Method == http.MethodHead {
+
+			if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
+				return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+			}
+
+			loc := res.Header.Get("Location")
+			if len(loc) == 0 {
+				return "", fmt.Errorf("unable to determine release of tool")
+			}
+
+			version := loc[strings.LastIndex(loc, "/")+1:]
+			return version, nil
+		}
+
+		if res.Body == nil {
 			return "", fmt.Errorf("unable to determine release of tool")
 		}
 
-		version := loc[strings.LastIndex(loc, "/")+1:]
+		bodyBytes, err := io.ReadAll(res.Body)
+		if err != nil {
+			return "", err
+		}
+
+		version := strings.TrimSpace(string(bodyBytes))
 		return version, nil
-	}
-
-	if res.Body == nil {
-		return "", fmt.Errorf("unable to determine release of tool")
-	}
-
-	bodyBytes, err := io.ReadAll(res.Body)
-	if err != nil {
-		return "", err
-	}
-
-	version := strings.TrimSpace(string(bodyBytes))
-	return version, nil
+	}, 10, 100*time.Millisecond)
 }
 
 func formatUrl(url, owner, repo string) string {
