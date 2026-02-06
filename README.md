@@ -268,11 +268,18 @@ For packages distributed in Open Container Initiative (OCI) images, you can use 
 vmmeter is one example of a package that is only published as a container image, which is not released on a GitHub releases page.
 
 ```bash
-arkade oci install ghcr.io/openfaasltd/vmmeter \
-  --path /usr/local/bin
+# Install to /usr/local/bin (default)
+arkade oci install ghcr.io/openfaasltd/vmmeter
+
+# Install to a custom path
+arkade oci install ghcr.io/openfaasltd/vmmeter /usr/local/bin
+
+# Install to current directory
+arkade oci install ghcr.io/openfaasltd/vmmeter .
 ```
 
-* `--path` - the folder to extract the package to
+Options:
+* Path can be specified as a positional argument (e.g., `/usr/local/bin` or `.`)
 * `--version` - the version of the package to extract, if not specified the `:latest` tag is used
 * `--arch` - the architecture to extract, if not specified the host's architecture is used
 

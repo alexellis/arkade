@@ -19,7 +19,7 @@ import (
 func MakeOciInstall() *cobra.Command {
 	command := &cobra.Command{
 		Use:     "install IMAGE [PATH]",
-		Aliases: []string{"i"},
+		Aliases: []string{"i", "extract"},
 		Short:   "Install the contents of an OCI image to a given path",
 		Long: `Use this command to install binaries or packages distributed within an 
 OCI image.`,
