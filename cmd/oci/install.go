@@ -18,16 +18,21 @@ import (
 
 func MakeOciInstall() *cobra.Command {
 	command := &cobra.Command{
-		Use:     "install",
+		Use:     "install IMAGE [PATH]",
 		Aliases: []string{"i"},
 		Short:   "Install the contents of an OCI image to a given path",
 		Long: `Use this command to install binaries or packages distributed within an 
 OCI image.`,
-		Example: `  # Install slicer to /usr/local/bin
+		Example: `  # Install slicer to /usr/local/bin (default)
+  # Files will be extracted to /usr/local/bin/slicer
   arkade oci install ghcr.io/openfaasltd/slicer
 
-  # Install a specific version of slicer to /tmp/
-  arkade oci install ghcr.io/openfaasltd/slicer --path /tmp --version 0.1.0
+  # Install to current directory
+  arkade oci install ghcr.io/openfaasltd/slicer .
+
+  # Install to a custom path like /tmp/
+  # Files will be extracted to /tmp/slicer
+  arkade oci install ghcr.io/openfaasltd/slicer /tmp --version 0.1.0
 
   # Install slicer for arm64 as an architecture override, instead of using uname
   arkade oci install ghcr.io/openfaasltd/slicer --arch arm64
@@ -39,7 +44,7 @@ OCI image.`,
 	}
 
 	command.Flags().StringP("version", "v", "latest", "The version or leave blank to determine the latest available version")
-	command.Flags().String("path", "/usr/local/bin", "Installation path, where a buildkitd subfolder will be created")
+	command.Flags().String("path", "/usr/local/bin", "(deprecated: use positional argument) Installation path")
 	command.Flags().Bool("progress", true, "Show download progress")
 	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
 	command.Flags().String("os", "", "OS i.e. linux")
@@ -47,12 +52,14 @@ OCI image.`,
 	command.Flags().BoolP("gzipped", "g", false, "Is this a gzipped tarball?")
 	command.Flags().Bool("quiet", false, "Suppress progress output")
 
+	// Hide the deprecated --path flag
+	command.Flags().MarkHidden("path")
+
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
-		installPath, _ := cmd.Flags().GetString("path")
 		version, _ := cmd.Flags().GetString("version")
 		gzipped, _ := cmd.Flags().GetBool("gzipped")
 		quiet, _ := cmd.Flags().GetBool("quiet")
@@ -62,6 +69,15 @@ OCI image.`,
 		}
 
 		imageName := args[0]
+
+		// Determine installation path
+		// Priority: arg[1] > --path flag > default
+		installPath := "/usr/local/bin"
+		if len(args) >= 2 {
+			installPath = args[1]
+		} else if cmd.Flags().Changed("path") {
+			installPath, _ = cmd.Flags().GetString("path")
+		}
 
 		switch imageName {
 		case "vmmeter":
