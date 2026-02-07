@@ -342,9 +342,12 @@ and provides a fast and easy alternative to a package manager.`,
 
 			multiTool := len(localToolsStore) > 1
 
-			if multiTool {
+			// Show summary in non-TTY mode always (CI needs it), and
+			// in TTY mode only for multi-tool downloads (single-tool
+			// TTY already has rich per-line output).
+			if multiTool || !tty {
 				// ── Group summary ────────────────────────────
-				printGroupSummary(out, progress, time.Since(groupStart))
+				printGroupSummary(out, progress, time.Since(groupStart), tty)
 			}
 
 			if len(localToolsStore) > 0 {
@@ -355,7 +358,11 @@ and provides a fast and easy alternative to a package manager.`,
 				// keep output minimal. Conflict warnings still show.
 				if !arkadeBinInPath {
 					// ── Installation instructions ────────────────
-					fmt.Fprintf(out, "\033[1m── Installation ──\033[0m\n\n")
+					if tty {
+						fmt.Fprintf(out, "\033[1m── Installation ──\033[0m\n\n")
+					} else {
+						fmt.Fprintf(out, "-- Installation --\n\n")
+					}
 
 					// Post-installation message.
 					msg, err := get.PostInstallationMsg(movePath, localToolsStore)
@@ -602,10 +609,14 @@ func renderPlain(out io.Writer, progress []toolProgress) {
 
 // ── Group summary ──────────────────────────────────────────────────
 
-func printGroupSummary(out io.Writer, progress []toolProgress, wall time.Duration) {
+func printGroupSummary(out io.Writer, progress []toolProgress, wall time.Duration, tty bool) {
 	_, done, _, _, failed := summariseCounts(progress)
 
-	fmt.Fprintf(out, "\033[1m── Summary ──\033[0m\n\n")
+	if tty {
+		fmt.Fprintf(out, "\033[1m── Summary ──\033[0m\n\n")
+	} else {
+		fmt.Fprintf(out, "-- Summary --\n\n")
+	}
 
 	for i := range progress {
 		p := &progress[i]
@@ -625,14 +636,23 @@ func printGroupSummary(out io.Writer, progress []toolProgress, wall time.Duratio
 			if p.version != "" {
 				displayName = fmt.Sprintf("%s (%s)", p.name, p.version)
 			}
-			fmt.Fprintf(out, " \033[32m✔\033[0m  %-20s %8s  %9s/s  %s  %s\n",
-				displayName, size, units.HumanSize(speed), fmtDuration(p.elapsed), p.path)
+			if tty {
+				fmt.Fprintf(out, " \033[32m✔\033[0m  %-20s %8s  %9s/s  %s  %s\n",
+					displayName, size, units.HumanSize(speed), fmtDuration(p.elapsed), p.path)
+			} else {
+				fmt.Fprintf(out, " OK  %-20s %8s  %9s/s  %s  %s\n",
+					displayName, size, units.HumanSize(speed), fmtDuration(p.elapsed), p.path)
+			}
 		} else if p.status == stFailed {
 			errMsg := ""
 			if p.err != nil {
 				errMsg = p.err.Error()
 			}
-			fmt.Fprintf(out, " \033[31m✘\033[0m  %-20s %s\n", p.name, errMsg)
+			if tty {
+				fmt.Fprintf(out, " \033[31m✘\033[0m  %-20s %s\n", p.name, errMsg)
+			} else {
+				fmt.Fprintf(out, " ERR %-20s %s\n", p.name, errMsg)
+			}
 		}
 	}
 
