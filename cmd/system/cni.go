@@ -105,7 +105,9 @@ func MakeInstallCNI() *cobra.Command {
 		defer os.RemoveAll(tempUnpackPath)
 
 		fmt.Printf("Unpacking CNI Plugins to: %s\n", tempUnpackPath)
-		if err := archive.Untar(f, tempUnpackPath, true, true); err != nil {
+		if err := spinWhile("Unpacking CNI Plugins", func() error {
+			return archive.Untar(f, tempUnpackPath, true, true)
+		}); err != nil {
 			return err
 		}
 

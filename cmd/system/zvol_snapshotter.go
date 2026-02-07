@@ -116,7 +116,9 @@ func runInstallZvolSnapshotter(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	fmt.Printf("Unpacking zvol-snapshotter to: %s\n", tempUnpackPath)
-	if err := archive.Untar(f, tempUnpackPath, true, true); err != nil {
+	if err := spinWhile("Unpacking zvol-snapshotter", func() error {
+		return archive.Untar(f, tempUnpackPath, true, true)
+	}); err != nil {
 		return err
 	}
 

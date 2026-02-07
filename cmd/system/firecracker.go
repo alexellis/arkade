@@ -89,7 +89,9 @@ func MakeInstallFirecracker() *cobra.Command {
 			return err
 		}
 		fmt.Printf("Unpacking Firecracker to: %s\n", tempUnpackPath)
-		if err := archive.Untar(f, tempUnpackPath, true, true); err != nil {
+		if err := spinWhile("Unpacking Firecracker", func() error {
+			return archive.Untar(f, tempUnpackPath, true, true)
+		}); err != nil {
 			return err
 		}
 

@@ -90,7 +90,9 @@ func MakeInstallPrometheus() *cobra.Command {
 		defer os.RemoveAll(tempUnpackPath)
 
 		fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
-		if err := archive.Untar(f, tempUnpackPath, true, true); err != nil {
+		if err := spinWhile("Unpacking Prometheus", func() error {
+			return archive.Untar(f, tempUnpackPath, true, true)
+		}); err != nil {
 			return err
 		}
 

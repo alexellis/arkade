@@ -1,6 +1,9 @@
-# AGENTS.md - Guide for AI Agents Contributing to Arkade
+# AGENTS.md - Guide for AI Agents Contributing new downloads/apps/CLIs to Arkade
 
 This document provides guidance for AI agents working on arkade, specifically for reviewing and adding new CLI tools to the `arkade get` command.
+
+For system-level packages (usually Linux-only), see the `arkade system install` - usually for tools like Node.js, Go, Prometheus. Sometimes uses Go templates for tool definitions, often just uses its own code in the command.
+For binaries distributed via OCI images, see `arkade oci install`.
 
 ## Types of Arkade Commands
 

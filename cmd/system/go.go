@@ -95,7 +95,9 @@ func MakeInstallGo() *cobra.Command {
 
 		fmt.Printf("Unpacking Go to: %s\n", path.Join(installPath, "go"))
 
-		if err := archive.UntarNested(f, installPath, true, false); err != nil {
+		if err := spinWhile("Unpacking Go", func() error {
+			return archive.UntarNested(f, installPath, true, true)
+		}); err != nil {
 			return err
 		}
 

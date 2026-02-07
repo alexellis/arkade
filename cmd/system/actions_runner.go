@@ -99,7 +99,9 @@ func MakeInstallActionsRunner() *cobra.Command {
 
 		fmt.Printf("Unpacking Actions Runner to: %s\n", path.Join(installPath, "actions-runner"))
 
-		if err := archive.UntarNested(f, installPath, true, false); err != nil {
+		if err := spinWhile("Unpacking Actions Runner", func() error {
+			return archive.UntarNested(f, installPath, true, true)
+		}); err != nil {
 			return err
 		}
 
