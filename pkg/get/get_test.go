@@ -216,12 +216,16 @@ func Test_MakeSureToolsAreSorted(t *testing.T) {
 func Test_PostInstallationMsg(t *testing.T) {
 
 	testCases := []struct {
+		name               string
 		defaultDownloadDir string
 		localToolsStore    []ToolLocal
+		pathEnv            string
 		want               string
 	}{
 		{
+			name:               "default path, arkade not in PATH, multi tool",
 			defaultDownloadDir: "",
+			pathEnv:            "/usr/bin:/usr/local/bin",
 			localToolsStore: []ToolLocal{
 				{Name: "yq",
 					Path: "/home/user/.arkade/bin/yq",
@@ -233,15 +237,51 @@ func Test_PostInstallationMsg(t *testing.T) {
 			want: `# Add arkade binary directory to your PATH variable
 export PATH=$PATH:$HOME/.arkade/bin/
 
-# Test the binary:
-/home/user/.arkade/bin/yq
-/home/user/.arkade/bin/jq
-
-# Or install with:
-sudo mv /home/user/.arkade/bin/yq /usr/local/bin/
-sudo mv /home/user/.arkade/bin/jq /usr/local/bin/`,
+# Install to system (optional):
+sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
 		},
 		{
+			name:               "default path, arkade not in PATH, single tool",
+			defaultDownloadDir: "",
+			pathEnv:            "/usr/bin:/usr/local/bin",
+			localToolsStore: []ToolLocal{
+				{Name: "yq",
+					Path: "/home/user/.arkade/bin/yq",
+				}},
+			want: `# Add arkade binary directory to your PATH variable
+export PATH=$PATH:$HOME/.arkade/bin/
+
+# Install to system (optional):
+sudo mv /home/user/.arkade/bin/yq /usr/local/bin/`,
+		},
+		{
+			name:               "default path, arkade already in PATH, multi tool",
+			defaultDownloadDir: "",
+			pathEnv:            "/usr/bin:/home/user/.arkade/bin:/usr/local/bin",
+			localToolsStore: []ToolLocal{
+				{Name: "yq",
+					Path: "/home/user/.arkade/bin/yq",
+				},
+				{
+					Name: "jq",
+					Path: "/home/user/.arkade/bin/jq",
+				}},
+			want: `# Install to system (optional):
+sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
+		},
+		{
+			name:               "default path, arkade already in PATH, single tool",
+			defaultDownloadDir: "",
+			pathEnv:            "/usr/bin:/home/user/.arkade/bin:/usr/local/bin",
+			localToolsStore: []ToolLocal{
+				{Name: "yq",
+					Path: "/home/user/.arkade/bin/yq",
+				}},
+			want: `# Install to system (optional):
+sudo mv /home/user/.arkade/bin/yq /usr/local/bin/`,
+		},
+		{
+			name:               "custom path",
 			defaultDownloadDir: "/tmp/bin/",
 			localToolsStore: []ToolLocal{
 				{Name: "yq",
@@ -251,14 +291,17 @@ sudo mv /home/user/.arkade/bin/jq /usr/local/bin/`,
 					Name: "jq",
 					Path: "/tmp/bin/jq-linux64",
 				}},
-			want: `Run the following to copy to install the tool:
+			want: `# Install to system (optional):
 sudo install -m 755 /tmp/bin/yq_linux_amd64 /usr/local/bin/yq
 sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 		},
 	}
 
 	for _, tt := range testCases {
-		t.Run(tt.localToolsStore[0].Name, func(t *testing.T) {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.pathEnv != "" {
+				t.Setenv("PATH", tt.pathEnv)
+			}
 			defaultDownloadDir := tt.defaultDownloadDir
 			msg, _ := PostInstallationMsg(defaultDownloadDir, tt.localToolsStore)
 
@@ -2844,13 +2887,13 @@ func Test_DownloadCodex(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-unknown-linux-gnu.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-unknown-linux-musl.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-unknown-linux-gnu.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-unknown-linux-musl.tar.gz`,
 		},
 		{
 			os:      "darwin",

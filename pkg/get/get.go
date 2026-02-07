@@ -9,6 +9,7 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"os"
 
 	"strings"
 	"text/template"
@@ -176,6 +177,35 @@ func isArchiveStr(downloadURL string) bool {
 	return strings.HasSuffix(downloadURL, "tar.gz") ||
 		strings.HasSuffix(downloadURL, "zip") ||
 		strings.HasSuffix(downloadURL, "tgz")
+}
+
+// ResolveVersion determines the version for a tool. When version is
+// non-empty it is returned as-is. Otherwise the latest release is
+// looked up using the tool's VersionStrategy.
+func ResolveVersion(tool *Tool, version string) (string, error) {
+	ver := GetToolVersion(tool, version)
+	if len(ver) > 0 {
+		return ver, nil
+	}
+
+	var releaseType string
+	if len(tool.URLTemplate) == 0 ||
+		strings.Contains(tool.URLTemplate, "https://github.com/") {
+		releaseType = GitHubVersionStrategy
+	}
+	if len(tool.VersionStrategy) > 0 {
+		releaseType = tool.VersionStrategy
+	}
+
+	if _, supported := releaseLocations[releaseType]; supported {
+		v, err := FindRelease(releaseType, tool.Owner, tool.Repo)
+		if err != nil {
+			return "", err
+		}
+		return v, nil
+	}
+
+	return ver, nil
 }
 
 // GetDownloadURL fetches the download URL for a release of a tool
@@ -541,39 +571,44 @@ func PostToolNotFoundMsg(url string) string {
 // PostInstallationMsg generates installation message after tool has been downloaded
 func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, error) {
 
-	t := template.New("Installation Instructions")
+	var buf bytes.Buffer
+	multi := len(localToolsStore) > 1
 
 	if movePath != "" {
-		t.Parse(`Run the following to copy to install the tool:
-
-{{- range . }}
-sudo install -m 755 {{.Path}} /usr/local/bin/{{.Name}}
-{{- end}}`)
-
+		buf.WriteString("# Install to system (optional):\n")
+		for _, tl := range localToolsStore {
+			fmt.Fprintf(&buf, "sudo install -m 755 %s /usr/local/bin/%s\n", tl.Path, tl.Name)
+		}
+	} else if ArkadeInPath() {
+		if multi {
+			buf.WriteString("# Install to system (optional):\n")
+			buf.WriteString("sudo mv $HOME/.arkade/bin/* /usr/local/bin/\n")
+		} else {
+			buf.WriteString("# Install to system (optional):\n")
+			for _, tl := range localToolsStore {
+				fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
+			}
+		}
 	} else {
-		t.Parse(`# Add arkade binary directory to your PATH variable
-export PATH=$PATH:$HOME/.arkade/bin/
-
-# Test the binary:
-{{- range . }}
-{{.Path}}
-{{- end }}
-
-# Or install with:
-{{- range . }}
-sudo mv {{.Path}} /usr/local/bin/
-
-{{- end}}`)
+		buf.WriteString("# Add arkade binary directory to your PATH variable\n")
+		buf.WriteString("export PATH=$PATH:$HOME/.arkade/bin/\n\n")
+		if multi {
+			buf.WriteString("# Install to system (optional):\n")
+			buf.WriteString("sudo mv $HOME/.arkade/bin/* /usr/local/bin/\n")
+		} else {
+			buf.WriteString("# Install to system (optional):\n")
+			for _, tl := range localToolsStore {
+				fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
+			}
+		}
 	}
 
-	var tpl bytes.Buffer
+	return bytes.TrimRight(buf.Bytes(), "\n"), nil
+}
 
-	err := t.Execute(&tpl, localToolsStore)
-	if err != nil {
-		return nil, err
-	}
-
-	return tpl.Bytes(), err
+// ArkadeInPath returns true when $PATH already contains .arkade/bin.
+func ArkadeInPath() bool {
+	return strings.Contains(os.Getenv("PATH"), ".arkade/bin")
 }
 
 // ValidateOS returns whether a given operating system is supported

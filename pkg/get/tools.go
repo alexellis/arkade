@@ -582,21 +582,40 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 			Repo:        "kubetrim",
 			Name:        "kubetrim",
 			Description: "Tidy up old Kubernetes clusters from kubeconfig.",
+			URLTemplate: `{{$fileName := ""}}
+{{- if HasPrefix .OS "ming" -}}
+{{$fileName = "kubetrim.exe.tgz"}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "arm64" -}}
+	{{$fileName = "kubetrim-darwin-arm64.tgz"}}
+	{{- else -}}
+	{{$fileName = "kubetrim-darwin.tgz"}}
+	{{- end -}}
+{{- else if eq .Arch "armv7l" -}}
+{{$fileName = "kubetrim-armhf.tgz"}}
+{{- else if eq .Arch "aarch64" -}}
+{{$fileName = "kubetrim-arm64.tgz"}}
+{{- else -}}
+{{$fileName = "kubetrim.tgz"}}
+{{- end -}}
+https://github.com/alexellis/kubetrim/releases/download/{{.Version}}/{{$fileName}}`,
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
-				{{.Name}}.exe.tgz
-				{{- else if eq .OS "darwin" -}}
-					{{ if eq .Arch "arm64" -}}
-					{{.Name}}-darwin-arm64.tgz
-					{{- else -}}
-					{{.Name}}-darwin.tgz
-					{{- end -}}
-				{{- else if eq .Arch "armv7l" -}}
-				{{.Name}}-armhf.tgz
-				{{- else if eq .Arch "aarch64" -}}
-				{{.Name}}-arm64.tgz
-				{{- else -}}
-				{{.Name}}.tgz
-				{{- end -}}`,
+{{.Name}}.exe
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "arm64" -}}
+	{{.Name}}-darwin-arm64
+	{{- else -}}
+	{{.Name}}-darwin
+	{{- end -}}
+{{- else if eq .Arch "armv6l" -}}
+{{.Name}}-armhf
+{{- else if eq .Arch "armv7l" -}}
+{{.Name}}-armhf
+{{- else if eq .Arch "aarch64" -}}
+{{.Name}}-arm64
+{{- else -}}
+{{.Name}}
+{{- end -}}`,
 		})
 
 	tools = append(tools,
@@ -5230,7 +5249,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 {{- else if eq .OS "darwin" -}}
 {{$os = "apple-darwin"}}
 {{- else -}}
-{{$os = "unknown-linux-gnu"}}
+{{$os = "unknown-linux-musl"}}
 {{- end}}
 codex-{{$arch}}-{{$os}}`,
 			URLTemplate: `{{$arch := .Arch}}
@@ -5247,7 +5266,7 @@ codex-{{$arch}}-{{$os}}`,
 {{- else if eq .OS "darwin" -}}
 {{$os = "apple-darwin"}}
 {{- else -}}
-{{$os = "unknown-linux-gnu"}}
+{{$os = "unknown-linux-musl"}}
 {{- end}}
 https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{{$os}}{{$ext}}`,
 		})

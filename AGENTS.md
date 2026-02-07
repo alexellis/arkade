@@ -59,6 +59,19 @@ Edit `pkg/get/tools.go` and add a new `Tool` entry. **Reference existing example
 - Windows detection: `HasPrefix .OS "ming"`
 - **CRITICAL**: If a binary is missing for a specific OS/arch (e.g., Windows amd64), the template must still generate a URL that results in a 404 error, NOT download the wrong binary (e.g., don't download Linux binary when Windows was requested)
 
+#### Archive tools: when the binary name inside the archive differs from the tool name
+
+When a tool is distributed as an archive (`.tar.gz`, `.tgz`, `.zip`) and the **binary inside the archive** has a platform-specific name (e.g., `mytool-darwin-arm64` rather than just `mytool`), you **must** use both `URLTemplate` and `BinaryTemplate` together:
+
+- **`URLTemplate`** — the full download URL including the archive extension (e.g., `https://github.com/.../mytool-darwin-arm64.tgz`)
+- **`BinaryTemplate`** — the name of the **binary inside the archive**, without the archive extension (e.g., `mytool-darwin-arm64`)
+
+**Do NOT** put the archive filename (with `.tgz`/`.tar.gz`/`.zip` extension) in `BinaryTemplate` alone. The `decompress()` function in `pkg/get/download.go` uses `BinaryTemplate` to locate the extracted binary. If `BinaryTemplate` contains an archive extension, decompress falls back to `tool.Name` which will be wrong when the inner binary has a platform suffix.
+
+**Reference example**: `inletsctl` in `pkg/get/tools.go` — uses `URLTemplate` for the download URL and `BinaryTemplate` for the inner binary name.
+
+**When `BinaryTemplate` alone is safe**: Only when the tool is a **plain binary** (not an archive). In that case `BinaryTemplate` is the release asset filename, and the downloaded file is used directly without decompression.
+
 ### Step 3: Write Unit Tests
 
 Add a test function in `pkg/get/get_test.go`. **Reference `Test_DownloadFaasCli`** (around line 2761) as an example.
@@ -89,7 +102,7 @@ For each combination, verify the `file` command output:
 - Darwin arm64: `Mach-O 64-bit arm64 executable`
 - Windows amd64: `PE32+ executable (console) x86-64`
 
-Tools built with Rust often have `unknown` in their filename, that's OK. If deciding between GNU aka libc or musl, pick the non-musl version, it might be named "unknown".
+Tools built with Rust often have `unknown` in their filename, that's OK. If deciding between GNU aka libc or musl, pick the musl version.
 
 **Include the full output of `./hack/test-tool.sh TOOL_NAME` in your PR description.**
 
@@ -134,6 +147,7 @@ Start of replaceable block is inside: `<!-- start of tool list -->` and the end 
 - **Wrong architecture in binary**: Verify binary names on GitHub releases page
 - **Missing combinations**: Document why in PR description if upstream doesn't provide them. The template must still generate a URL that returns 404 (not download the wrong binary)
 - **Downloads wrong binary**: If requesting Windows but getting Linux binary, the template is incorrectly falling back. Each OS/arch must have a unique URL that matches the actual release or returns 404
+- **"stat ... no such file or directory" after extraction**: The binary name inside the archive doesn't match what `decompress()` expects. This happens when `BinaryTemplate` alone contains an archive extension (`.tgz`, `.tar.gz`, `.zip`) — the code falls back to `tool.Name` instead of the platform-specific binary name. Fix by splitting into `URLTemplate` (download URL) + `BinaryTemplate` (inner binary name without extension). See the "Archive tools" section above.
 
 ---
 
