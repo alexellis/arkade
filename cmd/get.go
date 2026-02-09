@@ -340,15 +340,8 @@ and provides a fast and easy alternative to a package manager.`,
 		if !quiet {
 			fmt.Fprintln(out)
 
-			multiTool := len(localToolsStore) > 1
-
-			// Show summary in non-TTY mode always (CI needs it), and
-			// in TTY mode only for multi-tool downloads (single-tool
-			// TTY already has rich per-line output).
-			if multiTool || !tty {
-				// ── Group summary ────────────────────────────
-				printGroupSummary(out, progress, time.Since(groupStart), tty)
-			}
+			// ── Group summary ────────────────────────────
+			printGroupSummary(out, progress, time.Since(groupStart), tty)
 
 			if len(localToolsStore) > 0 {
 				arkadeBinInPath := movePath == "" && get.ArkadeInPath()
