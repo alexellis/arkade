@@ -24,6 +24,11 @@ test:
 e2e:
 	CGO_ENABLED=0 go test github.com/alexellis/arkade/pkg/get -cover --tags e2e -v
 
+.PHONY: dist-local
+dist-local:
+	mkdir -p bin
+	CGO_ENABLED=0 go build -ldflags $(LDFLAGS) -o bin/arkade
+
 .PHONY: dist
 dist:
 	mkdir -p bin

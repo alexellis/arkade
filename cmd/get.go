@@ -242,18 +242,26 @@ and provides a fast and easy alternative to a package manager.`,
 			out = os.Stderr
 		}
 
-		// Hide cursor during live rendering.
+		// Use alternate screen buffer for TTY progress so that
+		// intermediate frames don't pollute scrollback. The final
+		// completed state is printed as static text after leaving
+		// the alternate screen.
 		if tty && renderProgress {
-			fmt.Fprint(out, "\033[?25l")
-			defer fmt.Fprint(out, "\033[?25h\n")
+			fmt.Fprint(out, "\033[?1049h") // enter alternate screen
+			fmt.Fprint(out, "\033[?25l")   // hide cursor
 		}
 
-		// Restore cursor on signal.
+		leaveAltScreen := func() {
+			if tty && renderProgress {
+				fmt.Fprint(out, "\033[?25h")   // restore cursor
+				fmt.Fprint(out, "\033[?1049l") // leave alternate screen
+			}
+		}
+
+		// Restore terminal on signal.
 		go func() {
 			<-signalChan
-			if tty && renderProgress {
-				fmt.Fprint(out, "\033[?25h\n")
-			}
+			leaveAltScreen()
 			os.Exit(2)
 		}()
 
@@ -315,9 +323,14 @@ and provides a fast and easy alternative to a package manager.`,
 		if renderProgress {
 			if tty {
 				renderTTY(out, progress, parallel)
+				leaveAltScreen()
+				// Print a static final frame into the main scrollback.
+				renderTTYFinal(out, progress)
 			} else {
 				renderPlain(out, progress)
 			}
+		} else if tty {
+			leaveAltScreen()
 		}
 
 		if firstErr != nil {
@@ -558,6 +571,79 @@ func renderTTY(out io.Writer, progress []toolProgress, parallel int) {
 	fmt.Fprint(out, b.String())
 }
 
+// ── Static final frame (printed after leaving alternate screen) ────
+//
+// Shows the completed state of each tool as static text in the main
+// scrollback. No cursor movement or screen clearing.
+
+func renderTTYFinal(out io.Writer, progress []toolProgress) {
+	var b strings.Builder
+
+	b.WriteString("\033[1m Arkade by Alex Ellis - https://github.com/sponsors/alexellis\033[0m\n\n")
+
+	nameW := 10
+	for i := range progress {
+		l := len(progress[i].name)
+		if progress[i].version != "" {
+			l += len(progress[i].version) + 3
+		}
+		if l > nameW {
+			nameW = l
+		}
+	}
+	if nameW > 40 {
+		nameW = 40
+	}
+
+	barW := 20
+
+	for i := range progress {
+		p := &progress[i]
+		read := atomic.LoadInt64(&p.bytesRead)
+		total := atomic.LoadInt64(&p.totalBytes)
+
+		displayName := p.name
+		if p.version != "" {
+			displayName = fmt.Sprintf("%s (%s)", p.name, p.version)
+		}
+
+		switch p.status {
+		case stDone:
+			pct := 100
+			if total > 0 {
+				pct = int(math.Round(float64(read) / float64(total) * 100))
+				if pct > 100 {
+					pct = 100
+				}
+			}
+			bar := renderBar(int64(pct), barW)
+			sizeStr := units.HumanSize(float64(read))
+			speed := float64(0)
+			if p.elapsed > 0 {
+				speed = float64(read) / p.elapsed.Seconds()
+			}
+			elapsed := fmtDuration(p.elapsed)
+			b.WriteString(fmt.Sprintf(
+				" \033[32m✔\033[0m  %-*s  %3d%%  %s  %8s  %9s/s  %s\n",
+				nameW, displayName, pct, bar, sizeStr, units.HumanSize(speed), elapsed))
+
+		case stFailed:
+			errMsg := ""
+			if p.err != nil {
+				errMsg = p.err.Error()
+				if len(errMsg) > 40 {
+					errMsg = errMsg[:40] + "…"
+				}
+			}
+			b.WriteString(fmt.Sprintf(
+				" \033[31m✘\033[0m  %-*s  \033[31mfailed: %s\033[0m\n",
+				nameW, p.name, errMsg))
+		}
+	}
+
+	fmt.Fprint(out, b.String())
+}
+
 // ── Non-TTY / plain renderer ───────────────────────────────────────
 //
 // Prints each state change on its own line, no ANSI, no overwrites.
@@ -580,7 +666,11 @@ func renderPlain(out io.Writer, progress []toolProgress) {
 		case stResolving:
 			fmt.Fprintf(out, "[resolving]   %s\n", p.name)
 		case stDownloading:
-			fmt.Fprintf(out, "[downloading] %s\n", p.name)
+			displayName := p.name
+			if p.version != "" {
+				displayName = fmt.Sprintf("%s (%s)", p.name, p.version)
+			}
+			fmt.Fprintf(out, "[downloading] %s\n", displayName)
 		case stDone:
 			read := atomic.LoadInt64(&p.bytesRead)
 			sizeStr := units.HumanSize(float64(read))
