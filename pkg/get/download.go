@@ -159,7 +159,9 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 			}
 
 			verifyURL := strings.TrimSpace(buf.String())
-			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			if !quiet {
+				log.Printf("Downloading SHA sum from: %s", verifyURL)
+			}
 			shaSumManifest, err := fetchText(verifyURL)
 			if err != nil {
 				return "", "", err
@@ -193,7 +195,7 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 
 			if err := verifySHA(platformInfo.Checksum, outFilePath); err != nil {
 				return "", "", err
-			} else {
+			} else if !quiet {
 				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
 			}
 
@@ -222,14 +224,16 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 			}
 
 			verifyURL := strings.TrimSpace(buf.String())
-			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			if !quiet {
+				log.Printf("Downloading SHA sum from: %s", verifyURL)
+			}
 			shaSum, err := fetchText(verifyURL)
 			if err != nil {
 				return "", "", err
 			}
 			if err := verifySHA(shaSum, outFilePath); err != nil {
 				return "", "", err
-			} else {
+			} else if !quiet {
 				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
 			}
 		} else if tool.VerifyStrategy == AmpShasumStrategy {
@@ -257,14 +261,16 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 			}
 
 			verifyURL := strings.TrimSpace(buf.String())
-			log.Printf("Downloading SHA sum from: %s", verifyURL)
+			if !quiet {
+				log.Printf("Downloading SHA sum from: %s", verifyURL)
+			}
 			shaSum, err := fetchText(verifyURL)
 			if err != nil {
 				return "", "", err
 			}
 			if err := verifySHA(shaSum, outFilePath); err != nil {
 				return "", "", err
-			} else {
+			} else if !quiet {
 				log.Printf("SHA sum verified in %s.", time.Since(st).Round(time.Millisecond))
 			}
 		}
