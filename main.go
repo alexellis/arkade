@@ -32,6 +32,8 @@ func main() {
 	rootCmd.AddCommand(cmd.MakeUninstall())
 	rootCmd.AddCommand(cmd.MakeShellCompletion())
 
+	rootCmd.AddCommand(cmd.MakeRelease())
+
 	rootCmd.AddCommand(chart.MakeChart())
 	rootCmd.AddCommand(system.MakeSystem())
 	rootCmd.AddCommand(oci.MakeOci())
