@@ -11,8 +11,8 @@ The command is registered in `main.go` as a hidden top-level command with aliase
 
 ## What the command does
 
-1. Detects repo visibility (public/private) via `gh repo view`
-2. Queries the latest release tag via `gh release list`
+1. Detects repo visibility (public/private) via `gh api repos/{owner}/{repo}`
+2. Queries the latest release tag via `gh api repos/{owner}/{repo}/releases`
 3. Parses the tag as semver and increments the patch version
 4. Gets the latest commit subject line via `git log` for the release title
 5. Creates the release via `gh release create`
@@ -30,7 +30,7 @@ This is the most important design decision in the command.
 
 **Why:** Public repos use a bot that promotes pre-releases to latest after verification. Private repos have no such bot, so releases are immediately marked as latest and stable.
 
-Visibility is auto-detected via `gh repo view --json visibility`. The result is compared against `PRIVATE` and `INTERNAL` (both treated as private). Everything else (including `PUBLIC`) uses public-repo defaults.
+Visibility is auto-detected via `gh api repos/{owner}/{repo}`. The result is compared against `PRIVATE` and `INTERNAL` (both treated as private). Everything else (including `PUBLIC`) uses public-repo defaults.
 
 Both flags can be overridden explicitly:
 ```bash

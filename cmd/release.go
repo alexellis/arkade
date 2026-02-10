@@ -256,7 +256,7 @@ func parseBumpStrategy(major, minor, patch bool) (bumpStrategy, error) {
 func repoIsPrivate(ctx context.Context) (bool, error) {
 	task := execute.ExecTask{
 		Command: "gh",
-		Args:    []string{"repo", "view", "--json", "visibility", "--jq", ".visibility"},
+		Args:    []string{"api", "repos/{owner}/{repo}", "--jq", ".visibility"},
 	}
 
 	res, err := task.Execute(ctx)
@@ -320,7 +320,7 @@ func resolveTitle(ctx context.Context, titleOverride string) (string, error) {
 func latestReleaseTag(ctx context.Context) (string, error) {
 	task := execute.ExecTask{
 		Command: "gh",
-		Args:    []string{"release", "list", "--limit", "1", "--json", "tagName", "--jq", ".[0].tagName"},
+		Args:    []string{"api", "repos/{owner}/{repo}/releases", "--jq", ".[0].tag_name"},
 	}
 
 	res, err := task.Execute(ctx)
