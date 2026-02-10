@@ -2,6 +2,8 @@
 
 Linux sandbox for AI agents.
 
+Instructions from https://box.slicervm.com/
+
 ## Pre-reqs
 
 Must point slicer to the box service and token file:
@@ -65,8 +67,14 @@ ssh -p 2222 ubuntu@127.0.0.1 uptime
 
 Only do this in case of a major issue or when having to test system-level changes.
 
-# Ensure SLICER_URL and SLICER_TOKEN_FILE are set
+Ensure SLICER_URL and SLICER_TOKEN_FILE are set
+
+```
 slicer vm delete VM_NAME
+```
+
 Then launch a new VM:
 
+```
 slicer vm launch
+```
