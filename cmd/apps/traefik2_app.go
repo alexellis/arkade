@@ -52,7 +52,7 @@ func MakeInstallTraefik2() *cobra.Command {
 			return err
 		}
 
-		err = helm.AddHelmRepo("traefik", "https://helm.traefik.io/traefik", updateRepo)
+		err = helm.AddHelmRepo("traefik", "https://traefik.github.io/charts", updateRepo)
 		if err != nil {
 			return fmt.Errorf("Unable to add repo %s", err)
 		}
@@ -74,15 +74,15 @@ func MakeInstallTraefik2() *cobra.Command {
 		}
 		overrides["service.type"] = svc
 
-		overrides["additional.checkNewVersion"] = "false"
-		overrides["additional.sendAnonymousUsage"] = "false"
+		overrides["global.checkNewVersion"] = "false"
+		overrides["global.sendAnonymousUsage"] = "false"
 
 		if dashboard {
-			overrides["dashboard.ingressRoute"] = "true"
+			overrides["ingressRoute.dashboard.enabled"] = "true"
 		}
 
 		if ingressProvider {
-			overrides["additionalArguments"] = `{--providers.kubernetesingress}`
+			overrides["additionalArguments[0]"] = "--providers.kubernetesingress"
 		}
 
 		customFlags, err := command.Flags().GetStringArray("set")
