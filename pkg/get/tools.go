@@ -5137,6 +5137,36 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 
 	tools = append(tools,
 		Tool{
+			Owner:          "koalaman",
+			Repo:           "shellcheck",
+			Name:           "shellcheck",
+			Description:    "A static analysis tool for shell scripts ",
+			BinaryTemplate: `shellcheck`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = ".linux.x86_64"}}
+	{{ else if eq .Arch "aarch64" -}}
+		{{$target = ".linux.aarch64"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = ".darwin.x86_64"}}
+	{{ else if eq .Arch "arm64" -}}
+		{{$target = ".darwin.aarch64"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$ext = "zip"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/shellcheck-{{.Version}}{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "loki",
 			Name:            "logcli",

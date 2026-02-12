@@ -9755,7 +9755,58 @@ func Test_DownloadCrush(t *testing.T) {
 			url:     `https://github.com/charmbracelet/crush/releases/download/v0.36.0/crush_0.36.0_Darwin_arm64.tar.gz`,
 		},
 	}
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
 
+func Test_DownloadShellcheck(t *testing.T) {
+	tools := MakeTools()
+	name := "shellcheck"
+	const version = "v0.11.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.zip`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.x86_64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.linux.aarch64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.x86_64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/koalaman/shellcheck/releases/download/v0.11.0/shellcheck-v0.11.0.darwin.aarch64.tar.gz`,
+		},
+	}
 	for _, tc := range tests {
 		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
 			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
