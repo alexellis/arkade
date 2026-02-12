@@ -18,7 +18,7 @@ func MakeInstallQemuStatic() *cobra.Command {
 	var qemuStatic = &cobra.Command{
 		Use:   "qemu-static",
 		Short: "Install qemu-user-static",
-		Long: `Runs the qemu-user-static container in Docker to enable 
+		Long: `Runs the qemu-user-static container in Docker to enable
 support for multi-arch builds.
 
 Learn more:
@@ -32,10 +32,6 @@ https://github.com/multiarch/qemu-user-static`,
 	qemuStatic.RunE = func(command *cobra.Command, args []string) error {
 
 		arch, _ := env.GetClientArch()
-
-		if arch != "x86_64" {
-			return fmt.Errorf(`qemu-user-static is only supported on the AMD64 architecture, found: %s`, arch)
-		}
 
 		fmt.Printf("Running \"docker run --rm --privileged multiarch/qemu-user-static --reset -p yes\"\n\n")
 
