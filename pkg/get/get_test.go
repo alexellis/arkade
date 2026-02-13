@@ -9236,6 +9236,70 @@ func Test_DownloadStarship(t *testing.T) {
 	}
 }
 
+func Test_DownloadStep(t *testing.T) {
+	tools := MakeTools()
+	name := "step"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.29.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/smallstep/cli/releases/download/v0.29.0/step_linux_0.29.0_amd64.tar.gz",
+			binary:  "step",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/smallstep/cli/releases/download/v0.29.0/step_linux_0.29.0_arm64.tar.gz",
+			binary:  "step",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/smallstep/cli/releases/download/v0.29.0/step_darwin_0.29.0_amd64.tar.gz",
+			binary:  "step",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/smallstep/cli/releases/download/v0.29.0/step_darwin_0.29.0_arm64.tar.gz",
+			binary:  "step",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/smallstep/cli/releases/download/v0.29.0/step_windows_0.29.0_amd64.zip",
+			binary:  "step",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("for %s/%s, want: %q, but got: %q", tc.os, tc.arch, tc.url, got)
+		}
+		binary, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if binary != tc.binary {
+			t.Errorf("for %s/%s, want binary: %q, but got: %q", tc.os, tc.arch, tc.binary, binary)
+		}
+	}
+}
+
 func Test_DownloadDyff(t *testing.T) {
 	tools := MakeTools()
 	name := "dyff"

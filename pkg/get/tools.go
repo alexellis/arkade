@@ -5107,6 +5107,39 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/starship-
 
 	tools = append(tools,
 		Tool{
+			Owner:          "smallstep",
+			Repo:           "cli",
+			Name:           "step",
+			Description:    "CLI for creating and managing cryptographic credentials with Smallstep.",
+			VerifyStrategy: HashicorpShasumStrategy,
+			VerifyTemplate: `
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/checksums.txt`,
+			BinaryTemplate: `{{.Name}}`,
+			URLTemplate: `
+{{$target := ""}}
+{{$version := .VersionNumber}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = printf "step_linux_%s_amd64.tar.gz" $version}}
+	{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64") ) -}}
+		{{$target = printf "step_linux_%s_arm64.tar.gz" $version}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = printf "step_darwin_%s_amd64.tar.gz" $version}}
+	{{- else if (or (eq .Arch "arm64") (eq .Arch "aarch64") ) -}}
+		{{$target = printf "step_darwin_%s_arm64.tar.gz" $version}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = printf "step_windows_%s_amd64.zip" $version}}
+	{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$target}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:          "homeport",
 			Repo:           "dyff",
 			Name:           "dyff",
