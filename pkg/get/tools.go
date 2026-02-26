@@ -3511,6 +3511,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "sharkdp",
+			Repo:        "fd",
+			Name:        "fd",
+			Description: "A simple, fast and user-friendly alternative to find.",
+			URLTemplate: `{{ $os := "" }}
+{{ $arch := "" }}
+{{ $ext := ".tar.gz" }}
+
+{{- if HasPrefix .OS "ming" -}}
+{{ $os = "pc-windows-msvc" }}
+{{ $ext = ".zip" }}
+{{- else if eq .OS "darwin" -}}
+{{ $os = "apple-darwin" }}
+{{- else if eq .OS "linux" -}}
+{{ $os = "unknown-linux-musl" }}
+{{- end }}
+
+{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{ $arch = "aarch64" }}
+{{- else if eq .Arch "x86_64" -}}
+{{ $arch = "x86_64" }}
+{{- end }}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-v{{.VersionNumber}}-{{$arch}}-{{$os}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:          "firecracker-microvm",
 			Repo:           "firectl",
 			Name:           "firectl",
