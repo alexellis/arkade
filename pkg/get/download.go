@@ -311,7 +311,7 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 		log.Printf("Copying %s to %s\n", outFilePath, localPath)
 	}
 
-	if _, err = CopyFile(outFilePath, localPath); err != nil {
+	if _, err = atomicCopyFile(outFilePath, localPath, 0755); err != nil {
 		return "", "", err
 	}
 
@@ -469,6 +469,57 @@ func CopyFileP(src, dst string, permMode int) (int64, error) {
 	defer destination.Close()
 	nBytes, err := io.Copy(destination, source)
 	return nBytes, err
+}
+
+// atomicCopyFile copies src to dst atomically by writing to a temporary file
+// in the same directory as dst, then renaming it into place. This avoids
+// truncating a running binary in-place, which would kill or corrupt the process.
+func atomicCopyFile(src, dst string, permMode int) (int64, error) {
+	sourceFileStat, err := os.Stat(src)
+	if err != nil {
+		return 0, err
+	}
+	if !sourceFileStat.Mode().IsRegular() {
+		return 0, fmt.Errorf("%s is not a regular file", src)
+	}
+
+	source, err := os.Open(src)
+	if err != nil {
+		return 0, err
+	}
+	defer source.Close()
+
+	// Write to a temp file in the same directory as dst so that the rename
+	// stays on the same filesystem and is therefore atomic.
+	tmp, err := os.CreateTemp(filepath.Dir(dst), ".arkade-tmp-*")
+	if err != nil {
+		return 0, err
+	}
+	tmpName := tmp.Name()
+
+	// Clean up the temp file on any error path.
+	defer func() {
+		if tmpName != "" {
+			os.Remove(tmpName)
+		}
+	}()
+
+	if err = tmp.Chmod(os.FileMode(permMode)); err != nil {
+		tmp.Close()
+		return 0, err
+	}
+
+	nBytes, err := io.Copy(tmp, source)
+	tmp.Close()
+	if err != nil {
+		return 0, err
+	}
+
+	if err = os.Rename(tmpName, dst); err != nil {
+		return 0, err
+	}
+	tmpName = "" // rename succeeded, suppress deferred removal
+	return nBytes, nil
 }
 
 func withProgressBar(r io.ReadCloser, length int, displayProgress bool) io.ReadCloser {

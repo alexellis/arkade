@@ -8612,31 +8612,31 @@ func Test_Download_kubie(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-darwin-amd64",
+			url:     "https://github.com/kubie-org/kubie/releases/download/v0.24.0/kubie-darwin-amd64",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-darwin-arm64",
+			url:     "https://github.com/kubie-org/kubie/releases/download/v0.24.0/kubie-darwin-arm64",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-amd64",
+			url:     "https://github.com/kubie-org/kubie/releases/download/v0.24.0/kubie-linux-amd64",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-arm64",
+			url:     "https://github.com/kubie-org/kubie/releases/download/v0.24.0/kubie-linux-arm64",
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     "https://github.com/sbstp/kubie/releases/download/v0.24.0/kubie-linux-arm32",
+			url:     "https://github.com/kubie-org/kubie/releases/download/v0.24.0/kubie-linux-arm32",
 		},
 	}
 	for _, tc := range tests {

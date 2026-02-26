@@ -4742,7 +4742,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:           "sbstp",
+			Owner:           "kubie-org",
 			Repo:            "kubie",
 			Name:            "kubie",
 			VersionStrategy: GitHubVersionStrategy,
