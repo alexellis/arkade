@@ -1785,6 +1785,48 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			{{.Version}}/argocd-{{$osStr}}-{{$arch}}{{$ext}}`,
 		})
 
+	// Argo CLI
+	tools = append(tools,
+		Tool{
+			Owner:       "argoproj",
+			Repo:        "argo-workflows",
+			Name:        "argo",
+			Description: "Argo Workflows CLI.",
+			BinaryTemplate: `{{$os := .OS}}
+{{$arch := .Arch}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "arm64"}}
+{{- end -}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "linux"}}
+{{- end -}}
+argo-{{$os}}-{{$arch}}`,
+			URLTemplate: `{{$arch := .Arch}}
+{{- if eq .Arch "x86_64" -}}
+{{$arch = "amd64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "arm64"}}
+{{- end -}}
+
+{{$osStr := ""}}
+{{ if HasPrefix .OS "ming" -}}
+{{$osStr = "windows"}}
+{{- else if eq .OS "linux" -}}
+{{$osStr = "linux"}}
+{{- else if eq .OS "darwin" -}}
+{{$osStr = "darwin"}}
+{{- end -}}
+
+{{$ext := ".gz"}}
+{{ if HasPrefix .OS "ming" -}}
+{{$ext = ".exe.gz"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}-{{$osStr}}-{{$arch}}{{$ext}}`,
+		})
+
 	tools = append(tools,
 		Tool{
 			Owner:       "containerd",

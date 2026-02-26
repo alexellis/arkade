@@ -2586,6 +2586,71 @@ func Test_DownloadArgocd(t *testing.T) {
 	}
 }
 
+func Test_DownloadArgo(t *testing.T) {
+	tools := MakeTools()
+	name := "argo"
+	version := "v4.0.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-windows-amd64.exe.gz",
+			binary:  "argo-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-linux-amd64.gz",
+			binary:  "argo-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-linux-arm64.gz",
+			binary:  "argo-linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-darwin-amd64.gz",
+			binary:  "argo-darwin-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-darwin-arm64.gz",
+			binary:  "argo-darwin-arm64",
+		},
+	}
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+
+		if len(tc.binary) > 0 {
+			binaryName, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if binaryName != tc.binary {
+				t.Errorf("binary want: %s, got: %s", tc.binary, binaryName)
+			}
+		}
+	}
+}
+
 func Test_DownloadNerdctl(t *testing.T) {
 	tools := MakeTools()
 	name := "nerdctl"

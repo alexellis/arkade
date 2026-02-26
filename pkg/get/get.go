@@ -176,7 +176,8 @@ func isArchiveStr(downloadURL string) bool {
 
 	return strings.HasSuffix(downloadURL, "tar.gz") ||
 		strings.HasSuffix(downloadURL, "zip") ||
-		strings.HasSuffix(downloadURL, "tgz")
+		strings.HasSuffix(downloadURL, "tgz") ||
+		strings.HasSuffix(downloadURL, ".gz")
 }
 
 // ResolveVersion determines the version for a tool. When version is

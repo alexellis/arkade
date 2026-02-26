@@ -2,6 +2,7 @@ package get
 
 import (
 	"bytes"
+	"compress/gzip"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -813,6 +814,22 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 
 		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir, forceQuiet); err != nil {
 			return "", err
+		}
+	} else if strings.HasSuffix(downloadURL, ".gz") {
+		gzReader, err := gzip.NewReader(archiveFile)
+		if err != nil {
+			return "", fmt.Errorf("failed to create gzip reader: %w", err)
+		}
+		defer gzReader.Close()
+
+		outFile, err := os.Create(outFilePath)
+		if err != nil {
+			return "", fmt.Errorf("failed to create output file: %w", err)
+		}
+		defer outFile.Close()
+
+		if _, err := io.Copy(outFile, gzReader); err != nil {
+			return "", fmt.Errorf("failed to decompress gzip file: %w", err)
 		}
 	}
 
