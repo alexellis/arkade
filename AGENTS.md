@@ -113,9 +113,16 @@ Tools built with Rust often have `unknown` in their filename, that's OK. If deci
 
 The README.md file contains instructions for updating itself. Follow the note at the bottom of the "Catalog of CLIs" section: run `go run . get --format markdown` to generate the updated table, then replace the existing catalog section. Write it to a file in the workspace that you delete after, to avoid needing extra permissions.
 
-There are two tokens in the README.md - replace al text between them with what you've generated.
+**CRITICAL**: The README.md has markers that MUST be preserved: `<!-- start of tool list -->` and `<!-- end of tool list -->`. Do NOT delete these comments when updating the table.
 
-Start of replaceable block is inside: `<!-- start of tool list -->` and the end is inside: `<!-- end of tool list -->`.
+To update:
+1. Save the markdown output to a local file: `go run . get --format markdown > TOOLS.md`
+2. Extract lines before the table (before `<!-- start of tool list -->`)
+3. Replace the table content with the new markdown
+4. Preserve both `<!-- start of tool list -->` and `<!-- end of tool list -->` markers
+5. Update the tool count at the end
+
+Replace everything between `<!-- start of tool list -->` and `<!-- end of tool list -->` (inclusive of the table rows and tool count line, exclusive of the markers themselves).
 
 
 ### Step 6: Create Pull Request
