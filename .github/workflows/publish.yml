@@ -3,7 +3,7 @@ name: publish
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 jobs:
   publish:
@@ -15,7 +15,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@master
         with:
-          go-version: 1.25.x
+          go-version: 1.26.x
       - name: Make all
         run: make all
       - name: Upload release binaries
