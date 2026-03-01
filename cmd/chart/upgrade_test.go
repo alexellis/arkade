@@ -2,6 +2,8 @@ package chart
 
 import (
 	"testing"
+
+	"github.com/alexellis/arkade/pkg/images"
 )
 
 func Test_tagIsUpgradable(t *testing.T) {
@@ -95,7 +97,7 @@ func Test_tagIsUpgradable(t *testing.T) {
 
 		t.Run(tc.title, func(t *testing.T) {
 
-			upgradeableRes := tagIsUpgradeable(tc.current, tc.latest)
+			upgradeableRes := images.TagIsUpgradeable(tc.current, tc.latest)
 
 			if upgradeableRes != tc.expected {
 				t.Fatalf("want: %t\n got: %t\n", tc.expected, upgradeableRes)
@@ -172,7 +174,7 @@ func TestGetCandidateTag(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			tagVal, isSemVer := getCandidateTag(tc.discoveredTags, tc.currentTag)
+			tagVal, isSemVer := images.GetCandidateTag(tc.discoveredTags, tc.currentTag)
 			if tagVal != tc.expectedTagVal || isSemVer != tc.expectedIsSemVer {
 				t.Fatalf("\nwant: (%s, %v) \n got: (%s, %v)\n", tc.expectedTagVal, tc.expectedIsSemVer, tagVal, isSemVer)
 			}
@@ -183,97 +185,97 @@ func TestGetCandidateTag(t *testing.T) {
 func TestAttributesMatch(t *testing.T) {
 	tests := []struct {
 		name     string
-		c        tagAttributes
-		n        tagAttributes
+		c        images.TagAttributes
+		n        images.TagAttributes
 		expected bool
 	}{
 		{
 			name: "All matching attributes",
-			c: tagAttributes{
-				hasSuffix: true,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3-beta",
+			c: images.TagAttributes{
+				HasSuffix: true,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3-beta",
 			},
-			n: tagAttributes{
-				hasSuffix: true,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3-beta",
+			n: images.TagAttributes{
+				HasSuffix: true,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3-beta",
 			},
 			expected: true,
 		},
 		{
 			name: "Different hasSuffix",
-			c: tagAttributes{
-				hasSuffix: true,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3-beta",
+			c: images.TagAttributes{
+				HasSuffix: true,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3-beta",
 			},
-			n: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3",
+			n: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3",
 			},
 			expected: false,
 		},
 		{
 			name: "Different hasMajor",
-			c: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3",
+			c: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3",
 			},
-			n: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  false,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v0.2.3",
+			n: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  false,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v0.2.3",
 			},
 			expected: false,
 		},
 		{
 			name: "All attributes false",
-			c: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  false,
-				hasMinor:  false,
-				hasPatch:  false,
-				original:  "",
+			c: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  false,
+				HasMinor:  false,
+				HasPatch:  false,
+				Original:  "",
 			},
-			n: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  false,
-				hasMinor:  false,
-				hasPatch:  false,
-				original:  "any",
+			n: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  false,
+				HasMinor:  false,
+				HasPatch:  false,
+				Original:  "any",
 			},
 			expected: true,
 		},
 		{
 			name: "Different hasMinor and hasPatch",
-			c: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  false,
-				original:  "v1.2",
+			c: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  false,
+				Original:  "v1.2",
 			},
-			n: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  false,
-				hasPatch:  true,
-				original:  "v1.0.1",
+			n: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  false,
+				HasPatch:  true,
+				Original:  "v1.0.1",
 			},
 			expected: false,
 		},
@@ -281,7 +283,7 @@ func TestAttributesMatch(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result := tc.c.attributesMatch(tc.n)
+			result := tc.c.AttributesMatch(tc.n)
 			if result != tc.expected {
 				t.Fatalf("\nwant: %t \n got: %t\n", tc.expected, result)
 			}
@@ -293,79 +295,79 @@ func TestGetTagAttributes(t *testing.T) {
 	tests := []struct {
 		name     string
 		tag      string
-		expected tagAttributes
+		expected images.TagAttributes
 	}{
 		{
 			name: "Full semantic version with suffix",
 			tag:  "v1.2.3-beta",
-			expected: tagAttributes{
-				hasSuffix: true,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3-beta",
+			expected: images.TagAttributes{
+				HasSuffix: true,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3-beta",
 			},
 		},
 		{
 			name: "Full semantic version without suffix",
 			tag:  "v1.2.3",
-			expected: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  true,
-				original:  "v1.2.3",
+			expected: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  true,
+				Original:  "v1.2.3",
 			},
 		},
 		{
 			name: "Major and minor version without suffix",
 			tag:  "v1.2",
-			expected: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  true,
-				hasPatch:  false,
-				original:  "v1.2",
+			expected: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  true,
+				HasPatch:  false,
+				Original:  "v1.2",
 			},
 		},
 		{
 			name: "Only major version without suffix",
 			tag:  "v1",
-			expected: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  true,
-				hasMinor:  false,
-				hasPatch:  false,
-				original:  "v1",
+			expected: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  true,
+				HasMinor:  false,
+				HasPatch:  false,
+				Original:  "v1",
 			},
 		},
 		{
 			name: "Empty string",
 			tag:  "",
-			expected: tagAttributes{
-				hasSuffix: false,
-				hasMajor:  false,
-				hasMinor:  false,
-				hasPatch:  false,
-				original:  "",
+			expected: images.TagAttributes{
+				HasSuffix: false,
+				HasMajor:  false,
+				HasMinor:  false,
+				HasPatch:  false,
+				Original:  "",
 			},
 		},
 		{
 			name: "Version with suffix only",
 			tag:  "v1-beta",
-			expected: tagAttributes{
-				hasSuffix: true,
-				hasMajor:  true,
-				hasMinor:  false,
-				hasPatch:  false,
-				original:  "v1-beta",
+			expected: images.TagAttributes{
+				HasSuffix: true,
+				HasMajor:  true,
+				HasMinor:  false,
+				HasPatch:  false,
+				Original:  "v1-beta",
 			},
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result := getTagAttributes(tc.tag)
+			result := images.GetTagAttributes(tc.tag)
 			if result != tc.expected {
 				t.Fatalf("\nwant: %v \n got: %v\n", tc.expected, result)
 			}

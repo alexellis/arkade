@@ -7,7 +7,9 @@ import (
 )
 
 type ArkadeConfig struct {
-	Ignore []string `yaml:"ignore"`
+	Ignore        []string `yaml:"ignore"`
+	Images        []string `yaml:"images"`
+	PinMajorMinor []string `yaml:"pin_major_minor"`
 }
 
 func Load(file string) (*ArkadeConfig, error) {
