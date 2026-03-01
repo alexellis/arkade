@@ -9,6 +9,7 @@ import (
 	"github.com/alexellis/arkade/cmd"
 	"github.com/alexellis/arkade/cmd/chart"
 	"github.com/alexellis/arkade/cmd/docker"
+	"github.com/alexellis/arkade/cmd/gha"
 	"github.com/alexellis/arkade/cmd/oci"
 	"github.com/alexellis/arkade/cmd/system"
 	"github.com/spf13/cobra"
@@ -37,6 +38,7 @@ func main() {
 
 	rootCmd.AddCommand(chart.MakeChart())
 	rootCmd.AddCommand(docker.MakeDocker())
+	rootCmd.AddCommand(gha.MakeGHA())
 	rootCmd.AddCommand(system.MakeSystem())
 	rootCmd.AddCommand(oci.MakeOci())
 

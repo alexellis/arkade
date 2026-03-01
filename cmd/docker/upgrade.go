@@ -14,8 +14,9 @@ import (
 
 func MakeUpgrade() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   "upgrade",
-		Short: "Upgrade images in a Dockerfile to the latest version",
+		Use:     "upgrade",
+		Short:   "Upgrade images in a Dockerfile to the latest version",
+		Aliases: []string{"u"},
 		Long: `Upgrade container images in a Dockerfile to the latest version.
 
 Only images specified via the --image flag will be upgraded.
