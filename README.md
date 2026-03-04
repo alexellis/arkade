@@ -61,7 +61,7 @@ With 193 CLIs and 53 Kubernetes apps (charts, manifests, installers) available f
 
 ## Support arkade 👋 (From Our Sponsors)
 
-Try [slicervm.com](https://slicervm.com/) to run Linux microVMs on your Mac for dev and testing.
+Try [slicervm.com](https://slicervm.com/) - turn your Mac into an API for running Linux. Sandbox your agents - run Kubernetes - locally and FAST.
 
 ## Should you try arkade?
 
