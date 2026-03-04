@@ -2,6 +2,7 @@ package get
 
 import (
 	"bytes"
+	"compress/gzip"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -814,9 +815,33 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		if err := archive.Unzip(archiveFile, fInfo.Size(), outFilePathDir, forceQuiet); err != nil {
 			return "", err
 		}
+	} else if strings.HasSuffix(downloadURL, ".gz") {
+		if err := ungzip(archiveFile, outFilePath); err != nil {
+			return "", err
+		}
 	}
 
 	return outFilePath, nil
+}
+
+func ungzip(archiveFile *os.File, outFilePath string) error {
+	gzReader, err := gzip.NewReader(archiveFile)
+	if err != nil {
+		return err
+	}
+	defer gzReader.Close()
+
+	out, err := os.OpenFile(outFilePath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0775)
+	if err != nil {
+		return err
+	}
+
+	if _, err := io.Copy(out, gzReader); err != nil {
+		out.Close()
+		return err
+	}
+
+	return out.Close()
 }
 
 func fetchText(url string) (string, error) {

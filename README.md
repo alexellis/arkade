@@ -774,6 +774,7 @@ There are 53 apps that you can install on your cluster.
 | [age-keygen](https://github.com/FiloSottile/age)                             | Key generation tool for age encryption.                                                                                                                           |
 | [alloy](https://github.com/grafana/alloy)                                    | OpenTelemetry Collector distribution with programmable pipelines                                                                                                  |
 | [amp](https://github.com/sourcegraph/amp)                                    | Amp - the frontier coding agent for your terminal and editor.                                                                                                     |
+| [argo](https://github.com/argoproj/argo-workflows)                           | Workflow Engine for Kubernetes.                                                                                                                                   |
 | [argocd](https://github.com/argoproj/argo-cd)                                | Declarative, GitOps continuous delivery tool for Kubernetes.                                                                                                      |
 | [argocd-autopilot](https://github.com/argoproj-labs/argocd-autopilot)        | An opinionated way of installing Argo-CD and managing GitOps repositories.                                                                                        |
 | [arkade](https://github.com/alexellis/arkade)                                | Portable marketplace for downloading your favourite DevOps CLIs and installing helm charts, with a single command.                                                |
@@ -882,7 +883,7 @@ There are 53 apps that you can install on your cluster.
 | [kubetail](https://github.com/johanhaleby/kubetail)                          | Bash script to tail Kubernetes logs from multiple pods at the same time.                                                                                          |
 | [kubetrim](https://github.com/alexellis/kubetrim)                            | Tidy up old Kubernetes clusters from kubeconfig.                                                                                                                  |
 | [kubeval](https://github.com/instrumenta/kubeval)                            | Validate your Kubernetes configuration files, supports multiple Kubernetes versions                                                                               |
-| [kubie](https://github.com/sbstp/kubie)                                      | A more powerful alternative to kubectx and kubens                                                                                                                 |
+| [kubie](https://github.com/kubie-org/kubie)                                  | A more powerful alternative to kubectx and kubens                                                                                                                 |
 | [kumactl](https://github.com/kumahq/kuma)                                    | kumactl is a CLI to interact with Kuma and its data                                                                                                               |
 | [kustomize](https://github.com/kubernetes-sigs/kustomize)                    | Customization of kubernetes YAML configurations                                                                                                                   |
 | [kwok](https://github.com/kubernetes-sigs/kwok)                              | KWOK stands for Kubernetes WithOut Kubelet, responsible for simulating the lifecycle of fake nodes, pods, and other Kubernetes API resources                      |
@@ -961,7 +962,7 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 193 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+There are 194 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 <!-- end of tool list -->
 
 

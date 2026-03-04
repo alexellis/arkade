@@ -388,6 +388,11 @@ func TestIsArchiveStr(t *testing.T) {
 			expected:    true,
 		},
 		{
+			description: "URL ends with '.gz'",
+			downloadURL: "https://example.com/download.gz",
+			expected:    true,
+		},
+		{
 			description: "URL does not end with any known archive extension",
 			downloadURL: "https://example.com/download.txt",
 			expected:    false,
@@ -2573,6 +2578,56 @@ func Test_DownloadArgocd(t *testing.T) {
 			arch:    archDarwinARM64,
 			version: version,
 			url:     "https://github.com/argoproj/argo-cd/releases/download/v2.4.14/argocd-darwin-arm64",
+		},
+	}
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadArgo(t *testing.T) {
+	tools := MakeTools()
+	name := "argo"
+	version := "v4.0.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-windows-amd64.exe.gz",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-linux-amd64.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-darwin-amd64.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-darwin-arm64.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     "https://github.com/argoproj/argo-workflows/releases/download/v4.0.1/argo-linux-arm64.gz",
 		},
 	}
 	for _, tc := range tests {

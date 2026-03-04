@@ -176,7 +176,8 @@ func isArchiveStr(downloadURL string) bool {
 
 	return strings.HasSuffix(downloadURL, "tar.gz") ||
 		strings.HasSuffix(downloadURL, "zip") ||
-		strings.HasSuffix(downloadURL, "tgz")
+		strings.HasSuffix(downloadURL, "tgz") ||
+		strings.HasSuffix(downloadURL, ".gz")
 }
 
 // ResolveVersion determines the version for a tool. When version is
@@ -344,7 +345,7 @@ func getURLByGithubTemplate(tool Tool, os, arch, version string) (string, error)
 		return "", err
 	}
 
-	downloadName := strings.TrimSpace(buf.String())
+	downloadName := sanitizeTemplateResult(buf.String())
 
 	return getBinaryURL(tool.Owner, tool.Repo, version, downloadName), nil
 }
@@ -448,7 +449,7 @@ func getByDownloadTemplate(tool Tool, os, arch, version string) (string, error) 
 		return "", err
 	}
 
-	res := strings.TrimSpace(buf.String())
+	res := sanitizeTemplateResult(buf.String())
 	return res, nil
 }
 
@@ -514,11 +515,15 @@ func GetBinaryName(tool *Tool, os, arch, version string) (string, error) {
 			return "", err
 		}
 
-		res := strings.TrimSpace(buf.String())
+		res := sanitizeTemplateResult(buf.String())
 		return res, nil
 	}
 
 	return "", errors.New("BinaryTemplate is not set")
+}
+
+func sanitizeTemplateResult(in string) string {
+	return strings.Join(strings.Fields(strings.TrimSpace(in)), "")
 }
 
 // GetDownloadURLs generates a list of URL for each tool, for download

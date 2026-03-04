@@ -1787,6 +1787,33 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 
 	tools = append(tools,
 		Tool{
+			Owner:          "argoproj",
+			Repo:           "argo-workflows",
+			Name:           "argo",
+			Description:    "Workflow Engine for Kubernetes.",
+			BinaryTemplate: `argo`,
+			URLTemplate: `
+			{{$arch := .Arch}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{ if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{- else if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- end -}}
+
+			https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/argo-{{$osStr}}-{{$arch}}{{if HasPrefix .OS "ming"}}.exe{{end}}.gz`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "containerd",
 			Repo:        "nerdctl",
 			Name:        "nerdctl",
