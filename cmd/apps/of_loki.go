@@ -93,7 +93,7 @@ faas-cli logs
 # The url is in the format 'http://loki-stack.namespace:3100/' (where namespace is the installed namespace for loki-stack)
 `
 
-const lokiOFInstallMsg = `=======================================================================
+var lokiOFInstallMsg = `=======================================================================
 = OpenFaaS loki has been installed.                                   =
 =======================================================================` +
 	"\n\n" + LokiOFInfoMsg + "\n\n" + pkg.SupportMessageShort

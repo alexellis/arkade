@@ -95,7 +95,7 @@ kubectl logs svc/loki-stack-headless
 
 `
 
-const lokiInstallMsg = `=======================================================================
+var lokiInstallMsg = `=======================================================================
 = loki has been installed.                                   =
 =======================================================================` +
 	"\n\n" + LokiInfoMsg + "\n\n" + pkg.SupportMessageShort

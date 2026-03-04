@@ -116,7 +116,7 @@ const CrossplaneInfoMsg = `# Get started by installing a stack for your favorite
 
 Learn more about Crossplane: https://crossplaneio.github.io/docs/`
 
-const crossplaneInstallMsg = `=======================================================================
+var crossplaneInstallMsg = `=======================================================================
 = Crossplane has been installed.                                      =
 =======================================================================` +
 	"\n\n" + CrossplaneInfoMsg + "\n\n" + pkg.SupportMessageShort

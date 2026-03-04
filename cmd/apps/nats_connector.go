@@ -67,7 +67,7 @@ kubectl logs deploy/nats-connector -n openfaas -f
 https://github.com/openfaas/faas-netes/tree/master/chart/nats-connector
 `
 
-const NATSConnectorInstallMsg = `=======================================================================
+var NATSConnectorInstallMsg = `=======================================================================
 = nats-connector has been installed.                                   =
 =======================================================================` +
 	"\n\n" + NATSConnectorInfoMsg + "\n\n" + pkg.SupportMessageShort

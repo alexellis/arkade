@@ -101,7 +101,7 @@ To connect to your database from outside the cluster execute the following comma
 
 # Find out more at: https://github.com/bitnami/charts/tree/main/bitnami/postgresql`
 
-const postgresqlInstallMsg = `=======================================================================
+var postgresqlInstallMsg = `=======================================================================
 = PostgreSQL has been installed.                                      =
 =======================================================================` +
 	"\n\n" + PostgresqlInfoMsg + "\n\n" + pkg.SupportMessageShort

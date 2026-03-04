@@ -100,7 +100,7 @@ const PrometheusInfoMsg = `# Get started with Prometheus here:
 
 `
 
-const PrometheusInstallMsg = `=======================================================================
+var PrometheusInstallMsg = `=======================================================================
 = prometheus has been installed.                                      =
 =======================================================================` +
 	"\n\n" + PrometheusInfoMsg + "\n\n" + pkg.SupportMessageShort

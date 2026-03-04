@@ -121,7 +121,7 @@ kubectl logs deploy/kafka-connector -n openfaas -f
 
 # https://github.com/openfaas-incubator/kafka-connector/`
 
-const kafkaConnectorInstallMsg = `=======================================================================
+var kafkaConnectorInstallMsg = `=======================================================================
 = kafka-connector has been installed.                                   =
 =======================================================================` +
 	"\n\n" + KafkaConnectorInfoMsg + "\n\n" + pkg.SupportMessageShort

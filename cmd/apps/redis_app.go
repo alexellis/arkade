@@ -74,7 +74,7 @@ func MakeInstallRedis() *cobra.Command {
 	return redis
 }
 
-const redisInstallMsg = `=======================================================================
+var redisInstallMsg = `=======================================================================
 =                       redis has been installed                      =
 =======================================================================
 ` + RedisInfoMsg + pkg.SupportMessageShort

@@ -179,7 +179,7 @@ docker push $IP:5000/alpine:3.11
 # https://github.com/twuni/docker-registry.helm
 # https://github.com/distribution/distribution`
 
-const registryInstallMsg = `=======================================================================
+var registryInstallMsg = `=======================================================================
 = docker-registry has been installed.                                 =
 =======================================================================` +
 	"\n\n" + RegistryInfoMsg + "\n\n" + pkg.SupportMessageShort

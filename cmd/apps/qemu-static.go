@@ -46,7 +46,7 @@ https://github.com/tonistiigi/binfmt`,
 const QemuStaticInfoMsg = `# Find out more at:
 # https://github.com/tonistiigi/binfmt`
 
-const qemuStaticPostInstallMsg = `=======================================================================
+var qemuStaticPostInstallMsg = `=======================================================================
 = qemu-user-static has been installed.                                        =
 =======================================================================` +
 	"\n\n" + QemuStaticInfoMsg + "\n\n" + pkg.SupportMessageShort

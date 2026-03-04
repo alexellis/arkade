@@ -121,7 +121,7 @@ arkade install traefik2 --dashboard
 
 kubectl get svc -n kube-system traefik`
 
-const traefikInstallMsg = `=======================================================================
+var traefikInstallMsg = `=======================================================================
 =                  traefik2 has been installed                        =
 =======================================================================
  ` + pkg.SupportMessageShort + Traefik2InfoMsg

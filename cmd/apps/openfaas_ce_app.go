@@ -178,7 +178,7 @@ faas-cli list
 # Find out more at:
 # https://docs.openfaas.com/`
 
-const openfaasCEPostInstallMsg = `=======================================================================
+var openfaasCEPostInstallMsg = `=======================================================================
 = OpenFaaS CE has been installed.                                        =
 =======================================================================` +
 	"\n\n" + OpenFaaSInfoMsg + "\n\n" + pkg.SupportMessageShort

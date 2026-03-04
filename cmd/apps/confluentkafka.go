@@ -136,7 +136,7 @@ const KafkaInfoMsg = `You can visit the official Helm Chart repository to get mo
 https://github.com/confluentinc/cp-helm-charts
 `
 
-const kafkaPostInstallMsg = `=======================================================================
+var kafkaPostInstallMsg = `=======================================================================
 = Kafka has been installed.                                        =
 =======================================================================` +
 	"\n\n" + KafkaInfoMsg + "\n\n" + pkg.SupportMessageShort

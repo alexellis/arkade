@@ -171,7 +171,7 @@ kubectl describe -n <installed-namespace> Certificate docker-registry
 # It may take a while to be issued by LetsEncrypt, in the meantime a
 # self-signed cert will be installed`
 
-const RegistryIngressInstallMsg = `=======================================================================
+var RegistryIngressInstallMsg = `=======================================================================
 = Docker Registry Ingress and cert-manager Issuer have been installed =
 =======================================================================` +
 	"\n\n" + RegistryIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

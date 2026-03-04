@@ -79,7 +79,7 @@ https://127.0.0.1:8443
 # Get started with ArgoCD at
 # https://argoproj.github.io/argo-cd/#quick-start`
 
-const ArgoCDInfoMsgInstallMsg = `=======================================================================
+var ArgoCDInfoMsgInstallMsg = `=======================================================================
 = ArgoCD has been installed                                           =
 =======================================================================` +
 	"\n\n" + ArgoCDInfoMsg + "\n\n" + pkg.SupportMessageShort

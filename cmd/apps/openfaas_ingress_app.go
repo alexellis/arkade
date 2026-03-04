@@ -287,7 +287,7 @@ kubectl describe -n openfaas Certificate openfaas-gateway
 # It may take a while to be issued by LetsEncrypt, in the meantime a
 # self-signed cert will be installed`
 
-const openfaasIngressInstallMsg = `=======================================================================
+var openfaasIngressInstallMsg = `=======================================================================
 = OpenFaaS Ingress and cert-manager ClusterIssuer have been installed =
 =======================================================================` +
 	"\n\n" + OpenfaasIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -124,7 +124,7 @@ kubectl -n kubernetes-dashboard describe secret $(kubectl -n kubernetes-dashboar
 # Once Proxying you can navigate to the below
 https://127.0.0.1:8443/#/login`
 
-const KubernetesDashboardInstallMsg = `=======================================================================
+var KubernetesDashboardInstallMsg = `=======================================================================
 = Kubernetes Dashboard has been installed.                            =
 =======================================================================` +
 	"\n\n" + KubernetesDashboardInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -67,7 +67,7 @@ func MakeInstallSealedSecrets() *cobra.Command {
 	return command
 }
 
-const SealedSecretsPostInstallMsg = `=======================================================================
+var SealedSecretsPostInstallMsg = `=======================================================================
 =                 The SealedSecrets app has been installed.           =
 =======================================================================` +
 	"\n\n" + pkg.SupportMessageShort

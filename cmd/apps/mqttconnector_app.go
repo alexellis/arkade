@@ -108,7 +108,7 @@ kubectl logs deploy/mqtt-connector -n openfaas -f
 
 # https://github.com/openfaas/mqtt-connector/`
 
-const mqttConnectorInstallMsg = `=======================================================================
+var mqttConnectorInstallMsg = `=======================================================================
 = mqtt-connector has been installed.                                   =
 =======================================================================` +
 	"\n\n" + MQTTConnectorInfoMsg + "\n\n" + pkg.SupportMessageShort

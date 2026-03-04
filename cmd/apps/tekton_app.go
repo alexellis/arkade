@@ -61,7 +61,7 @@ For more information...
   https://github.com/tektoncd/pipeline
   https://github.com/tektoncd/dashboard`
 
-const TektonInstallMsg = `=======================================================================
+var TektonInstallMsg = `=======================================================================
 = Tekton pipelines and dashboard have been installed. =
 =======================================================================` +
 	"\n\n" + TektonInfoMsg + "\n\n" + pkg.SupportMessageShort

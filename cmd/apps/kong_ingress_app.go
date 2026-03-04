@@ -73,7 +73,7 @@ const KongIngressInfoMsg = `# If you're using a local environment such as "minik
 # Find out more on the project homepage:
 # https://github.com/Kong/kubernetes-ingress-controller`
 
-const kongIngressInstallMsg = `=======================================================================
+var kongIngressInstallMsg = `=======================================================================
 = kong-ingress has been installed.                                  =
 =======================================================================` +
 	"\n\n" + KongIngressInfoMsg + "\n\n" + pkg.SupportMessageShort

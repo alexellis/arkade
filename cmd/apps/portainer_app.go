@@ -106,7 +106,7 @@ kubectl port-forward -n default svc/portainer 9000:9000 &
 Find out more at https://www.portainer.io/
 `
 
-const portainerInstallMsg = `=======================================================================
+var portainerInstallMsg = `=======================================================================
 = Portainer has been installed                                        =
 =======================================================================` +
 	"\n\n" + PortainerInfoMsg + "\n\n" + pkg.SupportMessageShort

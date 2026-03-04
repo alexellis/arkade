@@ -381,7 +381,7 @@ faas-cli describe env
 # Find out more at:
 # https://docs.openfaas.com/`
 
-const openfaasPostInstallMsg = `=======================================================================
+var openfaasPostInstallMsg = `=======================================================================
 = OpenFaaS has been installed.                                        =
 =======================================================================` +
-	"\n\n" + OpenFaaSInfoMsg + "\n\n" + pkg.SupportMessageShort
+	"\n\n" + OpenFaaSInfoMsg

@@ -104,7 +104,7 @@ kubectl get secret gitlab-gitlab-initial-root-password -o jsonpath='{.data.passw
 
 `
 
-const gitlabInstallMsg = `=======================================================================
+var gitlabInstallMsg = `=======================================================================
 = GitLab has been installed.                                          =
 =======================================================================` +
 	"\n\n" + GitlabInfoMsg + "\n\n" + pkg.SupportMessageShort

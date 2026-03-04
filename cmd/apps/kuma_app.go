@@ -149,7 +149,7 @@ kubectl port-forward svc/kuma-control-plane -n kuma-system 5681:5681
 # https://kuma.io/docs/1.4.x/documentation/overview/#kubernetes-mode
 `
 
-const kumaInstallMsg = `=======================================================================
+var kumaInstallMsg = `=======================================================================
 =                      Kuma has been installed                        =
 =======================================================================
  ` + pkg.SupportMessageShort + KumaInfoMsg

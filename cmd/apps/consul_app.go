@@ -134,7 +134,7 @@ func generateGossipEncryptionKey() (string, error) {
 const ConsulInfoMsg = `# Find out more at:
 # https://www.consul.io/docs/k8s`
 
-const consulInstallMsg = `=======================================================================
+var consulInstallMsg = `=======================================================================
 = Consul has been installed.                                          =
 =======================================================================` +
 	"\n\n" + ConsulInfoMsg + "\n\n" + pkg.SupportMessageShort

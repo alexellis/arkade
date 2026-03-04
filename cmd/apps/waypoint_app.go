@@ -70,7 +70,7 @@ func MakeInstallWaypoint() *cobra.Command {
 const WaypointInfoMsg = `# Find out more at:
 # https://learn.hashicorp.com/collections/waypoint/get-started-kubernetes`
 
-const waypointInstallMsg = `=======================================================================
+var waypointInstallMsg = `=======================================================================
 = Waypoint has been installed.                                        =
 =======================================================================` +
 	"\n\n" + WaypointInfoMsg + "\n\n" + pkg.SupportMessageShort

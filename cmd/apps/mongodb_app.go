@@ -106,7 +106,7 @@ func MakeInstallMongoDB() *cobra.Command {
 	return command
 }
 
-const mongoDBPostInstallMsg = `=======================================================================
+var mongoDBPostInstallMsg = `=======================================================================
 =                  MongoDB has been installed.                        =
 =======================================================================` +
 	"\n\n" + pkg.SupportMessageShort

@@ -109,7 +109,7 @@ kubectl get pv
 
 kubectl port-forward service/cockroachdb 8080:8080`
 
-const cockroachdbInstallMsg = `=======================================================================
+var cockroachdbInstallMsg = `=======================================================================
 =                  CockroachDB has been installed                     =
 =======================================================================
  ` + pkg.SupportMessageShort + CockroachdbInfoMsg

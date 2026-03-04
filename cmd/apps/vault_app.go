@@ -161,7 +161,7 @@ HA Enabled      false
 
 arkade get vault`
 
-const vaultInstallMsg = `=======================================================================
+var vaultInstallMsg = `=======================================================================
 =                     Vault has been installed.                       =
 =======================================================================` +
 	"\n\n" + VaultInfoMsg + "\n\n" + pkg.SupportMessageShort

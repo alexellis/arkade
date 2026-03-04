@@ -106,7 +106,7 @@ func MakeInstallCertManager() *cobra.Command {
 const CertManagerInfoMsg = `# Get started with cert-manager here:
 # https://docs.cert-manager.io/en/latest/tutorials/acme/http-validation.html`
 
-const certManagerInstallMsg = `=======================================================================
+var certManagerInstallMsg = `=======================================================================
 = cert-manager  has been installed.                                   =
 =======================================================================` +
 	"\n\n" + CertManagerInfoMsg + "\n\n" + pkg.SupportMessageShort

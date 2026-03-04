@@ -128,7 +128,7 @@ kubectl delete -f deploy/test-pod.yaml -f deploy/test-claim.yaml
 
 `
 
-const nfsClientInstallMsg = `=======================================================================
+var nfsClientInstallMsg = `=======================================================================
 = NFS Subdir External Provisioner has been installed.                                   =
 =======================================================================` +
 	"\n\n" + NfsClientProvisioneriInfoMsg + "\n\n" + pkg.SupportMessageShort

@@ -347,10 +347,10 @@ kubectl get tunnels -A -o wide
 # Find out more at:
 # https://github.com/inlets/inlets-operator`
 
-const inletsOperatorPostInstallMsg = `=======================================================================
+var inletsOperatorPostInstallMsg = `=======================================================================
 = inlets-operator has been installed.                                  =
 =======================================================================` +
-	"\n\n" + InletsOperatorInfoMsg + "\n\n" + pkg.SupportMessageShort
+	"\n\n" + InletsOperatorInfoMsg
 
 type Secret struct {
 	Namespace string

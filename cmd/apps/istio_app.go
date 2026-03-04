@@ -173,7 +173,7 @@ const IstioInfoMsg = `# Find out more at:
 # https://istio.io/latest/docs/
 `
 
-const istioPostInstallMsg = `=======================================================================
+var istioPostInstallMsg = `=======================================================================
 = Istio has been installed.                                        =
 =======================================================================` +
 	"\n\n" + IstioInfoMsg + "\n\n" + pkg.SupportMessageShort
