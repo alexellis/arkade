@@ -189,6 +189,16 @@ getPackage() {
             fi
 
             ${SUCCESS_CMD}
+
+            echo
+            echo "Sponsor support:"
+            echo "  https://github.com/sponsors/alexellis"
+            echo
+            echo "From our sponsors:"
+            echo "  Run microVMs directly on your own Mac, Linux or Windows computer."
+            echo "  Local = faster. ( = fast.)"
+            echo "  Test with real Linux VMs that boot in <1s."
+            echo "  https://slicervm.com"
         fi
     fi
 }

@@ -3,5 +3,20 @@
 
 package pkg
 
+import "runtime"
+
 // SupportMessageShort shows how to support arkade
-const SupportMessageShort = `🤝 Sponsor Alex's work: https://github.com/sponsors/alexellis`
+var SupportMessageShort = supportMessage()
+
+func supportMessage() string {
+	if runtime.GOOS == "darwin" {
+		return "slicervm.com: boot Linux microVMs directly on your Mac in <1s"
+	}
+	if runtime.GOOS == "linux" {
+		return "slicervm.com: boot Linux microVMs instantly for AI agents, dev and e2e testing"
+	}
+	if runtime.GOOS == "windows" {
+		return "slicervm.com: launch Linux microVMs in WSL2 for isolated dev and testing"
+	}
+	return ""
+}

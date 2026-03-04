@@ -46,6 +46,7 @@ With over 185 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
       - [Community posts](#community-posts)
     - [Suggest a new app](#suggest-a-new-app)
   - [Sponsored apps](#sponsored-apps)
+  - [Sponsored by](#sponsored-by)
   - [FAQ](#faq)
     - [How does `arkade` compare to `helm`?](#how-does-arkade-compare-to-helm)
     - [Is arkade suitable for production use?](#is-arkade-suitable-for-production-use)
@@ -65,13 +66,6 @@ Arkade is built to save you time so you can focus and get productive quickly.
 <a href="https://github.com/sponsors/alexellis/">
 <img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
 </a>
-
-You can support Alex's work on arkade [via GitHub Sponsors](https://github.com/sponsors/alexellis/).
-
-Or get a copy of his eBook on Go so you can learn how to build tools like k3sup, arkade, and OpenFaaS for yourself:
-
-<a href="https://openfaas.gumroad.com/l/everyday-golang">
-<img src="https://public-files.gumroad.com/7j27fj7c5xqxm3f9lyxj1pg8oa1w" alt="Buy Everyday Go" width="50%"></a>
 
 ## Should you try arkade?
 
@@ -654,6 +648,12 @@ arkade acmeco install dashboard
 ```
 
 [Contact OpenFaas Ltd](mailto:contact@openfaas.com) to find out how you can have your Sponsored App added to arkade.
+
+## Sponsored by
+
+[slicervm.com](https://slicervm.com) - Slicer for Mac - run AI agents in microVMs, spin up real Linux systems locally for dev & test.
+
+Local = faster. ( = fast.)
 
 ## FAQ
 

@@ -10,3 +10,4 @@ mc
 test.out
 docker-compose.yaml*
 TOOLS.md
+/.claude/settings.local.json
