@@ -6,16 +6,16 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 
 <img src="docs/arkade-logo-sm.png" alt="arkade logo" width="150" height="150">
 
-[![Sponsor this](https://img.shields.io/static/v1?label=Sponsor&message=%E2%9D%A4&logo=GitHub&link=https://github.com/sponsors/alexellis)](https://github.com/sponsors/alexellis) [![CI Build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
+[![CI Build](https://github.com/alexellis/arkade/actions/workflows/build.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/build.yml)
 [![URL Checker](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml/badge.svg)](https://github.com/alexellis/arkade/actions/workflows/e2e-url-checker.yml)
 [![GoDoc](https://godoc.org/github.com/alexellis/arkade?status.svg)](https://godoc.org/github.com/alexellis/arkade)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With over 185 CLIs and 55 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
+With 193 CLIs and 53 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
 
 - [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
-  - [Support arkade 👋](#support-arkade-)
+  - [Support arkade 👋 (From Our Sponsors)](#support-arkade---from-our-sponsors)
   - [Should you try arkade?](#should-you-try-arkade)
   - [Getting arkade](#getting-arkade)
   - [Usage overview](#usage-overview)
@@ -59,15 +59,13 @@ With over 185 CLIs and 55 Kubernetes apps (charts, manifests, installers) availa
     - [Catalog of Apps](#catalog-of-apps)
     - [Catalog of CLIs](#catalog-of-clis)
 
-## Support arkade 👋
+## Support arkade 👋 (From Our Sponsors)
 
-Arkade is built to save you time so you can focus and get productive quickly.
-
-<a href="https://github.com/sponsors/alexellis/">
-<img alt="Sponsor this project" src="https://github.com/alexellis/alexellis/blob/master/sponsor-today.png" width="90%">
-</a>
+Try [slicervm.com](https://slicervm.com/) to run Linux microVMs on your Mac for dev and testing.
 
 ## Should you try arkade?
+
+Arkade is built to save you time so you can focus and get productive quickly.
 
 > I was setting up a new dev environment yesterday. Kind, helm, kustomize, kubectl, all this stuff. My take is - arkade is highly underappreciated.
 > I'd spend an hour in the past to install such tools. With arkade it was under ten minutes.
