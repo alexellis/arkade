@@ -20,8 +20,6 @@ import (
 	"github.com/alexellis/arkade/pkg/types"
 
 	"github.com/alexellis/arkade/pkg/k8s"
-
-	"github.com/alexellis/arkade/pkg"
 	"github.com/sethvargo/go-password/password"
 
 	"github.com/spf13/cobra"
