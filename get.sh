@@ -14,6 +14,43 @@ if [ -z "$BINLOCATION" ]; then
     BINLOCATION="/usr/local/bin"
 fi
 
+usage() {
+    echo "Usage: get.sh [-b|--bin-dir PATH] [PATH]"
+    echo ""
+    echo "Install arkade into PATH (default: /usr/local/bin)."
+    echo "Examples:"
+    echo "  curl -sLS https://get.arkade.dev | sh"
+    echo "  curl -sLS https://get.arkade.dev | sh -s -- ."
+    echo "  curl -sLS https://get.arkade.dev | sh -s -- --bin-dir \"$HOME/bin\""
+}
+
+parseArgs() {
+    while [ $# -gt 0 ]; do
+        case "$1" in
+            -b|--bin-dir|--path)
+                if [ -z "${2:-}" ]; then
+                    echo "Missing value for $1"
+                    usage
+                    exit 1
+                fi
+                BINLOCATION="$2"
+                shift 2
+                ;;
+            -h|--help)
+                usage
+                exit 0
+                ;;
+            *)
+                # Backward-compatible positional install path override
+                BINLOCATION="$1"
+                shift
+                ;;
+        esac
+    done
+}
+
+parseArgs "$@"
+
 export SUCCESS_CMD="$BINLOCATION/$REPO version"
 
 ###############################
@@ -88,12 +125,12 @@ getPackage() {
     "MINGW"*)
     suffix=".exe"
     BINLOCATION="$HOME/bin"
-    mkdir -p $BINLOCATION
+    mkdir -p "$BINLOCATION"
 
     ;;
     "Linux")
         arch=$(uname -m)
-        echo $arch
+        echo "$arch"
         case $arch in
         "aarch64")
         suffix="-arm64"
@@ -132,6 +169,10 @@ getPackage() {
 
     echo "Download complete."
 
+    if [ ! -d "$BINLOCATION" ]; then
+        mkdir -p "$BINLOCATION" 2>/dev/null || true
+    fi
+
     if [ ! -w "$BINLOCATION" ]; then
 
             echo
@@ -167,7 +208,7 @@ getPackage() {
 
             fi
 
-            mv "$targetFile" $BINLOCATION/$REPO
+            mv "$targetFile" "$BINLOCATION/$REPO"
 
             if [ "$?" = "0" ]; then
                 echo "New version of $REPO installed to $BINLOCATION"
@@ -177,12 +218,12 @@ getPackage() {
                 rm "$targetFile"
             fi
 
-            if [ $(which $ALIAS_NAME) ]; then
+            if [ -n "$ALIAS_NAME" ] && [ "$(command -v "$ALIAS_NAME" 2>/dev/null)" ]; then
                 echo "There is already a command '$ALIAS_NAME' in the path, NOT creating alias"
             else
                 if [ -n "$ALIAS_NAME" ]; then
-                    if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
-                        ln -s $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME
+                    if [ ! -L "$BINLOCATION/$ALIAS_NAME" ]; then
+                        ln -s "$BINLOCATION/$REPO" "$BINLOCATION/$ALIAS_NAME"
                         echo "Creating alias '$ALIAS_NAME' for '$REPO'."
                     fi
                 fi
@@ -191,14 +232,6 @@ getPackage() {
             ${SUCCESS_CMD}
 
             echo
-            echo "Sponsor support:"
-            echo "  https://github.com/sponsors/alexellis"
-            echo
-            echo "From our sponsors:"
-            echo "  Run microVMs directly on your own Mac, Linux or Windows computer."
-            echo "  Local = faster. ( = fast.)"
-            echo "  Test with real Linux VMs that boot in <1s."
-            echo "  https://slicervm.com"
         fi
     fi
 }
