@@ -84,6 +84,8 @@ OCI image.`,
 			imageName = "ghcr.io/openfaasltd/vmmeter"
 		case "slicer":
 			imageName = "ghcr.io/openfaasltd/slicer"
+		case "superterm":
+			imageName = "ghcr.io/openfaasltd/superterm"
 		case "k3sup-pro":
 			imageName = "ghcr.io/openfaasltd/k3sup-pro"
 		}
