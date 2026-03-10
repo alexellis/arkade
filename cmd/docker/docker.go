@@ -20,6 +20,7 @@ func MakeDocker() *cobra.Command {
 	}
 
 	command.AddCommand(MakeUpgrade())
+	command.AddCommand(MakeGen())
 
 	return command
 }
