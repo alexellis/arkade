@@ -33,17 +33,22 @@ func MakeInstallArgoCD() *cobra.Command {
 		arch := k8s.GetNodeArchitecture()
 		fmt.Printf("Node architecture: %q\n", arch)
 
-		_, err := k8s.KubectlTask("create", "ns",
-			"argocd")
-		if err != nil {
+		if _, err := k8s.KubectlTask("create", "ns",
+			"argocd"); err != nil {
 			if !strings.Contains(err.Error(), "exists") {
 				return err
 			}
 		}
 
-		_, err = k8s.KubectlTask("apply", "-f",
-			"https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml", "-n", "argocd")
-		if err != nil {
+		// Apply CRDs first with server-side apply to handle large CRDs
+		if _, err := k8s.KubectlTask("apply", "--server-side", "-k",
+			"https://github.com/argoproj/argo-cd/manifests/crds?ref=stable", "-n", "argocd"); err != nil {
+			return err
+		}
+
+		// Then apply the main manifest
+		if _, err := k8s.KubectlTask("apply", "-f",
+			"https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml", "-n", "argocd"); err != nil {
 			return err
 		}
 
