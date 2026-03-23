@@ -21,7 +21,7 @@ require (
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/alexellis/gha-bump v0.0.0
+	github.com/alexellis/gha-bump v0.0.6
 )
 
 require (
@@ -54,5 +54,3 @@ require (
 )
 
 replace github.com/alexellis/fstail => ../fstail
-
-replace github.com/alexellis/gha-bump => ../gha-bump

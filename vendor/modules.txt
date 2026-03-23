@@ -7,7 +7,7 @@ github.com/Masterminds/semver/v3
 # github.com/alexellis/fstail v0.0.0-20250917111842-2ab578ec2afb => ../fstail
 ## explicit; go 1.24.0
 github.com/alexellis/fstail/pkg/fstail
-# github.com/alexellis/gha-bump v0.0.0 => ../gha-bump
+# github.com/alexellis/gha-bump v0.0.6
 ## explicit; go 1.25.0
 github.com/alexellis/gha-bump/pkg/ghabump
 # github.com/alexellis/go-execute/v2 v2.2.1
@@ -177,4 +177,3 @@ gopkg.in/fsnotify.v1
 ## explicit
 gopkg.in/yaml.v3
 # github.com/alexellis/fstail => ../fstail
-# github.com/alexellis/gha-bump => ../gha-bump

@@ -771,7 +771,9 @@ func Test_DownloadKubens(t *testing.T) {
 	name := "kubens"
 	tool := getTool(name, tools)
 
-	got, _, err := tool.GetURL("linux", arch64bit, tool.Version, false)
+	version := "v0.9.5"
+
+	got, _, err := tool.GetURL("linux", arch64bit, version, false)
 	if err != nil {
 		t.Fatal(err)
 	}
