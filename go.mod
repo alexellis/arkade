@@ -3,7 +3,7 @@ module github.com/alexellis/arkade
 go 1.25.0
 
 require (
-	github.com/Masterminds/semver v1.5.0
+	github.com/Masterminds/semver/v3 v3.3.1
 	github.com/alexellis/go-execute/v2 v2.2.1
 	github.com/docker/go-units v0.5.0
 	github.com/google/go-containerregistry v0.20.7
@@ -19,7 +19,10 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-require github.com/alexellis/gha-bump v0.0.0
+require (
+	github.com/Masterminds/semver v1.5.0
+	github.com/alexellis/gha-bump v0.0.0
+)
 
 require (
 	github.com/alexellis/fstail v0.0.0-20250917111842-2ab578ec2afb

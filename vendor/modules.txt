@@ -1,6 +1,9 @@
 # github.com/Masterminds/semver v1.5.0
 ## explicit
 github.com/Masterminds/semver
+# github.com/Masterminds/semver/v3 v3.3.1
+## explicit; go 1.21
+github.com/Masterminds/semver/v3
 # github.com/alexellis/fstail v0.0.0-20250917111842-2ab578ec2afb => ../fstail
 ## explicit; go 1.24.0
 github.com/alexellis/fstail/pkg/fstail
