@@ -2,6 +2,8 @@ package get
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 	"reflect"
 	"sort"
 	"testing"
@@ -271,12 +273,14 @@ func Test_PostInstallationMsg(t *testing.T) {
 		defaultDownloadDir string
 		localToolsStore    []ToolLocal
 		pathEnv            string
+		shellEnv           string
 		want               string
 	}{
 		{
 			name:               "default path, arkade not in PATH, multi tool",
 			defaultDownloadDir: "",
 			pathEnv:            "/usr/bin:/usr/local/bin",
+			shellEnv:           "/bin/zsh",
 			localToolsStore: []ToolLocal{
 				{Name: "yq",
 					Path: "/home/user/.arkade/bin/yq",
@@ -286,7 +290,8 @@ func Test_PostInstallationMsg(t *testing.T) {
 					Path: "/home/user/.arkade/bin/jq",
 				}},
 			want: `# Add arkade binary directory to your PATH variable
-export PATH=$PATH:$HOME/.arkade/bin/
+echo 'export PATH="$HOME/.arkade/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/.arkade/bin:$PATH"
 
 # Install to system (optional):
 sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
@@ -295,12 +300,14 @@ sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
 			name:               "default path, arkade not in PATH, single tool",
 			defaultDownloadDir: "",
 			pathEnv:            "/usr/bin:/usr/local/bin",
+			shellEnv:           "/bin/zsh",
 			localToolsStore: []ToolLocal{
 				{Name: "yq",
 					Path: "/home/user/.arkade/bin/yq",
 				}},
 			want: `# Add arkade binary directory to your PATH variable
-export PATH=$PATH:$HOME/.arkade/bin/
+echo 'export PATH="$HOME/.arkade/bin:$PATH"' >> ~/.zshrc
+export PATH="$HOME/.arkade/bin:$PATH"
 
 # Install to system (optional):
 sudo mv /home/user/.arkade/bin/yq /usr/local/bin/`,
@@ -350,8 +357,12 @@ sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Setenv("HOME", t.TempDir())
 			if tt.pathEnv != "" {
 				t.Setenv("PATH", tt.pathEnv)
+			}
+			if tt.shellEnv != "" {
+				t.Setenv("SHELL", tt.shellEnv)
 			}
 			defaultDownloadDir := tt.defaultDownloadDir
 			msg, _ := PostInstallationMsg(defaultDownloadDir, tt.localToolsStore)
@@ -360,6 +371,69 @@ sudo install -m 755 /tmp/bin/jq-linux64 /usr/local/bin/jq`,
 
 			if got != tt.want {
 				t.Errorf("got\n%s\n\nwant\n%s", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_detectShellInitFile(t *testing.T) {
+	testCases := []struct {
+		name  string
+		shell string
+		files []string
+		want  string
+	}{
+		{
+			name:  "zsh uses zshrc",
+			shell: "/bin/zsh",
+			want:  "~/.zshrc",
+		},
+		{
+			name:  "bash prefers bashrc when present",
+			shell: "/bin/bash",
+			files: []string{".bashrc"},
+			want:  "~/.bashrc",
+		},
+		{
+			name:  "bash falls back to bash profile when present",
+			shell: "/bin/bash",
+			files: []string{".bash_profile"},
+			want:  "~/.bash_profile",
+		},
+		{
+			name:  "fish uses fish config",
+			shell: "/opt/homebrew/bin/fish",
+			want:  "~/.config/fish/config.fish",
+		},
+		{
+			name:  "unknown shell uses available zshrc",
+			shell: "/bin/sh",
+			files: []string{".zshrc"},
+			want:  "~/.zshrc",
+		},
+		{
+			name:  "unknown shell falls back to profile",
+			shell: "/bin/sh",
+			want:  "~/.profile",
+		},
+	}
+
+	for _, tt := range testCases {
+		t.Run(tt.name, func(t *testing.T) {
+			testHome := t.TempDir()
+			t.Setenv("HOME", testHome)
+			t.Setenv("SHELL", tt.shell)
+
+			for _, file := range tt.files {
+				path := filepath.Join(testHome, file)
+				if err := os.WriteFile(path, []byte(""), 0o644); err != nil {
+					t.Fatalf("write %s: %v", path, err)
+				}
+			}
+
+			got := detectShellInitFile()
+			if got != tt.want {
+				t.Fatalf("want %q, got %q", tt.want, got)
 			}
 		})
 	}

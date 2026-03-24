@@ -10,7 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
-
+	"path/filepath"
 	"strings"
 	"text/template"
 	"time"
@@ -596,7 +596,8 @@ func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, 
 		}
 	} else {
 		buf.WriteString("# Add arkade binary directory to your PATH variable\n")
-		buf.WriteString("export PATH=$PATH:$HOME/.arkade/bin/\n\n")
+		buf.WriteString(pathExportInstructions())
+		buf.WriteString("\n")
 		if multi {
 			buf.WriteString("# Install to system (optional):\n")
 			buf.WriteString("sudo mv $HOME/.arkade/bin/* /usr/local/bin/\n")
@@ -609,6 +610,52 @@ func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, 
 	}
 
 	return bytes.TrimRight(buf.Bytes(), "\n"), nil
+}
+
+func pathExportInstructions() string {
+	initFile := detectShellInitFile()
+
+	switch initFile {
+	case "~/.config/fish/config.fish":
+		return "set -U fish_user_paths $HOME/.arkade/bin $fish_user_paths\n"
+	default:
+		return fmt.Sprintf("echo 'export PATH=\"$HOME/.arkade/bin:$PATH\"' >> %s\nexport PATH=\"$HOME/.arkade/bin:$PATH\"\n", initFile)
+	}
+}
+
+func detectShellInitFile() string {
+	shell := filepath.Base(os.Getenv("SHELL"))
+
+	switch shell {
+	case "zsh":
+		return "~/.zshrc"
+	case "bash":
+		if home, err := os.UserHomeDir(); err == nil {
+			bashrc := filepath.Join(home, ".bashrc")
+			if _, err := os.Stat(bashrc); err == nil {
+				return "~/.bashrc"
+			}
+
+			bashProfile := filepath.Join(home, ".bash_profile")
+			if _, err := os.Stat(bashProfile); err == nil {
+				return "~/.bash_profile"
+			}
+		}
+
+		return "~/.bashrc"
+	case "fish":
+		return "~/.config/fish/config.fish"
+	}
+
+	if home, err := os.UserHomeDir(); err == nil {
+		for _, candidate := range []string{".zshrc", ".bashrc", ".bash_profile", ".profile"} {
+			if _, err := os.Stat(filepath.Join(home, candidate)); err == nil {
+				return "~/" + candidate
+			}
+		}
+	}
+
+	return "~/.profile"
 }
 
 // ArkadeInPath returns true when $PATH already contains .arkade/bin.
