@@ -11,6 +11,7 @@ import (
 
 	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/env"
+	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
 	"github.com/spf13/cobra"
@@ -79,16 +80,7 @@ OCI image.`,
 			installPath, _ = cmd.Flags().GetString("path")
 		}
 
-		switch imageName {
-		case "vmmeter":
-			imageName = "ghcr.io/openfaasltd/vmmeter"
-		case "slicer":
-			imageName = "ghcr.io/openfaasltd/slicer"
-		case "superterm":
-			imageName = "ghcr.io/openfaasltd/superterm"
-		case "k3sup-pro":
-			imageName = "ghcr.io/openfaasltd/k3sup-pro"
-		}
+		imageName, forceAnonymousAuth := resolveShortcutImage(imageName)
 
 		if !strings.Contains(imageName, ":") {
 			imageName = imageName + ":" + version
@@ -133,7 +125,7 @@ OCI image.`,
 
 		downloadArch, downloadOS := getDownloadArch(clientArch, clientOS)
 
-		img, err = crane.Pull(imageName, crane.WithPlatform(&v1.Platform{Architecture: downloadArch, OS: downloadOS}))
+		img, err = crane.Pull(imageName, buildPullOptions(&v1.Platform{Architecture: downloadArch, OS: downloadOS}, forceAnonymousAuth)...)
 		if err != nil {
 			return fmt.Errorf("pulling %s: %w", imageName, err)
 		}
@@ -158,6 +150,33 @@ OCI image.`,
 	}
 
 	return command
+}
+
+func resolveShortcutImage(imageName string) (string, bool) {
+	switch imageName {
+	case "vmmeter":
+		return "ghcr.io/openfaasltd/vmmeter", true
+	case "slicer":
+		return "ghcr.io/openfaasltd/slicer", true
+	case "superterm":
+		return "ghcr.io/openfaasltd/superterm", true
+	case "k3sup-pro":
+		return "ghcr.io/openfaasltd/k3sup-pro", true
+	default:
+		return imageName, false
+	}
+}
+
+func buildPullOptions(platform *v1.Platform, forceAnonymousAuth bool) []crane.Option {
+	options := []crane.Option{
+		crane.WithPlatform(platform),
+	}
+
+	if forceAnonymousAuth {
+		options = append(options, crane.WithAuth(authn.Anonymous))
+	}
+
+	return options
 }
 
 func getDownloadArch(clientArch, clientOS string) (arch string, os string) {
