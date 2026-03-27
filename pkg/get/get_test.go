@@ -10014,3 +10014,42 @@ func Test_DownloadCrush(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadJg(t *testing.T) {
+	tools := MakeTools()
+	name := "jg"
+	const version = "0.7.0"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/micahkepe/jsongrep/releases/download/0.7.0/jsongrep-0.7.0-x86_64-unknown-linux-musl.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/micahkepe/jsongrep/releases/download/0.7.0/jsongrep-0.7.0-x86_64-apple-darwin.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/micahkepe/jsongrep/releases/download/0.7.0/jsongrep-0.7.0-x86_64-pc-windows-msvc.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}

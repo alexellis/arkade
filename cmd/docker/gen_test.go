@@ -24,7 +24,7 @@ FROM ghcr.io/openfaas/of-watchdog:0.25.0`
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath, "--stdout"})
+	cmd.SetArgs([]string{dockerfilePath, "--stdout"})
 
 	var stdout, stderr strings.Builder
 	cmd.SetOut(&stdout)
@@ -66,7 +66,7 @@ FROM alpine:3.19`
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath})
+	cmd.SetArgs([]string{dockerfilePath})
 
 	var stdout, stderr strings.Builder
 	cmd.SetOut(&stdout)
@@ -101,6 +101,38 @@ FROM alpine:3.19`
 	}
 }
 
+func TestGenCommand_PositionalDirImpliesDockerfile(t *testing.T) {
+	tmpDir, err := os.MkdirTemp("", "arkade-docker-gen-test-*")
+	if err != nil {
+		t.Fatalf("failed to create temp dir: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	dockerfilePath := filepath.Join(tmpDir, "Dockerfile")
+	dockerfileContent := `FROM alpine:3.19
+FROM golang:1.24`
+
+	if err := os.WriteFile(dockerfilePath, []byte(dockerfileContent), 0644); err != nil {
+		t.Fatalf("failed to write dockerfile: %v", err)
+	}
+
+	cmd := MakeGen()
+	cmd.SetArgs([]string{tmpDir, "--stdout"})
+
+	var stdout, stderr strings.Builder
+	cmd.SetOut(&stdout)
+	cmd.SetErr(&stderr)
+
+	if err := cmd.Execute(); err != nil {
+		t.Fatalf("command failed: %v", err)
+	}
+
+	result := stdout.String()
+	if !strings.Contains(result, "- alpine") || !strings.Contains(result, "- golang") {
+		t.Errorf("expected alpine and golang in output, stdout=%q, stderr=%q", result, stderr.String())
+	}
+}
+
 func TestGenCommand_NoImagesFound(t *testing.T) {
 	tmpDir, err := os.MkdirTemp("", "arkade-docker-gen-test-*")
 	if err != nil {
@@ -117,7 +149,7 @@ RUN echo "hello"`
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath})
+	cmd.SetArgs([]string{dockerfilePath})
 
 	var output strings.Builder
 	cmd.SetOut(&output)
@@ -149,7 +181,7 @@ FROM alpine:3.19`
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath, "--stdout"})
+	cmd.SetArgs([]string{dockerfilePath, "--stdout"})
 
 	var stdout, stderr strings.Builder
 	cmd.SetOut(&stdout)
@@ -185,7 +217,7 @@ func TestGenCommand_RegistryWithPort(t *testing.T) {
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath, "--stdout"})
+	cmd.SetArgs([]string{dockerfilePath, "--stdout"})
 
 	var stdout, stderr strings.Builder
 	cmd.SetOut(&stdout)
@@ -219,7 +251,7 @@ FROM golang:1.24`
 	}
 
 	cmd := MakeGen()
-	cmd.SetArgs([]string{"-f", dockerfilePath, "--stdout"})
+	cmd.SetArgs([]string{dockerfilePath, "--stdout"})
 
 	var stdout, stderr strings.Builder
 	cmd.SetOut(&stdout)

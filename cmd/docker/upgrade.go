@@ -14,7 +14,7 @@ import (
 
 func MakeUpgrade() *cobra.Command {
 	var command = &cobra.Command{
-		Use:     "upgrade",
+		Use:     "upgrade [path]",
 		Short:   "Upgrade images in a Dockerfile to the latest version",
 		Aliases: []string{"u"},
 		Long: `Upgrade container images in a Dockerfile to the latest version.
@@ -38,6 +38,9 @@ pin_major_minor:
 		Example: `  # Upgrade specific images and write the changes
   arkade docker upgrade --image ghcr.io/openfaas/of-watchdog --write
 
+  # Use a positional argument (Dockerfile or directory)
+  arkade docker upgrade ./template/python27-flask --image alpine
+
   # Pin golang to its current major.minor version
   arkade docker upgrade \
     --image ghcr.io/openfaas/of-watchdog \
@@ -45,23 +48,33 @@ pin_major_minor:
     --pin-major-minor golang \
     --verbose
 
-  # Use a different Dockerfile
-  arkade docker upgrade -f ./Dockerfile.template --image alpine`,
+  # Use a different Dockerfile explicitly
+  arkade docker upgrade ./Dockerfile.template --image alpine`,
 		SilenceUsage: true,
+		Args:         cobra.MaximumNArgs(1),
 	}
 
-	command.Flags().StringP("file", "f", "Dockerfile", "Path to Dockerfile")
 	command.Flags().StringArrayP("image", "i", nil, "Image name to upgrade (specify multiple times)")
 	command.Flags().StringArray("pin-major-minor", nil, "Pin image to current major.minor version, only upgrade patch (specify multiple times)")
 	command.Flags().BoolP("verbose", "v", true, "Verbose output")
 	command.Flags().BoolP("write", "w", true, "Write the updated values back to the file, or stdout when set to false")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
-		file, _ := cmd.Flags().GetString("file")
+		file := "Dockerfile"
 		imageNames, _ := cmd.Flags().GetStringArray("image")
 		pinnedNames, _ := cmd.Flags().GetStringArray("pin-major-minor")
 		verbose, _ := cmd.Flags().GetBool("verbose")
 		writeFile, _ := cmd.Flags().GetBool("write")
+
+		if len(args) == 1 {
+			file = args[0]
+		}
+
+		resolved, err := resolveDockerfilePath(file)
+		if err != nil {
+			return err
+		}
+		file = resolved
 
 		basePath := path.Dir(file)
 		defaultConfig := path.Join(basePath, "arkade.yaml")

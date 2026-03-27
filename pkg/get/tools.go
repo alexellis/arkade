@@ -201,6 +201,33 @@ https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/amp-{{$
 
 	tools = append(tools,
 		Tool{
+			Owner:          "micahkepe",
+			Repo:           "jsongrep",
+			Name:           "jg",
+			Description:    "A CLI tool for filtering JSON data with a jq-like syntax.",
+			BinaryTemplate: `jg`,
+			URLTemplate: `
+{{$target := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-unknown-linux-musl"}}
+	{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-apple-darwin"}}
+	{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}
+		{{$target = "x86_64-pc-windows-msvc"}}
+	{{- end -}}
+{{- end -}}
+https://github.com/micahkepe/jsongrep/releases/download/{{.Version}}/jsongrep-{{.VersionNumber}}-{{$target}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "jqlang",
 			Repo:        "jq",
 			Name:        "jq",

@@ -849,6 +849,7 @@ There are 53 apps that you can install on your cluster.
 | [inlets-pro](https://github.com/inlets/inlets-pro)                           | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                                                     |
 | [inletsctl](https://github.com/inlets/inletsctl)                             | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                                                     |
 | [istioctl](https://github.com/istio/istio)                                   | Service Mesh to establish a programmable, application-aware network using the Envoy service proxy.                                                                |
+| [jg](https://github.com/micahkepe/jsongrep)                                  | A CLI tool for filtering JSON data with a jq-like syntax.                                                                                                         |
 | [jq](https://github.com/jqlang/jq)                                           | jq is a lightweight and flexible command-line JSON processor                                                                                                      |
 | [just](https://github.com/casey/just)                                        | Just a command runner                                                                                                                                             |
 | [k0s](https://github.com/k0sproject/k0s)                                     | Zero Friction Kubernetes                                                                                                                                          |
@@ -962,7 +963,7 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 194 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+There are 195 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 <!-- end of tool list -->
 
 

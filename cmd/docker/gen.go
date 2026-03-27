@@ -12,7 +12,7 @@ import (
 
 func MakeGen() *cobra.Command {
 	var command = &cobra.Command{
-		Use:   "gen",
+		Use:   "gen [path]",
 		Short: "Generate an arkade.yaml from detected images in a Dockerfile",
 		Long: `Generate an arkade.yaml from detected images in a Dockerfile.
 
@@ -26,22 +26,35 @@ substitution (e.g., ${VERSION}) are skipped.
 		Example: `  # Generate arkade.yaml from current directory's Dockerfile
   arkade docker gen
 
+  # Generate from a positional argument (Dockerfile or directory)
+  arkade docker gen ./template/python27-flask
+
   # Generate from a specific Dockerfile
-  arkade docker gen -f ./Dockerfile.prod
+  arkade docker gen ./Dockerfile.prod
 
   # Output to stdout only (don't create file)
   arkade docker gen --stdout
-  arkade docker gen -f Dockerfile | tee arkade.yaml
+  arkade docker gen Dockerfile | tee arkade.yaml
 `,
 		SilenceUsage: true,
+		Args:         cobra.MaximumNArgs(1),
 	}
 
-	command.Flags().StringP("file", "f", "Dockerfile", "Path to Dockerfile")
 	command.Flags().BoolP("stdout", "s", false, "Output to stdout instead of creating file")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
-		file, _ := cmd.Flags().GetString("file")
+		file := "Dockerfile"
 		toStdout, _ := cmd.Flags().GetBool("stdout")
+
+		if len(args) == 1 {
+			file = args[0]
+		}
+
+		resolved, err := resolveDockerfilePath(file)
+		if err != nil {
+			return err
+		}
+		file = resolved
 
 		content, err := os.ReadFile(file)
 		if err != nil {
