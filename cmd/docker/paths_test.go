@@ -61,4 +61,3 @@ func Test_resolveDockerfilePath_MissingPathIsReturnedAsIs(t *testing.T) {
 		t.Fatalf("want %q, got %q", missing, got)
 	}
 }
-
