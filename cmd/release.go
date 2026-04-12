@@ -137,6 +137,19 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
 			latest = latestStr == "true"
 		}
 
+		// If user explicitly set --latest=true but did not set --prerelease,
+		// disable prerelease so that --latest takes effect (gh CLI ignores
+		// --latest when --prerelease is also passed).
+		if latestStr == "true" && prereleaseStr == "" {
+			prerelease = false
+		}
+
+		// Likewise, if user explicitly set --prerelease=true but did not
+		// set --latest, disable latest so the flags stay consistent.
+		if prereleaseStr == "true" && latestStr == "" {
+			latest = false
+		}
+
 		if private {
 			fmt.Println("Private repo detected.")
 		} else {
