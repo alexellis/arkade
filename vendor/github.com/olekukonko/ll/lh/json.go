@@ -1,26 +1,49 @@
 package lh
 
 import (
-	"encoding/json"
+	"bytes"
 	"fmt"
-	"github.com/olekukonko/ll/lx"
 	"io"
 	"os"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/goccy/go-json"
+	"github.com/olekukonko/ll/lx"
 )
+
+var jsonBufPool = sync.Pool{
+	New: func() any {
+		return new(bytes.Buffer)
+	},
+}
+
+// fieldsMapPool pools map[string]interface{} to reduce allocations
+var fieldsMapPool = sync.Pool{
+	New: func() any {
+		return make(map[string]interface{}, 8)
+	},
+}
+
+// jsonOutputPool pools JsonOutput structs to reduce allocations
+var jsonOutputPool = sync.Pool{
+	New: func() any {
+		return &JsonOutput{
+			Fields: make(map[string]interface{}, 8),
+		}
+	},
+}
 
 // JSONHandler is a handler that outputs log entries as JSON objects.
 // It formats log entries with timestamp, level, message, namespace, fields, and optional
 // stack traces or dump segments, writing the result to the provided writer.
 // Thread-safe with a mutex to protect concurrent writes.
 type JSONHandler struct {
-	writer   io.Writer         // Destination for JSON output
-	timeFmt  string            // Format for timestamp (default: RFC3339Nano)
-	pretty   bool              // Enable pretty printing with indentation if true
-	fieldMap map[string]string // Optional mapping for field names (not used in provided code)
-	mu       sync.Mutex        // Protects concurrent access to writer
+	writer  io.Writer  // Destination for JSON output
+	timeFmt string     // Format for timestamp (default: RFC3339Nano)
+	pretty  bool       // Enable pretty printing with indentation if true
+	mu      sync.Mutex // Protects concurrent access to writer
 }
 
 // JsonOutput represents the JSON structure for a log entry.
@@ -75,13 +98,19 @@ func NewJSONHandler(w io.Writer, opts ...func(*JSONHandler)) *JSONHandler {
 func (h *JSONHandler) Handle(e *lx.Entry) error {
 	h.mu.Lock()
 	defer h.mu.Unlock()
-
 	// Handle dump entries separately
 	if e.Class == lx.ClassDump {
 		return h.handleDump(e)
 	}
 	// Handle standard log entries
 	return h.handleRegular(e)
+}
+
+// Output sets the Writer destination for JSONHandler's output, ensuring thread safety with a mutex lock.
+func (h *JSONHandler) Output(w io.Writer) {
+	h.mu.Lock()
+	defer h.mu.Unlock()
+	h.writer = w
 }
 
 // handleRegular handles standard log entries (non-dump).
@@ -92,31 +121,61 @@ func (h *JSONHandler) Handle(e *lx.Entry) error {
 //
 //	h.handleRegular(&lx.Entry{Message: "test", Level: lx.LevelInfo}) // Writes JSON object
 func (h *JSONHandler) handleRegular(e *lx.Entry) error {
-	// Create JSON output structure
-	entry := JsonOutput{
-		Time:      e.Timestamp.Format(h.timeFmt), // Format timestamp
-		Level:     e.Level.String(),              // Convert level to string
-		Class:     e.Class.String(),              // Convert class to string
-		Msg:       e.Message,                     // Set message
-		Namespace: e.Namespace,                   // Set namespace
-		Dump:      nil,                           // No dump for regular entries
-		Fields:    e.Fields,                      // Copy fields
-		Stack:     e.Stack,                       // Include stack trace if present
+	// Get fieldsMap from pool to avoid allocation
+	fieldsMap := fieldsMapPool.Get().(map[string]interface{})
+	// Clear any existing keys from previous use
+	for k := range fieldsMap {
+		delete(fieldsMap, k)
 	}
-	// Create JSON encoder
-	enc := json.NewEncoder(h.writer)
+	// Convert ordered fields to map for JSON output
+	for _, pair := range e.Fields {
+		fieldsMap[pair.Key] = pair.Value
+	}
+
+	// Get JsonOutput from pool
+	entry := jsonOutputPool.Get().(*JsonOutput)
+	entry.Time = e.Timestamp.Format(h.timeFmt)
+	entry.Level = e.Level.String()
+	entry.Class = e.Class.String()
+	entry.Msg = e.Message
+	entry.Namespace = e.Namespace
+	entry.Dump = nil
+	entry.Fields = fieldsMap
+	entry.Stack = e.Stack
+
+	// Acquire buffer from pool to avoid allocation and reduce syscalls
+	buf := jsonBufPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer func() {
+		// Return all pooled objects
+		jsonBufPool.Put(buf)
+		// Reset and return fieldsMap to pool
+		for k := range entry.Fields {
+			delete(entry.Fields, k)
+		}
+		fieldsMapPool.Put(entry.Fields)
+		// Reset and return JsonOutput to pool
+		entry.Fields = nil
+		entry.Stack = nil
+		entry.Dump = nil
+		jsonOutputPool.Put(entry)
+	}()
+
+	// Create JSON encoder writing to buffer (uses go-json for 2-5x speedup)
+	enc := json.NewEncoder(buf)
 	if h.pretty {
 		// Enable indentation for pretty printing
 		enc.SetIndent("", "  ")
 	}
-	// Log encoding attempt for debugging
-	fmt.Fprintf(os.Stderr, "Encoding JSON entry: %v\n", e.Message)
-	// Encode and write JSON
+	// Encode JSON to buffer
 	err := enc.Encode(entry)
 	if err != nil {
 		// Log encoding error for debugging
 		fmt.Fprintf(os.Stderr, "JSON encode error: %v\n", err)
+		return err
 	}
+	// Write buffer to underlying writer in one go
+	_, err = h.writer.Write(buf.Bytes())
 	return err
 }
 
@@ -130,7 +189,6 @@ func (h *JSONHandler) handleRegular(e *lx.Entry) error {
 func (h *JSONHandler) handleDump(e *lx.Entry) error {
 	var segments []dumpSegment
 	lines := strings.Split(e.Message, "\n")
-
 	// Parse each line of the dump message
 	for _, line := range lines {
 		if !strings.HasPrefix(line, "pos") {
@@ -143,11 +201,9 @@ func (h *JSONHandler) handleDump(e *lx.Entry) error {
 		// Parse position
 		var offset int
 		fmt.Sscanf(parts[0], "pos %d", &offset)
-
 		// Parse hex and ASCII
 		hexAscii := strings.SplitN(parts[1], "'", 2)
 		hexStr := strings.Fields(strings.TrimSpace(hexAscii[0]))
-
 		// Create dump segment
 		segments = append(segments, dumpSegment{
 			Offset: offset,                         // Set byte offset
@@ -156,15 +212,52 @@ func (h *JSONHandler) handleDump(e *lx.Entry) error {
 		})
 	}
 
-	// Encode JSON output with dump segments
-	return json.NewEncoder(h.writer).Encode(JsonOutput{
-		Time:      e.Timestamp.Format(h.timeFmt), // Format timestamp
-		Level:     e.Level.String(),              // Convert level to string
-		Class:     e.Class.String(),              // Convert class to string
-		Msg:       "dumping segments",            // Fixed message for dumps
-		Namespace: e.Namespace,                   // Set namespace
-		Dump:      segments,                      // Include parsed segments
-		Fields:    e.Fields,                      // Copy fields
-		Stack:     e.Stack,                       // Include stack trace if present
-	})
+	// Get fieldsMap from pool
+	fieldsMap := fieldsMapPool.Get().(map[string]interface{})
+	for k := range fieldsMap {
+		delete(fieldsMap, k)
+	}
+	for _, pair := range e.Fields {
+		fieldsMap[pair.Key] = pair.Value
+	}
+
+	// Get JsonOutput from pool
+	entry := jsonOutputPool.Get().(*JsonOutput)
+	entry.Time = e.Timestamp.Format(h.timeFmt)
+	entry.Level = e.Level.String()
+	entry.Class = e.Class.String()
+	entry.Msg = "dumping segments"
+	entry.Namespace = e.Namespace
+	entry.Dump = segments
+	entry.Fields = fieldsMap
+	entry.Stack = e.Stack
+
+	// Acquire buffer from pool
+	buf := jsonBufPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	defer func() {
+		jsonBufPool.Put(buf)
+		for k := range entry.Fields {
+			delete(entry.Fields, k)
+		}
+		fieldsMapPool.Put(entry.Fields)
+		entry.Fields = nil
+		entry.Stack = nil
+		entry.Dump = nil
+		jsonOutputPool.Put(entry)
+	}()
+
+	// Encode JSON output with dump segments to buffer
+	enc := json.NewEncoder(buf)
+	if h.pretty {
+		enc.SetIndent("", "  ")
+	}
+	err := enc.Encode(entry)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "JSON dump encode error: %v\n", err)
+		return err
+	}
+	// Write buffer to underlying writer
+	_, err = h.writer.Write(buf.Bytes())
+	return err
 }
