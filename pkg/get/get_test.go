@@ -3249,25 +3249,25 @@ func Test_DownloadPolarisCli(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: "v3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_darwin_amd64.tar.gz`,
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_3.2.1_darwin_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: "v3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_amd64.tar.gz`,
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_3.2.1_linux_amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: "v3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_arm64.tar.gz`,
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_3.2.1_linux_arm64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM7,
 			version: "v3.2.1",
-			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_linux_armv7.tar.gz`,
+			url:     `https://github.com/FairwindsOps/polaris/releases/download/v3.2.1/polaris_3.2.1_linux_armv7.tar.gz`,
 		},
 	}
 

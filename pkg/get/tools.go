@@ -2102,7 +2102,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 				{{$osString = "linux"}}
 				{{- end -}}
 				{{$ext := ".tar.gz"}}
-				{{.Name}}_{{$osString}}_{{$arch}}{{$ext}}`,
+				{{.Name}}_{{ .VersionNumber }}_{{$osString}}_{{$arch}}{{$ext}}`,
 		})
 	tools = append(tools,
 		Tool{
