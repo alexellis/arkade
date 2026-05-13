@@ -6,7 +6,10 @@ package oci
 import (
 	"fmt"
 	"os"
+	"os/signal"
 	"strings"
+	"sync/atomic"
+	"syscall"
 	"time"
 
 	"github.com/alexellis/arkade/pkg/archive"
@@ -14,6 +17,7 @@ import (
 	"github.com/google/go-containerregistry/pkg/authn"
 	"github.com/google/go-containerregistry/pkg/crane"
 	v1 "github.com/google/go-containerregistry/pkg/v1"
+	"github.com/google/go-containerregistry/pkg/v1/remote"
 	"github.com/spf13/cobra"
 )
 
@@ -22,7 +26,7 @@ func MakeOciInstall() *cobra.Command {
 		Use:     "install IMAGE [PATH]",
 		Aliases: []string{"i", "extract"},
 		Short:   "Install the contents of an OCI image to a given path",
-		Long: `Use this command to install binaries or packages distributed within an 
+		Long: `Use this command to install binaries or packages distributed within an
 OCI image.`,
 		Example: `  # Install slicer to /usr/local/bin (default)
   # Files will be extracted to /usr/local/bin/slicer
@@ -64,6 +68,7 @@ OCI image.`,
 		version, _ := cmd.Flags().GetString("version")
 		gzipped, _ := cmd.Flags().GetBool("gzipped")
 		quiet, _ := cmd.Flags().GetBool("quiet")
+		showProgress, _ := cmd.Flags().GetBool("progress")
 
 		if len(args) < 1 {
 			return fmt.Errorf("please provide an image name")
@@ -87,8 +92,6 @@ OCI image.`,
 		}
 
 		st := time.Now()
-
-		fmt.Printf("Installing %s to %s\n", imageName, installPath)
 
 		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
 			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
@@ -121,31 +124,175 @@ OCI image.`,
 		}
 		defer f.Close()
 
-		var img v1.Image
-
 		downloadArch, downloadOS := getDownloadArch(clientArch, clientOS)
+		platform := &v1.Platform{Architecture: downloadArch, OS: downloadOS}
 
-		img, err = crane.Pull(imageName, buildPullOptions(&v1.Platform{Architecture: downloadArch, OS: downloadOS}, forceAnonymousAuth)...)
-		if err != nil {
-			return fmt.Errorf("pulling %s: %w", imageName, err)
+		// ── progress state ───────────────────────────────────
+		p := &imageProgress{
+			imageName: imageName,
+			platform:  fmt.Sprintf("%s/%s", downloadOS, downloadArch),
+			status:    stResolving,
+			started:   time.Now(),
 		}
 
-		if err := crane.Export(img, f); err != nil {
-			return fmt.Errorf("exporting %s: %w", imageName, err)
+		// Counting transport: every response body the crane stack
+		// reads is wrapped, giving us live network-byte counts.
+		ct := &countingTransport{base: remote.DefaultTransport, n: &p.bytesRead}
+		opts := buildPullOptions(platform, forceAnonymousAuth)
+		opts = append(opts, crane.WithTransport(ct))
+
+		tty := !quiet && isTTY()
+		renderLive := showProgress && !quiet
+
+		// In TTY mode output goes to stderr so stdout stays clean for piping.
+		out := os.Stdout
+		if tty {
+			out = os.Stderr
 		}
 
-		tarFile, err := os.Open(tempFile.Name())
-		if err != nil {
-			return fmt.Errorf("failed to open %s: %w", tempFile.Name(), err)
-		}
-		defer tarFile.Close()
-
-		if err := archive.UntarNested(tarFile, installPath, gzipped, quiet); err != nil {
-			return fmt.Errorf("failed to untar %s: %w", tempFile.Name(), err)
+		if !quiet {
+			fmt.Fprintf(out, "Installing %s to %s\n", imageName, installPath)
 		}
 
-		fmt.Printf("Took %s\n", time.Since(st).Round(time.Millisecond))
+		if tty && renderLive {
+			fmt.Fprint(out, "\033[?1049h") // enter alternate screen
+			fmt.Fprint(out, "\033[?25l")   // hide cursor
+		}
+		leaveAlt := func() {
+			if tty && renderLive {
+				fmt.Fprint(out, "\033[?25h")   // restore cursor
+				fmt.Fprint(out, "\033[?1049l") // leave alternate screen
+			}
+		}
 
+		// Restore terminal on signal.
+		signalChan := make(chan os.Signal, 1)
+		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-signalChan
+			leaveAlt()
+			os.Exit(2)
+		}()
+
+		// Worker performs the crane operations. We send the eventual
+		// error (or nil) plus a phase-change signal back to the main
+		// goroutine so the renderer can flip from resolving → downloading
+		// at the right moment.
+		type phase struct {
+			downloading bool
+			done        bool
+			err         error
+		}
+		ph := make(chan phase, 2)
+
+		go func() {
+			img, pullErr := crane.Pull(imageName, opts...)
+			if pullErr != nil {
+				ph <- phase{done: true, err: fmt.Errorf("pulling %s: %w", imageName, pullErr)}
+				return
+			}
+			// Compute total bytes from the manifest (sum of compressed
+			// layer sizes). The manifest fetch itself contributes a few
+			// KB to bytesRead, so reset before downloading begins.
+			if manifest, mErr := img.Manifest(); mErr == nil {
+				var total int64
+				for _, l := range manifest.Layers {
+					total += l.Size
+				}
+				atomic.StoreInt64(&p.totalBytes, total)
+			}
+			atomic.StoreInt64(&p.bytesRead, 0)
+			ph <- phase{downloading: true}
+
+			if expErr := crane.Export(img, f); expErr != nil {
+				ph <- phase{done: true, err: fmt.Errorf("exporting %s: %w", imageName, expErr)}
+				return
+			}
+			ph <- phase{done: true}
+		}()
+
+		ticker := time.NewTicker(80 * time.Millisecond)
+		defer ticker.Stop()
+
+		var plainPrev string
+		render := func() {
+			if !renderLive {
+				return
+			}
+			if tty {
+				renderTTY(out, p)
+			} else {
+				plainPrev = renderPlain(out, p, plainPrev)
+			}
+		}
+
+		render() // initial frame (resolving)
+
+		var workErr error
+	loop:
+		for {
+			select {
+			case ev := <-ph:
+				if ev.downloading {
+					p.status = stDownloading
+					render()
+					continue
+				}
+				if ev.done {
+					workErr = ev.err
+					break loop
+				}
+			case <-ticker.C:
+				render()
+			}
+		}
+
+		// finalize: extract if download succeeded.
+		if workErr == nil {
+			p.status = stExtracting
+			render()
+
+			tarFile, openErr := os.Open(tempFile.Name())
+			if openErr != nil {
+				workErr = fmt.Errorf("failed to open %s: %w", tempFile.Name(), openErr)
+			} else {
+				defer tarFile.Close()
+				// When the alt-screen is active, suppress UntarNested's
+				// per-file logging so it doesn't corrupt the live frame.
+				untarQuiet := quiet || (tty && renderLive)
+				if uErr := archive.UntarNested(tarFile, installPath, gzipped, untarQuiet); uErr != nil {
+					workErr = fmt.Errorf("failed to untar %s: %w", tempFile.Name(), uErr)
+				}
+			}
+		}
+
+		if workErr != nil {
+			p.status = stFailed
+			p.err = workErr
+		} else {
+			p.status = stDone
+		}
+		p.elapsed = time.Since(p.started)
+
+		if renderLive {
+			if tty {
+				renderTTY(out, p)
+				leaveAlt()
+				renderTTYFinal(out, p)
+			} else {
+				renderPlain(out, p, plainPrev)
+			}
+		} else if tty {
+			leaveAlt()
+		}
+
+		if workErr != nil {
+			return workErr
+		}
+
+		if !quiet {
+			fmt.Fprintf(out, "Took %s\n", time.Since(st).Round(time.Millisecond))
+		}
 		return nil
 	}
 
