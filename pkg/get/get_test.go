@@ -10053,3 +10053,56 @@ func Test_DownloadJg(t *testing.T) {
 		}
 	}
 }
+
+func Test_DownloadMediaMTX(t *testing.T) {
+	tools := MakeTools()
+	name := "mediamtx"
+	const version = "v1.18.1"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_linux_arm64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: version,
+			url:     `https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_darwin_arm64.tar.gz`,
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: version,
+			url:     `https://github.com/bluenviron/mediamtx/releases/download/v1.18.1/mediamtx_v1.18.1_windows_amd64.zip`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				r.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}

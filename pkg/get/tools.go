@@ -5467,5 +5467,27 @@ https://github.com/vi/websocat/releases/download/{{.Version}}/websocat.{{$target
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "bluenviron",
+			Repo:        "mediamtx",
+			Name:        "mediamtx",
+			Description: "Ready-to-use SRT / WebRTC / RTSP / RTMP / LL-HLS media server and media proxy that allows to read, publish, proxy, record and playback video and audio streams.",
+			URLTemplate: `
+{{$arch := .Arch}}
+{{- if eq .Arch "x86_64" -}}
+	{{$arch = "amd64"}}
+{{- else if eq .Arch "aarch64" -}}
+	{{$arch = "arm64"}}
+{{- end -}}
+{{$osStr := .OS}}
+{{$extStr := "tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows"}}
+	{{$extStr = "zip"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
+
 	return tools
 }

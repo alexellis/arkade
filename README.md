@@ -831,7 +831,7 @@ There are 53 apps that you can install on your cluster.
 | [gha-bump](https://github.com/alexellis/gha-bump)                            | GitHub Actions dependency bump tool.                                                                                                                              |
 | [git-who](https://github.com/sinclairtarget/git-who)                         | Git blame for file trees.                                                                                                                                         |
 | [glab](https://github.com/gitlab-org/cli)                                    | A GitLab CLI tool bringing GitLab to your command line.                                                                                                           |
-| [glow](https://github.com/charmbracelet/glow)                                | Render markdown on the CLI, with pizzazz! 💅🏻                                                                                                                      |
+| [glow](https://github.com/charmbracelet/glow)                                | Render markdown on the CLI, with pizzazz! 💅🏻                                                                                                                    |
 | [golangci-lint](https://github.com/golangci/golangci-lint)                   | Go linters aggregator.                                                                                                                                            |
 | [gomplate](https://github.com/hairyhenderson/gomplate)                       | A flexible commandline tool for template rendering. Supports lots of local and remote datasources.                                                                |
 | [goreleaser](https://github.com/goreleaser/goreleaser)                       | Deliver Go binaries as fast and easily as possible                                                                                                                |
@@ -896,6 +896,7 @@ There are 53 apps that you can install on your cluster.
 | [linkerd2](https://github.com/linkerd/linkerd2)                              | Ultralight, security-first service mesh for Kubernetes.                                                                                                           |
 | [logcli](https://github.com/grafana/loki)                                    | LogCLI is the command-line interface to Grafana Loki. It facilitates running LogQL queries against a Loki instance.                                               |
 | [mc](https://github.com/minio/mc)                                            | MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.                                                      |
+| [mediamtx](https://github.com/bluenviron/mediamtx)                           | Ready-to-use SRT / WebRTC / RTSP / RTMP / LL-HLS media server and media proxy that allows to read, publish, proxy, record and playback video and audio streams.   |
 | [metal](https://github.com/equinix/metal-cli)                                | Official Equinix Metal CLI                                                                                                                                        |
 | [minikube](https://github.com/kubernetes/minikube)                           | Runs the latest stable release of Kubernetes, with support for standard Kubernetes features.                                                                      |
 | [mixctl](https://github.com/inlets/mixctl)                                   | A tiny TCP load-balancer.                                                                                                                                         |
@@ -963,7 +964,7 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 195 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
+There are 196 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 <!-- end of tool list -->
 
 
