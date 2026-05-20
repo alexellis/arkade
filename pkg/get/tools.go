@@ -2200,6 +2200,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:       "FairwindsOps",
+			Repo:        "pluto",
+			Name:        "pluto",
+			Description: "Find deprecated Kubernetes apiVersions in code repositories and helm releases.",
+			BinaryTemplate: `
+				{{$arch := "amd64"}}
+				{{if eq .Arch "armv7l" -}}
+				{{$arch = "armv7"}}
+				{{- else if eq .Arch "aarch64" -}}
+				{{$arch = "arm64"}}
+				{{- else if eq .Arch "arm64" -}}
+				{{$arch = "arm64"}}
+				{{- end -}}
+
+				{{$osString:= .OS}}
+				{{ if HasPrefix .OS "darwin" -}}
+				{{$osString = "darwin"}}
+				{{- else if eq .OS "linux" -}}
+				{{$osString = "linux"}}
+				{{- end -}}
+				{{$ext := ".tar.gz"}}
+
+				{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osString}}_{{$arch}}{{$ext}}
+				`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "johanhaleby",
 			Repo:        "kubetail",
 			Name:        "kubetail",
