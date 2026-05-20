@@ -3426,6 +3426,54 @@ func Test_DownloadNovaCli(t *testing.T) {
 
 }
 
+func Test_DownloadPlutoCli(t *testing.T) {
+	tools := MakeTools()
+	name := "pluto"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "3.12.0",
+			url:     `https://github.com/FairwindsOps/pluto/releases/download/3.12.0/pluto_3.12.0_darwin_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "3.12.0",
+			url:     `https://github.com/FairwindsOps/pluto/releases/download/3.12.0/pluto_3.12.0_linux_amd64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "3.12.0",
+			url:     `https://github.com/FairwindsOps/pluto/releases/download/3.12.0/pluto_3.12.0_linux_arm64.tar.gz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: "3.12.0",
+			url:     `https://github.com/FairwindsOps/pluto/releases/download/3.12.0/pluto_3.12.0_linux_armv7.tar.gz`,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(r *testing.T) {
+
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("want: %s, got: %s", tc.url, got)
+			}
+		})
+	}
+
+}
+
 func Test_DownloadKubetailCli(t *testing.T) {
 	tools := MakeTools()
 	name := "kubetail"
