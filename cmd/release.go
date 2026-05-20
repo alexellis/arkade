@@ -40,7 +40,7 @@ Repository visibility changes the defaults:
     Releases are immediately marked as latest and stable.
 
 Visibility is auto-detected via "gh repo view". Use --prerelease or --latest
-to override.
+to override. Passing --latest implies --prerelease=false.
 
 Both version and title can be overridden with positional arguments. If only
 one argument is given it is treated as a version when it looks like semver,
@@ -72,7 +72,7 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
   arkade release 0.3.0 "Add ARM64 support"
 
   # Force a full (non-prerelease) release on a public repo
-  arkade release --prerelease=false --latest=true
+  arkade release --latest
 
   # Dry run to see what would happen
   arkade release --dry-run`,
@@ -85,8 +85,8 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
 	command.Flags().Bool("major", false, "Bump the major version (v1.2.3 -> v2.0.0)")
 	command.Flags().Bool("minor", false, "Bump the minor version (v1.2.3 -> v1.3.0)")
 	command.Flags().Bool("patch", false, "Bump the patch version (v1.2.3 -> v1.2.4) (default when none specified)")
-	command.Flags().String("prerelease", "", "Mark as pre-release (default: true for public repos, false for private)")
-	command.Flags().String("latest", "", "Mark as latest release (default: false for public repos, true for private)")
+	command.Flags().Bool("prerelease", false, "Mark as pre-release (default: true for public repos, false for private)")
+	command.Flags().Bool("latest", false, "Mark as latest release (default: false for public repos, true for private)")
 	command.Flags().String("token", "", "GitHub token, if not using gh's default auth")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
@@ -109,8 +109,10 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
 		major, _ := cmd.Flags().GetBool("major")
 		minor, _ := cmd.Flags().GetBool("minor")
 		patch, _ := cmd.Flags().GetBool("patch")
-		prereleaseStr, _ := cmd.Flags().GetString("prerelease")
-		latestStr, _ := cmd.Flags().GetString("latest")
+		prereleaseFlag, _ := cmd.Flags().GetBool("prerelease")
+		latestFlag, _ := cmd.Flags().GetBool("latest")
+		prereleaseChanged := cmd.Flags().Changed("prerelease")
+		latestChanged := cmd.Flags().Changed("latest")
 		token, _ := cmd.Flags().GetString("token")
 
 		bump, err := parseBumpStrategy(major, minor, patch)
@@ -128,25 +130,24 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
 		}
 
 		prerelease := !private // public -> true, private -> false
-		if prereleaseStr != "" {
-			prerelease = prereleaseStr == "true"
+		if prereleaseChanged {
+			prerelease = prereleaseFlag
 		}
 
 		latest := private // public -> false, private -> true
-		if latestStr != "" {
-			latest = latestStr == "true"
+		if latestChanged {
+			latest = latestFlag
 		}
 
-		// If user explicitly set --latest=true but did not set --prerelease,
-		// disable prerelease so that --latest takes effect (gh CLI ignores
-		// --latest when --prerelease is also passed).
-		if latestStr == "true" && prereleaseStr == "" {
+		// --latest implies not a prerelease: gh CLI ignores --latest when
+		// --prerelease is also set, so force prerelease off unless the user
+		// explicitly passed --prerelease as well.
+		if latestChanged && latestFlag && !prereleaseChanged {
 			prerelease = false
 		}
 
-		// Likewise, if user explicitly set --prerelease=true but did not
-		// set --latest, disable latest so the flags stay consistent.
-		if prereleaseStr == "true" && latestStr == "" {
+		// --prerelease implies not latest for the same reason.
+		if prereleaseChanged && prereleaseFlag && !latestChanged {
 			latest = false
 		}
 
@@ -212,7 +213,7 @@ When a version is given explicitly, --major/--minor/--patch are ignored.`,
 		if prerelease {
 			kind = "pre-release"
 		}
-		fmt.Printf("Created %s %s.\n", kind, newTag)
+		fmt.Printf("Created %s: %s\n", kind, newTag)
 		return nil
 	}
 

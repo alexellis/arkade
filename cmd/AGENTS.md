@@ -92,7 +92,7 @@ Both are called via `github.com/alexellis/go-execute/v2`, not `os/exec` directly
 | `--latest` | string | `""` (auto) | `"true"` or `"false"`. Auto-detected from repo visibility when empty |
 | `--token` | string | `""` | GitHub token passed via `GH_TOKEN` env var to `gh` |
 
-Note: `--prerelease` and `--latest` are string flags (not bool) so that the empty string means "not set by user, use auto-detected default". This is intentional.
+Note: `--prerelease` and `--latest` are bool flags. Whether the user explicitly set them is detected via `flags.Changed()`, which provides the required tri-state behaviour (unset → auto-detect from repo visibility; set → use the provided value). Passing `--latest` implies `--prerelease=false` unless `--prerelease` is also explicitly set.
 
 Note: `--major`, `--minor`, `--patch` are mutually exclusive. If more than one is set, the command returns an error.
 
