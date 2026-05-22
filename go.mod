@@ -31,10 +31,9 @@ require (
 )
 
 require (
-	github.com/alexellis/fstail v0.0.0-20250917111842-2ab578ec2afb
+	github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/containerd/stargz-snapshotter/estargz v0.18.2 // indirect
 	github.com/docker/cli v29.5.2+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.9.7 // indirect
 	github.com/fatih/color v1.19.0 // indirect
@@ -42,7 +41,6 @@ require (
 	github.com/klauspost/compress v1.18.6 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-runewidth v0.0.23 // indirect
-	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/olekukonko/cat v0.0.0-20250911104152-50322a0618f6 // indirect
 	github.com/olekukonko/errors v1.3.0 // indirect
 	github.com/olekukonko/ll v0.1.8 // indirect
@@ -51,10 +49,7 @@ require (
 	github.com/otiai10/mint v1.6.3 // indirect
 	github.com/sirupsen/logrus v1.9.4 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/vbatts/tar-split v0.12.3 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 )
-
-replace github.com/alexellis/fstail => ../fstail
