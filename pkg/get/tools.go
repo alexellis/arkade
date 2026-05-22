@@ -126,7 +126,7 @@ https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c09
 {{ $os = "linux" }}
 {{- end -}}
 
-https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/{{$os}}-{{$arch}}-amp.sha256`,
+https://static.ampcode.com/cli/{{.Version}}/{{$os}}-{{$arch}}-amp.sha256`,
 			URLTemplate: `
 {{$os := .OS}}
 {{$arch := .Arch}}
@@ -147,7 +147,7 @@ https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/{{$os}}
 {{ $os = "linux" }}
 {{- end -}}
 
-https://storage.googleapis.com/amp-public-assets-prod-0/cli/{{.Version}}/amp-{{$os}}-{{$arch}}{{$ext}}
+https://static.ampcode.com/cli/{{.Version}}/amp-{{$os}}-{{$arch}}{{$ext}}
 `})
 
 	tools = append(tools,

@@ -143,7 +143,7 @@ var releaseLocations = map[string]ReleaseLocation{
 		Method:  http.MethodGet,
 	},
 	AmpStrategy: {
-		Url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/cli-version.txt",
+		Url:     "https://static.ampcode.com/cli/cli-version.txt",
 		Timeout: time.Second * 5,
 		Method:  http.MethodGet,
 	},

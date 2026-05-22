@@ -9652,31 +9652,31 @@ func Test_DownloadAmp(t *testing.T) {
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-darwin-x64",
+			url:     "https://static.ampcode.com/cli/0.0.1769091939-g843744/amp-darwin-x64",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-darwin-arm64",
+			url:     "https://static.ampcode.com/cli/0.0.1769091939-g843744/amp-darwin-arm64",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-linux-x64",
+			url:     "https://static.ampcode.com/cli/0.0.1769091939-g843744/amp-linux-x64",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-linux-arm64",
+			url:     "https://static.ampcode.com/cli/0.0.1769091939-g843744/amp-linux-arm64",
 		},
 		{
 			os:      "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     "https://storage.googleapis.com/amp-public-assets-prod-0/cli/0.0.1769091939-g843744/amp-windows-x64.exe",
+			url:     "https://static.ampcode.com/cli/0.0.1769091939-g843744/amp-windows-x64.exe",
 		},
 	}
 
