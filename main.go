@@ -4,6 +4,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/alexellis/arkade/cmd"
@@ -13,6 +14,7 @@ import (
 	"github.com/alexellis/arkade/cmd/gha"
 	"github.com/alexellis/arkade/cmd/oci"
 	"github.com/alexellis/arkade/cmd/system"
+	"github.com/alexellis/arkade/pkg"
 	"github.com/spf13/cobra"
 )
 
@@ -23,6 +25,13 @@ func main() {
 		Use: "arkade",
 		Run: func(cmd *cobra.Command, args []string) {
 			printarkadeASCIIArt()
+			short := "n/a"
+			if len(pkg.GitCommit) > 12 {
+				short = pkg.GitCommit[:12]
+			} else if len(pkg.GitCommit) > 0 {
+				short = pkg.GitCommit
+			}
+			fmt.Printf("Version: %s (%s)\n\n\n", pkg.BuildString(), short)
 			cmd.Help()
 		},
 	}
