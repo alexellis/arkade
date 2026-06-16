@@ -149,7 +149,7 @@ func MakeInstallNode() *cobra.Command {
 			fmt.Printf("Unpacking binaries to: %s\n", tempUnpackPath)
 		}
 		if err = spinWhile("Unpacking Node.js", func() error {
-			return archive.UntarNested(f, tempUnpackPath, true, true)
+			return archive.UntarNested(f, tempUnpackPath, true, true, true)
 		}); err != nil {
 			return err
 		}

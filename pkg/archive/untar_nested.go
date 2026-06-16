@@ -13,14 +13,16 @@ import (
 )
 
 // UntarNested reads the gzip-compressed tar file from r and writes it into dir.
+// When allowSymlinks is false, any symlink entry in the archive causes an
+// error; when true, symlinks are extracted subject to containment checks.
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-func UntarNested(r io.Reader, dir string, gzipped, quiet bool) error {
-	return untarNested(r, dir, gzipped, quiet)
+func UntarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) error {
+	return untarNested(r, dir, gzipped, quiet, allowSymlinks)
 }
 
-func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
+func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
@@ -148,6 +150,9 @@ func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 			}
 			madeDir[abs] = true
 		case mode.Type() == os.ModeSymlink:
+			if !allowSymlinks {
+				return fmt.Errorf("tar file entry %s is a symlink, but symlink extraction is disabled", f.Name)
+			}
 			parent := filepath.Dir(abs)
 			if !madeDir[parent] {
 				if err := assertExistingPrefixWithinRoot(cleanDir, parent); err != nil {

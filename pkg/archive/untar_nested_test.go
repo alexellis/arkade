@@ -60,7 +60,7 @@ func Test_UntarNested_RejectsAbsoluteSymlinkWriteThrough(t *testing.T) {
 		{hdr: tar.Header{Name: "escape-link/escape.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("escaped\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -92,7 +92,7 @@ func Test_UntarNested_RejectsRelativeSymlinkWriteThrough(t *testing.T) {
 		{hdr: tar.Header{Name: "escape-link/escape.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("escaped\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -121,7 +121,7 @@ func Test_UntarNested_RejectsChainedSymlinkEscape(t *testing.T) {
 		{hdr: tar.Header{Name: "hop1/hop2/outside/escape.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("escaped\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -149,7 +149,7 @@ func Test_UntarNested_RejectsPlantedEscapingSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "hop1/hop2", Typeflag: tar.TypeSymlink, Linkname: "..", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -188,7 +188,7 @@ func Test_UntarNested_RejectsSymlinkTargetViaPreExistingSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "planted", Typeflag: tar.TypeSymlink, Linkname: "safe/file", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatalf("expected extraction to be rejected, got nil error")
 	}
 
@@ -213,7 +213,7 @@ func Test_UntarNested_AllowsValidNestedFiles(t *testing.T) {
 		{hdr: tar.Header{Name: "README.md", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("hello\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err != nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err != nil {
 		t.Fatalf("expected clean extraction, got: %v", err)
 	}
 	for _, rel := range []string{"bin/tool", "README.md"} {
@@ -238,7 +238,7 @@ func Test_UntarNested_AllowsWriteThroughInternalSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "link/file.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("hello\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err != nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err != nil {
 		t.Fatalf("expected clean extraction with write through internal symlink, got: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(installDir, "subdir", "file.txt")); err != nil {
@@ -260,7 +260,7 @@ func Test_UntarNested_AllowsWriteThroughInternalSymlinkDir(t *testing.T) {
 		{hdr: tar.Header{Name: "link/newdir", Typeflag: tar.TypeDir, Mode: 0755}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err != nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err != nil {
 		t.Fatalf("expected clean extraction with dir write-through internal symlink, got: %v", err)
 	}
 	if _, err := os.Stat(filepath.Join(installDir, "subdir", "newdir")); err != nil {
@@ -296,7 +296,7 @@ func Test_UntarNested_PreExistingSymlinkDoesNotCreateDirOutsideRoot(t *testing.T
 		{hdr: tar.Header{Name: "link/subdir/escape.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("escaped\n")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -332,7 +332,7 @@ func Test_UntarNested_RejectsLeafSymlinkWriteThrough(t *testing.T) {
 		{hdr: tar.Header{Name: "evil", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("HACKED")},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err == nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err == nil {
 		t.Fatal("want error, got nil")
 	}
 
@@ -354,7 +354,7 @@ func Test_UntarNested_AllowsValidInternalSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "tool", Typeflag: tar.TypeSymlink, Linkname: "tool-v1", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err != nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err != nil {
 		t.Fatalf("expected clean extraction with internal symlink, got: %v", err)
 	}
 	linkPath := filepath.Join(installDir, "tool")
@@ -381,7 +381,7 @@ func Test_UntarNested_CreatesParentDirForSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "nested/link", Typeflag: tar.TypeSymlink, Linkname: "tool-v1", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true); err != nil {
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true); err != nil {
 		t.Fatalf("expected clean extraction with on-demand parent dir for symlink, got: %v", err)
 	}
 	linkPath := filepath.Join(installDir, "nested", "link")
@@ -391,5 +391,27 @@ func Test_UntarNested_CreatesParentDirForSymlink(t *testing.T) {
 	}
 	if fi.Mode()&os.ModeSymlink == 0 {
 		t.Fatalf("expected %q to be a symlink", linkPath)
+	}
+}
+
+// When allowSymlinks is false, any symlink entry in the tar must be rejected,
+// even when the link target stays safely within root.
+func Test_UntarNested_RejectsSymlinkWhenDisabled(t *testing.T) {
+	installDir, err := os.MkdirTemp("", "arkade-untar-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(installDir)
+
+	data := buildTar(t, []tarEntry{
+		{hdr: tar.Header{Name: "tool-v1", Typeflag: tar.TypeReg, Mode: 0755}, body: []byte("bin\n")},
+		{hdr: tar.Header{Name: "tool", Typeflag: tar.TypeSymlink, Linkname: "tool-v1", Mode: 0777}},
+	})
+
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, false); err == nil {
+		t.Fatalf("expected error when extracting symlink with symlinks disabled, got nil")
+	}
+	if _, err := os.Lstat(filepath.Join(installDir, "tool")); err == nil {
+		t.Fatalf("expected symlink not to be created when symlinks disabled")
 	}
 }
