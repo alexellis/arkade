@@ -56,6 +56,7 @@ OCI image.`,
 
 	command.Flags().BoolP("gzipped", "g", false, "Is this a gzipped tarball?")
 	command.Flags().Bool("quiet", false, "Suppress progress output")
+	command.Flags().Bool("symlink", false, "Write symlinks when unpacking OCI image, only use with trusted sources")
 
 	// Hide the deprecated --path flag
 	command.Flags().MarkHidden("path")
@@ -68,6 +69,7 @@ OCI image.`,
 		version, _ := cmd.Flags().GetString("version")
 		gzipped, _ := cmd.Flags().GetBool("gzipped")
 		quiet, _ := cmd.Flags().GetBool("quiet")
+		allowSymlinks, _ := cmd.Flags().GetBool("symlink")
 		showProgress, _ := cmd.Flags().GetBool("progress")
 
 		if len(args) < 1 {
@@ -260,7 +262,7 @@ OCI image.`,
 				// When the alt-screen is active, suppress UntarNested's
 				// per-file logging so it doesn't corrupt the live frame.
 				untarQuiet := quiet || (tty && renderLive)
-				if uErr := archive.UntarNested(tarFile, installPath, gzipped, untarQuiet); uErr != nil {
+				if uErr := archive.UntarNested(tarFile, installPath, gzipped, untarQuiet, allowSymlinks); uErr != nil {
 					workErr = fmt.Errorf("failed to untar %s: %w", tempFile.Name(), uErr)
 				}
 			}
