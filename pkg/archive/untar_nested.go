@@ -8,6 +8,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -34,17 +35,28 @@ func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 		}
 	}()
 
-	reader := r
-
 	if gzipped {
 		zr, err := gzip.NewReader(r)
 		if err != nil {
 			return fmt.Errorf("requires gzip-compressed body: %v", err)
 		}
-		reader = zr
+		r = zr
 	}
 
-	tr := tar.NewReader(reader)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return err
+	}
+
+	// Resolve dir to its real path so containment checks are not confused by a
+	// symlinked install directory (e.g. /usr/local/bin on some systems).
+	resolvedDir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return err
+	}
+	dir = resolvedDir
+	cleanDir := filepath.Clean(dir)
+
+	tr := tar.NewReader(r)
 	loggedChtimesError := false
 	for {
 		f, err := tr.Next()
@@ -68,16 +80,29 @@ func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 		}
 		switch {
 		case mode.IsRegular():
-			// Make the directory. This is redundant because it should
-			// already be made by a directory entry in the tar
-			// beforehand. Thus, don't check for errors; the next
-			// write will fail with the same error.
-			dir := filepath.Dir(abs)
-			if !madeDir[dir] {
-				if err := os.MkdirAll(filepath.Dir(abs), 0755); err != nil {
+			parent := filepath.Dir(abs)
+			if !madeDir[parent] {
+				// Guard before MkdirAll: it follows a pre-existing symlink and
+				// would otherwise create directories outside root.
+				if err := assertExistingPrefixWithinRoot(cleanDir, parent); err != nil {
 					return err
 				}
-				madeDir[dir] = true
+				if err := os.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
+				madeDir[parent] = true
+			}
+			// Resolve the physical parent (containment already guaranteed above)
+			// to locate the write, allowing write-through of internal symlinks.
+			resolvedParent, err := filepath.EvalSymlinks(parent)
+			if err != nil {
+				return fmt.Errorf("cannot resolve parent of %s: %v", abs, err)
+			}
+			abs = filepath.Join(resolvedParent, filepath.Base(abs))
+			// Don't write through a pre-existing symlink at the leaf; O_CREATE
+			// would follow it outside root.
+			if fi, err := os.Lstat(abs); err == nil && fi.Mode()&os.ModeSymlink != 0 {
+				return fmt.Errorf("refusing to write through symlink %q", abs)
 			}
 			wf, err := os.OpenFile(abs, os.O_RDWR|os.O_CREATE|os.O_TRUNC, mode.Perm())
 			if err != nil {
@@ -114,13 +139,45 @@ func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 			}
 			nFiles++
 		case mode.IsDir():
+			// Guard before MkdirAll, as with regular files.
+			if err := assertExistingPrefixWithinRoot(cleanDir, abs); err != nil {
+				return err
+			}
 			if err := os.MkdirAll(abs, 0755); err != nil {
 				return err
 			}
 			madeDir[abs] = true
-			// Introduced via
-			// https://github.com/alexellis/arkade/pull/675/files
-		case os.ModeSymlink != 0:
+		case mode.Type() == os.ModeSymlink:
+			parent := filepath.Dir(abs)
+			if !madeDir[parent] {
+				if err := assertExistingPrefixWithinRoot(cleanDir, parent); err != nil {
+					return err
+				}
+				if err := os.MkdirAll(parent, 0755); err != nil {
+					return err
+				}
+				madeDir[parent] = true
+			}
+			// Resolve the physical parent (containment already guaranteed above)
+			// to locate where the symlink is created.
+			resolvedParent, err := filepath.EvalSymlinks(parent)
+			if err != nil {
+				return fmt.Errorf("cannot resolve parent of %s: %v", abs, err)
+			}
+			abs = filepath.Join(resolvedParent, filepath.Base(abs))
+			// Validate the link target stays within root. resolvedParent is
+			// symlink-free, so this lexical check matches the physical location.
+			target := f.Linkname
+			if !filepath.IsAbs(target) {
+				target = filepath.Join(resolvedParent, target)
+			}
+			if !inDir(filepath.Clean(target), cleanDir) {
+				return fmt.Errorf("refusing symlink %q -> %q (escapes %q)", abs, f.Linkname, dir)
+			}
+			// ...and physically (pre-existing symlink in the target path).
+			if err := assertExistingPrefixWithinRoot(cleanDir, target); err != nil {
+				return err
+			}
 			if err := os.Symlink(f.Linkname, abs); err != nil {
 				return err
 			}
@@ -129,4 +186,35 @@ func untarNested(r io.Reader, dir string, gzipped, quiet bool) (err error) {
 		}
 	}
 	return nil
+}
+
+// assertExistingPrefixWithinRoot resolves the longest existing ancestor of p and
+// returns an error if it does not stay within root.
+func assertExistingPrefixWithinRoot(root, p string) error {
+	cur := filepath.Clean(p)
+	for {
+		if _, err := os.Lstat(cur); err == nil {
+			break
+		}
+		parent := filepath.Dir(cur)
+		if parent == cur {
+			// Reached the filesystem root without an existing component.
+			return nil
+		}
+		cur = parent
+	}
+	resolved, err := filepath.EvalSymlinks(cur)
+	if err != nil {
+		return err
+	}
+	if !inDir(filepath.Clean(resolved), root) {
+		return fmt.Errorf("refusing to create %q: existing path %q resolves to %q outside %q", p, cur, resolved, root)
+	}
+	return nil
+}
+
+// inDir reports whether path is equal to root or a direct descendant.
+// Both arguments must be clean paths (output of filepath.Clean or filepath.EvalSymlinks).
+func inDir(path, root string) bool {
+	return path == root || strings.HasPrefix(path, root+string(os.PathSeparator))
 }
