@@ -4545,25 +4545,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "openfaas",
-			Repo:        "faasd",
-			Name:        "faasd",
-			Description: "faasd - a lightweight & portable faas engine",
-			BinaryTemplate: `
-			        {{$arch := ""}}
-
-					{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
-					{{$arch = "-arm64"}}
-					{{- else if or (eq .Arch "armv6l") (eq .Arch "armv7l") -}}
-					{{$arch = "-armhf"}}
-					{{- end -}}
-
-					{{.Name}}{{$arch}}
-					`,
-		})
-
-	tools = append(tools,
-		Tool{
 			Owner:       "zegl",
 			Repo:        "kube-score",
 			Name:        "kube-score",

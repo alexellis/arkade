@@ -8147,45 +8147,6 @@ func Test_DownloadRegCtl(t *testing.T) {
 	}
 }
 
-func Test_DownloadFaasd(t *testing.T) {
-	tools := MakeTools()
-	name := "faasd"
-	const version = "0.18.8"
-
-	tool := getTool(name, tools)
-
-	tests := []test{
-		{
-			os:      "linux",
-			arch:    arch64bit,
-			version: version,
-			url:     `https://github.com/openfaas/faasd/releases/download/0.18.8/faasd`,
-		},
-		{
-			os:      "linux",
-			arch:    archARM64,
-			version: version,
-			url:     `https://github.com/openfaas/faasd/releases/download/0.18.8/faasd-arm64`,
-		},
-		{
-			os:      "linux",
-			arch:    archARM7,
-			version: version,
-			url:     `https://github.com/openfaas/faasd/releases/download/0.18.8/faasd-armhf`,
-		},
-	}
-
-	for _, tc := range tests {
-		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if got != tc.url {
-			t.Errorf("want: %s, got: %s", tc.url, got)
-		}
-	}
-}
-
 func Test_DownloadKubeScore(t *testing.T) {
 	tools := MakeTools()
 	name := "kube-score"
