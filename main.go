@@ -52,6 +52,7 @@ func main() {
 	rootCmd.AddCommand(gha.MakeGHA())
 	rootCmd.AddCommand(system.MakeSystem())
 	rootCmd.AddCommand(oci.MakeOci())
+	rootCmd.AddCommand(cmd.MakeSearch())
 
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
