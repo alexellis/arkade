@@ -183,6 +183,13 @@ arkade get faas-cli \
 ```
 > This is a time saver compared to searching for download pages every time you need a tool.
 
+Search CLIs available via `arkade get` by name or keyword, with alias support (e.g. "k8s" expands to "Kubernetes"):
+
+```bash
+arkade search helm
+arkade search k8s
+```
+
 Files are stored at `$HOME/.arkade/bin/`
 
 Want to download tools to a custom path such as into the GitHub Actions cached tool folder?
