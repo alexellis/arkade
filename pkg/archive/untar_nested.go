@@ -15,14 +15,18 @@ import (
 // UntarNested reads the gzip-compressed tar file from r and writes it into dir.
 // When allowSymlinks is false, any symlink entry in the archive causes an
 // error; when true, symlinks are extracted subject to containment checks.
+// When flatExtract is true, all files are extracted directly into dir using
+// only their basename, ignoring the archive's directory structure (e.g.
+// usr/local/bin/foo -> dir/foo). This is analogous to tar's --strip-components,
+// but strips all levels in one go.
 // Copyright 2017 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
-func UntarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) error {
-	return untarNested(r, dir, gzipped, quiet, allowSymlinks)
+func UntarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks, flatExtract bool) error {
+	return untarNested(r, dir, gzipped, quiet, allowSymlinks, flatExtract)
 }
 
-func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (err error) {
+func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks, flatExtract bool) (err error) {
 	t0 := time.Now()
 	nFiles := 0
 	madeDir := map[string]bool{}
@@ -59,6 +63,7 @@ func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (e
 	cleanDir := filepath.Clean(dir)
 
 	tr := tar.NewReader(r)
+
 	loggedChtimesError := false
 	for {
 		f, err := tr.Next()
@@ -72,7 +77,11 @@ func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (e
 		if !validRelPath(f.Name) {
 			return fmt.Errorf("tar contained invalid name error %q", f.Name)
 		}
-		rel := filepath.FromSlash(f.Name)
+		name := f.Name
+		if flatExtract {
+			name = filepath.Base(name)
+		}
+		rel := filepath.FromSlash(name)
 		abs := filepath.Join(dir, rel)
 
 		fi := f.FileInfo()
@@ -141,6 +150,9 @@ func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (e
 			}
 			nFiles++
 		case mode.IsDir():
+			if flatExtract {
+				continue
+			}
 			// Guard before MkdirAll, as with regular files.
 			if err := assertExistingPrefixWithinRoot(cleanDir, abs); err != nil {
 				return err
@@ -150,6 +162,10 @@ func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks bool) (e
 			}
 			madeDir[abs] = true
 		case mode.Type() == os.ModeSymlink:
+			if flatExtract {
+				log.Printf("skipping symlink %q during flat extraction (target may not resolve correctly)", f.Name)
+				continue
+			}
 			if !allowSymlinks {
 				return fmt.Errorf("tar file entry %s is a symlink, but symlink extraction is disabled", f.Name)
 			}

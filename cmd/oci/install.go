@@ -44,6 +44,10 @@ OCI image.`,
 
   # Use a shortcut for the image name (vmmeter, slicer, k3sup-pro)
   arkade oci install k3sup-pro
+
+  # Flatten the archive so files are extracted directly into the install path,
+  # ignoring directory structure in the image (e.g. ./usr/local/bin/FILE => ./FILE)
+  arkade oci install ghcr.io/openfaasltd/slicer --flat
 `,
 		SilenceUsage: true,
 	}
@@ -57,6 +61,7 @@ OCI image.`,
 	command.Flags().BoolP("gzipped", "g", false, "Is this a gzipped tarball?")
 	command.Flags().Bool("quiet", false, "Suppress progress output")
 	command.Flags().Bool("symlink", false, "Write symlinks when unpacking OCI image, only use with trusted sources")
+	command.Flags().Bool("flat", false, "Extract all files directly into the install path. Caution: files sharing a basename will overwrite each other and symlinks are skipped")
 
 	// Hide the deprecated --path flag
 	command.Flags().MarkHidden("path")
@@ -71,6 +76,7 @@ OCI image.`,
 		quiet, _ := cmd.Flags().GetBool("quiet")
 		allowSymlinks, _ := cmd.Flags().GetBool("symlink")
 		showProgress, _ := cmd.Flags().GetBool("progress")
+		flatExtract, _ := cmd.Flags().GetBool("flat")
 
 		if len(args) < 1 {
 			return fmt.Errorf("please provide an image name")
@@ -262,7 +268,7 @@ OCI image.`,
 				// When the alt-screen is active, suppress UntarNested's
 				// per-file logging so it doesn't corrupt the live frame.
 				untarQuiet := quiet || (tty && renderLive)
-				if uErr := archive.UntarNested(tarFile, installPath, gzipped, untarQuiet, allowSymlinks); uErr != nil {
+				if uErr := archive.UntarNested(tarFile, installPath, gzipped, untarQuiet, allowSymlinks, flatExtract); uErr != nil {
 					workErr = fmt.Errorf("failed to untar %s: %w", tempFile.Name(), uErr)
 				}
 			}

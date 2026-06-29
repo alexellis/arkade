@@ -120,7 +120,7 @@ func MakeInstallContainerd() *cobra.Command {
 		tempDirName := os.TempDir() + "/containerd"
 
 		if err := spinWhile("Unpacking containerd", func() error {
-			return archive.UntarNested(f, tempDirName, true, true, true)
+			return archive.UntarNested(f, tempDirName, true, true, true, false)
 		}); err != nil {
 			return err
 		}
