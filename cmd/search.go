@@ -75,6 +75,12 @@ func MakeSearch() *cobra.Command {
 			}
 		}
 
+		// Last resort: substring fallback on Name, Owner and Repo when TF-IDF found nothing.
+		if len(matches) == 0 {
+			queryTerms := tokenize(expandAliases(query))
+			matches = fuzzySubstringFallback(tools, queryTerms)
+		}
+
 		if len(matches) == 0 {
 			cmd.Printf("No tools found matching \"%s\"\n", query)
 			return nil
@@ -92,11 +98,10 @@ func MakeSearch() *cobra.Command {
 				fmt.Printf("| %d | %s | %.3f | %s |\n", i+1, r.Tool.Name, r.Score, r.Tool.Description)
 			}
 		default:
-			sorted := make([]get.Tool, len(ranked))
-			for i, r := range ranked {
-				sorted[i] = r.Tool
+			matchesOnly := make([]get.Tool, len(matches))
+			for i, r := range matches {
+				matchesOnly[i] = r.Tool
 			}
-			matchesOnly := sorted[:len(matches)]
 			cmd.Printf("Found %d tool(s) matching \"%s\":\n\n", len(matches), query)
 			get.CreateToolsTable(matchesOnly, get.TableStyle)
 		}
@@ -105,6 +110,31 @@ func MakeSearch() *cobra.Command {
 	}
 
 	return cmd
+}
+
+// fuzzySubstringFallback does a simple case-insensitive substring match across
+// Name, Owner, Repo (not Description) when the TF-IDF index returned no results.
+func fuzzySubstringFallback(tools []get.Tool, queryTerms []string) []scoreRank {
+	results := make([]scoreRank, 0)
+	for _, t := range tools {
+		var score float64
+		for _, q := range queryTerms {
+			if strings.Contains(strings.ToLower(t.Name), q) {
+				score += 3.0
+			} else if strings.Contains(strings.ToLower(t.Owner), q) {
+				score += 2.0
+			} else if strings.Contains(strings.ToLower(t.Repo), q) {
+				score += 1.5
+			}
+		}
+		if score > 0 {
+			results = append(results, scoreRank{Tool: t, Score: score})
+		}
+	}
+	sort.SliceStable(results, func(i, j int) bool {
+		return results[i].Score > results[j].Score
+	})
+	return results
 }
 
 // splitOnSeparators returns a slice of substrings obtained by splitting on - and _.
@@ -128,7 +158,12 @@ func rankByTFIDF(tools []get.Tool, rawQuery string) []scoreRank {
 		// Tokenize name with separator splitting to create individual IDF entries
 		// for parts like "faas" in "faas-cli", then append the expanded description.
 		nameTokens := splitOnSeparators(t.Name)
-		docs[i] = tokenize(strings.Join(nameTokens, " ") + " " + expandAliases(t.Description))
+		docs[i] = tokenize(
+			strings.Join(nameTokens, " ") + " " +
+				t.Owner + " " +
+				t.Repo + " " +
+				expandAliases(t.Description),
+		)
 	}
 
 	df := make(map[string]int)
