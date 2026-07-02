@@ -138,6 +138,38 @@ func Test_DownloadRestic(t *testing.T) {
 	}
 }
 
+func Test_DownloadCrc(t *testing.T) {
+	tools := MakeTools()
+	name := "crc"
+
+	tool := getTool(name, tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "2.62.0",
+			url:     "https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.62.0/crc-linux-amd64.tar.xz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "2.62.0",
+			url:     "https://mirror.openshift.com/pub/openshift-v4/clients/crc/2.62.0/crc-linux-arm64.tar.xz",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Errorf("Got error for %s/%s: %v", tc.os, tc.arch, err)
+		}
+		if got != tc.url {
+			t.Errorf("Want:\n%s\nGot:\n%s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadFd(t *testing.T) {
 	tools := MakeTools()
 	name := "fd"

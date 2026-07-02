@@ -4206,6 +4206,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:          "crc-org",
+			Repo:           "crc",
+			Name:           "crc",
+			Description:    "CRC is a tool to help you run containers. It manages local VMs to run an OpenShift 4.x cluster.",
+			BinaryTemplate: `crc`,
+			URLTemplate: `
+						{{$arch := .Arch}}
+						{{$version := .VersionNumber}}
+
+						{{- if eq .Arch "aarch64" -}}
+							{{$arch = "arm64"}}
+						{{- else if eq .Arch "arm64" -}}
+							{{$arch = "arm64"}}
+						{{- else if eq .Arch "x86_64" -}}
+							{{$arch = "amd64"}}
+						{{- end -}}
+
+						{{- if eq .VersionNumber "" -}}
+							{{$version = "latest"}}
+						{{- end -}}
+
+						https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-linux-{{$arch}}.tar.xz
+						`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "atuinsh",
 			Repo:        "atuin",
 			Name:        "atuin",

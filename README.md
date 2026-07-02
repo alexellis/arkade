@@ -807,6 +807,7 @@ There are 53 apps that you can install on your cluster.
 | [cosign](https://github.com/sigstore/cosign)                                 | Container Signing, Verification and Storage in an OCI registry.                                                                                                   |
 | [cr](https://github.com/helm/chart-releaser)                                 | Hosting Helm Charts via GitHub Pages and Releases                                                                                                                 |
 | [crane](https://github.com/google/go-containerregistry)                      | crane is a tool for interacting with remote images and registries                                                                                                 |
+| [crc](https://github.com/crc-org/crc)                                        | CRC is a tool to help you run containers. It manages local VMs to run an OpenShift 4.x cluster.                                                                   |
 | [croc](https://github.com/schollz/croc)                                      | Easily and securely send things from one computer to another                                                                                                      |
 | [crossplane](https://github.com/crossplane/crossplane)                       | Simplify some development and administration aspects of Crossplane.                                                                                               |
 | [crush](https://github.com/charmbracelet/crush)                              | A delightful AI assistant for your terminal                                                                                                                       |
@@ -972,8 +973,7 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 197 tools, use `arkade get NAME` to download one.
-
-> Note to contributors, run `go run . get --format markdown` to generate this list
+There are 198 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 
 <!-- end of tool list -->
+
