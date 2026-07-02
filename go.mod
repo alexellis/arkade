@@ -27,6 +27,7 @@ require (
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/goccy/go-json v0.10.6 // indirect
+	github.com/ulikunitz/xz v0.5.15 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
 )
 
