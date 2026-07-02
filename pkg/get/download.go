@@ -20,6 +20,7 @@ import (
 	"time"
 
 	units "github.com/docker/go-units"
+	"github.com/ulikunitz/xz"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/archive"
@@ -822,6 +823,22 @@ func decompress(tool *Tool, downloadURL, outFilePath, operatingSystem, arch, ver
 		}
 	} else if strings.HasSuffix(downloadURL, ".bz2") {
 		if err := unbzip(archiveFile, outFilePath); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(downloadURL, "tar.xz") {
+		xzReader, err := xz.NewReader(archiveFile)
+		if err != nil {
+			return "", err
+		}
+		if err := archive.Untar(xzReader, outFilePathDir, false, forceQuiet); err != nil {
+			return "", err
+		}
+	} else if strings.HasSuffix(downloadURL, "tar.xz") {
+		xzReader, err := xz.NewReader(archiveFile)
+		if err != nil {
+			return "", err
+		}
+		if err := archive.Untar(xzReader, outFilePathDir, false, forceQuiet); err != nil {
 			return "", err
 		}
 	}
