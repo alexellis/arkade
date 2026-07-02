@@ -4214,6 +4214,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			URLTemplate: `
 						{{$arch := .Arch}}
 						{{$version := .VersionNumber}}
+						{{$os := .OS}}
 
 						{{- if eq .Arch "aarch64" -}}
 							{{$arch = "arm64"}}
@@ -4227,7 +4228,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 							{{$version = "latest"}}
 						{{- end -}}
 
-						https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-linux-{{$arch}}.tar.xz
+						{{- if eq $os "linux" -}}
+							https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-linux-{{$arch}}.tar.xz
+						{{- else -}}
+							https://mirror.openshift.com/pub/openshift-v4/clients/crc/{{$version}}/crc-{{$os}}-{{$arch}}.tar.xz
+						{{- end -}}
 						`,
 		})
 

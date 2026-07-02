@@ -179,7 +179,6 @@ func isArchiveStr(downloadURL string) bool {
 		strings.HasSuffix(downloadURL, "tgz") ||
 		strings.HasSuffix(downloadURL, ".gz") ||
 		strings.HasSuffix(downloadURL, ".bz2") ||
-		strings.HasSuffix(downloadURL, "tar.xz") ||
 		strings.HasSuffix(downloadURL, "tar.xz")
 }
 
