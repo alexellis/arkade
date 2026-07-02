@@ -4890,6 +4890,56 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
+			Owner:           "restic",
+			Repo:            "restic",
+			Name:            "restic",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Restic is a backup program that encrypts data by default and supports multiple backends.",
+			BinaryTemplate: `{{$os := .OS}}
+								{{$arch := .Arch}}
+
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+									{{$arch = "amd64"}}
+								{{- else if eq .Arch "armv7l" -}}
+									{{$arch = "arm"}}
+								{{- end -}}
+
+								{{- if HasPrefix .OS "ming" -}}
+									{{.Name}}_{{.VersionNumber}}_windows_{{$arch}}
+								{{- else -}}
+									{{.Name}}
+								{{- end -}}
+								`,
+			URLTemplate: `
+								{{$os := .OS}}
+								{{$arch := .Arch}}
+								{{$ext := "bz2"}}
+
+								{{- if eq .OS "darwin" -}}
+									{{$os = "darwin"}}
+								{{- else if eq .OS "linux" -}}
+									{{$os = "linux"}}
+								{{- else if HasPrefix .OS "ming" -}}
+									{{$os = "windows"}}
+									{{$ext = "zip"}}
+								{{- end -}}
+
+								{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+									{{$arch = "arm64"}}
+								{{- else if eq .Arch "x86_64" -}}
+									{{$arch = "amd64"}}
+								{{- else if eq .Arch "armv7l" -}}
+									{{$arch = "arm"}}
+								{{- end -}}
+
+								https://github.com/restic/restic/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+								`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:           "grafana",
 			Repo:            "alloy",
 			Name:            "alloy",

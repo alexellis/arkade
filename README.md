@@ -827,7 +827,6 @@ There are 53 apps that you can install on your cluster.
 | [eksctl-anywhere](https://github.com/aws/eks-anywhere)                       | Run Amazon EKS on your own infrastructure                                                                                                                         |
 | [etcd](https://github.com/etcd-io/etcd)                                      | Distributed reliable key-value store for the most critical data of a distributed system.                                                                          |
 | [faas-cli](https://github.com/openfaas/faas-cli)                             | Official CLI for OpenFaaS.                                                                                                                                        |
-| [faasd](https://github.com/openfaas/faasd)                                   | faasd - a lightweight & portable faas engine                                                                                                                      |
 | [fd](https://github.com/sharkdp/fd)                                          | A simple, fast and user-friendly alternative to find.                                                                                                             |
 | [firectl](https://github.com/firecracker-microvm/firectl)                    | Command-line tool that lets you run arbitrary Firecracker MicroVMs                                                                                                |
 | [flux](https://github.com/fluxcd/flux2)                                      | Continuous Delivery solution for Kubernetes powered by GitOps Toolkit.                                                                                            |
@@ -935,6 +934,7 @@ There are 53 apps that you can install on your cluster.
 | [regctl](https://github.com/regclient/regclient)                             | Utility for accessing docker registries                                                                                                                           |
 | [rekor-cli](https://github.com/sigstore/rekor)                               | Secure Supply Chain - Transparency Log                                                                                                                            |
 | [replicated](https://github.com/replicatedhq/replicated)                     | CLI for interacting with the Replicated Vendor API                                                                                                                |
+| [restic](https://github.com/restic/restic)                                   | Restic is a backup program that encrypts data by default and supports multiple backends.                                                                          |
 | [rg](https://github.com/BurntSushi/ripgrep)                                  | ripgrep recursively searches directories for a regex pattern while respecting your gitignore                                                                      |
 | [rosa](https://github.com/openshift/rosa)                                    | Red Hat OpenShift on AWS (ROSA) command line tool                                                                                                                 |
 | [rpk](https://github.com/redpanda-data/redpanda)                             | Kafka compatible streaming platform for mission critical workloads.                                                                                               |
@@ -972,9 +972,8 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 196 tools, use `arkade get NAME` to download one.
-
-<!-- end of tool list -->
-
+There are 197 tools, use `arkade get NAME` to download one.
 
 > Note to contributors, run `go run . get --format markdown` to generate this list
+
+<!-- end of tool list -->

@@ -86,6 +86,58 @@ func Test_DownloadRipgrep(t *testing.T) {
 	}
 }
 
+func Test_DownloadRestic(t *testing.T) {
+	tools := MakeTools()
+	name := "restic"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.19.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/restic/restic/releases/download/v0.19.0/restic_0.19.0_linux_amd64.bz2",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/restic/restic/releases/download/v0.19.0/restic_0.19.0_linux_arm64.bz2",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/restic/restic/releases/download/v0.19.0/restic_0.19.0_darwin_amd64.bz2",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/restic/restic/releases/download/v0.19.0/restic_0.19.0_darwin_arm64.bz2",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/restic/restic/releases/download/v0.19.0/restic_0.19.0_windows_amd64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Errorf("Got error for %s/%s: %v", tc.os, tc.arch, err)
+		}
+		if got != tc.url {
+			t.Errorf("Want:\n%s\nGot:\n%s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadFd(t *testing.T) {
 	tools := MakeTools()
 	name := "fd"
