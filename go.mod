@@ -22,12 +22,12 @@ require (
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/alexellis/gha-bump v0.0.6
+	github.com/ulikunitz/xz v0.5.15
 )
 
 require (
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/goccy/go-json v0.10.6 // indirect
-	github.com/ulikunitz/xz v0.5.15 // indirect
 	gotest.tools/v3 v3.5.2 // indirect
 )
 
