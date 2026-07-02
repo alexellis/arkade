@@ -57,19 +57,19 @@ Edit `pkg/get/tools.go` and add a new `Tool` entry. **Reference existing example
 **Key points:**
 - Use `BinaryTemplate` for GitHub releases (simpler)
 - Use `URLTemplate` for custom URLs or non-GitHub sources
-- Supported archive formats: `.tar.gz`, `.zip` (`.tar.xz` is NOT supported)
+- Supported archive formats: `.tar.gz`, `.zip`, `.tgz`, `.bz2`, `.tar.xz`
 - Template variables: `.OS`, `.Arch`, `.Name`, `.Version`, `.VersionNumber`, `.Repo`, `.Owner`
 - Windows detection: `HasPrefix .OS "ming"`
 - **CRITICAL**: If a binary is missing for a specific OS/arch (e.g., Windows amd64), the template must still generate a URL that results in a 404 error, NOT download the wrong binary (e.g., don't download Linux binary when Windows was requested)
 
 #### Archive tools: when the binary name inside the archive differs from the tool name
 
-When a tool is distributed as an archive (`.tar.gz`, `.tgz`, `.zip`) and the **binary inside the archive** has a platform-specific name (e.g., `mytool-darwin-arm64` rather than just `mytool`), you **must** use both `URLTemplate` and `BinaryTemplate` together:
+When a tool is distributed as an archive (`.tar.gz`, `.tgz`, `.zip`, `.bz2`, `.tar.xz`) and the **binary inside the archive** has a platform-specific name (e.g., `mytool-darwin-arm64` rather than just `mytool`), you **must** use both `URLTemplate` and `BinaryTemplate` together:
 
 - **`URLTemplate`** — the full download URL including the archive extension (e.g., `https://github.com/.../mytool-darwin-arm64.tgz`)
 - **`BinaryTemplate`** — the name of the **binary inside the archive**, without the archive extension (e.g., `mytool-darwin-arm64`)
 
-**Do NOT** put the archive filename (with `.tgz`/`.tar.gz`/`.zip` extension) in `BinaryTemplate` alone. The `decompress()` function in `pkg/get/download.go` uses `BinaryTemplate` to locate the extracted binary. If `BinaryTemplate` contains an archive extension, decompress falls back to `tool.Name` which will be wrong when the inner binary has a platform suffix.
+**Do NOT** put the archive filename (with `.tgz`/`.tar.gz`/`.zip`/`.bz2`/`.tar.xz` extension) in `BinaryTemplate` alone. The `decompress()` function in `pkg/get/download.go` uses `BinaryTemplate` to locate the extracted binary. If `BinaryTemplate` contains an archive extension, decompress falls back to `tool.Name` which will be wrong when the inner binary has a platform suffix.
 
 **Reference example**: `inletsctl` in `pkg/get/tools.go` — uses `URLTemplate` for the download URL and `BinaryTemplate` for the inner binary name.
 
@@ -177,7 +177,7 @@ Replace everything between `<!-- start of tool list -->` and `<!-- end of tool l
 - [ ] Required fields: `Name`, `Owner`, `Repo`, `Description`
 - [ ] Either `BinaryTemplate` or `URLTemplate` provided
 - [ ] Supports required OS/arch combinations (Linux amd64/arm64, Darwin amd64/arm64, Windows amd64)
-- [ ] Archive format is `.tar.gz` or `.zip` (not `.tar.xz`)
+- [ ] Archive format is `.tar.gz`, `.zip`, `.bz2`, or `.tar.xz`
 - [ ] Missing OS/arch combinations generate URLs that return 404 (not download wrong binary)
 
 #### Unit Tests (`pkg/get/get_test.go`)
@@ -223,7 +223,7 @@ go test ./pkg/get/... -v
 3. URLs don't match actual GitHub releases
 4. Missing architecture support
 5. Wrong architecture mapping (`arm64` vs `aarch64`, `amd64` vs `x86_64`)
-6. Using unsupported archive format (`.tar.xz`)
+6. Using unsupported archive format — only `.tar.gz`, `.zip`, `.tgz`, `.bz2`, and `.tar.xz` are supported
 7. Template downloads wrong binary when combination is missing (e.g., downloads Linux when Windows requested) - must return 404 instead
 
 ---
