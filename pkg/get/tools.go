@@ -68,6 +68,156 @@ func MakeTools() Tools {
 {{- else -}}
 {{.Name}}-linux-x64.tar.gz
 {{- end -}}`,
+		},
+		Tool{
+			Owner:          "nektos",
+			Repo:           "act",
+			Name:           "act",
+			Description:    "Run GitHub Actions locally",
+			BinaryTemplate: `{{.Name}}`,
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "darwin" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = "act_Darwin_x86_64.tar.gz"}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = "act_Darwin_arm64.tar.gz"}}
+{{- else -}}
+{{$fileName = "act-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if eq .OS "linux" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = "act_Linux_x86_64.tar.gz"}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = "act_Linux_arm64.tar.gz"}}
+{{- else if eq .Arch "armv7l" -}}
+{{$fileName = "act_Linux_armv7.tar.gz"}}
+{{- else -}}
+{{$fileName = "act-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = "act_Windows_x86_64.zip"}}
+{{- else -}}
+{{$fileName = "act-unsupported.zip"}}
+{{- end -}}
+{{- else -}}
+{{$fileName = "act-unsupported.tar.gz"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}
+`,
+		},
+		Tool{
+			Owner:          "ko-build",
+			Repo:           "ko",
+			Name:           "ko",
+			Description:    "Build and deploy container images using Go",
+			BinaryTemplate: `{{.Name}}`,
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "darwin" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "ko_%s_Darwin_x86_64.tar.gz" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "ko_%s_Darwin_arm64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "ko-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if eq .OS "linux" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "ko_%s_Linux_x86_64.tar.gz" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "ko_%s_Linux_arm64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "ko-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "ko_%s_Windows_x86_64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "ko-unsupported.tar.gz"}}
+{{- end -}}
+{{- else -}}
+{{$fileName = "ko-unsupported.tar.gz"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}
+`,
+		},
+		Tool{
+			Owner:          "oras-project",
+			Repo:           "oras",
+			Name:           "oras",
+			Description:    "OCI registry operations from the command line",
+			BinaryTemplate: `{{.Name}}`,
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "darwin" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "oras_%s_darwin_amd64.tar.gz" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "oras_%s_darwin_arm64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "oras-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if eq .OS "linux" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "oras_%s_linux_amd64.tar.gz" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "oras_%s_linux_arm64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "oras-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "oras_%s_windows_amd64.zip" .VersionNumber}}
+{{- else -}}
+{{$fileName = "oras-unsupported.zip"}}
+{{- end -}}
+{{- else -}}
+{{$fileName = "oras-unsupported.tar.gz"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}
+`,
+		},
+		Tool{
+			Owner:          "grafana",
+			Repo:           "k6",
+			Name:           "k6",
+			Description:    "Open-source, extensible performance testing tool",
+			BinaryTemplate: `{{.Name}}`,
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "darwin" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "k6-v%s-macos-amd64.zip" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "k6-v%s-macos-arm64.zip" .VersionNumber}}
+{{- else -}}
+{{$fileName = "k6-unsupported.zip"}}
+{{- end -}}
+{{- else if eq .OS "linux" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "k6-v%s-linux-amd64.tar.gz" .VersionNumber}}
+{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+{{$fileName = printf "k6-v%s-linux-arm64.tar.gz" .VersionNumber}}
+{{- else -}}
+{{$fileName = "k6-unsupported.tar.gz"}}
+{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+{{- if eq .Arch "x86_64" -}}
+{{$fileName = printf "k6-v%s-windows-amd64.zip" .VersionNumber}}
+{{- else -}}
+{{$fileName = "k6-unsupported.zip"}}
+{{- end -}}
+{{- else -}}
+{{$fileName = "k6-unsupported.tar.gz"}}
+{{- end -}}
+
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}
+`,
 		})
 
 	// Claude Code CLI

@@ -775,6 +775,7 @@ There are 53 apps that you can install on your cluster.
 <!-- start of tool list -->
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [act](https://github.com/nektos/act)                                         | Run GitHub Actions locally                                                                                                                                        |
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                                                     |
 | [age](https://github.com/FiloSottile/age)                                    | A simple, modern, and secure file encryption tool.                                                                                                                |
@@ -864,6 +865,7 @@ There are 53 apps that you can install on your cluster.
 | [k3d](https://github.com/k3d-io/k3d)                                         | Helper to run Rancher Lab's k3s in Docker.                                                                                                                        |
 | [k3s](https://github.com/k3s-io/k3s)                                         | Lightweight Kubernetes                                                                                                                                            |
 | [k3sup](https://github.com/alexellis/k3sup)                                  | Bootstrap Kubernetes with k3s over SSH < 1 min.                                                                                                                   |
+| [k6](https://github.com/grafana/k6)                                          | Open-source, extensible performance testing tool                                                                                                                  |
 | [k9s](https://github.com/derailed/k9s)                                       | Provides a terminal UI to interact with your Kubernetes clusters.                                                                                                 |
 | [kail](https://github.com/boz/kail)                                          | Kubernetes log viewer.                                                                                                                                            |
 | [keploy](https://github.com/keploy/keploy)                                   | Test generation for Developers. Generate tests and stubs for your application that actually work!                                                                 |
@@ -871,6 +873,7 @@ There are 53 apps that you can install on your cluster.
 | [kim](https://github.com/rancher/kim)                                        | Build container images inside of Kubernetes. (Experimental)                                                                                                       |
 | [kind](https://github.com/kubernetes-sigs/kind)                              | Run local Kubernetes clusters using Docker container nodes.                                                                                                       |
 | [kluctl](https://github.com/kluctl/kluctl)                                   | Kluctl is a tool to deploy applications declaratively to Kubernetes via a gitops approach.                                                                        |
+| [ko](https://github.com/ko-build/ko)                                         | Build and deploy container images using Go                                                                                                                        |
 | [kops](https://github.com/kubernetes/kops)                                   | Production Grade K8s Installation, Upgrades, and Management.                                                                                                      |
 | [krew](https://github.com/kubernetes-sigs/krew)                              | Package manager for kubectl plugins.                                                                                                                              |
 | [ktop](https://github.com/vladimirvivien/ktop)                               | A top-like tool for your Kubernetes cluster.                                                                                                                      |
@@ -922,6 +925,7 @@ There are 53 apps that you can install on your cluster.
 | [openshift-install](https://github.com/openshift/installer)                  | CLI to install an OpenShift 4.x cluster.                                                                                                                          |
 | [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                                                      |
 | [opkssh](https://github.com/openpubkey/opkssh)                               | A new type of shell that can handle structured data like YAML really well                                                                                         |
+| [oras](https://github.com/oras-project/oras)                                 | OCI registry operations from the command line                                                                                                                     |
 | [osm](https://github.com/openservicemesh/osm)                                | Open Service Mesh uniformly manages, secures, and gets out-of-the-box observability features.                                                                     |
 | [pack](https://github.com/buildpacks/pack)                                   | Build apps using Cloud Native Buildpacks.                                                                                                                         |
 | [packer](https://github.com/hashicorp/packer)                                | Build identical machine images for multiple platforms from a single source configuration.                                                                         |
@@ -973,8 +977,6 @@ There are 53 apps that you can install on your cluster.
 | [websocat](https://github.com/vi/websocat)                                   | Command-line client for WebSockets, like netcat/socat but for WebSockets                                                                                          |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 198 tools, use `arkade get NAME` to download one.
-
-> Note to contributors, run `go run . get --format markdown` to generate this list
+There are 202 tools, use `arkade get NAME` to download one.                                                                                                                                                                                         
 
 <!-- end of tool list -->

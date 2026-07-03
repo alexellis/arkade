@@ -826,6 +826,48 @@ func Test_Download_ActuatedCLI(t *testing.T) {
 	}
 }
 
+func Test_DownloadAct(t *testing.T) {
+	tools := MakeTools()
+	name := "act"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.2.89"
+
+	tests := []test{
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/nektos/act/releases/download/v0.2.89/act_Darwin_x86_64.tar.gz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/nektos/act/releases/download/v0.2.89/act_Darwin_arm64.tar.gz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/nektos/act/releases/download/v0.2.89/act_Linux_x86_64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/nektos/act/releases/download/v0.2.89/act_Linux_arm64.tar.gz"},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/nektos/act/releases/download/v0.2.89/act_Windows_x86_64.zip"},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Fatalf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_Download_mixctl(t *testing.T) {
 	tools := MakeTools()
 	name := "mixctl"
@@ -1720,6 +1762,90 @@ func Test_DownloadK9s(t *testing.T) {
 	}
 }
 
+func Test_DownloadK6(t *testing.T) {
+	tools := MakeTools()
+	name := "k6"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.1.0"
+
+	tests := []test{
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/k6/releases/download/v2.1.0/k6-v2.1.0-macos-amd64.zip"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/grafana/k6/releases/download/v2.1.0/k6-v2.1.0-macos-arm64.zip"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/k6/releases/download/v2.1.0/k6-v2.1.0-linux-amd64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/grafana/k6/releases/download/v2.1.0/k6-v2.1.0-linux-arm64.tar.gz"},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/grafana/k6/releases/download/v2.1.0/k6-v2.1.0-windows-amd64.zip"},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadKo(t *testing.T) {
+	tools := MakeTools()
+	name := "ko"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.19.1"
+
+	tests := []test{
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/ko-build/ko/releases/download/v0.19.1/ko_0.19.1_Darwin_x86_64.tar.gz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/ko-build/ko/releases/download/v0.19.1/ko_0.19.1_Darwin_arm64.tar.gz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/ko-build/ko/releases/download/v0.19.1/ko_0.19.1_Linux_x86_64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/ko-build/ko/releases/download/v0.19.1/ko_0.19.1_Linux_arm64.tar.gz"},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/ko-build/ko/releases/download/v0.19.1/ko_0.19.1_Windows_x86_64.tar.gz"},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadPopeye(t *testing.T) {
 	tools := MakeTools()
 	name := "popeye"
@@ -2387,6 +2513,48 @@ func Test_DownloadOpa(t *testing.T) {
 
 	for _, tc := range tests {
 		got, _, err := tool.GetURL(tc.os, "", tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
+func Test_DownloadOras(t *testing.T) {
+	tools := MakeTools()
+	name := "oras"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.3.2"
+
+	tests := []test{
+		{os: "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_darwin_amd64.tar.gz"},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_darwin_arm64.tar.gz"},
+		{os: "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_linux_amd64.tar.gz"},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_linux_arm64.tar.gz"},
+		{os: "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/oras-project/oras/releases/download/v1.3.2/oras_1.3.2_windows_amd64.zip"},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
