@@ -14,7 +14,9 @@ import (
 
 // UntarNested reads the gzip-compressed tar file from r and writes it into dir.
 // When allowSymlinks is false, any symlink entry in the archive causes an
-// error; when true, symlinks are extracted subject to containment checks.
+// error; when true, symlinks are extracted when their destination path is
+// within dir. Later writes through symlinks are still subject to containment
+// checks.
 // When flatExtract is true, all files are extracted directly into dir using
 // only their basename, ignoring the archive's directory structure (e.g.
 // usr/local/bin/foo -> dir/foo). This is analogous to tar's --strip-components,
@@ -186,19 +188,6 @@ func untarNested(r io.Reader, dir string, gzipped, quiet, allowSymlinks, flatExt
 				return fmt.Errorf("cannot resolve parent of %s: %v", abs, err)
 			}
 			abs = filepath.Join(resolvedParent, filepath.Base(abs))
-			// Validate the link target stays within root. resolvedParent is
-			// symlink-free, so this lexical check matches the physical location.
-			target := f.Linkname
-			if !filepath.IsAbs(target) {
-				target = filepath.Join(resolvedParent, target)
-			}
-			if !inDir(filepath.Clean(target), cleanDir) {
-				return fmt.Errorf("refusing symlink %q -> %q (escapes %q)", abs, f.Linkname, dir)
-			}
-			// ...and physically (pre-existing symlink in the target path).
-			if err := assertExistingPrefixWithinRoot(cleanDir, target); err != nil {
-				return err
-			}
 			if err := os.Symlink(f.Linkname, abs); err != nil {
 				return err
 			}

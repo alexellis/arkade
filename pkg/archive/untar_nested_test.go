@@ -37,8 +37,8 @@ func buildTar(t *testing.T, entries []tarEntry) []byte {
 	return b.Bytes()
 }
 
-// A symlink whose target is an absolute path outside the install dir must be rejected,
-// even when a subsequent entry attempts to write through it.
+// A symlink whose target is an absolute path outside the install dir may be
+// created, but a subsequent entry must not write through it.
 func Test_UntarNested_RejectsAbsoluteSymlinkWriteThrough(t *testing.T) {
 	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
 	if err != nil {
@@ -67,10 +67,19 @@ func Test_UntarNested_RejectsAbsoluteSymlinkWriteThrough(t *testing.T) {
 	if content, err := os.ReadFile(filepath.Join(outsideDir, "escape.txt")); err == nil {
 		t.Fatalf("file written outside install dir: content=%q", string(content))
 	}
+
+	linkPath := filepath.Join(installDir, "escape-link")
+	fi, err := os.Lstat(linkPath)
+	if err != nil {
+		t.Fatalf("expected symlink %q to exist: %v", linkPath, err)
+	}
+	if fi.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("expected %q to be a symlink", linkPath)
+	}
 }
 
-// A symlink whose target is a relative path that escapes the install dir must be rejected,
-// even when a subsequent entry attempts to write through it.
+// A symlink whose target is a relative path outside the install dir may be
+// created, but a subsequent entry must not write through it.
 func Test_UntarNested_RejectsRelativeSymlinkWriteThrough(t *testing.T) {
 	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
 	if err != nil {
@@ -98,6 +107,49 @@ func Test_UntarNested_RejectsRelativeSymlinkWriteThrough(t *testing.T) {
 
 	if content, err := os.ReadFile(filepath.Join(outsideDir, "escape.txt")); err == nil {
 		t.Fatalf("file written outside install dir: content=%q", string(content))
+	}
+
+	linkPath := filepath.Join(installDir, "escape-link")
+	fi, err := os.Lstat(linkPath)
+	if err != nil {
+		t.Fatalf("expected symlink %q to exist: %v", linkPath, err)
+	}
+	if fi.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("expected %q to be a symlink", linkPath)
+	}
+}
+
+// A symlink created by the archive must not allow a later regular file entry
+// with the same path to write outside the install dir.
+func Test_UntarNested_RejectsArchiveCreatedLeafSymlinkWriteThrough(t *testing.T) {
+	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(baseDir)
+
+	installDir := filepath.Join(baseDir, "install")
+	if err := os.MkdirAll(installDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	outsideTarget := filepath.Join(baseDir, "target.txt")
+	if err := os.WriteFile(outsideTarget, []byte("ORIGINAL"), 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	data := buildTar(t, []tarEntry{
+		{hdr: tar.Header{Name: "su", Typeflag: tar.TypeSymlink, Linkname: outsideTarget, Mode: 0777}},
+		{hdr: tar.Header{Name: "su", Typeflag: tar.TypeReg, Mode: 0755}, body: []byte("HACKED")},
+	})
+
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err == nil {
+		t.Fatal("want error, got nil")
+	}
+
+	if b, err := os.ReadFile(outsideTarget); err != nil {
+		t.Fatal(err)
+	} else if string(b) != "ORIGINAL" {
+		t.Fatalf("file outside root overwritten through leaf symlink: now %q", string(b))
 	}
 }
 
@@ -130,9 +182,9 @@ func Test_UntarNested_RejectsChainedSymlinkEscape(t *testing.T) {
 	}
 }
 
-// A symlink that resolves outside the install dir must not be left on disk,
-// even without a subsequent write; hop1 -> "." (resolves to install), hop1/hop2 -> ".." (escapes to base).
-func Test_UntarNested_RejectsPlantedEscapingSymlink(t *testing.T) {
+// A symlink that resolves outside the install dir may be left on disk when it
+// is created within the install dir and no write is attempted through it.
+func Test_UntarNested_AllowsPlantedEscapingSymlink(t *testing.T) {
 	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
 	if err != nil {
 		t.Fatal(err)
@@ -149,21 +201,23 @@ func Test_UntarNested_RejectsPlantedEscapingSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "hop1/hop2", Typeflag: tar.TypeSymlink, Linkname: "..", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err == nil {
-		t.Fatal("want error, got nil")
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err != nil {
+		t.Fatalf("expected clean extraction, got: %v", err)
 	}
 
 	planted := filepath.Join(installDir, "hop2")
-	if fi, err := os.Lstat(planted); err == nil && fi.Mode()&os.ModeSymlink != 0 {
-		target, _ := os.Readlink(planted)
-		t.Fatalf("escaping symlink left on disk: %s -> %q", planted, target)
+	fi, err := os.Lstat(planted)
+	if err != nil {
+		t.Fatalf("expected symlink %q to exist: %v", planted, err)
+	}
+	if fi.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("expected %q to be a symlink", planted)
 	}
 }
 
-// A symlink whose target traverses a pre-existing symlink (inside the install dir
-// but pointing outside) must be rejected and not left on disk. The lexical target
-// check alone passes here, so this exercises the physical-prefix resolution.
-func Test_UntarNested_RejectsSymlinkTargetViaPreExistingSymlink(t *testing.T) {
+// A symlink whose target traverses a pre-existing symlink may be created when
+// the symlink itself is written within the install dir.
+func Test_UntarNested_AllowsSymlinkTargetViaPreExistingSymlink(t *testing.T) {
 	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
 	if err != nil {
 		t.Fatal(err)
@@ -188,14 +242,52 @@ func Test_UntarNested_RejectsSymlinkTargetViaPreExistingSymlink(t *testing.T) {
 		{hdr: tar.Header{Name: "planted", Typeflag: tar.TypeSymlink, Linkname: "safe/file", Mode: 0777}},
 	})
 
-	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err == nil {
-		t.Fatalf("expected extraction to be rejected, got nil error")
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err != nil {
+		t.Fatalf("expected clean extraction, got: %v", err)
 	}
 
 	planted := filepath.Join(installDir, "planted")
-	if fi, err := os.Lstat(planted); err == nil && fi.Mode()&os.ModeSymlink != 0 {
-		target, _ := os.Readlink(planted)
-		t.Fatalf("escaping symlink left on disk: %s -> %q", planted, target)
+	fi, err := os.Lstat(planted)
+	if err != nil {
+		t.Fatalf("expected symlink %q to exist: %v", planted, err)
+	}
+	if fi.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("expected %q to be a symlink", planted)
+	}
+}
+
+// A symlink written inside the install dir must not allow a subsequent file
+// entry to write through a pre-existing escaping symlink target.
+func Test_UntarNested_RejectsWriteThroughSymlinkTargetViaPreExistingSymlink(t *testing.T) {
+	baseDir, err := os.MkdirTemp("", "arkade-untar-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(baseDir)
+
+	installDir := filepath.Join(baseDir, "install")
+	if err := os.MkdirAll(installDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	outsideDir := filepath.Join(baseDir, "outside")
+	if err := os.MkdirAll(outsideDir, 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink(outsideDir, filepath.Join(installDir, "safe")); err != nil {
+		t.Fatal(err)
+	}
+
+	data := buildTar(t, []tarEntry{
+		{hdr: tar.Header{Name: "planted", Typeflag: tar.TypeSymlink, Linkname: "safe", Mode: 0777}},
+		{hdr: tar.Header{Name: "planted/escape.txt", Typeflag: tar.TypeReg, Mode: 0644}, body: []byte("escaped\n")},
+	})
+
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err == nil {
+		t.Fatal("want error, got nil")
+	}
+
+	if content, err := os.ReadFile(filepath.Join(outsideDir, "escape.txt")); err == nil {
+		t.Fatalf("file written outside install dir: content=%q", string(content))
 	}
 }
 
@@ -338,6 +430,40 @@ func Test_UntarNested_RejectsLeafSymlinkWriteThrough(t *testing.T) {
 
 	if b, _ := os.ReadFile(outsideTarget); string(b) != "ORIGINAL" {
 		t.Fatalf("file outside root overwritten through leaf symlink: now %q", string(b))
+	}
+}
+
+// An absolute symlink target, such as Linux module/header links to /usr/src,
+// may be extracted when the symlink itself is created inside the install dir.
+func Test_UntarNested_AllowsAbsoluteSymlinkTarget(t *testing.T) {
+	installDir, err := os.MkdirTemp("", "arkade-untar-*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer os.RemoveAll(installDir)
+
+	data := buildTar(t, []tarEntry{
+		{hdr: tar.Header{Name: "modules/6.1.90/build", Typeflag: tar.TypeSymlink, Linkname: "/usr/src/linux", Mode: 0777}},
+	})
+
+	if err := UntarNested(bytes.NewReader(data), installDir, false, true, true, false); err != nil {
+		t.Fatalf("expected clean extraction with absolute symlink target, got: %v", err)
+	}
+
+	linkPath := filepath.Join(installDir, "modules", "6.1.90", "build")
+	fi, err := os.Lstat(linkPath)
+	if err != nil {
+		t.Fatalf("expected symlink %q to exist: %v", linkPath, err)
+	}
+	if fi.Mode()&os.ModeSymlink == 0 {
+		t.Fatalf("expected %q to be a symlink", linkPath)
+	}
+	target, err := os.Readlink(linkPath)
+	if err != nil {
+		t.Fatalf("read symlink %q: %v", linkPath, err)
+	}
+	if target != "/usr/src/linux" {
+		t.Fatalf("expected symlink target %q, got %q", "/usr/src/linux", target)
 	}
 }
 
