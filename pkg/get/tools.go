@@ -5730,5 +5730,32 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.Version}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
 
+	// xq - XML to JSON/YAML converter
+	tools = append(tools,
+		Tool{
+			Owner:       "sibprogrammer",
+			Repo:        "xq",
+			Name:        "xq",
+			Description: "XML to JSON/YAML converter and query tool.",
+			URLTemplate: `
+{{$arch := .Arch}}
+{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+	{{$arch = "amd64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+	{{$arch = "arm64"}}
+{{- end -}}
+{{$osStr := ""}}
+{{$extStr := "tar.gz"}}
+{{- if eq .OS "darwin" -}}
+	{{$osStr = "darwin"}}
+{{- else if eq .OS "linux" -}}
+	{{$osStr = "linux"}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$osStr = "windows"}}
+	{{$extStr = "zip"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
+		})
+
 	return tools
 }

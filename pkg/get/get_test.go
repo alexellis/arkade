@@ -10373,3 +10373,57 @@ func Test_DownloadMediaMTX(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadXq(t *testing.T) {
+	tools := MakeTools()
+	name := "xq"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.4.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sibprogrammer/xq/releases/download/v1.4.0/xq_1.4.0_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/sibprogrammer/xq/releases/download/v1.4.0/xq_1.4.0_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sibprogrammer/xq/releases/download/v1.4.0/xq_1.4.0_darwin_amd64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/sibprogrammer/xq/releases/download/v1.4.0/xq_1.4.0_darwin_arm64.tar.gz",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/sibprogrammer/xq/releases/download/v1.4.0/xq_1.4.0_windows_amd64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
