@@ -5757,5 +5757,43 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}_{{.VersionNumber}}_{{$osStr}}_{{$arch}}.{{$extStr}}`,
 		})
 
+	// hunk - AI-powered code review CLI
+	tools = append(tools,
+		Tool{
+			Owner:          "modem-dev",
+			Repo:           "hunk",
+			Name:           "hunk",
+			Description:    "AI-powered code review and diff tool.",
+			BinaryTemplate: `hunk`,
+			URLTemplate: `
+{{$fileName := ""}}
+{{- if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+    {{$fileName = "hunkdiff-darwin-arm64.tar.gz"}}
+  {{- else if eq .Arch "x86_64" -}}
+    {{$fileName = "hunkdiff-darwin-x64.tar.gz"}}
+  {{- else -}}
+    {{$fileName = "hunkdiff-darwin-unsupported.tar.gz"}}
+  {{- end -}}
+{{- else if eq .OS "linux" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+    {{$fileName = "hunkdiff-linux-arm64.tar.gz"}}
+  {{- else if eq .Arch "x86_64" -}}
+    {{$fileName = "hunkdiff-linux-x64.tar.gz"}}
+  {{- else -}}
+    {{$fileName = "hunkdiff-linux-unsupported.tar.gz"}}
+  {{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+  {{- if eq .Arch "x86_64" -}}
+    {{$fileName = "hunkdiff-windows-x64.tar.gz"}}
+  {{- else -}}
+    {{$fileName = "hunkdiff-windows-unsupported.tar.gz"}}
+  {{- end -}}
+{{- else -}}
+  {{$fileName = "hunkdiff-unsupported.tar.gz"}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}`,
+		})
+
 	return tools
 }

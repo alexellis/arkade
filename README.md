@@ -12,7 +12,7 @@ With `arkade get`, you'll have `kubectl`, `kind`, `terraform`, and `jq` on your 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Downloads](https://img.shields.io/github/downloads/alexellis/arkade/total)
 
-With 193 CLIs and 53 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
+With 204 CLIs and 53 Kubernetes apps (charts, manifests, installers) available for Kubernetes, gone are the days of contending with dozens of README files just to set up a development stack with the usual suspects like ingress-nginx, Postgres, and cert-manager.
 
 - [arkade - Open Source Marketplace For Developer Tools](#arkade---open-source-marketplace-for-developer-tools)
   - [Support arkade 👋 (From Our Sponsors)](#support-arkade---from-our-sponsors)
@@ -853,6 +853,7 @@ There are 53 apps that you can install on your cluster.
 | [hostctl](https://github.com/guumaster/hostctl)                              | Dev tool to manage /etc/hosts like a pro!                                                                                                                         |
 | [hubble](https://github.com/cilium/hubble)                                   | CLI for network, service & security observability for Kubernetes clusters running Cilium.                                                                         |
 | [hugo](https://github.com/gohugoio/hugo)                                     | Static HTML and CSS website generator.                                                                                                                            |
+| [hunk](https://github.com/modem-dev/hunk)                                    | AI-powered code review and diff tool.                                                                                                                             |
 | [influx](https://github.com/influxdata/influxdb)                             | InfluxDB's command line interface (influx) is an interactive shell for the HTTP API.                                                                              |
 | [inlets-pro](https://github.com/inlets/inlets-pro)                           | Cloud Native Tunnel for HTTP and TCP traffic.                                                                                                                     |
 | [inletsctl](https://github.com/inlets/inletsctl)                             | Automates the task of creating an exit-server (tunnel server) on public cloud infrastructure.                                                                     |
@@ -978,5 +979,5 @@ There are 53 apps that you can install on your cluster.
 | [xq](https://github.com/sibprogrammer/xq)                                    | XML to JSON/YAML converter and query tool.                                                                                                                        |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 202 tools, use `arkade get NAME` to download one.
+There are 204 tools, use `arkade get NAME` to download one.
 <!-- end of tool list -->
