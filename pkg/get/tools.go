@@ -5125,6 +5125,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:           "grafana",
 			Repo:            "alloy",
 			Name:            "alloy",
+			Version:         "v1.17.1",
 			VersionStrategy: GitHubVersionStrategy,
 			Description:     "OpenTelemetry Collector distribution with programmable pipelines",
 			URLTemplate: `
