@@ -42,7 +42,10 @@ OCI image.`,
   # Install slicer for arm64 as an architecture override, instead of using uname
   arkade oci install ghcr.io/openfaasltd/slicer --arch arm64
 
-  # Use a shortcut for the image name (vmmeter, slicer, k3sup-pro)
+  # Use a shortcut for the image name (OpenFaaS Ltd products only)
+  arkade oci install slicer
+  arkade oci install superterm
+  arkade oci install kullu
   arkade oci install k3sup-pro
 
   # Flatten the archive so files are extracted directly into the install path,
@@ -315,6 +318,8 @@ func resolveShortcutImage(imageName string) (string, bool) {
 		return "ghcr.io/openfaasltd/slicer", true
 	case "superterm":
 		return "ghcr.io/openfaasltd/superterm", true
+	case "kullu":
+		return "ghcr.io/openfaasltd/kullu", true
 	case "k3sup-pro":
 		return "ghcr.io/openfaasltd/k3sup-pro", true
 	default:
