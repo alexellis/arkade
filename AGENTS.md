@@ -124,6 +124,14 @@ To update:
 
 Replace everything between `<!-- start of tool list -->` and `<!-- end of tool list -->` (inclusive of the table rows and tool count line, exclusive of the markers themselves).
 
+**Apostrophe gotcha**: some tool descriptions in `tools.go` contain curly apostrophes (`'` U+2019) instead of straight ASCII ones (`'` U+0027). After updating the README with `go run . get --format markdown`, check for this with:
+
+```bash
+rg -P "\xe2\x80\x99" README.md
+```
+
+If any appear in the table rows, revert those lines to their original content (straight apostrophes) using `git checkout -- README.md` and re-apply only the new tool entry. Never let curly apostrophes into the file.
+
 
 ### Step 6: Create Pull Request
 

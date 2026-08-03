@@ -1484,7 +1484,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			Owner:       "cli",
 			Repo:        "cli",
 			Name:        "gh",
-			Description: "GitHub’s official command line tool.",
+			Description: "GitHub's official command line tool.",
 			BinaryTemplate: `
 
 	{{$extStr := "tar.gz"}}
@@ -2292,7 +2292,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			Repo:        "influxdb",
 			Name:        "influx",
 			Version:     "2.0.8",
-			Description: "InfluxDB’s command line interface (influx) is an interactive shell for the HTTP API.",
+			Description: "InfluxDB's command line interface (influx) is an interactive shell for the HTTP API.",
 			URLTemplate: `{{$arch := .Arch}}
 		{{ if eq .Arch "x86_64" -}}
 		{{$arch = "amd64"}}
