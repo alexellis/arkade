@@ -629,6 +629,38 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
+			Owner:       "rhysd",
+			Repo:        "actionlint",
+			Name:        "actionlint",
+			Description: "Static checker for GitHub Actions workflow files.",
+			BinaryTemplate: `{{$arch := ""}}
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
+			{{- end -}}
+
+			{{$osStr := ""}}
+			{{$ext := "tar.gz"}}
+			{{- if eq .OS "linux" -}}
+			{{$osStr = "linux"}}
+			{{- else if eq .OS "darwin" -}}
+			{{$osStr = "darwin"}}
+			{{- else if HasPrefix .OS "ming" -}}
+			{{$osStr = "windows"}}
+			{{$ext = "zip"}}
+			{{- end -}}
+
+			{{$filename := ""}}
+			{{- if and $osStr $arch -}}
+			{{$filename = printf "actionlint_%s_%s_%s.%s" .VersionNumber $osStr $arch $ext}}
+			{{- else -}}
+			{{$filename = "actionlint-unsupported.tar.gz"}}
+			{{- end -}}
+
+			{{$filename}}`,
+		},
+		Tool{
 			Owner:       "sigoden",
 			Repo:        "dufs",
 			Name:        "dufs",

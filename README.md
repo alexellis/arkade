@@ -776,6 +776,7 @@ There are 53 apps that you can install on your cluster.
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [act](https://github.com/nektos/act)                                         | Run GitHub Actions locally                                                                                                                                        |
+| [actionlint](https://github.com/rhysd/actionlint)                            | Static checker for GitHub Actions workflow files.                                                                                                                 |
 | [actions-usage](https://github.com/self-actuated/actions-usage)              | Get usage insights from GitHub Actions.                                                                                                                           |
 | [actuated-cli](https://github.com/self-actuated/actuated-cli)                | Official CLI for actuated.dev                                                                                                                                     |
 | [age](https://github.com/FiloSottile/age)                                    | A simple, modern, and secure file encryption tool.                                                                                                                |
@@ -979,5 +980,5 @@ There are 53 apps that you can install on your cluster.
 | [xq](https://github.com/sibprogrammer/xq)                                    | XML to JSON/YAML converter and query tool.                                                                                                                        |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 204 tools, use `arkade get NAME` to download one.
+There are 205 tools, use `arkade get NAME` to download one.
 <!-- end of tool list -->
