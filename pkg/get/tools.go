@@ -223,12 +223,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 	// Claude Code CLI
 	tools = append(tools,
 		Tool{
-			Owner:          "anthropic",
-			Repo:           "claude",
+			Owner:          "anthropics",
+			Repo:           "claude-code",
 			Name:           "claude",
 			Description:    "Claude Code.",
 			VerifyStrategy: ClaudeShasumStrategy,
-			VerifyTemplate: `https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.Version}}/manifest.json`, VersionStrategy: ClaudeStrategy,
+			VerifyTemplate: `https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.VersionNumber}}/manifest.json`, VersionStrategy: GitHubVersionStrategy,
 			URLTemplate: `
 {{$os := .OS}}
 {{$arch := .Arch}}
@@ -247,7 +247,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 {{ $os = "linux" }}
 {{- end -}}
 
-https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.Version}}/{{$os}}-{{$arch}}/claude
+https://storage.googleapis.com/claude-code-dist-86c565f3-f756-42ad-8dfa-d59b1c096819/claude-code-releases/{{.VersionNumber}}/{{$os}}-{{$arch}}/claude
 `})
 
 	// Amp CLI
@@ -593,7 +593,6 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 			Owner:       "loft-sh",
 			Repo:        "devpod",
 			Name:        "devpod",
-			Version:     "v0.7.0-alpha.34",
 			Description: "Codespaces but open-source, client-only and unopinionated: Works with any IDE and lets you use any cloud, kubernetes or just localhost docker.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}-windows-amd64.exe
@@ -881,10 +880,10 @@ https://github.com/alexellis/kubetrim/releases/download/{{.Version}}/{{$fileName
 	// tool, and there's no way to filter, so the version has to be hard-coded.
 	tools = append(tools,
 		Tool{
-			Owner:       "bitnami-labs",
+			Owner:       "bitnami",
 			Repo:        "sealed-secrets",
 			Name:        "kubeseal",
-			Version:     "v0.30.0",
+			Version:     "v0.38.4",
 			Description: "A Kubernetes controller and tool for one-way encrypted Secrets",
 			BinaryTemplate: `{{$arch := ""}}
 		{{- if eq .Arch "aarch64" -}}
@@ -974,15 +973,19 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "linkerd",
-			Repo:        "linkerd2",
-			Name:        "linkerd2",
-			Version:     "stable-2.9.1",
-			Description: "Ultralight, security-first service mesh for Kubernetes.",
+			Owner:           "linkerd",
+			Repo:            "linkerd2",
+			Name:            "linkerd2",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Ultralight, security-first service mesh for Kubernetes.",
 			BinaryTemplate: `{{ if HasPrefix .OS "ming" -}}
 {{.Name}}-cli-{{.Version}}-windows.exe
 {{- else if eq .OS "darwin" -}}
+{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{.Name}}-cli-{{.Version}}-darwin-arm64
+{{- else -}}
 {{.Name}}-cli-{{.Version}}-darwin
+{{- end -}}
 {{- else if eq .Arch "x86_64" -}}
 {{.Name}}-cli-{{.Version}}-linux-amd64
 {{- else if eq .Arch "aarch64" -}}
@@ -993,12 +996,12 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kubernetes-sigs",
-			Repo:        "kubebuilder",
-			Name:        "kubebuilder",
-			NoExtension: true,
-			Version:     "3.1.0",
-			Description: "Framework for building Kubernetes APIs using custom resource definitions (CRDs).",
+			Owner:           "kubernetes-sigs",
+			Repo:            "kubebuilder",
+			Name:            "kubebuilder",
+			NoExtension:     true,
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Framework for building Kubernetes APIs using custom resource definitions (CRDs).",
 			URLTemplate: `{{$arch := "arm64"}}
 			{{- if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
@@ -1010,7 +1013,7 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			{{- else if eq .OS "darwin" -}}
 			{{$osStr = "darwin"}}
 			{{- end -}}
-			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.Version}}/kubebuilder_{{$osStr}}_{{$arch}}`,
+			https://github.com/kubernetes-sigs/kubebuilder/releases/download/v{{.VersionNumber}}/kubebuilder_{{$osStr}}_{{$arch}}`,
 		})
 
 	tools = append(tools,
@@ -1019,7 +1022,6 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
 			Repo:        "kustomize",
 			Name:        "kustomize",
 			Description: "Customization of kubernetes YAML configurations",
-			Version:     "v5.0.3",
 			BinaryTemplate: `
 	{{$osStr := ""}}
 	{{$ext := "tar.gz"}}
@@ -1030,7 +1032,11 @@ https://github.com/inlets/inletsctl/releases/download/{{.Version}}/{{$fileName}}
   {{$osStr = "linux_arm64"}}
 	{{- end -}}
 	{{- else if eq .OS "darwin" -}}
+	{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+	{{$osStr = "darwin_arm64"}}
+	{{- else -}}
 	{{$osStr = "darwin_amd64"}}
+	{{- end -}}
 	{{- end -}}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$osStr = "windows_amd64"}}
@@ -1381,11 +1387,11 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 
 	tools = append(tools,
 		Tool{
-			Owner:       "opentofu",
-			Repo:        "opentofu",
-			Name:        "tofu",
-			Version:     "v1.6.2",
-			Description: "OpenTofu lets you declaratively manage your cloud infrastructure",
+			Owner:           "opentofu",
+			Repo:            "opentofu",
+			Name:            "tofu",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "OpenTofu lets you declaratively manage your cloud infrastructure",
 			BinaryTemplate: `
 			{{$extStr := ".zip"}}
 
@@ -1410,11 +1416,11 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 
 	tools = append(tools,
 		Tool{
-			Owner:       "hashicorp",
-			Repo:        "vagrant",
-			Name:        "vagrant",
-			Version:     "2.2.19",
-			Description: "Tool for building and distributing development environments.",
+			Owner:           "hashicorp",
+			Repo:            "vagrant",
+			Name:            "vagrant",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "Tool for building and distributing development environments.",
 			URLTemplate: `{{$arch := .Arch}}
 
 	{{- if eq .Arch "x86_64" -}}
@@ -1428,7 +1434,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 	{{$os = "windows"}}
 	{{- end -}}
 
-	https://releases.hashicorp.com/{{.Name}}/{{.Version}}/{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}.zip`})
+	https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.VersionNumber}}_{{$os}}_{{$arch}}.zip`})
 
 	tools = append(tools,
 		Tool{
@@ -2140,34 +2146,33 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			{{.Name}}{{$os}}{{$arch}}{{$ext}}`,
 		})
 
+	// kim is no longer maintained (last release Oct 2021), removed from arkade.
+
 	tools = append(tools,
 		Tool{
-			Owner:       "rancher",
-			Repo:        "kim",
-			Name:        "kim",
-			Version:     "v0.1.0-beta.4",
-			Description: "Build container images inside of Kubernetes. (Experimental)",
-			BinaryTemplate: `
-			{{ $ext := "" }}
-			{{ $osStr := "linux" }}
-			{{ if HasPrefix .OS "ming" -}}
-			{{	$osStr = "windows" }}
-			{{ $ext = ".exe" }}
-			{{- else if eq .OS "darwin" -}}
-			{{  $osStr = "darwin" }}
-			{{- end -}}
-
-			{{ $archStr := "amd64" }}
-
-			{{- if eq .Arch "armv6l" -}}
-			{{ $archStr = "arm" }}
-			{{- else if eq .Arch "armv7l" -}}
-			{{ $archStr = "arm" }}
-			{{- else if eq .Arch "aarch64" -}}
-			{{ $archStr = "arm64" }}
-			{{- end -}}
-
-			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
+			Owner:       "MoonshotAI",
+			Repo:        "kimi-cli",
+			Name:        "kimi",
+			Description: "CLI for the Kimi AI assistant.",
+			URLTemplate: `
+{{$arch := .Arch}}
+{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}
+{{$arch = "x86_64"}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+{{$arch = "aarch64"}}
+{{- end -}}
+{{$os := .OS}}
+{{$ext := "tar.gz"}}
+{{- if or (HasPrefix .OS "ming") (eq .OS "windows") -}}
+{{$os = "pc-windows-msvc"}}
+{{$ext = "zip"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "apple-darwin"}}
+{{- else if eq .OS "linux" -}}
+{{$os = "unknown-linux-gnu"}}
+{{- end -}}
+https://github.com/MoonshotAI/kimi-cli/releases/download/{{.Version}}/kimi-{{.Version}}-{{$arch}}-{{$os}}.{{$ext}}`,
+			BinaryTemplate: `kimi`,
 		},
 	)
 
@@ -2288,11 +2293,11 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 		})
 	tools = append(tools,
 		Tool{
-			Owner:       "influxdata",
-			Repo:        "influxdb",
-			Name:        "influx",
-			Version:     "2.0.8",
-			Description: "InfluxDB's command line interface (influx) is an interactive shell for the HTTP API.",
+			Owner:           "influxdata",
+			Repo:            "influx-cli",
+			Name:            "influx",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "InfluxDB's command line interface (influx) is an interactive shell for the HTTP API.",
 			URLTemplate: `{{$arch := .Arch}}
 		{{ if eq .Arch "x86_64" -}}
 		{{$arch = "amd64"}}
@@ -2305,7 +2310,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 		{{$ext = ".zip"}}
 		{{- end -}}
 
-				https://dl.{{.Owner}}.com/{{.Repo}}/releases/{{.Repo}}2-client-{{.Version}}-{{.OS}}-{{$arch}}{{$ext}}`,
+				https://dl.influxdata.com/influxdb/releases/influxdb2-client-{{.VersionNumber}}-{{.OS}}-{{$arch}}{{$ext}}`,
 		})
 
 	tools = append(tools,
@@ -2408,6 +2413,8 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				`,
 		})
 
+	// johanhaleby/kubetail is a raw script rather than a release binary.
+	// Its download URL needs a tag, so leave this version pinned.
 	tools = append(tools,
 		Tool{
 			Owner:       "johanhaleby",
@@ -2444,7 +2451,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "getporter",
 			Repo:        "porter",
 			Name:        "porter",
-			Version:     "v0.38.4",
 			Description: "With Porter you can package your application artifact, tools, etc. as a bundle that can distribute and install.",
 			BinaryTemplate: `
 			{{ $ext := "" }}
@@ -2457,6 +2463,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			{{- end -}}
 
 			{{ $archStr := "amd64" }}
+			{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{ $archStr = "arm64" }}
+			{{- end -}}
 			{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
 		})
 	tools = append(tools,
@@ -2622,7 +2631,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "aquasecurity",
 			Repo:        "tfsec",
 			Name:        "tfsec",
-			Version:     "v0.57.1",
 			Description: "Security scanner for your Terraform code",
 			BinaryTemplate: `{{ $ext := "" }}
 				{{ $osStr := "linux" }}
@@ -2634,7 +2642,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 				{{- end -}}
 
 				{{ $archStr := "amd64" }}
-				{{- if eq .Arch "aarch64" -}}
+				{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
 				{{ $archStr = "arm64" }}
 				{{- end -}}
 				{{.Name}}-{{$osStr}}-{{$archStr}}{{$ext}}`,
@@ -2948,26 +2956,28 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "kumahq",
-			Repo:        "kuma",
-			Name:        "kumactl",
-			Version:     "1.4.1",
-			Description: "kumactl is a CLI to interact with Kuma and its data",
+			Owner:           "kumahq",
+			Repo:            "kuma",
+			Name:            "kumactl",
+			VersionStrategy: GitHubVersionStrategy,
+			Description:     "kumactl is a CLI to interact with Kuma and its data",
 			URLTemplate: `
 			{{$osStr := ""}}
 			{{$archStr := ""}}
 			{{- if HasPrefix .OS "linux" -}}
-			{{$osStr = "ubuntu"}}
+			{{$osStr = "linux"}}
 			{{- else if eq .OS "darwin" -}}
 			{{$osStr = "darwin"}}
 			{{- end -}}
 
 			{{- if eq .Arch "x86_64" -}}
 			{{$archStr = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$archStr = "arm64"}}
 			{{- else -}}
 			{{$archStr = .Arch}}
 			{{- end -}}
-			https://download.konghq.com/mesh-alpine/{{.Repo}}-{{.Version}}-{{$osStr}}-{{$archStr}}.tar.gz`,
+			https://packages.konghq.com/public/kuma-binaries-release/raw/names/{{.Repo}}-{{$osStr}}-{{$archStr}}/versions/{{.VersionNumber}}/{{.Repo}}-{{.VersionNumber}}-{{$osStr}}-{{$archStr}}.tar.gz`,
 			BinaryTemplate: `{{.Name}}`,
 		})
 
@@ -3694,7 +3704,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "instrumenta",
 			Repo:        "kubeval",
 			Name:        "kubeval",
-			Version:     "v0.16.1",
 			Description: "Validate your Kubernetes configuration files, supports multiple Kubernetes versions",
 			BinaryTemplate: `
 				{{$os := .OS}}
@@ -3810,9 +3819,11 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			BinaryTemplate: `{{.Name}}-{{.Version}}`,
 		})
 
+	// grafana-agent repo moved from grafana/agent to grafana-cold-storage/agent.
+	// v0.44.3 (latest) has no binaries, only source archives, so pinned at v0.44.2.
 	tools = append(tools,
 		Tool{
-			Owner:       "grafana",
+			Owner:       "grafana-cold-storage",
 			Repo:        "agent",
 			Name:        "grafana-agent",
 			Version:     "v0.44.2",
@@ -3855,7 +3866,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 						{{ if HasPrefix .OS "ming" -}}
 						{{$os = "windows"}}
-						{{$ext = ".exe"}}
 						{{- end -}}
 						grafana-agent-{{$os}}-{{$arch}}{{$ext}}
 						`,
@@ -4288,10 +4298,9 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 
 	tools = append(tools,
 		Tool{
-			Owner:       "cloud-bulldozer",
+			Owner:       "kube-burner",
 			Repo:        "kube-burner",
 			Name:        "kube-burner",
-			Version:     "v1.8.1",
 			Description: "A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.",
 			BinaryTemplate: `
  					{{$os := .OS}}
@@ -4307,15 +4316,15 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 						{{$ext = "zip"}}
  					{{- end -}}
 
- 					{{- if eq .Arch "aarch64" -}}
- 						{{$arch = "arm64"}}
- 					{{- else if eq .Arch "arm64" -}}
- 						{{ $arch = "arm64" }}
- 					{{- else if eq .Arch "x86_64" -}}
- 						{{ $arch = "x86_64" }}
- 					{{- end -}}
+					{{- if eq .Arch "aarch64" -}}
+						{{$arch = "arm64"}}
+					{{- else if eq .Arch "arm64" -}}
+						{{ $arch = "arm64" }}
+					{{- else if eq .Arch "x86_64" -}}
+						{{$arch = "x86_64"}}
+					{{- end -}}
 
- 					{{.Name}}-V{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
+					{{.Name}}-V{{.VersionNumber}}-{{$os}}-{{$arch}}.{{$ext}}
  					`,
 		})
 
@@ -5157,7 +5166,6 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:           "grafana",
 			Repo:            "alloy",
 			Name:            "alloy",
-			Version:         "v1.17.1",
 			VersionStrategy: GitHubVersionStrategy,
 			Description:     "OpenTelemetry Collector distribution with programmable pipelines",
 			URLTemplate: `

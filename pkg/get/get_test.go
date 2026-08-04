@@ -2,6 +2,7 @@ package get
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -338,6 +339,25 @@ func Test_FormatUrl(t *testing.T) {
 				t.Fatalf("\nwant: %s\ngot:  %s", tc.expected, result)
 			}
 		})
+	}
+}
+
+func TestRetryWithBackoffDoesNotRetryURLParseErrors(t *testing.T) {
+	attempts := 0
+	_, requestErr := http.NewRequest(http.MethodGet, "https://example.com/%!(EXTRA string=vagrant)", nil)
+	if requestErr == nil {
+		t.Fatal("expected malformed URL to return an error")
+	}
+
+	_, err := retryWithBackoff(func() (string, error) {
+		attempts++
+		return "", requestErr
+	}, 10, 0)
+	if err == nil {
+		t.Fatal("expected retryWithBackoff to return the URL parse error")
+	}
+	if attempts != 1 {
+		t.Fatalf("expected one attempt for a URL parse error, got %d", attempts)
 	}
 }
 
@@ -1045,27 +1065,27 @@ func Test_DownloadKubeseal(t *testing.T) {
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-windows-amd64.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-windows-amd64.tar.gz"},
 		{os: "linux",
 			arch:    arch64bit,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-amd64.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-amd64.tar.gz"},
 		{os: "darwin",
 			arch:    archDarwinARM64,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-arm64.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-arm64.tar.gz"},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-amd64.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-darwin-amd64.tar.gz"},
 		{os: "linux",
 			arch:    archARM7,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm.tar.gz"},
 		{os: "linux",
 			arch:    archARM64,
 			version: "v0.17.4",
-			url:     "https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm64.tar.gz"},
+			url:     "https://github.com/bitnami/sealed-secrets/releases/download/v0.17.4/kubeseal-0.17.4-linux-arm64.tar.gz"},
 	}
 	for _, tc := range tests {
 		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
@@ -3186,25 +3206,25 @@ func Test_DownloadInfluxCli(t *testing.T) {
 		{
 			os:      "windows",
 			arch:    arch64bit,
-			version: "2.0.7",
+			version: "v2.0.7",
 			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-windows-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "2.0.7",
+			version: "v2.0.7",
 			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-linux-amd64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "2.0.7",
+			version: "v2.0.7",
 			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "2.0.7",
+			version: "v2.0.7",
 			url:     `https://dl.influxdata.com/influxdb/releases/influxdb2-client-2.0.7-darwin-amd64.tar.gz`,
 		},
 	}
@@ -3219,6 +3239,42 @@ func Test_DownloadInfluxCli(t *testing.T) {
 		}
 	}
 
+}
+
+func Test_DownloadVagrant(t *testing.T) {
+	tools := MakeTools()
+	tool := getTool("vagrant", tools)
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: "v2.4.9",
+			url:     "https://releases.hashicorp.com/vagrant/2.4.9/vagrant_2.4.9_linux_amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: "v2.4.9",
+			url:     "https://releases.hashicorp.com/vagrant/2.4.9/vagrant_2.4.9_darwin_amd64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: "v2.4.9",
+			url:     "https://releases.hashicorp.com/vagrant/2.4.9/vagrant_2.4.9_windows_amd64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
 }
 
 func Test_DownloadInletsProCli(t *testing.T) {
@@ -3407,36 +3463,54 @@ func Test_DownloadCodex(t *testing.T) {
 
 }
 
-func Test_DownloadKim(t *testing.T) {
+func Test_DownloadKimi(t *testing.T) {
 	tools := MakeTools()
-	name := "kim"
+	name := "kimi"
 
 	tool := getTool(name, tools)
 
 	tests := []test{
 		{
-			os:      "ming",
-			arch:    arch64bit,
-			version: "v0.1.0-alpha.12",
-			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-windows-amd64.exe`,
-		},
-		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "v0.1.0-alpha.12",
-			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-linux-amd64`,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-x86_64-unknown-linux-gnu.tar.gz`,
+			binary:  "kimi",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
-			version: "v0.1.0-alpha.12",
-			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-linux-arm64`,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-aarch64-unknown-linux-gnu.tar.gz`,
+			binary:  "kimi",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "v0.1.0-alpha.12",
-			url:     `https://github.com/rancher/kim/releases/download/v0.1.0-alpha.12/kim-darwin-amd64`,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-x86_64-apple-darwin.tar.gz`,
+			binary:  "kimi",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-aarch64-apple-darwin.tar.gz`,
+			binary:  "kimi",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-x86_64-pc-windows-msvc.zip`,
+			binary:  "kimi",
+		},
+		{
+			os:      "windows",
+			arch:    arch64bit,
+			version: "1.49.0",
+			url:     `https://github.com/MoonshotAI/kimi-cli/releases/download/1.49.0/kimi-1.49.0-x86_64-pc-windows-msvc.zip`,
+			binary:  "kimi",
 		},
 	}
 
@@ -3448,6 +3522,15 @@ func Test_DownloadKim(t *testing.T) {
 			}
 			if got != tc.url {
 				r.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+			if len(tc.binary) > 0 {
+				binary, err := GetBinaryName(tool, tc.os, tc.arch, tc.version)
+				if err != nil {
+					r.Fatal(err)
+				}
+				if binary != tc.binary {
+					r.Errorf("\nwant: %s\ngot:  %s", tc.binary, binary)
+				}
 			}
 		})
 	}
@@ -5001,14 +5084,20 @@ func Test_DownloadKumactl(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    arch64bit,
-			version: "1.4.1",
-			url:     "https://download.konghq.com/mesh-alpine/kuma-1.4.1-darwin-amd64.tar.gz",
+			version: "v2.14.2",
+			url:     "https://packages.konghq.com/public/kuma-binaries-release/raw/names/kuma-darwin-amd64/versions/2.14.2/kuma-2.14.2-darwin-amd64.tar.gz",
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
-			version: "1.4.1",
-			url:     "https://download.konghq.com/mesh-alpine/kuma-1.4.1-ubuntu-amd64.tar.gz",
+			version: "v2.14.2",
+			url:     "https://packages.konghq.com/public/kuma-binaries-release/raw/names/kuma-linux-amd64/versions/2.14.2/kuma-2.14.2-linux-amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: "v2.14.2",
+			url:     "https://packages.konghq.com/public/kuma-binaries-release/raw/names/kuma-linux-arm64/versions/2.14.2/kuma-2.14.2-linux-arm64.tar.gz",
 		},
 	}
 
@@ -6701,31 +6790,31 @@ func Test_GrafanaAgent(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-linux-amd64.zip",
+			url:     "https://github.com/grafana-cold-storage/agent/releases/download/v0.31.0/grafana-agent-linux-amd64.zip",
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-linux-arm64.zip",
+			url:     "https://github.com/grafana-cold-storage/agent/releases/download/v0.31.0/grafana-agent-linux-arm64.zip",
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-darwin-amd64.zip",
+			url:     "https://github.com/grafana-cold-storage/agent/releases/download/v0.31.0/grafana-agent-darwin-amd64.zip",
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-darwin-arm64.zip",
+			url:     "https://github.com/grafana-cold-storage/agent/releases/download/v0.31.0/grafana-agent-darwin-arm64.zip",
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     "https://github.com/grafana/agent/releases/download/v0.31.0/grafana-agent-windows-amd64.exe.zip",
+			url:     "https://github.com/grafana-cold-storage/agent/releases/download/v0.31.0/grafana-agent-windows-amd64.exe.zip",
 		},
 	}
 
@@ -7644,31 +7733,31 @@ func Test_DownloadKubeBurner(t *testing.T) {
 			os:      "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-x86_64.tar.gz`,
+			url:     `https://github.com/kube-burner/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-x86_64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-x86_64.tar.gz`,
+			url:     `https://github.com/kube-burner/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-x86_64.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-arm64.tar.gz`,
+			url:     `https://github.com/kube-burner/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-linux-arm64.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-arm64.tar.gz`,
+			url:     `https://github.com/kube-burner/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-darwin-arm64.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/cloud-bulldozer/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-windows-x86_64.zip`,
+			url:     `https://github.com/kube-burner/kube-burner/releases/download/v1.8.1/kube-burner-V1.8.1-windows-x86_64.zip`,
 		},
 	}
 
