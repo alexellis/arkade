@@ -5668,6 +5668,47 @@ codex-{{$arch}}-{{$os}}`,
 https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{{$os}}{{$ext}}`,
 		})
 
+	// Codex Code Mode Host
+	tools = append(tools,
+		Tool{
+			Owner:       "openai",
+			Repo:        "codex",
+			Name:        "codex-code-mode-host",
+			Description: "Codex code mode host from OpenAI.",
+			BinaryTemplate: `{{$arch := .Arch}}
+{{- if eq .Arch "amd64" -}}
+{{$arch = "x86_64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "aarch64"}}
+{{- end}}
+{{$os := .OS}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "pc-windows-msvc"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "apple-darwin"}}
+{{- else -}}
+{{$os = "unknown-linux-musl"}}
+{{- end}}
+codex-code-mode-host-{{$arch}}-{{$os}}`,
+			URLTemplate: `{{$arch := .Arch}}
+{{- if eq .Arch "amd64" -}}
+{{$arch = "x86_64"}}
+{{- else if eq .Arch "arm64" -}}
+{{$arch = "aarch64"}}
+{{- end}}
+{{$os := .OS}}
+{{$ext := ".tar.gz"}}
+{{- if HasPrefix .OS "ming" -}}
+{{$os = "pc-windows-msvc.exe"}}
+{{$ext = ".zip"}}
+{{- else if eq .OS "darwin" -}}
+{{$os = "apple-darwin"}}
+{{- else -}}
+{{$os = "unknown-linux-musl"}}
+{{- end}}
+https://github.com/openai/codex/releases/download/{{.Version}}/codex-code-mode-host-{{$arch}}-{{$os}}{{$ext}}`,
+		})
+
 	tools = append(tools,
 		Tool{
 			Owner:          "vi",
