@@ -21,15 +21,30 @@ func MakeInstallActionsRunner() *cobra.Command {
 		Use:   "actions-runner",
 		Short: "Install GitHub Actions Runner",
 		Long:  `Install GitHub Actions Runner for self-hosted CI.`,
-		Example: `  arkade system install actions-runner
-  arkade system install actions-runner --version 2.290.1`,
+		Example: `  # Install actions-runner to the default directory
+  arkade system install actions-runner
+
+  # Install to an alternate directory, from a specific version
+  arkade system install actions-runner --version 2.290.1 --path /opt/
+
+  # Install on macOS
+  arkade system install actions-runner --os darwin --arch arm64
+
+  # Download archive, do not install
+  arkade system install actions-runner --archive-only
+
+  # Print the resolved version to stdout and exit
+  arkade system install actions-runner --print-version`,
 		SilenceUsage: true,
 	}
 
 	command.Flags().StringP("version", "v", "", "The version or leave blank to determine the latest available version")
-	command.Flags().String("path", "$HOME/actions-runner/", "Installation path, where a actions-runner subfolder will be created")
+	command.Flags().String("path", "$HOME/actions-runner/", "Installation path, where the Actions Runner files will be extracted")
 	command.Flags().Bool("progress", true, "Show download progress")
-	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
+	command.Flags().String("arch", "", "CPU architecture i.e. x86_64 or arm64")
+	command.Flags().String("os", "", "Operating system i.e. linux or darwin, leave blank to detect the client OS")
+	command.Flags().BoolP("archive-only", "a", false, "Only download the archive and do not unpack it")
+	command.Flags().Bool("print-version", false, "Print the resolved version to stdout and exit")
 
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 
@@ -39,32 +54,6 @@ func MakeInstallActionsRunner() *cobra.Command {
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
 		version, _ := cmd.Flags().GetString("version")
-		fmt.Printf("Installing Actions Runner to %s\n", installPath)
-
-		installPath = strings.ReplaceAll(installPath, "$HOME", os.Getenv("HOME"))
-
-		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
-			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
-		}
-
-		arch, osVer := env.GetClientArch()
-
-		if strings.ToLower(osVer) != "linux" {
-			return fmt.Errorf("this app only supports Linux")
-		}
-
-		if cmd.Flags().Changed("arch") {
-			arch, _ = cmd.Flags().GetString("arch")
-		}
-
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "x64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		} else if arch == "armv7" || arch == "armv7l" {
-			dlArch = "arm"
-		}
 
 		if version == "" {
 			v, err := get.FindGitHubRelease("actions", "runner")
@@ -76,9 +65,50 @@ func MakeInstallActionsRunner() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
+		if printVersion, _ := cmd.Flags().GetBool("print-version"); printVersion {
+			fmt.Println(strings.TrimPrefix(version, "v"))
+			return nil
+		}
 
-		filename := fmt.Sprintf("actions-runner-linux-%s-%s.tar.gz", dlArch, strings.TrimPrefix(version, "v"))
+		fmt.Printf("Installing Actions Runner to %s\n", installPath)
+
+		installPath = strings.ReplaceAll(installPath, "$HOME", os.Getenv("HOME"))
+
+		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
+			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
+		}
+
+		arch, osVer := env.GetClientArch()
+
+		if cmd.Flags().Changed("os") {
+			osVer, _ = cmd.Flags().GetString("os")
+		}
+
+		if cmd.Flags().Changed("arch") {
+			arch, _ = cmd.Flags().GetString("arch")
+		}
+
+		dlOS := strings.ToLower(osVer)
+		switch dlOS {
+		case "darwin":
+			dlOS = "osx"
+		case "linux":
+		default:
+			return fmt.Errorf("unsupported operating system: %q, use linux or darwin (macOS)", osVer)
+		}
+
+		dlArch := arch
+		if arch == "x86_64" {
+			dlArch = "x64"
+		} else if arch == "aarch64" {
+			dlArch = "arm64"
+		} else if arch == "armv7" || arch == "armv7l" {
+			dlArch = "arm"
+		}
+
+		fmt.Printf("Installing version: %s for: %s / %s\n", version, dlOS, dlArch)
+
+		filename := fmt.Sprintf("actions-runner-%s-%s-%s.tar.gz", dlOS, dlArch, strings.TrimPrefix(version, "v"))
 		dlURL := fmt.Sprintf(githubDownloadTemplate, "actions", "runner", version, filename)
 		fmt.Printf("Downloading from: %s\n", dlURL)
 
@@ -90,6 +120,16 @@ func MakeInstallActionsRunner() *cobra.Command {
 		defer os.Remove(outPath)
 
 		fmt.Printf("Downloaded to: %s\n", outPath)
+
+		archiveOnly, _ := cmd.Flags().GetBool("archive-only")
+		if archiveOnly {
+			dest := path.Join(installPath, filename)
+			if _, err := get.CopyFile(outPath, dest); err != nil {
+				return err
+			}
+			fmt.Printf("Saved archive to: %s\n", dest)
+			return nil
+		}
 
 		f, err := os.OpenFile(outPath, os.O_RDONLY, 0644)
 		if err != nil {
