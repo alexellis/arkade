@@ -731,10 +731,10 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 {{$ext := "tar.gz"}}
 {{- if eq .OS "linux" -}}
 	{{$os = "Linux"}}
-	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if eq .Arch "aarch64" -}}{{$arch = "arm64"}}{{- end -}}
+	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}{{$arch = "arm64"}}{{- end -}}
 {{- else if eq .OS "darwin" -}}
 	{{$os = "Darwin"}}
-	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if eq .Arch "arm64" -}}{{$arch = "arm64"}}{{- end -}}
+	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}{{$arch = "arm64"}}{{- end -}}
 {{- else if HasPrefix .OS "ming" -}}
 	{{$os = "Windows"}}
 	{{$ext = "zip"}}
