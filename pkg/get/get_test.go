@@ -139,6 +139,64 @@ func Test_DownloadRipgrep(t *testing.T) {
 	}
 }
 
+func Test_DownloadK8sgpt(t *testing.T) {
+	tools := MakeTools()
+	name := "k8sgpt"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.4.36"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Linux_x86_64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Darwin_x86_64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Windows_x86_64.zip",
+		},
+		{
+			os:      "ming",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Windows_arm64.zip",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadRestic(t *testing.T) {
 	tools := MakeTools()
 	name := "restic"

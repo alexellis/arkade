@@ -720,6 +720,31 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
+			Owner:          "k8sgpt-ai",
+			Repo:           "k8sgpt",
+			Name:           "k8sgpt",
+			Description:    "Kubernetes AI diagnostic tool and companion for cluster operators.",
+			BinaryTemplate: `k8sgpt`,
+			URLTemplate: `
+{{$os := ""}}
+{{$arch := ""}}
+{{$ext := "tar.gz"}}
+{{- if eq .OS "linux" -}}
+	{{$os = "Linux"}}
+	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if eq .Arch "aarch64" -}}{{$arch = "arm64"}}{{- end -}}
+{{- else if eq .OS "darwin" -}}
+	{{$os = "Darwin"}}
+	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if eq .Arch "arm64" -}}{{$arch = "arm64"}}{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{$os = "Windows"}}
+	{{$ext = "zip"}}
+	{{- if eq .Arch "x86_64" -}}{{$arch = "x86_64"}}{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}{{$arch = "arm64"}}{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/k8sgpt_{{$os}}_{{$arch}}.{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
 			Owner:       "alexellis",
 			Repo:        "k3sup",
 			Name:        "k3sup",
