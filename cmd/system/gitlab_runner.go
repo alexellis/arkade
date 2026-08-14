@@ -16,18 +16,26 @@ import (
 
 func MakeInstallGitLabRunner() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "gitlab-runner",
-		Short: "Install GitLab Runner",
-		Long:  `Install GitLab Runner for self-hosted CI.`,
-		Example: `  arkade system install gitlab-runner
-  arkade system install gitlab-runner --version <version>`,
+		Use:     "gitlab-runner",
+		Short:   "Install GitLab Runner",
+		Long:    `Install GitLab Runner for self-hosted CI.`,
+		Aliases: []string{"gitlab"},
+		Example: `  # Install GitLab Runner to the default path
+  arkade system install gitlab-runner
+
+  # Install a specific version
+  arkade system install gitlab-runner --version <version>
+
+  # Install on macOS
+  arkade system install gitlab-runner --os darwin --arch arm64`,
 		SilenceUsage: true,
 	}
 
 	command.Flags().StringP("version", "v", "", "The version or leave blank to determine the latest available version")
 	command.Flags().String("path", "$HOME/gitlab-runner", "Installation path, where gitlab-runner binary file is downloaded")
 	command.Flags().Bool("progress", true, "Show download progress")
-	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
+	command.Flags().String("arch", "", "CPU architecture i.e. x86_64 or arm64")
+	command.Flags().String("os", "", "Operating system i.e. linux or darwin, leave blank to detect the client OS")
 
 	command.PreRunE = func(cmd *cobra.Command, args []string) error {
 		return nil
@@ -42,12 +50,17 @@ func MakeInstallGitLabRunner() *cobra.Command {
 
 		arch, osVer := env.GetClientArch()
 
-		if strings.ToLower(osVer) != "linux" {
-			return fmt.Errorf("this app only supports Linux")
+		if cmd.Flags().Changed("os") {
+			osVer, _ = cmd.Flags().GetString("os")
 		}
 
 		if cmd.Flags().Changed("arch") {
 			arch, _ = cmd.Flags().GetString("arch")
+		}
+
+		dlOS := strings.ToLower(osVer)
+		if dlOS != "linux" && dlOS != "darwin" {
+			return fmt.Errorf("unsupported operating system: %q, use linux or darwin (macOS)", osVer)
 		}
 
 		dlArch := arch
@@ -65,9 +78,9 @@ func MakeInstallGitLabRunner() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
+		fmt.Printf("Installing version: %s for: %s / %s\n", version, dlOS, dlArch)
 
-		dlURL := fmt.Sprintf("https://gitlab-runner-downloads.s3.amazonaws.com/%s/binaries/gitlab-runner-linux-%s", version, dlArch)
+		dlURL := fmt.Sprintf("https://gitlab-runner-downloads.s3.amazonaws.com/%s/binaries/gitlab-runner-%s-%s", version, dlOS, dlArch)
 
 		fmt.Printf("Downloading from: %s\n", dlURL)
 
