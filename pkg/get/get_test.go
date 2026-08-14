@@ -161,6 +161,12 @@ func Test_DownloadK8sgpt(t *testing.T) {
 			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Linux_arm64.tar.gz",
 		},
 		{
+			os:      "linux",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Linux_arm64.tar.gz",
+		},
+		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
@@ -169,6 +175,12 @@ func Test_DownloadK8sgpt(t *testing.T) {
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Darwin_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    archARM64,
 			version: toolVersion,
 			url:     "https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.36/k8sgpt_Darwin_arm64.tar.gz",
 		},
