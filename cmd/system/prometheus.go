@@ -13,45 +13,35 @@ import (
 
 func MakeInstallPrometheus() *cobra.Command {
 	command := &cobra.Command{
-		Use:   "prometheus",
-		Short: "Install Prometheus",
-		Long:  `Install the Prometheus monitoring system and time series database.`,
-		Example: `  arkade system install prometheus
-  arkade system install prometheus --version v2.34.0`,
+		Use:     "prometheus",
+		Short:   "Install Prometheus",
+		Long:    `Install the Prometheus monitoring system and time series database.`,
+		Aliases: []string{"prom"},
+		Example: `  # Install Prometheus to the default path
+  arkade system install prometheus
+
+  # Install a specific version
+  arkade system install prometheus --version v2.34.0
+
+  # Install on macOS
+  arkade system install prometheus --os darwin --arch arm64
+
+  # Print the resolved version to stdout and exit
+  arkade system install prometheus --print-version`,
 		SilenceUsage: true,
 	}
 
 	command.Flags().StringP("version", "v", "latest", "The version for Prometheus to install")
-	command.Flags().StringP("path", "p", "/usr/local/bin", "Installation path, where a go subfolder will be created")
+	command.Flags().StringP("path", "p", "/usr/local/bin", "Installation path for the prometheus and promtool binaries")
 	command.Flags().Bool("progress", true, "Show download progress")
-	command.Flags().String("arch", "", "CPU architecture i.e. amd64")
+	command.Flags().String("arch", "", "CPU architecture i.e. x86_64 or arm64")
+	command.Flags().String("os", "", "Operating system i.e. linux or darwin, leave blank to detect the client OS")
+	command.Flags().Bool("print-version", false, "Print the resolved version to stdout and exit")
 
 	command.RunE = func(cmd *cobra.Command, args []string) error {
 		installPath, _ := cmd.Flags().GetString("path")
 		version, _ := cmd.Flags().GetString("version")
 		progress, _ := cmd.Flags().GetBool("progress")
-
-		fmt.Printf("Installing Prometheus to %s\n", installPath)
-
-		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
-			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
-		}
-
-		arch, osVer := env.GetClientArch()
-
-		if strings.ToLower(osVer) != "linux" {
-			return fmt.Errorf("this app only supports Linux")
-		}
-		if cmd.Flags().Changed("arch") {
-			arch, _ = cmd.Flags().GetString("arch")
-		}
-
-		dlArch := arch
-		if arch == "x86_64" {
-			dlArch = "amd64"
-		} else if arch == "aarch64" {
-			dlArch = "arm64"
-		}
 
 		if version == "latest" {
 			v, err := get.FindGitHubRelease("prometheus", "prometheus")
@@ -63,9 +53,41 @@ func MakeInstallPrometheus() *cobra.Command {
 			version = "v" + version
 		}
 
-		fmt.Printf("Installing version: %s for: %s\n", version, dlArch)
+		if printVersion, _ := cmd.Flags().GetBool("print-version"); printVersion {
+			fmt.Println(strings.TrimPrefix(version, "v"))
+			return nil
+		}
 
-		filename := fmt.Sprintf("prometheus-%s.linux-%s.tar.gz", strings.TrimPrefix(version, "v"), dlArch)
+		fmt.Printf("Installing Prometheus to %s\n", installPath)
+
+		if err := os.MkdirAll(installPath, 0755); err != nil && !os.IsExist(err) {
+			fmt.Printf("Error creating directory %s, error: %s\n", installPath, err.Error())
+		}
+
+		arch, osVer := env.GetClientArch()
+
+		if cmd.Flags().Changed("os") {
+			osVer, _ = cmd.Flags().GetString("os")
+		}
+		if cmd.Flags().Changed("arch") {
+			arch, _ = cmd.Flags().GetString("arch")
+		}
+
+		dlOS := strings.ToLower(osVer)
+		if dlOS != "linux" && dlOS != "darwin" {
+			return fmt.Errorf("unsupported operating system: %q, use linux or darwin (macOS)", osVer)
+		}
+
+		dlArch := arch
+		if arch == "x86_64" {
+			dlArch = "amd64"
+		} else if arch == "aarch64" {
+			dlArch = "arm64"
+		}
+
+		fmt.Printf("Installing version: %s for: %s / %s\n", version, dlOS, dlArch)
+
+		filename := fmt.Sprintf("prometheus-%s.%s-%s.tar.gz", strings.TrimPrefix(version, "v"), dlOS, dlArch)
 		dlURL := fmt.Sprintf(githubDownloadTemplate, "prometheus", "prometheus", version, filename)
 
 		fmt.Printf("Downloading from: %s\n", dlURL)
