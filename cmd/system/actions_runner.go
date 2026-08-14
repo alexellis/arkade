@@ -19,9 +19,10 @@ import (
 func MakeInstallActionsRunner() *cobra.Command {
 
 	command := &cobra.Command{
-		Use:   "actions-runner",
-		Short: "Install GitHub Actions Runner",
-		Long:  `Install GitHub Actions Runner for self-hosted CI.`,
+		Use:     "actions-runner",
+		Short:   "Install GitHub Actions Runner",
+		Long:    `Install GitHub Actions Runner for self-hosted CI.`,
+		Aliases: []string{"github"},
 		Example: `  # Install actions-runner to the default directory
   arkade system install actions-runner
 
