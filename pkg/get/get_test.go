@@ -184,6 +184,30 @@ func Test_DownloadVzzn(t *testing.T) {
 			version: toolVersion,
 			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn.exe",
 		},
+		{
+			os:      "linux",
+			arch:    "amd64",
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn",
+		},
+		{
+			os:      "linux",
+			arch:    "arm64",
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    "amd64",
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn.exe",
+		},
+		{
+			os:      "linux",
+			arch:    "armv6l",
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-unsupported",
+		},
 	}
 	verify := false
 	for _, tc := range tests {

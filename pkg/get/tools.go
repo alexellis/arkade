@@ -5910,15 +5910,15 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 			Description:    "Vision/OCR client for the toilgate LLM gateway.",
 			BinaryTemplate: `vzzn`,
 			URLTemplate: `
-{{$appended := ""}}
+{{$fileName := "vzzn-unsupported"}}
 {{- if eq .OS "darwin" -}}
-	{{- if eq .Arch "arm64" -}}{{$appended = "-darwin-arm64"}}{{- else -}}{{$appended = "-darwin"}}{{- end -}}
+	{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}{{$fileName = "vzzn-darwin"}}{{- else if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}{{$fileName = "vzzn-darwin-arm64"}}{{- end -}}
 {{- else if eq .OS "linux" -}}
-	{{- if eq .Arch "aarch64" -}}{{$appended = "-arm64"}}{{- else if eq .Arch "armv7l" -}}{{$appended = "-armhf"}}{{- end -}}
+	{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}{{$fileName = "vzzn"}}{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}{{$fileName = "vzzn-arm64"}}{{- else if eq .Arch "armv7l" -}}{{$fileName = "vzzn-armhf"}}{{- end -}}
 {{- else if HasPrefix .OS "ming" -}}
-	{{- if eq .Arch "x86_64" -}}{{$appended = ".exe"}}{{- end -}}
+	{{- if or (eq .Arch "x86_64") (eq .Arch "amd64") -}}{{$fileName = "vzzn.exe"}}{{- end -}}
 {{- end -}}
-https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/vzzn{{$appended}}`,
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}`,
 		})
 
 	return tools
