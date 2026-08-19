@@ -347,7 +347,7 @@ func latestReleaseTag(ctx context.Context) (string, error) {
 
 	tag := strings.TrimSpace(res.Stdout)
 	if tag == "" {
-		return "", fmt.Errorf("no releases found in this repository")
+		return "v0.0.0", nil
 	}
 
 	return tag, nil
