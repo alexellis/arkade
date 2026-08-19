@@ -33,6 +33,10 @@ func MakeBump() *cobra.Command {
 
 Processes all workflow YAML files in .github/workflows/ or a single file.
 Only bumps major versions (e.g. actions/checkout@v3 to actions/checkout@v4).
+
+Only versioned tags can be bumped. If an action is pinned to @master,
+move it onto a tag once (e.g. checkout@v1) and bump will keep it current
+from then on.
 `,
 		Example: `  # Upgrade all workflows in the current directory
   arkade gha bump
