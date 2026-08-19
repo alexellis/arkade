@@ -139,6 +139,64 @@ func Test_DownloadRipgrep(t *testing.T) {
 	}
 }
 
+func Test_DownloadVzzn(t *testing.T) {
+	tools := MakeTools()
+	name := "vzzn"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.0.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM7,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-armhf",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-darwin",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn-darwin-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/vzzn/releases/download/v0.0.1/vzzn.exe",
+		},
+	}
+	verify := false
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, verify)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("want: %s, got: %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadK8sgpt(t *testing.T) {
 	tools := MakeTools()
 	name := "k8sgpt"

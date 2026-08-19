@@ -5902,5 +5902,24 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:          "alexellis",
+			Repo:           "vzzn",
+			Name:           "vzzn",
+			Description:    "Vision/OCR client for the toilgate LLM gateway.",
+			BinaryTemplate: `vzzn`,
+			URLTemplate: `
+{{$appended := ""}}
+{{- if eq .OS "darwin" -}}
+	{{- if eq .Arch "arm64" -}}{{$appended = "-darwin-arm64"}}{{- else -}}{{$appended = "-darwin"}}{{- end -}}
+{{- else if eq .OS "linux" -}}
+	{{- if eq .Arch "aarch64" -}}{{$appended = "-arm64"}}{{- else if eq .Arch "armv7l" -}}{{$appended = "-armhf"}}{{- end -}}
+{{- else if HasPrefix .OS "ming" -}}
+	{{- if eq .Arch "x86_64" -}}{{$appended = ".exe"}}{{- end -}}
+{{- end -}}
+https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/vzzn{{$appended}}`,
+		})
+
 	return tools
 }
