@@ -236,6 +236,33 @@ go test ./pkg/get/... -v
 
 ---
 
+## When to Pin a Tool to a Specific Version
+
+`arkade get` resolves the latest release automatically via the GitHub version
+strategy. Set the `Version` field on a `Tool` only when auto-resolution would
+break the download. Typical cases:
+
+- The latest release ships **no binaries** (only source archives), e.g.
+  kube-burner v2.8.2, grafana-agent v0.44.3.
+- The upstream repo is not a normal GitHub release source, so the URL needs a
+  specific tag.
+- The latest tag does not follow the asset naming the template relies on.
+
+**Every pin MUST carry a terse justification in a comment directly above the
+`Version` field**, following the existing style:
+
+```go
+// v0.44.3 (latest) has no binaries, only source archives, so pinned at v0.44.2.
+Version: "v0.44.2",
+```
+
+Without a comment, a future agent has no way to know whether the pin is still
+needed. When checking whether a pin can be removed, fetch the latest release
+assets (HTML API) and confirm the binaries now exist under the pinned version's
+naming before dropping the `Version` field and its comment.
+
+---
+
 ## Reference Examples
 
 - **Simple BinaryTemplate**: `faas-cli` (lines 27-50 in `pkg/get/tools.go`)
