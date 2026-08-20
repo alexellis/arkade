@@ -5922,5 +5922,61 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileName}}`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "hatoo",
+			Repo:        "oha",
+			Name:        "oha",
+			Description: "HTTP load generator inspired by rakyll/hey with a tui animation.",
+			BinaryTemplate: `
+ 					{{$os := .OS}}
+ 					{{$arch := .Arch}}
+ 					{{$ext := ""}}
+ 					{{- if eq .OS "darwin" -}}
+ 						{{$os = "macos"}}
+ 					{{- else if HasPrefix .OS "ming" -}}
+ 						{{$os = "windows"}}
+ 						{{$ext = ".exe"}}
+ 					{{- end -}}
+
+ 					{{- if eq .Arch "aarch64" -}}
+ 						{{$arch = "arm64"}}
+ 					{{- else if eq .Arch "x86_64" -}}
+ 						{{$arch = "amd64"}}
+ 					{{- end -}}
+
+ 					{{.Name}}-{{$os}}-{{$arch}}{{$ext}}
+ 					`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:       "wader",
+			Repo:        "fq",
+			Name:        "fq",
+			Description: "jq for binary formats - a tool, language and decoders for working with binary data.",
+			URLTemplate: `
+ 					{{$os := .OS}}
+ 					{{$arch := .Arch}}
+ 					{{$ext := "tar.gz"}}
+ 					{{- if eq .OS "darwin" -}}
+ 						{{$os = "macos"}}
+ 						{{$ext = "zip"}}
+ 					{{- else if HasPrefix .OS "ming" -}}
+ 						{{$os = "windows"}}
+ 						{{$ext = "zip"}}
+ 					{{- end -}}
+
+ 					{{- if eq .Arch "aarch64" -}}
+ 						{{$arch = "arm64"}}
+ 					{{- else if eq .Arch "x86_64" -}}
+ 						{{$arch = "amd64"}}
+ 					{{- end -}}
+
+ 					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/fq_{{.VersionNumber}}_{{$os}}_{{$arch}}.{{$ext}}
+ 					`,
+			BinaryTemplate: `fq`,
+		})
+
 	return tools
 }
