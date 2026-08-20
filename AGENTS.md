@@ -281,6 +281,13 @@ release assets (HTML API) and confirm the binaries now exist under the pinned
 version's naming before dropping the `Version` field and its comment. Do not
 revisit permanent pins.
 
+## Commenting on Upstream Repos
+
+When a pin is raised against an upstream problem, you may offer to file an
+issue/comment on their repo on the user's behalf - but only ever do so with
+**explicit authorization from the user**, and confirm the wording with them
+first. Do not post anything upstream unprompted.
+
 ---
 
 ## Reference Examples
