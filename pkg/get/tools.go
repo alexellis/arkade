@@ -4326,6 +4326,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner:       "kube-burner",
 			Repo:        "kube-burner",
 			Name:        "kube-burner",
+			Version:     "v2.8.1",
 			Description: "A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.",
 			BinaryTemplate: `
  					{{$os := .OS}}
