@@ -10832,3 +10832,117 @@ func Test_DownloadHunk(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadOha(t *testing.T) {
+	tools := MakeTools()
+	name := "oha"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v1.15.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/hatoo/oha/releases/download/v1.15.0/oha-linux-amd64",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/hatoo/oha/releases/download/v1.15.0/oha-linux-arm64",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/hatoo/oha/releases/download/v1.15.0/oha-macos-amd64",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/hatoo/oha/releases/download/v1.15.0/oha-macos-arm64",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/hatoo/oha/releases/download/v1.15.0/oha-windows-amd64.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
+
+func Test_DownloadFq(t *testing.T) {
+	tools := MakeTools()
+	name := "fq"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.17.0"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_linux_amd64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_linux_arm64.tar.gz",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_macos_amd64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_macos_arm64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_windows_amd64.zip",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/wader/fq/releases/download/v0.17.0/fq_0.17.0_windows_arm64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(fmt.Sprintf("Download for: %s %s %s", tc.os, tc.arch, tc.version), func(r *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
