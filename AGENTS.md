@@ -256,10 +256,30 @@ break the download. Typical cases:
 Version: "v0.44.2",
 ```
 
+The comment MUST also:
+- **Reference the upstream issue + URL** when a pin is raised because of an
+  upstream problem (e.g. a broken release), so a future agent can track it.
+- **State whether the pin is expected to be `transient` or `permanent`.** A
+  `transient` pin is one upstream is expected to fix (e.g. binaries restored in
+  a later release) - revisit it periodically to see if it can be dropped. A
+  `permanent` pin is one that will never change (e.g. the upstream tag naming
+  does not follow the template) - this is a hint **not** to keep revisiting it.
+
+Example of a transient pin raised against upstream:
+
+```go
+// Pinned to v2.8.1, transient: v2.8.2 (latest) ships no binaries.
+// Upstream issue kube-burner/kube-burner#1296
+// https://github.com/kube-burner/kube-burner/issues/1296
+// Unpin once binaries are restored.
+Version: "v2.8.1",
+```
+
 Without a comment, a future agent has no way to know whether the pin is still
-needed. When checking whether a pin can be removed, fetch the latest release
-assets (HTML API) and confirm the binaries now exist under the pinned version's
-naming before dropping the `Version` field and its comment.
+needed. When checking whether a transient pin can be removed, fetch the latest
+release assets (HTML API) and confirm the binaries now exist under the pinned
+version's naming before dropping the `Version` field and its comment. Do not
+revisit permanent pins.
 
 ---
 

@@ -4326,7 +4326,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Owner: "kube-burner",
 			Repo:  "kube-burner",
 			Name:  "kube-burner",
-			// v2.8.2 (latest) has no binaries, only source archives, so pinned at v2.8.1.
+			// Pinned to v2.8.1, transient: v2.8.2 (latest) ships no binaries.
+			// Upstream issue kube-burner/kube-burner#1296
+			// https://github.com/kube-burner/kube-burner/issues/1296
+			// Unpin once binaries are restored.
 			Version:     "v2.8.1",
 			Description: "A tool aimed at stressing Kubernetes clusters by creating or deleting a high quantity of objects.",
 			BinaryTemplate: `
