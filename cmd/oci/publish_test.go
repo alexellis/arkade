@@ -192,6 +192,42 @@ func TestTarDirSymlinkedSourceRoot(t *testing.T) {
 	}
 }
 
+func TestTarDirSymlinkedEmptyDirPreserved(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.MkdirAll(dir+"/emptydir", 0755); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink("emptydir", dir+"/emptylink"); err != nil {
+		t.Fatal(err)
+	}
+
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err != nil {
+		t.Fatal(err)
+	}
+
+	tr := tar.NewReader(bytes.NewReader(buf.Bytes()))
+	found := false
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			t.Fatal(err)
+		}
+		if hdr.Name == "emptylink" {
+			found = true
+			if hdr.Typeflag != tar.TypeDir {
+				t.Fatalf("want symlinked empty dir to be archived as a directory, got type %d", hdr.Typeflag)
+			}
+		}
+	}
+	if !found {
+		t.Fatal("want symlinked empty directory preserved in the tar")
+	}
+}
+
 func TestTarDirSkipsSpecialFile(t *testing.T) {
 	dir := t.TempDir()
 	if err := writeFile(dir+"/ok.txt", "x"); err != nil {
