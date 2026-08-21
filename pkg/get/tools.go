@@ -5982,5 +5982,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 			BinaryTemplate: `fq`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "mvdan",
+			Repo:        "sh",
+			Name:        "shfmt",
+			Description: "A shell parser, formatter, and interpreter (sh/bash/mksh)",
+			BinaryTemplate: `
+			{{$os := .OS}}
+			{{$arch := .Arch}}
+			{{$ext := ""}}
+
+			{{- if HasPrefix .OS "ming" -}}
+			{{$os = "windows"}}
+			{{$ext = ".exe"}}
+			{{- end -}}
+
+			{{- if eq .Arch "x86_64" -}}
+			{{$arch = "amd64"}}
+			{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+			{{$arch = "arm64"}}
+			{{- else if or (eq .Arch "armv6l") (eq .Arch "armv7l") -}}
+			{{$arch = "arm"}}
+			{{- end -}}
+
+			{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}{{$ext}}
+			`,
+		})
+
 	return tools
 }
