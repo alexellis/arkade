@@ -88,9 +88,9 @@ func TestTarDir(t *testing.T) {
 	}
 }
 
-func TestTarDirSymlinkTarget(t *testing.T) {
+func TestTarDirSymlinkDereferenced(t *testing.T) {
 	dir := t.TempDir()
-	if err := writeFile(dir+"/real.txt", "x"); err != nil {
+	if err := writeFile(dir+"/real.txt", "target-content"); err != nil {
 		t.Fatal(err)
 	}
 	if err := os.Symlink("real.txt", dir+"/link.txt"); err != nil {
@@ -101,10 +101,9 @@ func TestTarDirSymlinkTarget(t *testing.T) {
 	if err := tarDir(dir, &buf); err != nil {
 		t.Fatal(err)
 	}
-	data := buf.Bytes()
 
-	tr := tar.NewReader(bytes.NewReader(data))
-	var linkName string
+	tr := tar.NewReader(bytes.NewReader(buf.Bytes()))
+	found := false
 	for {
 		hdr, err := tr.Next()
 		if err == io.EOF {
@@ -114,11 +113,32 @@ func TestTarDirSymlinkTarget(t *testing.T) {
 			t.Fatal(err)
 		}
 		if hdr.Name == "link.txt" {
-			linkName = hdr.Linkname
+			found = true
+			if hdr.Typeflag != tar.TypeReg {
+				t.Fatalf("want link.txt dereferenced to a regular file, got type %d", hdr.Typeflag)
+			}
+			body, err := io.ReadAll(tr)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if string(body) != "target-content" {
+				t.Fatalf("want dereferenced link.txt to carry target content, got %q", body)
+			}
 		}
 	}
-	if linkName != "real.txt" {
-		t.Fatalf("want symlink target real.txt, got %q", linkName)
+	if !found {
+		t.Fatal("want link.txt in tar")
+	}
+}
+
+func TestTarDirBrokenSymlinkErrors(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.Symlink("does-not-exist", dir+"/dangling"); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err == nil {
+		t.Fatal("want error for broken symlink")
 	}
 }
 
