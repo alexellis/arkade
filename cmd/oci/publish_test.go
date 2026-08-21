@@ -36,6 +36,12 @@ func TestSplitImage(t *testing.T) {
 	}
 }
 
+func TestSplitImageRejectsDigest(t *testing.T) {
+	if _, _, _, err := splitImage("ghcr.io/me/app@sha256:abc123"); err == nil {
+		t.Fatal("want error for digest reference")
+	}
+}
+
 func TestPublishBundlesInvalidPlatform(t *testing.T) {
 	cases := []string{
 		"amd64=foo.tgz",          // no os/arch separator
