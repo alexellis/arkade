@@ -147,6 +147,9 @@ func splitImage(image string) (repo, tag string, hasTag bool, err error) {
 	if err != nil {
 		return "", "", false, fmt.Errorf("parsing image %s: %w", image, err)
 	}
+	if _, ok := ref.(name.Digest); ok {
+		return "", "", false, fmt.Errorf("digest references are not valid publish tags: %s", image)
+	}
 	repo = ref.Context().Name()
 	if t, ok := ref.(name.Tag); ok {
 		lastSlash := strings.LastIndex(image, "/")
