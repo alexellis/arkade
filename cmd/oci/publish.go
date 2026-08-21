@@ -5,7 +5,6 @@ package oci
 
 import (
 	"archive/tar"
-	"bytes"
 	"fmt"
 	"io"
 	"os"
@@ -84,6 +83,9 @@ as ttl.sh need no login at all.`,
 		if len(bundles) == 0 && len(args) == 0 {
 			return fmt.Errorf("please provide a source directory or at least one --bundle")
 		}
+		if len(args) > 1 {
+			return fmt.Errorf("expected a single source directory, got %d arguments", len(args))
+		}
 
 		var publish func(ref string) error
 		if len(bundles) > 0 {
@@ -99,9 +101,12 @@ as ttl.sh need no login at all.`,
 				return remote.WriteIndex(r, idx, remote.WithAuthFromKeychain(authn.DefaultKeychain))
 			}
 		} else {
-			img, err := buildImageFromDir(args[0])
+			img, cleanup, err := buildImageFromDir(args[0])
 			if err != nil {
 				return err
+			}
+			if cleanup != nil {
+				defer cleanup()
 			}
 			publish = func(ref string) error {
 				r, err := name.ParseReference(ref)
@@ -153,29 +158,45 @@ func splitImage(image string) (repo, tag string, hasTag bool, err error) {
 	return repo, tag, hasTag, nil
 }
 
-func buildImageFromDir(dir string) (v1.Image, error) {
+func buildImageFromDir(dir string) (v1.Image, func(), error) {
 	info, err := os.Stat(dir)
 	if err != nil {
-		return nil, fmt.Errorf("source %s: %w", dir, err)
+		return nil, nil, fmt.Errorf("source %s: %w", dir, err)
 	}
 	if !info.IsDir() {
-		return nil, fmt.Errorf("source %s is not a directory", dir)
+		return nil, nil, fmt.Errorf("source %s is not a directory", dir)
 	}
-	tarBytes, err := tarDir(dir)
+
+	tmp, err := os.CreateTemp("", "arkade-oci-publish-*.tar")
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	layer, err := tarball.LayerFromReader(bytes.NewReader(tarBytes))
+	cleanup := func() { os.Remove(tmp.Name()) }
+
+	if err := tarDir(dir, tmp); err != nil {
+		tmp.Close()
+		cleanup()
+		return nil, nil, err
+	}
+	if err := tmp.Close(); err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+
+	layer, err := tarball.LayerFromFile(tmp.Name())
 	if err != nil {
-		return nil, fmt.Errorf("tarring %s: %w", dir, err)
+		cleanup()
+		return nil, nil, fmt.Errorf("tarring %s: %w", dir, err)
 	}
 	img, err := mutate.AppendLayers(empty.Image, layer)
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
 	cfg, err := img.ConfigFile()
 	if err != nil {
-		return nil, err
+		cleanup()
+		return nil, nil, err
 	}
 	cfg = cfg.DeepCopy()
 	arch, osName := env.GetClientArch()
@@ -185,12 +206,16 @@ func buildImageFromDir(dir string) (v1.Image, error) {
 	}
 	cfg.OS = downloadOS
 	cfg.Architecture = downloadArch
-	return mutate.ConfigFile(img, cfg)
+	img, err = mutate.ConfigFile(img, cfg)
+	if err != nil {
+		cleanup()
+		return nil, nil, err
+	}
+	return img, cleanup, nil
 }
 
-func tarDir(dir string) ([]byte, error) {
-	var buf bytes.Buffer
-	tw := tar.NewWriter(&buf)
+func tarDir(dir string, w io.Writer) error {
+	tw := tar.NewWriter(w)
 	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -222,20 +247,20 @@ func tarDir(dir string) ([]byte, error) {
 			if err != nil {
 				return err
 			}
-			defer f.Close()
 			if _, err := io.Copy(tw, f); err != nil {
+				f.Close()
+				return err
+			}
+			if err := f.Close(); err != nil {
 				return err
 			}
 		}
 		return nil
 	})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	if err := tw.Close(); err != nil {
-		return nil, err
-	}
-	return buf.Bytes(), nil
+	return tw.Close()
 }
 
 func buildImageFromBundle(path, platform string) (v1.Image, error) {
