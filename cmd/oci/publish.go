@@ -219,8 +219,15 @@ func buildImageFromDir(dir string) (v1.Image, func(), error) {
 
 func tarDir(dir string, w io.Writer) error {
 	tw := tar.NewWriter(w)
+	// Canonicalize the source root once so containment checks against
+	// resolved symlink targets work even when the source directory itself
+	// is a symlink (e.g. /tmp/dist-link -> /mnt/build/dist).
+	realRoot, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return err
+	}
 	visited := make(map[string]bool)
-	if err := addDirToTar(tw, dir, dir, "", visited); err != nil {
+	if err := addDirToTar(tw, realRoot, dir, "", visited); err != nil {
 		return err
 	}
 	return tw.Close()

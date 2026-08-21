@@ -169,6 +169,29 @@ func TestTarDirSymlinkCycleErrors(t *testing.T) {
 	}
 }
 
+func TestTarDirSymlinkedSourceRoot(t *testing.T) {
+	real := t.TempDir()
+	if err := writeFile(real+"/real.txt", "content"); err != nil {
+		t.Fatal(err)
+	}
+	if err := os.Symlink("real.txt", real+"/link.txt"); err != nil {
+		t.Fatal(err)
+	}
+	base := t.TempDir()
+	linkDir := base + "/dist-link"
+	if err := os.Symlink(real, linkDir); err != nil {
+		t.Fatal(err)
+	}
+
+	var buf bytes.Buffer
+	if err := tarDir(linkDir, &buf); err != nil {
+		t.Fatalf("publishing through a symlinked source root should not reject in-tree symlinks: %s", err)
+	}
+	if !bytesContains(buf.Bytes(), "link.txt") {
+		t.Fatal("want link.txt in tar")
+	}
+}
+
 func TestTarDirSkipsSpecialFile(t *testing.T) {
 	dir := t.TempDir()
 	if err := writeFile(dir+"/ok.txt", "x"); err != nil {
