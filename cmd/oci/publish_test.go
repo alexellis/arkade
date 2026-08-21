@@ -9,6 +9,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"syscall"
 	"testing"
 )
 
@@ -139,6 +140,38 @@ func TestTarDirBrokenSymlinkErrors(t *testing.T) {
 	var buf bytes.Buffer
 	if err := tarDir(dir, &buf); err == nil {
 		t.Fatal("want error for broken symlink")
+	}
+}
+
+func TestTarDirSymlinkOutsideRootErrors(t *testing.T) {
+	outside := t.TempDir()
+	if err := writeFile(outside+"/secret.txt", "sensitive"); err != nil {
+		t.Fatal(err)
+	}
+	dir := t.TempDir()
+	if err := os.Symlink(outside, dir+"/leak"); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err == nil {
+		t.Fatal("want error when symlink resolves outside the source directory")
+	}
+}
+
+func TestTarDirSkipsSpecialFile(t *testing.T) {
+	dir := t.TempDir()
+	if err := writeFile(dir+"/ok.txt", "x"); err != nil {
+		t.Fatal(err)
+	}
+	if err := syscall.Mkfifo(dir+"/pipe", 0600); err != nil {
+		t.Skipf("mkfifo unavailable: %s", err)
+	}
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err != nil {
+		t.Fatalf("tarDir should not error or hang on a FIFO: %s", err)
+	}
+	if bytesContains(buf.Bytes(), "pipe") {
+		t.Fatal("want FIFO to be skipped, not written to the tar")
 	}
 }
 

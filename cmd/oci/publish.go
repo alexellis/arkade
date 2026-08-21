@@ -240,11 +240,19 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
 		}
 
 		// Dereference symlinks so the published image extracts cleanly with
-		// "arkade oci install", whose default refuses symlink entries.
+		// "arkade oci install", whose default refuses symlink entries. The
+		// resolved target must stay within the source tree.
 		if info.Mode()&os.ModeSymlink != 0 {
 			resolved, err := filepath.EvalSymlinks(path)
 			if err != nil {
 				return fmt.Errorf("broken symlink %s: %w", path, err)
+			}
+			within, err := pathWithin(root, resolved)
+			if err != nil {
+				return err
+			}
+			if !within {
+				return fmt.Errorf("symlink %s resolves outside the source directory %s", path, root)
 			}
 			rinfo, err := os.Stat(resolved)
 			if err != nil {
@@ -254,10 +262,12 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
 				if err := addDirToTar(tw, root, resolved, rel); err != nil {
 					return err
 				}
-			} else {
+			} else if rinfo.Mode().IsRegular() {
 				if err := writeFileToTar(tw, rel, resolved, rinfo); err != nil {
 					return err
 				}
+			} else {
+				fmt.Fprintf(os.Stderr, "skipping special file %s (mode %s)\n", rel, rinfo.Mode())
 			}
 			continue
 		}
@@ -277,11 +287,32 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
 			continue
 		}
 
+		if !info.Mode().IsRegular() {
+			fmt.Fprintf(os.Stderr, "skipping special file %s (mode %s)\n", rel, info.Mode())
+			continue
+		}
+
 		if err := writeFileToTar(tw, rel, path, info); err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+func pathWithin(root, target string) (bool, error) {
+	absRoot, err := filepath.Abs(root)
+	if err != nil {
+		return false, err
+	}
+	absTarget, err := filepath.Abs(target)
+	if err != nil {
+		return false, err
+	}
+	rel, err := filepath.Rel(absRoot, absTarget)
+	if err != nil {
+		return false, err
+	}
+	return rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)), nil
 }
 
 func writeFileToTar(tw *tar.Writer, rel, path string, info os.FileInfo) error {
