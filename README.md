@@ -282,6 +282,25 @@ Options:
 * `--version` - the version of the package to extract, if not specified the `:latest` tag is used
 * `--arch` - the architecture to extract, if not specified the host's architecture is used
 
+## Publish to OCI images
+
+`arkade oci publish` is the inverse of `install`: it bundles a directory (or a set of pre-built tarballs) into an OCI image and pushes it to a registry. Tags follow `docker build`/`buildx` syntax, one `-t` per identifier.
+
+```bash
+# Publish ./dist as a single layer to one tag
+arkade oci publish ./dist -t ghcr.io/me/app:0.1.0
+
+# Multiple tags, one -t each
+arkade oci publish ./dist -t ghcr.io/me/app:0.1.0 -t ghcr.io/me/app:latest
+
+# Multi-arch index from pre-built tarballs
+arkade oci publish -t ghcr.io/me/app:0.1.0 \
+  --bundle linux/amd64=./app-amd64.tgz \
+  --bundle linux/arm64=./app-arm64.tgz
+```
+
+Credentials come from your local Docker keychain (what `docker login` writes). On GitHub Actions, the `docker/login-action` step populates that keychain for ghcr.io, and anonymous registries like `ttl.sh` need no login. Writing over an existing tag simply re-points it — old layers are left for the registry's garbage collector.
+
 ## Install CLIs during CI with GitHub Actions
 
 * [alexellis/arkade-get@master](https://github.com/alexellis/arkade-get)
