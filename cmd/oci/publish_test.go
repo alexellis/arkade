@@ -37,9 +37,16 @@ func TestSplitImage(t *testing.T) {
 }
 
 func TestPublishBundlesInvalidPlatform(t *testing.T) {
-	_, err := publishBundles([]string{"amd64=foo.tgz"})
-	if err == nil {
-		t.Fatal("want error for platform without os/arch separator")
+	cases := []string{
+		"amd64=foo.tgz",          // no os/arch separator
+		"linux/=foo.tgz",         // missing arch
+		"/amd64=foo.tgz",         // missing os
+		"linux/amd64/v2=foo.tgz", // variant not supported
+	}
+	for _, c := range cases {
+		if _, err := publishBundles([]string{c}); err == nil {
+			t.Errorf("want error for invalid platform bundle %q", c)
+		}
 	}
 }
 

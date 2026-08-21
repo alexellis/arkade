@@ -293,8 +293,9 @@ func publishBundles(bundles []string) (v1.ImageIndex, error) {
 		}
 		platform := strings.TrimSpace(parts[0])
 		path := strings.TrimSpace(parts[1])
-		if !strings.Contains(platform, "/") {
-			return nil, fmt.Errorf("invalid platform %q in --bundle %q, want linux/amd64", platform, b)
+		platformParts := strings.Split(platform, "/")
+		if len(platformParts) != 2 || platformParts[0] == "" || platformParts[1] == "" {
+			return nil, fmt.Errorf("invalid platform %q in --bundle %q, want os/arch i.e. linux/amd64", platform, b)
 		}
 		img, err := buildImageFromBundle(path, platform)
 		if err != nil {
