@@ -5007,6 +5007,10 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Name:            "crossplane",
 			VersionStrategy: GitHubVersionStrategy,
 			Description:     "Simplify some development and administration aspects of Crossplane.",
+			// Pinned to v2.3.0, transient: v2.4.0 (latest) ships no binaries.
+			// https://github.com/crossplane/crossplane/releases/tag/v2.4.0
+			// Unpin once binaries are restored.
+			Version: "v2.3.0",
 			URLTemplate: `
 					{{$arch := .Arch}}
 					{{$ext := "" }}
