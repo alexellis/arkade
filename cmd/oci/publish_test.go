@@ -59,10 +59,11 @@ func TestTarDir(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	data, err := tarDir(dir)
-	if err != nil {
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err != nil {
 		t.Fatal(err)
 	}
+	data := buf.Bytes()
 	if len(data) == 0 {
 		t.Fatal("want non-empty tar")
 	}
@@ -83,10 +84,11 @@ func TestTarDirSymlinkTarget(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	data, err := tarDir(dir)
-	if err != nil {
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err != nil {
 		t.Fatal(err)
 	}
+	data := buf.Bytes()
 
 	tr := tar.NewReader(bytes.NewReader(data))
 	var linkName string
@@ -112,7 +114,7 @@ func TestBuildImageFromDirRejectsFile(t *testing.T) {
 	if err := writeFile(file, "x"); err != nil {
 		t.Fatal(err)
 	}
-	if _, err := buildImageFromDir(file); err == nil {
+	if _, _, err := buildImageFromDir(file); err == nil {
 		t.Fatal("want error when source is a regular file, not a directory")
 	}
 }
@@ -122,10 +124,11 @@ func TestBuildImageFromDirPlatform(t *testing.T) {
 	if err := writeFile(dir+"/f", "x"); err != nil {
 		t.Fatal(err)
 	}
-	img, err := buildImageFromDir(dir)
+	img, cleanup, err := buildImageFromDir(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
+	defer cleanup()
 	cfg, err := img.ConfigFile()
 	if err != nil {
 		t.Fatal(err)
