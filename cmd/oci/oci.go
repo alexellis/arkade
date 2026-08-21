@@ -25,6 +25,7 @@ func MakeOci() *cobra.Command {
 	}
 
 	command.AddCommand(MakeOciInstall())
+	command.AddCommand(MakeOciPublish())
 
 	return command
 }
