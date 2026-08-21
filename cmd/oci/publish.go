@@ -154,6 +154,13 @@ func splitImage(image string) (repo, tag string, hasTag bool, err error) {
 }
 
 func buildImageFromDir(dir string) (v1.Image, error) {
+	info, err := os.Stat(dir)
+	if err != nil {
+		return nil, fmt.Errorf("source %s: %w", dir, err)
+	}
+	if !info.IsDir() {
+		return nil, fmt.Errorf("source %s is not a directory", dir)
+	}
 	tarBytes, err := tarDir(dir)
 	if err != nil {
 		return nil, err

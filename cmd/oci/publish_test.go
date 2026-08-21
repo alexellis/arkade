@@ -107,6 +107,16 @@ func TestTarDirSymlinkTarget(t *testing.T) {
 	}
 }
 
+func TestBuildImageFromDirRejectsFile(t *testing.T) {
+	file := t.TempDir() + "/notadir"
+	if err := writeFile(file, "x"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := buildImageFromDir(file); err == nil {
+		t.Fatal("want error when source is a regular file, not a directory")
+	}
+}
+
 func TestBuildImageFromDirPlatform(t *testing.T) {
 	dir := t.TempDir()
 	if err := writeFile(dir+"/f", "x"); err != nil {
