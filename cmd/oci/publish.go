@@ -279,6 +279,14 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string, visited map[string
 				return err
 			}
 			if rinfo.IsDir() {
+				hdr, err := tar.FileInfoHeader(rinfo, "")
+				if err != nil {
+					return err
+				}
+				hdr.Name = filepath.ToSlash(rel)
+				if err := tw.WriteHeader(hdr); err != nil {
+					return err
+				}
 				if err := addDirToTar(tw, root, resolved, rel, visited); err != nil {
 					return err
 				}
