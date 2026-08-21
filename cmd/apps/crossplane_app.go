@@ -81,12 +81,12 @@ schedule workloads to any Kubernetes cluster`,
 		}
 
 		updateRepo, _ := crossplane.Flags().GetBool("update-repo")
-		err = helm.AddHelmRepo("crossplane-alpha", "https://charts.crossplane.io/alpha", updateRepo)
+		err = helm.AddHelmRepo("crossplane-stable", "https://charts.crossplane.io/stable", updateRepo)
 		if err != nil {
 			return err
 		}
 
-		err = helm.FetchChart("crossplane-alpha/crossplane", defaultVersion)
+		err = helm.FetchChart("crossplane-stable/crossplane", defaultVersion)
 		if err != nil {
 			return err
 		}
@@ -96,7 +96,7 @@ schedule workloads to any Kubernetes cluster`,
 			return nsErr
 		}
 
-		err = helm.Helm3Upgrade("crossplane-alpha/crossplane",
+		err = helm.Helm3Upgrade("crossplane-stable/crossplane",
 			namespace, []string{"values.yaml"}, "", values, wait)
 		if err != nil {
 			return err
