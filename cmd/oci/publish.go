@@ -219,51 +219,89 @@ func buildImageFromDir(dir string) (v1.Image, func(), error) {
 
 func tarDir(dir string, w io.Writer) error {
 	tw := tar.NewWriter(w)
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		rel, err := filepath.Rel(dir, path)
-		if err != nil {
-			return err
-		}
-		if rel == "." {
-			return nil
-		}
-		var linkTarget string
-		if info.Mode()&os.ModeSymlink != 0 {
-			linkTarget, err = os.Readlink(path)
-			if err != nil {
-				return err
-			}
-		}
-		hdr, err := tar.FileInfoHeader(info, linkTarget)
-		if err != nil {
-			return err
-		}
-		hdr.Name = filepath.ToSlash(rel)
-		if err := tw.WriteHeader(hdr); err != nil {
-			return err
-		}
-		if info.Mode().IsRegular() {
-			f, err := os.Open(path)
-			if err != nil {
-				return err
-			}
-			if _, err := io.Copy(tw, f); err != nil {
-				f.Close()
-				return err
-			}
-			if err := f.Close(); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	if err != nil {
+	if err := addDirToTar(tw, dir, dir, ""); err != nil {
 		return err
 	}
 	return tw.Close()
+}
+
+func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
+	entries, err := os.ReadDir(dir)
+	if err != nil {
+		return err
+	}
+	for _, e := range entries {
+		path := filepath.Join(dir, e.Name())
+		rel := filepath.Join(relPrefix, e.Name())
+
+		info, err := os.Lstat(path)
+		if err != nil {
+			return err
+		}
+
+		// Dereference symlinks so the published image extracts cleanly with
+		// "arkade oci install", whose default refuses symlink entries.
+		if info.Mode()&os.ModeSymlink != 0 {
+			resolved, err := filepath.EvalSymlinks(path)
+			if err != nil {
+				return fmt.Errorf("broken symlink %s: %w", path, err)
+			}
+			rinfo, err := os.Stat(resolved)
+			if err != nil {
+				return err
+			}
+			if rinfo.IsDir() {
+				if err := addDirToTar(tw, root, resolved, rel); err != nil {
+					return err
+				}
+			} else {
+				if err := writeFileToTar(tw, rel, resolved, rinfo); err != nil {
+					return err
+				}
+			}
+			continue
+		}
+
+		if info.IsDir() {
+			hdr, err := tar.FileInfoHeader(info, "")
+			if err != nil {
+				return err
+			}
+			hdr.Name = filepath.ToSlash(rel)
+			if err := tw.WriteHeader(hdr); err != nil {
+				return err
+			}
+			if err := addDirToTar(tw, root, path, rel); err != nil {
+				return err
+			}
+			continue
+		}
+
+		if err := writeFileToTar(tw, rel, path, info); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func writeFileToTar(tw *tar.Writer, rel, path string, info os.FileInfo) error {
+	hdr, err := tar.FileInfoHeader(info, "")
+	if err != nil {
+		return err
+	}
+	hdr.Name = filepath.ToSlash(rel)
+	if err := tw.WriteHeader(hdr); err != nil {
+		return err
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(tw, f); err != nil {
+		f.Close()
+		return err
+	}
+	return f.Close()
 }
 
 func buildImageFromBundle(path, platform string) (v1.Image, error) {

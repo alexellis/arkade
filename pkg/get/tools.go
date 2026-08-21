@@ -5009,6 +5009,7 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Description:     "Simplify some development and administration aspects of Crossplane.",
 			// Pinned to v2.3.0, transient: v2.4.0 (latest) ships no binaries.
 			// https://github.com/crossplane/crossplane/releases/tag/v2.4.0
+			// No upstream issue filed; binaries expected in a follow-up release.
 			// Unpin once binaries are restored.
 			Version: "v2.3.0",
 			URLTemplate: `
