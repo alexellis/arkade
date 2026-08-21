@@ -219,13 +219,26 @@ func buildImageFromDir(dir string) (v1.Image, func(), error) {
 
 func tarDir(dir string, w io.Writer) error {
 	tw := tar.NewWriter(w)
-	if err := addDirToTar(tw, dir, dir, ""); err != nil {
+	visited := make(map[string]bool)
+	if err := addDirToTar(tw, dir, dir, "", visited); err != nil {
 		return err
 	}
 	return tw.Close()
 }
 
-func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
+func addDirToTar(tw *tar.Writer, root, dir, relPrefix string, visited map[string]bool) error {
+	// Resolve to the real path so symlinked directories that cycle back
+	// into the source tree are caught instead of recursing forever.
+	realDir, err := filepath.EvalSymlinks(dir)
+	if err != nil {
+		return err
+	}
+	if visited[realDir] {
+		return fmt.Errorf("directory cycle detected at %s", dir)
+	}
+	visited[realDir] = true
+	defer delete(visited, realDir)
+
 	entries, err := os.ReadDir(dir)
 	if err != nil {
 		return err
@@ -259,7 +272,7 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
 				return err
 			}
 			if rinfo.IsDir() {
-				if err := addDirToTar(tw, root, resolved, rel); err != nil {
+				if err := addDirToTar(tw, root, resolved, rel, visited); err != nil {
 					return err
 				}
 			} else if rinfo.Mode().IsRegular() {
@@ -281,7 +294,7 @@ func addDirToTar(tw *tar.Writer, root, dir, relPrefix string) error {
 			if err := tw.WriteHeader(hdr); err != nil {
 				return err
 			}
-			if err := addDirToTar(tw, root, path, rel); err != nil {
+			if err := addDirToTar(tw, root, path, rel, visited); err != nil {
 				return err
 			}
 			continue

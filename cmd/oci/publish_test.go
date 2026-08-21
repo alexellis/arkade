@@ -158,6 +158,17 @@ func TestTarDirSymlinkOutsideRootErrors(t *testing.T) {
 	}
 }
 
+func TestTarDirSymlinkCycleErrors(t *testing.T) {
+	dir := t.TempDir()
+	if err := os.Symlink(".", dir+"/loop"); err != nil {
+		t.Fatal(err)
+	}
+	var buf bytes.Buffer
+	if err := tarDir(dir, &buf); err == nil {
+		t.Fatal("want error when a directory symlink cycles back into the source tree")
+	}
+}
+
 func TestTarDirSkipsSpecialFile(t *testing.T) {
 	dir := t.TempDir()
 	if err := writeFile(dir+"/ok.txt", "x"); err != nil {
