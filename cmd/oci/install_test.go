@@ -51,6 +51,18 @@ func TestResolveShortcutImage(t *testing.T) {
 			wantAnonymousAuth: true,
 		},
 		{
+			name:              "slicer-agent shortcut uses anonymous auth",
+			input:             "slicer-agent",
+			wantImage:         "ghcr.io/openfaasltd/slicer-agent",
+			wantAnonymousAuth: true,
+		},
+		{
+			name:              "signet shortcut uses anonymous auth",
+			input:             "signet",
+			wantImage:         "ghcr.io/openfaasltd/signet",
+			wantAnonymousAuth: true,
+		},
+		{
 			name:              "fully qualified image is unchanged",
 			input:             "ghcr.io/openfaasltd/custom-tool",
 			wantImage:         "ghcr.io/openfaasltd/custom-tool",
