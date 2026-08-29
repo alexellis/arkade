@@ -21,7 +21,7 @@ require (
 
 require (
 	github.com/Masterminds/semver v1.5.0
-	github.com/alexellis/gha-bump v0.0.6
+	github.com/alexellis/gha-bump v0.0.7
 	github.com/ulikunitz/xz v0.5.16
 )
 

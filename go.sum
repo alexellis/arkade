@@ -6,6 +6,8 @@ github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330 h1:M7Yh2fMnNuNWFT
 github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330/go.mod h1:EeXLSmvkiUDzy3ut257lc0f+uoehgAU9NXsC+/i1ySg=
 github.com/alexellis/gha-bump v0.0.6 h1:s4isGq/UwLdvd6wDLJBcYrynY5KgQme4nH8spxQ/82o=
 github.com/alexellis/gha-bump v0.0.6/go.mod h1:DoVZXvmzy/SjVJcIkdPQEgUFGJc/aZEXM4Rmi//HpBM=
+github.com/alexellis/gha-bump v0.0.7 h1:O9mKDn9eMyeo6mCG38Y//1r2EmgIGQRGwr9eRIWoSR4=
+github.com/alexellis/gha-bump v0.0.7/go.mod h1:DoVZXvmzy/SjVJcIkdPQEgUFGJc/aZEXM4Rmi//HpBM=
 github.com/alexellis/go-execute/v2 v2.2.1 h1:4Ye3jiCKQarstODOEmqDSRCqxMHLkC92Bhse743RdOI=
 github.com/alexellis/go-execute/v2 v2.2.1/go.mod h1:FMdRnUTiFAmYXcv23txrp3VYZfLo24nMpiIneWgKHTQ=
 github.com/cespare/xxhash/v2 v2.3.0 h1:UL815xU9SqsFlibzuggzjXhog7bL6oX9BbNZnL2UFvs=
