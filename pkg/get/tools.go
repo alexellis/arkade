@@ -5039,22 +5039,27 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{.Name}}
 			Name:            "rosa",
 			VersionStrategy: GitHubVersionStrategy,
 			Description:     "Red Hat OpenShift on AWS (ROSA) command line tool",
+			// v1.2.65 changed asset naming from rosa_Linux_x86_64.tar.gz
+			// to rosa_linux_amd64.zip. Naming change queried upstream in
+			// openshift/rosa#3499.
+			// https://github.com/openshift/rosa/issues/3499
 			BinaryTemplate: `
 							{{$os := .OS}}
 							{{$arch := .Arch}}
-							{{$ext := "tar.gz"}}
+							{{$ext := "zip"}}
 
 							{{- if eq .OS "darwin" -}}
-								{{$os = "Darwin"}}
+								{{$os = "darwin"}}
 							{{- else if eq .OS "linux" -}}
-								{{$os = "Linux"}}
+								{{$os = "linux"}}
 							{{- else if HasPrefix .OS "ming" -}}
-								{{$os = "Windows"}}
-								{{$ext = "zip"}}
+								{{$os = "windows"}}
 							{{- end -}}
 
 							{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
 								{{$arch = "arm64"}}
+							{{- else if eq .Arch "x86_64" -}}
+								{{$arch = "amd64"}}
 							{{- end -}}
 
 						rosa_{{$os}}_{{$arch}}.{{$ext}}
