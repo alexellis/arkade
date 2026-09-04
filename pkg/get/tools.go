@@ -720,10 +720,15 @@ https://dl.k8s.io/release/{{.Version}}/bin/{{$os}}/{{$arch}}/kubectl{{$ext}}`})
 
 	tools = append(tools,
 		Tool{
-			Owner:          "k8sgpt-ai",
-			Repo:           "k8sgpt",
-			Name:           "k8sgpt",
-			Description:    "Kubernetes AI diagnostic tool and companion for cluster operators.",
+			Owner:       "k8sgpt-ai",
+			Repo:        "k8sgpt",
+			Name:        "k8sgpt",
+			Description: "Kubernetes AI diagnostic tool and companion for cluster operators.",
+			// Pinned to v0.4.36, transient: v0.4.38 (latest) shipped no binaries,
+			// only an SBOM. Upstream issue k8sgpt-ai/k8sgpt#1775
+			// https://github.com/k8sgpt-ai/k8sgpt/issues/1775
+			// Unpin once binaries are restored.
+			Version:        "v0.4.36",
 			BinaryTemplate: `k8sgpt`,
 			URLTemplate: `
 {{$os := ""}}
