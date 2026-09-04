@@ -124,6 +124,22 @@ To update:
 
 Replace everything between `<!-- start of tool list -->` and `<!-- end of tool list -->` (inclusive of the table rows and tool count line, exclusive of the markers themselves).
 
+**Marker gotcha**: do not splice the README by pre-computed line numbers - they
+drift if the file is edited part-way through. Splice by matching the marker
+strings themselves, in a single pass, and verify afterwards:
+
+```bash
+grep -c "start of tool list\|end of tool list" README.md
+```
+
+This must print `2`. If it prints anything else, fix the file before
+continuing.
+
+**Count line gotcha**: the "There are N tools, use `arkade get NAME` to
+download one." line is emitted by `go run . get --format markdown` as part of
+the table output. Treat it as inside the markers - replace the old count line
+rather than keeping it, or you will end up with duplicates.
+
 **Apostrophe gotcha**: some tool descriptions in `tools.go` contain curly apostrophes (`'` U+2019) instead of straight ASCII ones (`'` U+0027). After updating the README with `go run . get --format markdown`, check for this with:
 
 ```bash

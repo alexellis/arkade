@@ -792,6 +792,7 @@ There are 53 apps that you can install on your cluster.
 ### Catalog of CLIs
 
 <!-- start of tool list -->
+
 |                                     TOOL                                     |                                                                            DESCRIPTION                                                                            |
 |------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [act](https://github.com/nektos/act)                                         | Run GitHub Actions locally                                                                                                                                        |
@@ -973,6 +974,7 @@ There are 53 apps that you can install on your cluster.
 | [seaweedfs](https://github.com/seaweedfs/seaweedfs)                          | SeaweedFS is a fast distributed storage system for blobs, objects, files, and data lake, for billions of files!                                                   |
 | [skupper](https://github.com/skupperproject/skupper)                         | Skupper is an implementation of a Virtual Application Network, enabling rich hybrid cloud communication                                                           |
 | [snowmachine](https://github.com/rgee0/snowmachine)                          | Festive cheer for your terminal.                                                                                                                                  |
+| [sofka](https://github.com/nklmilojevic/sofka)                               | A Kubernetes TUI that tells you why it's broken.                                                                                                                  |
 | [sops](https://github.com/getsops/sops)                                      | Simple and flexible tool for managing secrets                                                                                                                     |
 | [ssync](https://github.com/alexellis/ssync)                                  | Sync files from one machine to another.                                                                                                                           |
 | [starship](https://github.com/starship/starship)                             | The minimal, blazing-fast, and infinitely customizable prompt for any shell!                                                                                      |
@@ -1004,5 +1006,5 @@ There are 53 apps that you can install on your cluster.
 | [xq](https://github.com/sibprogrammer/xq)                                    | XML to JSON/YAML converter and query tool.                                                                                                                        |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
- There are 211 tools, use `arkade get NAME` to download one.
+There are 211 tools, use `arkade get NAME` to download one.
 <!-- end of tool list -->

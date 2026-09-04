@@ -5987,5 +5987,33 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 			BinaryTemplate: `fq`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "nklmilojevic",
+			Repo:        "sofka",
+			Name:        "sofka",
+			Description: "A Kubernetes TUI that tells you why it's broken.",
+			URLTemplate: `
+					{{$os := "unknown-linux-gnu"}}
+					{{$arch := .Arch}}
+					{{- if eq .OS "darwin" -}}
+						{{$os = "apple-darwin"}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{$os = "pc-windows-msvc"}}
+					{{- end -}}
+
+					{{- if eq .Arch "aarch64" -}}
+						{{$arch = "aarch64"}}
+					{{- else if eq .Arch "arm64" -}}
+						{{$arch = "aarch64"}}
+					{{- else if eq .Arch "x86_64" -}}
+						{{$arch = "x86_64"}}
+					{{- end -}}
+
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/sofka-{{.Version}}-{{$arch}}-{{$os}}.tar.gz
+					`,
+			BinaryTemplate: `sofka`,
+		})
+
 	return tools
 }
