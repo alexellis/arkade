@@ -1,6 +1,6 @@
 module github.com/alexellis/arkade
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/Masterminds/semver/v3 v3.5.0
@@ -14,7 +14,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.4.0
 	github.com/spf13/cobra v1.10.2
-	golang.org/x/crypto v0.55.0
+	golang.org/x/crypto v0.56.0
 	golang.org/x/mod v0.40.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -35,7 +35,7 @@ require (
 	github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/docker/cli v29.7.2+incompatible // indirect
+	github.com/docker/cli v29.7.2+incompatible
 	github.com/docker/docker-credential-helpers v0.9.8 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
