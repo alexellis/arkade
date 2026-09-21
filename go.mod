@@ -9,7 +9,7 @@ require (
 	github.com/google/go-containerregistry v0.21.9
 	github.com/mattn/go-isatty v0.0.24
 	github.com/morikuni/aec v1.1.0
-	github.com/olekukonko/tablewriter v1.1.4
+	github.com/olekukonko/tablewriter v1.1.5
 	github.com/otiai10/copy v1.14.1
 	github.com/pkg/errors v0.9.1
 	github.com/sethvargo/go-password v0.4.0
@@ -35,7 +35,7 @@ require (
 	github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/docker/cli v29.7.2+incompatible // indirect
+	github.com/docker/cli v29.7.2+incompatible
 	github.com/docker/docker-credential-helpers v0.9.8 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
