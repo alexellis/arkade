@@ -22,7 +22,7 @@ require (
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/alexellis/gha-bump v0.0.7
-	github.com/ulikunitz/xz v0.5.16
+	github.com/ulikunitz/xz v0.5.17
 )
 
 require (
@@ -35,7 +35,7 @@ require (
 	github.com/alexellis/fstail v0.0.0-20260301203901-2641eb3ce330
 	github.com/clipperhouse/displaywidth v0.11.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.7.0 // indirect
-	github.com/docker/cli v29.7.2+incompatible // indirect
+	github.com/docker/cli v29.7.2+incompatible
 	github.com/docker/docker-credential-helpers v0.9.8 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
