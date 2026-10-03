@@ -2956,48 +2956,47 @@ func Test_DownloadMinio(t *testing.T) {
 
 	tool := getTool(name, tools)
 
+	// MinIO moved distribution from dl.min.io (now 410 Gone) to GitHub
+	// releases, with assets named mc.{os}-{arch}.{RELEASE_TAG}.
+	version := "RELEASE.2025-08-13T08-35-41Z"
+
 	tests := []test{
 		{
-			os:   "ming",
-			arch: "amd64",
-			url:  `https://dl.min.io/client/mc/release/windows-amd64/mc.exe`,
+			os:      "ming",
+			arch:    "amd64",
+			version: version,
+			url:     `https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.windows-amd64.RELEASE.2025-08-13T08-35-41Z.exe`,
 		},
 		{
-			os:   "linux",
-			arch: "amd64",
-			url:  `https://dl.min.io/client/mc/release/linux-amd64/mc`,
+			os:      "linux",
+			arch:    "amd64",
+			version: version,
+			url:     `https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.linux-amd64.RELEASE.2025-08-13T08-35-41Z`,
 		},
 		{
-			os:   "linux",
-			arch: "arm",
-			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
+			os:      "linux",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.linux-arm64.RELEASE.2025-08-13T08-35-41Z`,
 		},
 		{
-			os:   "linux",
-			arch: "armv6l",
-			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
+			os:      "darwin",
+			arch:    "amd64",
+			version: version,
+			url:     `https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.darwin-amd64.RELEASE.2025-08-13T08-35-41Z`,
 		},
 		{
-			os:   "linux",
-			arch: archARM7,
-			url:  `https://dl.min.io/client/mc/release/linux-arm/mc`,
-		},
-		{
-			os:   "linux",
-			arch: archARM64,
-			url:  `https://dl.min.io/client/mc/release/linux-arm64/mc`,
-		},
-		{
-			os:   "darwin",
-			arch: "amd64",
-			url:  `https://dl.min.io/client/mc/release/darwin-amd64/mc`,
+			os:      "darwin",
+			arch:    archARM64,
+			version: version,
+			url:     `https://github.com/minio/mc/releases/download/RELEASE.2025-08-13T08-35-41Z/mc.darwin-arm64.RELEASE.2025-08-13T08-35-41Z`,
 		},
 	}
 
 	for _, tc := range tests {
 		t.Run(tc.os+" "+tc.arch+" "+tc.version, func(t *testing.T) {
 
-			got, _, err := tool.GetURL(tc.os, tc.arch, "", false)
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 			if err != nil {
 				t.Fatal(err)
 			}

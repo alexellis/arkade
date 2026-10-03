@@ -1945,15 +1945,17 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			Repo:        "mc",
 			Name:        "mc",
 			Description: "MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.",
-			URLTemplate: `{{$arch := .Arch}}
+			BinaryTemplate: `{{$arch := .Arch}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
+			{{- else if eq .Arch "aarch64" -}}
+			{{$arch = "arm64"}}
+			{{- else if eq .Arch "arm64" -}}
+			{{$arch = "arm64"}}
 			{{- else if eq .Arch "armv6l" -}}
 			{{$arch = "arm"}}
 			{{- else if eq .Arch "armv7l" -}}
 			{{$arch = "arm"}}
-			{{- else if eq .Arch "aarch64" -}}
-			{{$arch = "arm64"}}
 			{{- end -}}
 			{{$osStr := ""}}
 			{{ if HasPrefix .OS "ming" -}}
@@ -1967,7 +1969,7 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			{{ if HasPrefix .OS "ming" -}}
 			{{$ext = ".exe"}}
 			{{- end -}}
-			https://dl.min.io/client/{{.Repo}}/release/{{$osStr}}-{{$arch}}/{{.Name}}{{$ext}}`,
+			{{.Name}}.{{$osStr}}-{{$arch}}.{{.VersionNumber}}{{$ext}}`,
 		})
 
 	tools = append(tools,
