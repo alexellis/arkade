@@ -63,6 +63,12 @@ func TestResolveShortcutImage(t *testing.T) {
 			wantAnonymousAuth: true,
 		},
 		{
+			name:              "toilgate shortcut uses anonymous auth",
+			input:             "toilgate",
+			wantImage:         "ghcr.io/openfaasltd/toilgate",
+			wantAnonymousAuth: true,
+		},
+		{
 			name:              "fully qualified image is unchanged",
 			input:             "ghcr.io/openfaasltd/custom-tool",
 			wantImage:         "ghcr.io/openfaasltd/custom-tool",

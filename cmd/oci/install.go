@@ -49,6 +49,7 @@ OCI image.`,
   arkade oci install kullu
   arkade oci install k3sup-pro
   arkade oci install signet
+  arkade oci install toilgate
 
   # Flatten the archive so files are extracted directly into the install path,
   # ignoring directory structure in the image (e.g. ./usr/local/bin/FILE => ./FILE)
@@ -328,6 +329,8 @@ func resolveShortcutImage(imageName string) (string, bool) {
 		return "ghcr.io/openfaasltd/slicer-agent", true
 	case "signet":
 		return "ghcr.io/openfaasltd/signet", true
+	case "toilgate":
+		return "ghcr.io/openfaasltd/toilgate", true
 	default:
 		return imageName, false
 	}
