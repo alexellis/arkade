@@ -1945,6 +1945,12 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 			Repo:        "mc",
 			Name:        "mc",
 			Description: "MinIO Client is a replacement for ls, cp, mkdir, diff and rsync commands for filesystems and object storage.",
+			// MinIO retired the dl.min.io/client/mc/release/ URLs (now 410
+			// Gone) and moved distribution to GitHub releases, with assets
+			// named mc.{os}-{arch}.{RELEASE_TAG}. Permanent: use
+			// BinaryTemplate against the GitHub release, not a URLTemplate.
+			// 32-bit arm (armv6l/armv7l) is no longer built upstream, so it
+			// is intentionally absent and must 404 rather than fall back.
 			BinaryTemplate: `{{$arch := .Arch}}
 			{{ if eq .Arch "x86_64" -}}
 			{{$arch = "amd64"}}
