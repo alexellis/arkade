@@ -80,7 +80,7 @@ func CreateToolsTable(tools Tools, format TableFormat) {
 		name := Bold + FgGreen + t.Name + Reset
 		url := fmt.Sprintf("https://github.com/%s/%s", t.Owner, t.Repo)
 
-		if format == MarkdownStyle {
+		if format == MarkdownStyle && len(t.OCIImage) == 0 {
 			name = fmt.Sprintf("[%s](%s)", t.Name, url)
 		}
 		table.Append([]string{name, t.Description})

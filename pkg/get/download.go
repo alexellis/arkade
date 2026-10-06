@@ -100,6 +100,10 @@ func Download(tool *Tool, arch, operatingSystem, version string, movePath string
 
 func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath string, displayProgress, quiet, verify bool, cb ProgressCallback) (string, string, error) {
 
+	if len(tool.OCIImage) > 0 {
+		return downloadFromOCI(tool, arch, operatingSystem, version, movePath, quiet, cb)
+	}
+
 	downloadURL, resolvedVersion, err := GetDownloadURL(tool,
 		strings.ToLower(operatingSystem),
 		strings.ToLower(arch),
