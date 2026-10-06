@@ -21,6 +21,14 @@ func MakeRelease() *cobra.Command {
 incrementing the version, and using the latest commit message as the
 release title.
 
+This is a remote-side operation: the tag, visibility and release are
+resolved via "gh" against the GitHub repository. Local tags and working
+tree contents are not used, and no tags are pushed. The repository is
+selected by gh from the current checkout (or GH_REPO). The default title
+is the subject line of the latest local commit — push first so it
+matches the remote HEAD. Untracked, staged, or uncommitted changes are
+ignored.
+
 The latest release tag is obtained via "gh release list", so private
 repositories are supported when "gh" is authenticated.
 
