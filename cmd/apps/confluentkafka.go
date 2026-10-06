@@ -57,13 +57,13 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 		if err != nil {
 			return err
 		}
-		overrides["controller.replicaCount"] = fmt.Sprintf("%d", replicas)
+		overrides["broker.replicaCount"] = fmt.Sprintf("%d", replicas)
 
 		controllerReplicas, err := command.Flags().GetInt("controller-replicas")
 		if err != nil {
 			return err
 		}
-		overrides["broker.replicaCount"] = fmt.Sprintf("%d", controllerReplicas)
+		overrides["controller.replicaCount"] = fmt.Sprintf("%d", controllerReplicas)
 
 		heap, err := command.Flags().GetString("heap")
 		if err != nil {
@@ -82,15 +82,10 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 			overrides["logPersistence.storageClass"] = storageClass
 		}
 
-		customFlags, _ := command.Flags().GetStringArray("set")
-		if err := config.MergeFlags(overrides, customFlags); err != nil {
-			return err
-		}
-
 		// Bitnami moved its free container images to the frozen
 		// "bitnamilegacy" registry in Aug 2025, the chart's default
-		// bitnami/kafka tags are gone. Point at the legacy images so the
-		// install works out of the box; users can override via --set.
+		// bitnami/kafka tags are gone. Point at the legacy images so
+		// the install works out of the box; --set values below win.
 		overrides["global.imageRegistry"] = ""
 		overrides["image.registry"] = "docker.io"
 		overrides["image.repository"] = "bitnamilegacy/kafka"
@@ -98,6 +93,11 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 		overrides["controller.image.repository"] = "bitnamilegacy/kafka"
 		overrides["controller-els.image.registry"] = "docker.io"
 		overrides["controller-els.image.repository"] = "bitnamilegacy/kafka"
+
+		customFlags, _ := command.Flags().GetStringArray("set")
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
+			return err
+		}
 
 		appOpts.
 			WithKubeconfigPath(kubeConfigPath).
