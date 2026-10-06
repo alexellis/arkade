@@ -32,6 +32,9 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 	kafka.Flags().Bool("update-repo", true, "Update the helm repo")
 
+	// Deprecated aliases kept for existing automation.
+	kafka.Flags().Int("kafka-broker-count", 0, "(deprecated: use --replicas) number of Kafka brokers")
+
 	kafka.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
 
@@ -58,6 +61,14 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 		replicas, err := command.Flags().GetInt("replicas")
 		if err != nil {
 			return err
+		}
+		if command.Flags().Changed("kafka-broker-count") {
+			deprecatedCount, err := command.Flags().GetInt("kafka-broker-count")
+			if err != nil {
+				return err
+			}
+			fmt.Println("[Warning] --kafka-broker-count is deprecated, use --replicas instead.")
+			replicas = deprecatedCount
 		}
 		overrides["broker.replicaCount"] = fmt.Sprintf("%d", replicas)
 
