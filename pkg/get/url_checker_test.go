@@ -29,6 +29,12 @@ func Test_CheckTools(t *testing.T) {
 			}
 		}
 
+		// OCI-extracted tools are resolved and verified at pull
+		// time by the registry, they have no download URL to check.
+		if len(tool.OCIImage) > 0 {
+			continue
+		}
+
 		if skip {
 			continue
 		}
