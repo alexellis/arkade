@@ -75,7 +75,9 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 		return "", "", err
 	}
 
-	if err := archive.UntarNested(tarFile, extractDir, false, true, true, false); err != nil {
+	// Symlink extraction is disabled: the image is extracted into a
+	// temp dir and we only need the plain binary.
+	if err := archive.UntarNested(tarFile, extractDir, false, true, false, false); err != nil {
 		tarFile.Close()
 		return "", "", fmt.Errorf("untarring image for %s: %w", tool.Name, err)
 	}
