@@ -4,12 +4,13 @@
 package get
 
 import (
+	"archive/tar"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/alexellis/arkade/pkg/archive"
 	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/env"
 	"github.com/google/go-containerregistry/pkg/authn"
@@ -48,6 +49,14 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 		return "", "", err
 	}
 
+	wantedName := tool.Name
+	if osName := strings.ToLower(operatingSystem); strings.Contains(osName, "ming") || osName == "windows" {
+		wantedName = wantedName + ".exe"
+	}
+
+	// Stream the exported image and extract only the wanted binary,
+	// so unrelated entries (including symlinks) are skipped rather
+	// than aborting the install.
 	tempDir, err := os.MkdirTemp("", "arkade-oci-")
 	if err != nil {
 		return "", "", err
@@ -69,28 +78,10 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 		return "", "", err
 	}
 
-	extractDir := filepath.Join(tempDir, "extract")
-	if err := os.MkdirAll(extractDir, 0755); err != nil {
-		tarFile.Close()
-		return "", "", err
-	}
-
-	// Symlink extraction is disabled: the image is extracted into a
-	// temp dir and we only need the plain binary.
-	if err := archive.UntarNested(tarFile, extractDir, false, true, false, false); err != nil {
-		tarFile.Close()
-		return "", "", fmt.Errorf("untarring image for %s: %w", tool.Name, err)
-	}
+	binaryPath, err := extractFileFromTar(tarFile, wantedName, tempDir)
 	tarFile.Close()
-
-	wantedName := tool.Name
-	if osName := strings.ToLower(operatingSystem); strings.Contains(osName, "ming") || osName == "windows" {
-		wantedName = wantedName + ".exe"
-	}
-
-	binaryPath, err := findFile(extractDir, wantedName)
 	if err != nil {
-		return "", "", fmt.Errorf("no binary %q found in image %s for %s: %w",
+		return "", "", fmt.Errorf("extracting %q from image %s for %s: %w",
 			wantedName, imageName, platform.String(), err)
 	}
 
@@ -118,6 +109,40 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 	}
 
 	return localPath, finalName, nil
+}
+
+// extractFileFromTar scans a tar stream and writes the first regular
+// file whose basename matches name to dir. Directory and symlink
+// entries are skipped, so unrelated image contents never abort the
+// install.
+func extractFileFromTar(r io.Reader, name, dir string) (string, error) {
+	tr := tar.NewReader(r)
+	for {
+		hdr, err := tr.Next()
+		if err == io.EOF {
+			return "", fmt.Errorf("file %q not found in image", name)
+		}
+		if err != nil {
+			return "", err
+		}
+		if hdr.Typeflag != tar.TypeReg || filepath.Base(hdr.Name) != name {
+			continue
+		}
+
+		outPath := filepath.Join(dir, name)
+		out, err := os.OpenFile(outPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.FileMode(hdr.Mode))
+		if err != nil {
+			return "", err
+		}
+		if _, err := io.Copy(out, tr); err != nil {
+			out.Close()
+			return "", err
+		}
+		if err := out.Close(); err != nil {
+			return "", err
+		}
+		return outPath, nil
+	}
 }
 
 // ociPlatform converts arkade's OS/arch values into a container
@@ -150,27 +175,4 @@ func ociPlatform(arch, operatingSystem string) (*v1.Platform, error) {
 	}
 
 	return &v1.Platform{OS: osName, Architecture: archName}, nil
-}
-
-// findFile walks dir looking for a file with the given name,
-// at any depth.
-func findFile(dir, name string) (string, error) {
-	var found string
-	err := filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() && filepath.Base(path) == name {
-			found = path
-			return filepath.SkipAll
-		}
-		return nil
-	})
-	if err != nil {
-		return "", err
-	}
-	if found == "" {
-		return "", fmt.Errorf("file %q not found in archive", name)
-	}
-	return found, nil
 }
