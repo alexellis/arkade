@@ -13,7 +13,7 @@ Arkade provides several types of installers:
 
 - **`arkade system install`** - Linux-only system-level tools like Node.js, Go, Prometheus. These require additional installation steps or system configuration.
 
-- **`arkade oci install`** - Fetches binaries out of OCI images. Ideal for projects that use private repositories like slicer/actuated/k3sup-pro.
+- **`arkade oci install`** - Fetches binaries out of OCI images. Ideal for projects that use private repositories like slicer/actuated/k3sup-pro. Tools in the `arkade get` catalog may also declare an `OCIImage` field (see below), which makes them installable through `arkade get` as well.
 
 - **`arkade install`** - Kubernetes Helm charts or manifests for add-ons like OpenFaaS CE, Istio, PostgreSQL. These deploy software to Kubernetes clusters.
 
@@ -182,6 +182,45 @@ If any appear in the table rows, revert those lines to their original content (s
 - **Missing combinations**: Document why in PR description if upstream doesn't provide them. The template must still generate a URL that returns 404 (not download the wrong binary)
 - **Downloads wrong binary**: If requesting Windows but getting Linux binary, the template is incorrectly falling back. Each OS/arch must have a unique URL that matches the actual release or returns 404
 - **"stat ... no such file or directory" after extraction**: The binary name inside the archive doesn't match what `decompress()` expects. This happens when `BinaryTemplate` alone contains an archive extension (`.tgz`, `.tar.gz`, `.zip`) — the code falls back to `tool.Name` instead of the platform-specific binary name. Fix by splitting into `URLTemplate` (download URL) + `BinaryTemplate` (inner binary name without extension). See the "Archive tools" section above.
+
+---
+
+## 1b. Adding an OCI-Extracted Tool (installable via both `arkade get` and `arkade oci install`)
+
+Some tools ship their binaries inside OCI images (e.g. `ghcr.io/openfaasltd/signet`) instead of
+GitHub release assets. These are defined **without** `URLTemplate`/`BinaryTemplate`, using the
+`OCIImage` field instead:
+
+```go
+Tool{
+    Name:        "signet",
+    Description: "Lightweight OpenID Connect provider for agents and automation",
+    OCIImage:    "ghcr.io/openfaasltd/signet",
+},
+```
+
+Key behaviour (`pkg/get/oci.go`):
+
+- `arkade get NAME` pulls the image with anonymous auth, extracts it to a temp dir, finds the
+  binary named `tool.Name` (`.exe` on Windows) at any depth, and installs it to
+  `$HOME/.arkade/bin/` (or `--path`).
+- Versions resolve to the registry's `latest` tag unless the tool is pinned or the user passes
+  `tool@tag` / `--version`. No GitHub release lookup happens.
+- Unsupported OS/arch values fail fast with a clear error before any pull (amd64/arm64 on
+  linux/darwin/windows only).
+- `arkade oci install NAME` continues to work via its own alias table in `cmd/oci/install.go`
+  (`resolveShortcutImage`) — keep both surfaces in sync when adding a tool.
+
+When adding an OCI tool:
+
+- Set only `Name`, `Description` and `OCIImage` (no `Owner`/`Repo`, they are unused).
+- Skip `./hack/test-tool.sh` — there is no download URL. Instead verify each OS/arch with
+  `arkade get NAME --os ... --arch ... --path /tmp/x` and `file` the result.
+- The URL checker (`Test_CheckTools`) skips OCI tools automatically; no test change needed.
+- `go run . get --format markdown` renders OCI tools as plain names (no GitHub link), so the
+  README table needs no extra column.
+- If the image is private, `arkade oci install` supports authenticated pulls; the `arkade get`
+  path is anonymous-only — document which applies in the PR.
 
 ---
 
