@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_isURL(t *testing.T) {
+func Test_IsURL(t *testing.T) {
 	tests := []struct {
 		input    string
 		expected bool
@@ -20,9 +20,9 @@ func Test_isURL(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := isURL(test.input)
+		result := IsURL(test.input)
 		if result != test.expected {
-			t.Errorf("isURL(%q) = %v, expected %v", test.input, result, test.expected)
+			t.Errorf("IsURL(%q) = %v, expected %v", test.input, result, test.expected)
 		}
 	}
 }
