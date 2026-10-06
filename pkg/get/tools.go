@@ -6042,6 +6042,34 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 	// "arkade oci install".
 	ociTools := []Tool{
 		{
+			Owner:       "alexellis",
+			Repo:        "oidc-cli",
+			Name:        "oidc-cli",
+			Description: "OAuth/OpenID Connect client for testing OIDC flows from the command line",
+			BinaryTemplate: `
+									{{$arch := .Arch}}
+									{{$name := "oidc-cli"}}
+
+									{{- if eq .Arch "x86_64" -}}
+									{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+										{{$name = "oidc-cli-arm64"}}
+									{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+										{{$name = "oidc-cli-armhf"}}
+									{{- end -}}
+
+									{{- if HasPrefix .OS "ming" -}}
+										{{$name = "oidc-cli.exe"}}
+									{{- else if eq .OS "darwin" -}}
+										{{- if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+											{{$name = "oidc-cli-darwin-arm64"}}
+										{{- else -}}
+											{{$name = "oidc-cli-darwin"}}
+										{{- end -}}
+									{{- end -}}
+
+									{{$name}}`,
+		},
+		{
 			Name:        "vmmeter",
 			Description: "Metering and telemetry for Slicer virtual machines",
 			OCIImage:    "ghcr.io/openfaasltd/vmmeter",

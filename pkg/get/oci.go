@@ -27,10 +27,7 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 		tag = "latest"
 	}
 
-	platform, err := ociPlatform(arch, operatingSystem)
-	if err != nil {
-		return "", "", err
-	}
+	platform := ociPlatform(arch, operatingSystem)
 
 	opts := []crane.Option{
 		crane.WithPlatform(platform),
@@ -121,18 +118,17 @@ func downloadFromOCI(tool *Tool, arch, operatingSystem, version, movePath string
 }
 
 // ociPlatform converts arkade's OS/arch values into a container
-// platform spec.
-func ociPlatform(arch, operatingSystem string) (*v1.Platform, error) {
+// platform spec. Unknown values are passed through to crane, which
+// reports a precise error if the image doesn't ship that platform.
+func ociPlatform(arch, operatingSystem string) *v1.Platform {
 	osName := strings.ToLower(operatingSystem)
 	switch {
-	case strings.Contains(osName, "mingw"):
+	case strings.Contains(osName, "ming") || strings.Contains(osName, "windows"):
 		osName = "windows"
 	case strings.HasPrefix(osName, "darwin"):
 		osName = "darwin"
-	case osName == "linux" || strings.HasPrefix(osName, "linux"):
-		osName = "linux"
 	default:
-		return nil, fmt.Errorf("OS %q is not supported for OCI-based tools, use linux, darwin or mingw (windows)", operatingSystem)
+		osName = "linux"
 	}
 
 	archName := strings.ToLower(arch)
@@ -141,11 +137,11 @@ func ociPlatform(arch, operatingSystem string) (*v1.Platform, error) {
 		archName = "amd64"
 	case archName == "aarch64" || archName == "arm64":
 		archName = "arm64"
-	default:
-		return nil, fmt.Errorf("architecture %q is not supported for OCI-based tools, use amd64 or arm64", arch)
+	case archName == "armv6l" || archName == "armv7l":
+		archName = "arm"
 	}
 
-	return &v1.Platform{OS: osName, Architecture: archName}, nil
+	return &v1.Platform{OS: osName, Architecture: archName}
 }
 
 // findFile walks dir looking for a file with the given name,
