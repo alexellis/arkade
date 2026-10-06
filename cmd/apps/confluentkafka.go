@@ -28,6 +28,8 @@ as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 	kafka.Flags().String("storage-class", "", "override the storage class for Kafka data")
 	kafka.Flags().String("heap", "1g", "JVM heap size for the Kafka broker, e.g. 1g or 2g")
 	kafka.Flags().Bool("kafka", true, "enable Kafka")
+	kafka.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 	kafka.Flags().Bool("update-repo", true, "Update the helm repo")
 
 	kafka.RunE = func(command *cobra.Command, args []string) error {
