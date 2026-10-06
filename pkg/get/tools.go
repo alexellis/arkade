@@ -6037,6 +6037,65 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 			BinaryTemplate: `sofka`,
 		})
 
+	tools = append(tools,
+		Tool{
+			Owner:       "mvdan",
+			Repo:        "sh",
+			Name:        "shfmt",
+			Description: "A shell parser, formatter, and interpreter (sh/bash/mksh)",
+			BinaryTemplate: `
+					{{$os := .OS}}
+					{{$arch := .Arch}}
+					{{$ext := ""}}
+
+					{{- if HasPrefix .OS "ming" -}}
+						{{$os = "windows"}}
+						{{$ext = ".exe"}}
+					{{- end -}}
+
+					{{- if eq .Arch "x86_64" -}}
+						{{$arch = "amd64"}}
+					{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+						{{$arch = "arm64"}}
+					{{- else if (or (eq .Arch "armv6l") (eq .Arch "armv7l")) -}}
+						{{$arch = "arm"}}
+					{{- end -}}
+
+					{{.Name}}_{{.Version}}_{{$os}}_{{$arch}}{{$ext}}`,
+		})
+
+	tools = append(tools,
+		Tool{
+			Owner:          "koalaman",
+			Repo:           "shellcheck",
+			Name:           "shellcheck",
+			Description:    "A static analysis tool for shell scripts",
+			BinaryTemplate: `shellcheck`,
+			URLTemplate: `
+					{{$target := ""}}
+					{{$ext := "tar.gz"}}
+					{{- if eq .OS "linux" -}}
+						{{- if eq .Arch "x86_64" -}}
+							{{$target = ".linux.x86_64"}}
+						{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$target = ".linux.aarch64"}}
+						{{- end -}}
+					{{- else if eq .OS "darwin" -}}
+						{{- if eq .Arch "x86_64" -}}
+							{{$target = ".darwin.x86_64"}}
+						{{- else if (or (eq .Arch "aarch64") (eq .Arch "arm64")) -}}
+							{{$target = ".darwin.aarch64"}}
+						{{- end -}}
+					{{- else if HasPrefix .OS "ming" -}}
+						{{- if eq .Arch "x86_64" -}}
+							{{$ext = "zip"}}
+							{{$target = ""}}
+						{{- end -}}
+					{{- end -}}
+
+					https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/shellcheck-{{.Version}}{{$target}}.{{$ext}}`,
+		})
+
 	// OCI-extracted tools: the binary is pulled from an OCI image
 	// instead of a GitHub release. These are also available through
 	// "arkade oci install".
