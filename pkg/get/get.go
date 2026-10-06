@@ -118,6 +118,12 @@ type Tool struct {
 	VerifyTemplate string
 
 	VerifyStrategy string
+
+	// OCIImage, when set, means the binary is extracted from this
+	// OCI image (e.g. "ghcr.io/openfaasltd/signet") rather than
+	// downloaded from a GitHub release. The image must ship the
+	// binary for each supported OS/architecture.
+	OCIImage string
 }
 
 type ReleaseLocation struct {
@@ -189,6 +195,12 @@ func ResolveVersion(tool *Tool, version string) (string, error) {
 	ver := GetToolVersion(tool, version)
 	if len(ver) > 0 {
 		return ver, nil
+	}
+
+	// OCI-backed tools ship a "latest" tag, so there is no version
+	// lookup unless the tool is pinned or a version was given.
+	if len(tool.OCIImage) > 0 {
+		return "latest", nil
 	}
 
 	var releaseType string

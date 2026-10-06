@@ -6033,5 +6033,52 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 			BinaryTemplate: `sofka`,
 		})
 
+	// OCI-extracted tools: the binary is pulled from an OCI image
+	// instead of a GitHub release. These are also available through
+	// "arkade oci install".
+	ociTools := []Tool{
+		{
+			Name:        "vmmeter",
+			Description: "Metering and telemetry for Slicer virtual machines",
+			OCIImage:    "ghcr.io/openfaasltd/vmmeter",
+		},
+		{
+			Name:        "slicer",
+			Description: "Create and manage Firecracker microVMs",
+			OCIImage:    "ghcr.io/openfaasltd/slicer",
+		},
+		{
+			Name:        "superterm",
+			Description: "Run and manage coding agents in hosted terminal sessions",
+			OCIImage:    "ghcr.io/openfaasltd/superterm",
+		},
+		{
+			Name:        "kullu",
+			Description: "Self-hosted file sharing and drop for teams",
+			OCIImage:    "ghcr.io/openfaasltd/kullu",
+		},
+		{
+			Name:        "k3sup-pro",
+			Description: "Extended edition of k3sup with enterprise support features",
+			OCIImage:    "ghcr.io/openfaasltd/k3sup-pro",
+		},
+		{
+			Name:        "slicer-agent",
+			Description: "Agent for managing Slicer microVMs on remote hosts",
+			OCIImage:    "ghcr.io/openfaasltd/slicer-agent",
+		},
+		{
+			Name:        "signet",
+			Description: "Lightweight OpenID Connect provider for agents and automation",
+			OCIImage:    "ghcr.io/openfaasltd/signet",
+		},
+		{
+			Name:        "toilgate",
+			Description: "Agent CLI for Toilgate models",
+			OCIImage:    "ghcr.io/openfaasltd/toilgate",
+		},
+	}
+	tools = append(tools, ociTools...)
+
 	return tools
 }
