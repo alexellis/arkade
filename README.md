@@ -974,6 +974,8 @@ There are 53 apps that you can install on your cluster.
 | [run-job](https://github.com/alexellis/run-job)                              | Run a Kubernetes Job and get the logs when it's done.                                                                                                             |
 | [scaleway-cli](https://github.com/scaleway/scaleway-cli)                     | Scaleway CLI is a tool to help you pilot your Scaleway infrastructure directly from your terminal.                                                                |
 | [seaweedfs](https://github.com/seaweedfs/seaweedfs)                          | SeaweedFS is a fast distributed storage system for blobs, objects, files, and data lake, for billions of files!                                                   |
+| [shellcheck](https://github.com/koalaman/shellcheck)                         | A static analysis tool for shell scripts                                                                                                                          |
+| [shfmt](https://github.com/mvdan/sh)                                         | A shell parser, formatter, and interpreter (sh/bash/mksh)                                                                                                         |
 | signet                                                                       | Lightweight OpenID Connect provider for agents and automation                                                                                                     |
 | [skupper](https://github.com/skupperproject/skupper)                         | Skupper is an implementation of a Virtual Application Network, enabling rich hybrid cloud communication                                                           |
 | slicer                                                                       | Create and manage Firecracker microVMs                                                                                                                            |
@@ -1014,5 +1016,5 @@ There are 53 apps that you can install on your cluster.
 | [xq](https://github.com/sibprogrammer/xq)                                    | XML to JSON/YAML converter and query tool.                                                                                                                        |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 220 tools, use `arkade get NAME` to download one.
+There are 222 tools, use `arkade get NAME` to download one.
 <!-- end of tool list -->
