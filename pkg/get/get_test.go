@@ -10999,3 +10999,63 @@ func Test_DownloadSofka(t *testing.T) {
 		})
 	}
 }
+
+func Test_DownloadOidcCli(t *testing.T) {
+	tools := MakeTools()
+	name := "oidc-cli"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v0.0.1"
+
+	tests := []test{
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli-arm64",
+		},
+		{
+			os:      "linux",
+			arch:    "armv7l",
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli-armhf",
+		},
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli-darwin",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli-darwin-arm64",
+		},
+		{
+			os:      "ming",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/alexellis/oidc-cli/releases/download/v0.0.1/oidc-cli.exe",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.os+" "+tc.arch, func(t *testing.T) {
+			got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if got != tc.url {
+				t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+			}
+		})
+	}
+}
