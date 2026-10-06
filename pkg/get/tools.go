@@ -6007,9 +6007,13 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{$fileNa
 
 	tools = append(tools,
 		Tool{
-			Owner:       "nklmilojevic",
-			Repo:        "sofka",
-			Name:        "sofka",
+			Owner: "nklmilojevic",
+			Repo:  "sofka",
+			Name:  "sofka",
+			// v0.29.10 (latest) ships no binaries, only source archives, so
+			// pinned at v0.29.9. Transient: unpin once binaries are restored.
+			// Upstream issue tracker: https://github.com/nklmilojevic/sofka
+			Version:     "v0.29.9",
 			Description: "A Kubernetes TUI that tells you why it's broken.",
 			URLTemplate: `
 					{{$os := "unknown-linux-gnu"}}
