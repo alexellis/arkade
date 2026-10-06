@@ -149,13 +149,21 @@ and provides a fast and easy alternative to a package manager.`,
 		signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM)
 
 		arch, _ := command.Flags().GetString("arch")
-		if err := get.ValidateArch(arch); err != nil {
-			return err
-		}
-
 		operatingSystem, _ := command.Flags().GetString("os")
-		if err := get.ValidateOS(operatingSystem); err != nil {
-			return err
+
+		// Validate OS/arch only for URL-based tools. OCI-backed tools
+		// pass the platform straight to crane, which reports a precise
+		// error when an image doesn't ship the requested platform.
+		for _, tool := range downloadURLs {
+			if len(tool.OCIImage) == 0 {
+				if err := get.ValidateArch(arch); err != nil {
+					return err
+				}
+				if err := get.ValidateOS(operatingSystem); err != nil {
+					return err
+				}
+				break
+			}
 		}
 
 		if parallel > len(downloadURLs) {
