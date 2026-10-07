@@ -602,7 +602,8 @@ echo 'export PATH="$HOME/.arkade/bin:$PATH"' >> ~/.zshrc
 export PATH="$HOME/.arkade/bin:$PATH"
 
 # Install to system (optional):
-sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
+sudo mv /home/user/.arkade/bin/yq /usr/local/bin/
+sudo mv /home/user/.arkade/bin/jq /usr/local/bin/`,
 		},
 		{
 			name:               "default path, arkade not in PATH, single tool",
@@ -633,7 +634,8 @@ sudo mv /home/user/.arkade/bin/yq /usr/local/bin/`,
 					Path: "/home/user/.arkade/bin/jq",
 				}},
 			want: `# Install to system (optional):
-sudo mv $HOME/.arkade/bin/* /usr/local/bin/`,
+sudo mv /home/user/.arkade/bin/yq /usr/local/bin/
+sudo mv /home/user/.arkade/bin/jq /usr/local/bin/`,
 		},
 		{
 			name:               "default path, arkade already in PATH, single tool",
@@ -3559,7 +3561,7 @@ func Test_DownloadFaaSCLI(t *testing.T) {
 func Test_DownloadCodex(t *testing.T) {
 	tools := MakeTools()
 	name := "codex"
-	const version = "rust-v0.89.0"
+	const version = "rust-v0.160.1"
 
 	tool := getTool(name, tools)
 
@@ -3568,37 +3570,37 @@ func Test_DownloadCodex(t *testing.T) {
 			os:      "ming",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-pc-windows-msvc.exe.zip`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-x86_64-pc-windows-msvc.tar.gz`,
 		},
 		{
 			os:      "ming",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-pc-windows-msvc.exe.zip`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-aarch64-pc-windows-msvc.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-unknown-linux-musl.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-x86_64-unknown-linux-musl.tar.gz`,
 		},
 		{
 			os:      "linux",
 			arch:    archARM64,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-unknown-linux-musl.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-aarch64-unknown-linux-musl.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    arch64bit,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-x86_64-apple-darwin.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-x86_64-apple-darwin.tar.gz`,
 		},
 		{
 			os:      "darwin",
 			arch:    archDarwinARM64,
 			version: version,
-			url:     `https://github.com/openai/codex/releases/download/rust-v0.89.0/codex-aarch64-apple-darwin.tar.gz`,
+			url:     `https://github.com/openai/codex/releases/download/rust-v0.160.1/codex-package-aarch64-apple-darwin.tar.gz`,
 		},
 	}
 

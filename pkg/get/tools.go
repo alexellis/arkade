@@ -5683,25 +5683,12 @@ https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/dyff_{{.V
 	// Codex CLI
 	tools = append(tools,
 		Tool{
-			Owner:       "openai",
-			Repo:        "codex",
-			Name:        "codex",
-			Description: "Codex CLI from OpenAI.",
-			BinaryTemplate: `{{$arch := .Arch}}
-{{- if eq .Arch "amd64" -}}
-{{$arch = "x86_64"}}
-{{- else if eq .Arch "arm64" -}}
-{{$arch = "aarch64"}}
-{{- end}}
-{{$os := .OS}}
-{{- if HasPrefix .OS "ming" -}}
-{{$os = "pc-windows-msvc"}}
-{{- else if eq .OS "darwin" -}}
-{{$os = "apple-darwin"}}
-{{- else -}}
-{{$os = "unknown-linux-musl"}}
-{{- end}}
-codex-{{$arch}}-{{$os}}`,
+			Owner:           "openai",
+			Repo:            "codex",
+			Name:            "codex",
+			Description:     "Codex CLI from OpenAI.",
+			BinaryTemplate:  `codex`,
+			PackageBinaries: []string{"codex", "codex-code-mode-host"},
 			URLTemplate: `{{$arch := .Arch}}
 {{- if eq .Arch "amd64" -}}
 {{$arch = "x86_64"}}
@@ -5711,14 +5698,13 @@ codex-{{$arch}}-{{$os}}`,
 {{$os := .OS}}
 {{$ext := ".tar.gz"}}
 {{- if HasPrefix .OS "ming" -}}
-{{$os = "pc-windows-msvc.exe"}}
-{{$ext = ".zip"}}
+{{$os = "pc-windows-msvc"}}
 {{- else if eq .OS "darwin" -}}
 {{$os = "apple-darwin"}}
-{{- else -}}
+{{- else if eq .OS "linux" -}}
 {{$os = "unknown-linux-musl"}}
 {{- end}}
-https://github.com/openai/codex/releases/download/{{.Version}}/codex-{{$arch}}-{{$os}}{{$ext}}`,
+https://github.com/openai/codex/releases/download/{{.Version}}/codex-package-{{$arch}}-{{$os}}{{$ext}}`,
 		})
 
 	// Codex Code Mode Host

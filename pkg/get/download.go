@@ -283,6 +283,12 @@ func downloadTool(tool *Tool, arch, operatingSystem, version string, movePath st
 		}
 	}
 
+	if len(tool.PackageBinaries) > 0 {
+		defer os.RemoveAll(filepath.Dir(outFilePath))
+		localPath, err := installPackage(tool, outFilePath, downloadURL, operatingSystem, movePath)
+		return localPath, resolvedVersion, err
+	}
+
 	if isArchiveStr(downloadURL) {
 
 		outPath, err := decompress(tool, downloadURL, outFilePath, operatingSystem, arch, version, quiet)

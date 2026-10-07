@@ -111,6 +111,11 @@ type Tool struct {
 	// URL.
 	BinaryTemplate string
 
+	// PackageBinaries opts into preserving a tar.gz package's directory layout.
+	// These named executables from bin/ are linked into the install directory.
+	// Windows targets automatically receive the .exe suffix.
+	PackageBinaries []string
+
 	// NoExtension is required for tooling such as kubectx
 	// which at time of writing is a bash script.
 	NoExtension bool
@@ -158,6 +163,8 @@ var releaseLocations = map[string]ReleaseLocation{
 type ToolLocal struct {
 	Name string
 	Path string
+	// Package means the entry point requires its adjacent package directory.
+	Package bool
 }
 
 var templateFuncs = map[string]interface{}{
@@ -591,7 +598,27 @@ func PostToolNotFoundMsg(url string) string {
 func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, error) {
 
 	var buf bytes.Buffer
-	multi := len(localToolsStore) > 1
+	for _, tl := range localToolsStore {
+		if tl.Package {
+			if movePath == "" && !ArkadeInPath() {
+				buf.WriteString("# Add arkade binary directory to your PATH variable\n")
+				buf.WriteString(pathExportInstructions())
+				buf.WriteString("\n")
+			}
+			buf.WriteString("# Keep package entry points with their adjacent .arkade-NAME directories.\n")
+			buf.WriteString("# Install to system (optional):\n")
+			for _, tool := range localToolsStore {
+				if tool.Package {
+					fmt.Fprintf(&buf, "sudo arkade get %s --path /usr/local/bin\n", tool.Name)
+				} else if movePath == "" {
+					fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tool.Path)
+				} else {
+					fmt.Fprintf(&buf, "sudo install -m 755 %s /usr/local/bin/%s\n", tool.Path, tool.Name)
+				}
+			}
+			return bytes.TrimRight(buf.Bytes(), "\n"), nil
+		}
+	}
 
 	if movePath != "" {
 		buf.WriteString("# Install to system (optional):\n")
@@ -599,27 +626,17 @@ func PostInstallationMsg(movePath string, localToolsStore []ToolLocal) ([]byte, 
 			fmt.Fprintf(&buf, "sudo install -m 755 %s /usr/local/bin/%s\n", tl.Path, tl.Name)
 		}
 	} else if ArkadeInPath() {
-		if multi {
-			buf.WriteString("# Install to system (optional):\n")
-			buf.WriteString("sudo mv $HOME/.arkade/bin/* /usr/local/bin/\n")
-		} else {
-			buf.WriteString("# Install to system (optional):\n")
-			for _, tl := range localToolsStore {
-				fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
-			}
+		buf.WriteString("# Install to system (optional):\n")
+		for _, tl := range localToolsStore {
+			fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
 		}
 	} else {
 		buf.WriteString("# Add arkade binary directory to your PATH variable\n")
 		buf.WriteString(pathExportInstructions())
 		buf.WriteString("\n")
-		if multi {
-			buf.WriteString("# Install to system (optional):\n")
-			buf.WriteString("sudo mv $HOME/.arkade/bin/* /usr/local/bin/\n")
-		} else {
-			buf.WriteString("# Install to system (optional):\n")
-			for _, tl := range localToolsStore {
-				fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
-			}
+		buf.WriteString("# Install to system (optional):\n")
+		for _, tl := range localToolsStore {
+			fmt.Fprintf(&buf, "sudo mv %s /usr/local/bin/\n", tl.Path)
 		}
 	}
 
