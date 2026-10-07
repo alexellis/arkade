@@ -192,6 +192,16 @@ arkade search k8s
 
 Files are stored at `$HOME/.arkade/bin/`
 
+`arkade get codex` installs the full upstream CLI package into
+`$HOME/.arkade/bin/.arkade-codex/`, and links `codex` and
+`codex-code-mode-host` into `$HOME/.arkade/bin/`. The package includes the
+manifest and resources needed to start Codex's app-server daemon. Keep the
+links with that directory; moving or copying an individual executable loses
+the package layout. With `--path`, the package and links are installed together
+in the specified directory. Windows hosts need Developer Mode or elevation
+to create these symbolic links. This requires a Codex release which publishes
+the `codex-package` archive for the selected platform.
+
 Want to download tools to a custom path such as into the GitHub Actions cached tool folder?
 
 ```bash

@@ -349,11 +349,12 @@ and provides a fast and easy alternative to a package manager.`,
 
 		// Collect successful downloads.
 		var localToolsStore []get.ToolLocal
-		for _, p := range progress {
+		for i, p := range progress {
 			if p.status == stDone && len(p.path) > 0 {
 				localToolsStore = append(localToolsStore, get.ToolLocal{
-					Name: p.name,
-					Path: p.path,
+					Name:    p.name,
+					Path:    p.path,
+					Package: len(downloadURLs[i].PackageBinaries) > 0,
 				})
 			}
 		}
