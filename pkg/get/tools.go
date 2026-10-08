@@ -1596,12 +1596,17 @@ https://releases.hashicorp.com/{{.Name}}/{{.VersionNumber}}/{{.Name}}_{{.Version
 	{{$osStr = "macos"}}
 	{{- end -}}
 
+	{{$archStr := ""}}
+	{{- if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+	{{$archStr = "-arm64"}}
+	{{- end -}}
+
 	{{$extStr := "tgz"}}
 	{{ if HasPrefix .OS "ming" -}}
 	{{$extStr = "zip"}}
 	{{- end -}}
 
-	{{.Version}}/pack-{{.Version}}-{{$osStr}}.{{$extStr}}`,
+	{{.Version}}/pack-{{.Version}}-{{$osStr}}{{$archStr}}.{{$extStr}}`,
 		})
 
 	tools = append(tools,

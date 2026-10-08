@@ -2539,25 +2539,43 @@ func Test_DownloadPack(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v0.14.2"
+	const toolVersion = "v0.39.1"
 
 	tests := []test{
-		{os: "mingw64_nt-10.0-18362",
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-windows.zip`,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.39.1/pack-v0.39.1-windows.zip`,
 		},
-		{os: "darwin",
+		{
+			os:      "darwin",
+			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-macos.tgz`,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.39.1/pack-v0.39.1-macos.tgz`,
 		},
-		{os: "linux",
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
 			version: toolVersion,
-			url:     `https://github.com/buildpacks/pack/releases/download/v0.14.2/pack-v0.14.2-linux.tgz`,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.39.1/pack-v0.39.1-macos-arm64.tgz`,
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.39.1/pack-v0.39.1-linux.tgz`,
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/buildpacks/pack/releases/download/v0.39.1/pack-v0.39.1-linux-arm64.tgz`,
 		},
 	}
 
 	for _, tc := range tests {
-		got, _, err := tool.GetURL(tc.os, "", tc.version, false)
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
 		if err != nil {
 			t.Fatal(err)
 		}
