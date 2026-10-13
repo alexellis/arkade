@@ -246,6 +246,9 @@ arkade system install go \
 # with systemd enabled
 arkade system install containerd \
   --systemd
+
+# Install TinyGo for AMD64 or ARM64
+arkade system install tinygo
 ```
 
 Run the following to see what's available `arkade system install`:
@@ -265,6 +268,7 @@ Run the following to see what's available `arkade system install`:
   pwsh             Install Powershell
   registry         Install registry
   tc-redirect-tap  Install tc-redirect-tap
+  tinygo           Install TinyGo
   zvol-snapshotter Install containerd zvol snapshotter
 ```
 
