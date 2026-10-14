@@ -736,7 +736,6 @@ A CLI or "tool" is a command line tool that you run directly on your own worksta
 | cert-manager            | Install cert-manager                                                |
 | chart                   | Install the specified helm chart                                    |
 | cockroachdb             | Install CockroachDB                                                 |
-| consul-connect          | Install Consul Service Mesh                                         |
 | cron-connector          | Install cron-connector for OpenFaaS                                 |
 | crossplane              | Install Crossplane                                                  |
 | docker-registry         | Install a community maintained Docker registry chart                |
