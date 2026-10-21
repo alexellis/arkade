@@ -18,9 +18,9 @@ type namespaceRule struct {
 // The cache holds computed effective states for paths (path -> namespaceRule)
 // based on hierarchical rules to optimize lookups.
 type Namespace struct {
-	store      sync.Map // path (string) -> rule (bool)
-	cache      sync.Map // path (string) -> namespaceRule
-	genCounter uint64   // NEW: atomic generation counter
+	store      sync.Map      // path (string) -> rule (bool)
+	cache      sync.Map      // path (string) -> namespaceRule
+	genCounter atomic.Uint64 // NEW: atomic generation counter
 }
 
 // Set defines an explicit enable/disable rule for a namespace path.
@@ -33,7 +33,7 @@ func (ns *Namespace) Set(path string, enabled bool) {
 // invalidatePathCache increments generation counter instead of scanning cache.
 func (ns *Namespace) invalidatePathCache(path string) {
 	// Atomic increment - O(1), no lock contention on cache
-	atomic.AddUint64(&ns.genCounter, 1)
+	ns.genCounter.Add(1)
 }
 
 // Store directly sets a rule in the store, bypassing cache invalidation.
@@ -71,7 +71,7 @@ func (ns *Namespace) Enabled(path string, separator string) (isEnabledByRule boo
 	if cachedValue, found := ns.cache.Load(path); found {
 		if state, ok := cachedValue.(namespaceRule); ok {
 			// If cache generation matches current, result is valid
-			if state.generation == atomic.LoadUint64(&ns.genCounter) {
+			if state.generation == ns.genCounter.Load() {
 				return state.isEnabledByRule, state.isDisabledByRule
 			}
 			// Stale cache - fall through to recompute
@@ -101,7 +101,7 @@ func (ns *Namespace) Enabled(path string, separator string) (isEnabledByRule boo
 	ns.cache.Store(path, namespaceRule{
 		isEnabledByRule:  computedIsEnabled,
 		isDisabledByRule: computedIsDisabled,
-		generation:       atomic.LoadUint64(&ns.genCounter),
+		generation:       ns.genCounter.Load(),
 	})
 	return computedIsEnabled, computedIsDisabled
 }

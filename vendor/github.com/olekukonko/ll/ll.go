@@ -1292,6 +1292,18 @@ func (l *Logger) Warnf(format string, args ...any) {
 	l.Warn(fmt.Sprintf(format, args...))
 }
 
+// Warning is an alias for Warn that logs a message or object at the warning level
+// using variadic arguments.
+func (l *Logger) Warning(args ...any) {
+	l.Warn(args...)
+}
+
+// Warningf is an alias for Warnf that logs a formatted warning-level message
+// using the provided format and arguments.
+func (l *Logger) Warningf(format string, args ...any) {
+	l.Warnf(format, args...)
+}
+
 // joinPath joins a base path and a relative path using the logger's separator, handling
 // empty base or relative paths. It is used internally for namespace path construction.
 // Example (internal usage):
