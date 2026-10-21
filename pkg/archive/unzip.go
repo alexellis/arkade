@@ -22,10 +22,10 @@ func Unzip(reader io.ReaderAt, size int64, dir string, quiet bool) error {
 		return fmt.Errorf("error creating zip reader: %s", err)
 	}
 
-	return unzip(*zipReader, dir, quiet)
+	return unzip(zipReader, dir, quiet)
 }
 
-func unzip(r zip.Reader, dir string, quiet bool) (err error) {
+func unzip(r *zip.Reader, dir string, quiet bool) (err error) {
 	if err != nil {
 		return err
 	}

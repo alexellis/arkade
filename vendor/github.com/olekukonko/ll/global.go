@@ -143,6 +143,16 @@ func Warnf(format string, args ...any) {
 	defaultLogger.Warnf(format, args...)
 }
 
+// Warning - Alais(Warn) logs a message or object at the warning level using variadic arguments.
+func Warning(args ...any) {
+	defaultLogger.Warn(args...)
+}
+
+// Warningf - Alais(Warningf)  logs a formatted warning-level message using the provided format and arguments.
+func Warningf(format string, args ...any) {
+	defaultLogger.Warnf(format, args...)
+}
+
 // Error logs a message at Error level with variadic arguments using the default logger.
 // It concatenates the arguments with spaces and delegates to defaultLogger’s Error method.
 // Used for error conditions requiring attention. Thread-safe.

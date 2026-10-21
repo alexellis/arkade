@@ -21,6 +21,6 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v7
         with:
-          go-version: 1.26.x
+          go-version: 1.27.x
       - name: Run URL checker tests
         run: make e2e
