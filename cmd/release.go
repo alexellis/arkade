@@ -5,6 +5,7 @@ package cmd
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -29,7 +30,7 @@ is the subject line of the latest local commit — push first so it
 matches the remote HEAD. Untracked, staged, or uncommitted changes are
 ignored.
 
-The latest release tag is obtained via "gh release list", so private
+The latest release tag is obtained via "gh api", so private
 repositories are supported when "gh" is authenticated.
 
 Version bump strategy (mutually exclusive, default is --patch):
@@ -303,7 +304,7 @@ func resolveNewTag(ctx context.Context, versionOverride string, bump bumpStrateg
 
 	latestTag, err := latestReleaseTag(ctx)
 	if err != nil {
-		return "", fmt.Errorf("could not determine latest release: %w\nUse a positional argument to set the version explicitly", err)
+		return "", fmt.Errorf("could not determine latest release: %w\nRetry when GitHub recovers, or pass a verified version explicitly", err)
 	}
 
 	return bumpVersion(latestTag, bump)
@@ -342,7 +343,7 @@ func resolveTitle(ctx context.Context, titleOverride string) (string, error) {
 func latestReleaseTag(ctx context.Context) (string, error) {
 	task := execute.ExecTask{
 		Command: "gh",
-		Args:    []string{"api", "repos/{owner}/{repo}/releases", "--jq", ".[0].tag_name"},
+		Args:    []string{"api", "repos/{owner}/{repo}/releases?per_page=1"},
 	}
 
 	res, err := task.Execute(ctx)
@@ -353,12 +354,48 @@ func latestReleaseTag(ctx context.Context) (string, error) {
 		return "", fmt.Errorf("gh exited with code %d: %s", res.ExitCode, res.Stderr)
 	}
 
-	tag := strings.TrimSpace(res.Stdout)
-	if tag == "" {
-		return "v0.0.0", nil
+	var releases []struct {
+		TagName string `json:"tag_name"`
+	}
+	if err := json.Unmarshal([]byte(res.Stdout), &releases); err != nil {
+		return "", fmt.Errorf("could not decode GitHub releases: %w", err)
+	}
+	if releases == nil {
+		return "", fmt.Errorf("GitHub returned a null release list")
+	}
+	if len(releases) > 0 {
+		if releases[0].TagName == "" {
+			return "", fmt.Errorf("GitHub returned a release without a tag")
+		}
+		return releases[0].TagName, nil
 	}
 
-	return tag, nil
+	// An empty release list is normal for a new project, but GitHub can also
+	// return an empty list during an incident. Check tags before choosing the
+	// initial version so an existing project cannot be reset to v0.0.1.
+	tagsTask := execute.ExecTask{
+		Command: "gh",
+		Args:    []string{"api", "repos/{owner}/{repo}/tags?per_page=1"},
+	}
+	tagsResult, err := tagsTask.Execute(ctx)
+	if err != nil {
+		return "", fmt.Errorf("could not check repository tags: %w", err)
+	}
+	if tagsResult.ExitCode != 0 {
+		return "", fmt.Errorf("could not check repository tags: gh exited with code %d: %s", tagsResult.ExitCode, tagsResult.Stderr)
+	}
+
+	var tags []struct {
+		Name string `json:"name"`
+	}
+	if err := json.Unmarshal([]byte(tagsResult.Stdout), &tags); err != nil || tags == nil {
+		return "", fmt.Errorf("could not read repository tags from GitHub: %q", strings.TrimSpace(tagsResult.Stdout))
+	}
+	if len(tags) > 0 {
+		return "", fmt.Errorf("GitHub returned no releases, but repository tag %q exists; refusing to guess an initial version", tags[0].Name)
+	}
+
+	return "v0.0.0", nil
 }
 
 // bumpVersion increments the specified semver component of a tag.
