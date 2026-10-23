@@ -98,11 +98,14 @@ Note: `--major`, `--minor`, `--patch` are mutually exclusive. If more than one i
 
 ## Testing
 
-There are no unit tests for this command. To verify behaviour:
+Run the release regression test and verify behaviour with a dry run:
 
 ```bash
 # Build
 go build -o arkade .
+
+# Check empty and invalid API responses, and prefixed and bare version bumps
+go test ./cmd -run '^(TestReleaseTagResolution|TestBumpVersionPreservesTagStyle)$'
 
 # Dry run in a public repo (default = patch bump)
 ./arkade release --dry-run
@@ -143,4 +146,4 @@ The `repoIsPrivate()` function is self-contained. It returns `true` for `PRIVATE
 The `bumpVersion()` function handles version incrementing using the `bumpStrategy` type. It supports `bumpPatchStrategy`, `bumpMinorStrategy`, and `bumpMajorStrategy`. The user selects the strategy via `--major`, `--minor`, `--patch` flags, validated by `parseBumpStrategy()`.
 
 ### Error handling for repos with no releases
-When `gh release list` returns no tags, `latestReleaseTag()` returns an error. The error message tells the user to pass a version explicitly as a positional argument.
+When `gh api repos/{owner}/{repo}/releases` returns an empty list, `latestReleaseTag()` checks the repository's tags. If there are no releases or tags, the first release is `v0.0.1`. If tags exist, it returns an error rather than guessing an initial version, since an empty release list can also mean GitHub is degraded.
