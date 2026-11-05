@@ -49,12 +49,16 @@ func MakeInstallSealedSecrets() *cobra.Command {
 
 		sealedSecretAppOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("sealed-secrets/sealed-secrets").
-			WithHelmURL("https://bitnami-labs.github.io/sealed-secrets").
+			WithHelmRepo("sealed-secrets").
+			WithHelmURL("oci://registry-1.docker.io/bitnamicharts/sealed-secrets").
 			WithOverrides(overrides).
 			WithHelmUpdateRepo(updateRepo).
 			WithWait(wait).
 			WithKubeconfigPath(kubeConfigPath)
+
+		// The default options includes the `values.yaml` file but this is
+		// already implied when using the OCI chart.
+		sealedSecretAppOptions.Helm.ValuesFiles = []string{}
 
 		_, err = apps.MakeInstallChart(sealedSecretAppOptions)
 		if err != nil {

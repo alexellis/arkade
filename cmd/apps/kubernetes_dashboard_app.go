@@ -61,8 +61,8 @@ func MakeInstallKubernetesDashboard() *cobra.Command {
 
 		k8sDashboardOptions := types.DefaultInstallOptions().
 			WithNamespace(namespace).
-			WithHelmRepo("kubernetes-dashboard/kubernetes-dashboard").
-			WithHelmURL("https://kubernetes.github.io/dashboard/").
+			WithHelmRepo("kubernetes-dashboard").
+			WithHelmURL("https://github.com/kubernetes/dashboard/releases/download/kubernetes-dashboard-7.14.0/kubernetes-dashboard-7.14.0.tgz").
 			WithHelmUpdateRepo(updateRepo).
 			WithOverrides(overrides).
 			WithKubeconfigPath(kubeConfigPath)
