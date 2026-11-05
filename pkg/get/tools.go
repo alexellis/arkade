@@ -89,8 +89,8 @@ opencode-linux-arm64.tar.gz
 {{- else -}}
 opencode-linux-x64.tar.gz
 {{- end -}}`,
-			// the binary inside the archive is named "opencode",
-			// decompress() renames it to the tool name "opencode2"
+			// the binary inside each archive is named "opencode",
+			// it is installed under the tool name "opencode2"
 			BinaryTemplate: `opencode`,
 			// GitHub's /releases/latest points at the old v1.x line,
 			// so resolve the 2.x version from the opencode update API
