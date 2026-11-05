@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"sort"
 	"strings"
+	"sync/atomic"
 	"testing"
 )
 
@@ -11276,6 +11277,54 @@ func Test_FindReleaseOpenCodeStrategy(t *testing.T) {
 			t.Errorf("expected 404 in error, got: %s", err.Error())
 		}
 	})
+
+	t.Run("rejects versions outside major 2 without retrying", func(t *testing.T) {
+		var requests atomic.Int32
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requests.Add(1)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(`{"version":"3.0.0"}`))
+		}))
+		defer srv.Close()
+
+		loc := releaseLocations[OpenCodeStrategy]
+		loc.Url = srv.URL
+		releaseLocations[OpenCodeStrategy] = loc
+
+		_, err := FindRelease(OpenCodeStrategy, "anomalyco", "opencode")
+		if err == nil || !strings.Contains(err.Error(), "expected major version 2") {
+			t.Fatalf("expected a major version error, got: %v", err)
+		}
+		if got := requests.Load(); got != 1 {
+			t.Errorf("expected one request, got %d", got)
+		}
+	})
+
+	t.Run("redirects are rejected on GET strategies", func(t *testing.T) {
+		var requests atomic.Int32
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			requests.Add(1)
+			w.Header().Set("Location", "https://example.com/elsewhere")
+			w.WriteHeader(http.StatusFound)
+			w.Write([]byte(`{"version":"2.2.5"}`))
+		}))
+		defer srv.Close()
+
+		loc := releaseLocations[OpenCodeStrategy]
+		loc.Url = srv.URL
+		releaseLocations[OpenCodeStrategy] = loc
+
+		_, err := FindRelease(OpenCodeStrategy, "anomalyco", "opencode")
+		if err == nil {
+			t.Fatal("expected an error for a redirect response")
+		}
+		if !strings.Contains(err.Error(), "302") {
+			t.Errorf("expected 302 in error, got: %s", err.Error())
+		}
+		if got := requests.Load(); got != 1 {
+			t.Errorf("expected one request, got %d", got)
+		}
+	})
 }
 
 func Test_FindReleaseRedirectStrategies(t *testing.T) {
@@ -11306,6 +11355,20 @@ func Test_FindReleaseRedirectStrategies(t *testing.T) {
 		}
 		if got != "v1.2.3" {
 			t.Errorf("want v1.2.3, got %s", got)
+		}
+	})
+
+	t.Run("non-redirect with location is rejected", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Location", "https://github.com/example/tool/releases/tag/v1.2.3")
+			w.WriteHeader(http.StatusOK)
+		}))
+		defer srv.Close()
+		setURL(srv.URL)
+
+		_, err := FindRelease(GitHubVersionStrategy, "example", "tool")
+		if err == nil || !strings.Contains(err.Error(), "200") {
+			t.Fatalf("expected a 200 status error, got: %v", err)
 		}
 	})
 

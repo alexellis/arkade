@@ -76,6 +76,8 @@ func MakeTools() Tools {
 			Repo:        "opencode",
 			Name:        "opencode2",
 			Description: "The opencode CLI for running AI agents and tools, installed as opencode2.",
+			// The musl assets need a separate musl loader, so use the
+			// glibc binaries on Linux to run on standard distributions.
 			URLTemplate: `https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{ if HasPrefix .OS "ming" -}}
 opencode-windows-x64.zip
 {{- else if eq .OS "darwin" -}}
