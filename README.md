@@ -963,6 +963,7 @@ There are 53 apps that you can install on your cluster.
 | [op](https://github.com/1password/)                                          | 1Password CLI enables you to automate administrative tasks and securely provision secrets across development environments.                                        |
 | [opa](https://github.com/open-policy-agent/opa)                              | General-purpose policy engine that enables unified, context-aware policy enforcement across the entire stack.                                                     |
 | [opencode](https://github.com/anomalyco/opencode)                            | The opencode CLI for running AI agents and tools.                                                                                                                 |
+| [opencode2](https://github.com/anomalyco/opencode)                           | The opencode CLI for running AI agents and tools, installed as opencode2.                                                                                         |
 | [openshift-install](https://github.com/openshift/installer)                  | CLI to install an OpenShift 4.x cluster.                                                                                                                          |
 | [operator-sdk](https://github.com/operator-framework/operator-sdk)           | Operator SDK is a tool for scaffolding and generating code for building Kubernetes operators                                                                      |
 | [opkssh](https://github.com/openpubkey/opkssh)                               | A new type of shell that can handle structured data like YAML really well                                                                                         |
@@ -1029,5 +1030,5 @@ There are 53 apps that you can install on your cluster.
 | [xq](https://github.com/sibprogrammer/xq)                                    | XML to JSON/YAML converter and query tool.                                                                                                                        |
 | [yq](https://github.com/mikefarah/yq)                                        | Portable command-line YAML processor.                                                                                                                             |
 | [yt-dlp](https://github.com/yt-dlp/yt-dlp)                                   | Fork of youtube-dl with additional features and fixes                                                                                                             |
-There are 222 tools, use `arkade get NAME` to download one.
+There are 223 tools, use `arkade get NAME` to download one.
 <!-- end of tool list -->

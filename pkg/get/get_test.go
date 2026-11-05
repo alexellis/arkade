@@ -10205,6 +10205,58 @@ func Test_DownloadOpencode(t *testing.T) {
 	}
 }
 
+func Test_DownloadOpencode2(t *testing.T) {
+	tools := MakeTools()
+	name := "opencode2"
+
+	tool := getTool(name, tools)
+
+	const toolVersion = "v2.2.5"
+
+	tests := []test{
+		{
+			os:      "darwin",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/anomalyco/opencode/releases/download/v2.2.5/opencode-darwin-x64.zip",
+		},
+		{
+			os:      "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     "https://github.com/anomalyco/opencode/releases/download/v2.2.5/opencode-darwin-arm64.zip",
+		},
+		{
+			os:      "linux",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/anomalyco/opencode/releases/download/v2.2.5/opencode-linux-x64.tar.gz",
+		},
+		{
+			os:      "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     "https://github.com/anomalyco/opencode/releases/download/v2.2.5/opencode-linux-arm64.tar.gz",
+		},
+		{
+			os:      "mingw64_nt-10.0-18362",
+			arch:    arch64bit,
+			version: toolVersion,
+			url:     "https://github.com/anomalyco/opencode/releases/download/v2.2.5/opencode-windows-x64.zip",
+		},
+	}
+
+	for _, tc := range tests {
+		got, _, err := tool.GetURL(tc.os, tc.arch, tc.version, false)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != tc.url {
+			t.Errorf("\nwant: %s\ngot:  %s", tc.url, got)
+		}
+	}
+}
+
 func Test_DownloadClaude(t *testing.T) {
 	tools := MakeTools()
 	name := "claude"
