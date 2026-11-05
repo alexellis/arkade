@@ -3,10 +3,12 @@ package get
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"reflect"
 	"sort"
+	"strings"
 	"testing"
 )
 
@@ -11226,4 +11228,52 @@ func Test_DownloadShellcheck(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_FindReleaseOpenCodeStrategy(t *testing.T) {
+	orig := releaseLocations[OpenCodeStrategy].Url
+	defer func() {
+		loc := releaseLocations[OpenCodeStrategy]
+		loc.Url = orig
+		releaseLocations[OpenCodeStrategy] = loc
+	}()
+
+	t.Run("parses JSON version and prefixes v", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte(`{"version":"2.2.5"}`))
+		}))
+		defer srv.Close()
+
+		loc := releaseLocations[OpenCodeStrategy]
+		loc.Url = srv.URL
+		releaseLocations[OpenCodeStrategy] = loc
+
+		got, err := FindRelease(OpenCodeStrategy, "anomalyco", "opencode")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != "v2.2.5" {
+			t.Errorf("want v2.2.5, got %s", got)
+		}
+	})
+
+	t.Run("error status codes fail fast", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			http.Error(w, "not found", http.StatusNotFound)
+		}))
+		defer srv.Close()
+
+		loc := releaseLocations[OpenCodeStrategy]
+		loc.Url = srv.URL
+		releaseLocations[OpenCodeStrategy] = loc
+
+		_, err := FindRelease(OpenCodeStrategy, "anomalyco", "opencode")
+		if err == nil {
+			t.Fatal("expected an error for a 404 response")
+		}
+		if !strings.Contains(err.Error(), "404") {
+			t.Errorf("expected 404 in error, got: %s", err.Error())
+		}
+	})
 }

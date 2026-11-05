@@ -408,13 +408,11 @@ func FindRelease(location, owner, repo string) (string, error) {
 
 		if releaseLocations[location].Method == http.MethodHead {
 
-			if res.StatusCode != http.StatusMovedPermanently && res.StatusCode != http.StatusFound {
-				return "", fmt.Errorf("server returned status: %d", res.StatusCode)
-			}
-
+			// any 3xx with a Location header is fine, that is how
+			// GitHub advertises the latest release tag
 			loc := res.Header.Get("Location")
 			if len(loc) == 0 {
-				return "", fmt.Errorf("unable to determine release of tool")
+				return "", fmt.Errorf("unable to determine release of tool, server returned status: %d", res.StatusCode)
 			}
 
 			version := loc[strings.LastIndex(loc, "/")+1:]
@@ -423,6 +421,10 @@ func FindRelease(location, owner, repo string) (string, error) {
 
 		if res.Body == nil {
 			return "", fmt.Errorf("unable to determine release of tool")
+		}
+
+		if res.StatusCode < 200 || res.StatusCode >= 400 {
+			return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 		}
 
 		bodyBytes, err := io.ReadAll(res.Body)
