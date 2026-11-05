@@ -408,8 +408,12 @@ func FindRelease(location, owner, repo string) (string, error) {
 
 		if releaseLocations[location].Method == http.MethodHead {
 
-			// any 3xx with a Location header is fine, that is how
-			// GitHub advertises the latest release tag
+			// the version is advertised in the Location header of a
+			// redirect, any other status cannot yield one
+			if res.StatusCode < 300 || res.StatusCode >= 400 {
+				return "", fmt.Errorf("server returned status: %d", res.StatusCode)
+			}
+
 			loc := res.Header.Get("Location")
 			if len(loc) == 0 {
 				return "", fmt.Errorf("unable to determine release of tool, server returned status: %d", res.StatusCode)
