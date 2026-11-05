@@ -3,6 +3,7 @@ package get
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -24,6 +25,7 @@ const GitHubVersionStrategy = "github"
 const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 const AmpStrategy = `amp`
+const OpenCodeStrategy = "opencode"
 
 const HashicorpShasumStrategy = `hashicorp-sha`
 const ClaudeShasumStrategy = `claude-sha`
@@ -156,6 +158,11 @@ var releaseLocations = map[string]ReleaseLocation{
 	AmpStrategy: {
 		Url:     "https://static.ampcode.com/cli/cli-version.txt",
 		Timeout: time.Second * 5,
+		Method:  http.MethodGet,
+	},
+	OpenCodeStrategy: {
+		Url:     "https://opencode.ai/update/api/latest/cli/npm",
+		Timeout: time.Second * 10,
 		Method:  http.MethodGet,
 	},
 }
@@ -424,6 +431,24 @@ func FindRelease(location, owner, repo string) (string, error) {
 		}
 
 		version := strings.TrimSpace(string(bodyBytes))
+
+		// The opencode update API returns a JSON document, from
+		// which we extract the "version" field.
+		if location == OpenCodeStrategy {
+			var doc struct {
+				Version string `json:"version"`
+			}
+			if err := json.Unmarshal(bodyBytes, &doc); err != nil {
+				return "", fmt.Errorf("unable to parse version from opencode update API: %w", err)
+			}
+			if len(doc.Version) == 0 {
+				return "", fmt.Errorf("no version returned from the opencode update API")
+			}
+			// the API returns a bare version, GitHub release tags
+			// are prefixed with "v"
+			version = "v" + strings.TrimPrefix(doc.Version, "v")
+		}
+
 		return version, nil
 	}, 10, 100*time.Millisecond)
 }

@@ -69,6 +69,33 @@ func MakeTools() Tools {
 {{.Name}}-linux-x64.tar.gz
 {{- end -}}`,
 		},
+		// opencode AI CLI, installed under a separate name so it can
+		// coexist with the "opencode" binary
+		Tool{
+			Owner:       "anomalyco",
+			Repo:        "opencode",
+			Name:        "opencode2",
+			Description: "The opencode CLI for running AI agents and tools, installed as opencode2.",
+			URLTemplate: `https://github.com/{{.Owner}}/{{.Repo}}/releases/download/{{.Version}}/{{ if HasPrefix .OS "ming" -}}
+opencode-windows-x64.zip
+{{- else if eq .OS "darwin" -}}
+  {{- if or (eq .Arch "arm64") (eq .Arch "aarch64") -}}
+opencode-darwin-arm64.zip
+  {{- else -}}
+opencode-darwin-x64.zip
+  {{- end -}}
+{{- else if or (eq .Arch "aarch64") (eq .Arch "arm64") -}}
+opencode-linux-arm64.tar.gz
+{{- else -}}
+opencode-linux-x64.tar.gz
+{{- end -}}`,
+			// the binary inside the archive is named "opencode",
+			// decompress() renames it to the tool name "opencode2"
+			BinaryTemplate: `opencode`,
+			// GitHub's /releases/latest points at the old v1.x line,
+			// so resolve the 2.x version from the opencode update API
+			VersionStrategy: OpenCodeStrategy,
+		},
 		Tool{
 			Owner:          "nektos",
 			Repo:           "act",
