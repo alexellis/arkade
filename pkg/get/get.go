@@ -17,6 +17,7 @@ import (
 	"text/template"
 	"time"
 
+	semver "github.com/Masterminds/semver/v3"
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/env"
 )
@@ -26,6 +27,9 @@ const GitLabVersionStrategy = "gitlab"
 const k8sVersionStrategy = "k8s"
 const AmpStrategy = `amp`
 const OpenCodeStrategy = "opencode"
+
+var errUnsupportedOpenCodeVersion = errors.New("unsupported opencode version")
+var errUnexpectedReleaseStatus = errors.New("unexpected release response")
 
 const HashicorpShasumStrategy = `hashicorp-sha`
 const ClaudeShasumStrategy = `claude-sha`
@@ -63,6 +67,10 @@ func retryWithBackoff(fn func() (string, error), maxRetries int, initialBackoff 
 }
 
 func isPermanentError(err error) bool {
+	if errors.Is(err, errUnsupportedOpenCodeVersion) || errors.Is(err, errUnexpectedReleaseStatus) {
+		return true
+	}
+
 	var urlErr *url.Error
 	if errors.As(err, &urlErr) && urlErr.Op == "parse" {
 		return true
@@ -411,6 +419,9 @@ func FindRelease(location, owner, repo string) (string, error) {
 			// the version is advertised in the Location header of a
 			// redirect, any other status cannot yield one
 			if res.StatusCode < 300 || res.StatusCode >= 400 {
+				if res.StatusCode >= 200 && res.StatusCode < 300 {
+					return "", fmt.Errorf("%w: server returned status: %d", errUnexpectedReleaseStatus, res.StatusCode)
+				}
 				return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 			}
 
@@ -427,7 +438,13 @@ func FindRelease(location, owner, repo string) (string, error) {
 			return "", fmt.Errorf("unable to determine release of tool")
 		}
 
-		if res.StatusCode < 200 || res.StatusCode >= 400 {
+		// redirects are not followed (CheckRedirect returns
+		// ErrUseLastResponse), so only a 2xx response can carry
+		// the version in its body
+		if res.StatusCode >= 300 && res.StatusCode < 400 {
+			return "", fmt.Errorf("%w: server returned status: %d", errUnexpectedReleaseStatus, res.StatusCode)
+		}
+		if res.StatusCode < 200 || res.StatusCode >= 300 {
 			return "", fmt.Errorf("server returned status: %d", res.StatusCode)
 		}
 
@@ -449,6 +466,13 @@ func FindRelease(location, owner, repo string) (string, error) {
 			}
 			if len(doc.Version) == 0 {
 				return "", fmt.Errorf("no version returned from the opencode update API")
+			}
+			parsedVersion, err := semver.NewVersion(doc.Version)
+			if err != nil {
+				return "", fmt.Errorf("invalid version from the opencode update API: %q: %w", doc.Version, err)
+			}
+			if parsedVersion.Major() != 2 {
+				return "", fmt.Errorf("%w: expected major version 2, got %q", errUnsupportedOpenCodeVersion, doc.Version)
 			}
 			// the API returns a bare version, GitHub release tags
 			// are prefixed with "v"
