@@ -11277,3 +11277,51 @@ func Test_FindReleaseOpenCodeStrategy(t *testing.T) {
 		}
 	})
 }
+
+func Test_FindReleaseRedirectStrategies(t *testing.T) {
+	orig := releaseLocations[GitHubVersionStrategy].Url
+	defer func() {
+		loc := releaseLocations[GitHubVersionStrategy]
+		loc.Url = orig
+		releaseLocations[GitHubVersionStrategy] = loc
+	}()
+
+	setURL := func(u string) {
+		loc := releaseLocations[GitHubVersionStrategy]
+		loc.Url = u
+		releaseLocations[GitHubVersionStrategy] = loc
+	}
+
+	t.Run("redirect with location yields version", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Location", "https://github.com/example/tool/releases/tag/v1.2.3")
+			w.WriteHeader(http.StatusFound)
+		}))
+		defer srv.Close()
+		setURL(srv.URL)
+
+		got, err := FindRelease(GitHubVersionStrategy, "example", "tool")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if got != "v1.2.3" {
+			t.Errorf("want v1.2.3, got %s", got)
+		}
+	})
+
+	t.Run("error statuses are rejected", func(t *testing.T) {
+		srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			http.Error(w, "gone", http.StatusNotFound)
+		}))
+		defer srv.Close()
+		setURL(srv.URL)
+
+		_, err := FindRelease(GitHubVersionStrategy, "example", "tool")
+		if err == nil {
+			t.Fatal("expected an error for a 404 response")
+		}
+		if !strings.Contains(err.Error(), "404") {
+			t.Errorf("expected 404 in error, got: %s", err.Error())
+		}
+	})
+}
