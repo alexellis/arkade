@@ -189,17 +189,22 @@ func processValuesFiles(valuesFiles []string) ([]string, error) {
 	return valuesFiles, nil
 }
 
-// isURL checks if a string is a URL
-func isURL(str string) bool {
+// IsURL checks if a string is a URL
+func IsURL(str string) bool {
 	u, err := url.Parse(str)
 	return err == nil && u.Scheme != "" && u.Host != ""
 }
 
 func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, overrides map[string]string, wait bool) error {
-
 	chartName := chart
+	releaseName := chartName
 	if index := strings.Index(chartName, "/"); index > -1 {
-		chartName = chartName[index+1:]
+		releaseName = chartName[index+1:]
+		chartName = releaseName
+	} else {
+		// Bare chart name resolves the untarred chart relative to
+		// the charts dir.
+		chartName = releaseName
 	}
 
 	basePath := path.Join(os.TempDir(), "charts", chartName)
@@ -210,7 +215,7 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 		return err
 	}
 
-	args := []string{"upgrade", "--install", chartName, chart, "--namespace", namespace}
+	args := []string{"upgrade", "--install", releaseName, chart, "--namespace", namespace}
 	if len(version) > 0 {
 		args = append(args, "--version", version)
 	}
@@ -221,7 +226,7 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 
 	for _, valueFile := range processedValuesFiles {
 		args = append(args, "--values")
-		if isURL(valueFile) {
+		if IsURL(valueFile) {
 			// Helm supports URLs directly, pass through unchanged
 			args = append(args, valueFile)
 		} else if !strings.HasPrefix(valueFile, "/") {
@@ -236,11 +241,18 @@ func Helm3Upgrade(chart, namespace string, valuesFile []string, version string, 
 		args = append(args, fmt.Sprintf("%s=%s", k, v))
 	}
 
+	// A bare chart name (fetched from a direct archive URL) resolves
+	// against the charts directory, not the chart's own directory.
+	cwd := basePath
+	if !strings.Contains(chart, "/") {
+		cwd = path.Dir(basePath)
+	}
+
 	task := execute.ExecTask{
 		Command:     env.LocalBinary("helm", ""),
 		Args:        args,
 		Env:         os.Environ(),
-		Cwd:         basePath,
+		Cwd:         cwd,
 		StreamStdio: true,
 	}
 

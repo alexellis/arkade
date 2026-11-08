@@ -1,11 +1,14 @@
+// Copyright (c) arkade author(s) 2022. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 package apps
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/alexellis/arkade/pkg"
 	"github.com/alexellis/arkade/pkg/apps"
+	"github.com/alexellis/arkade/pkg/config"
 	"github.com/alexellis/arkade/pkg/types"
 	"github.com/spf13/cobra"
 )
@@ -13,29 +16,24 @@ import (
 func MakeInstallConfluentPlatformKafka() *cobra.Command {
 	kafka := &cobra.Command{
 		Use:   "kafka",
-		Short: "Install Confluent Platform Kafka",
-		Long: `This will install Kafka provided by the Confluent Platform by using the following official Helm chart:
-        https://github.com/confluentinc/cp-helm-charts`,
+		Short: "Install Kafka",
+		Long: `This will install Kafka using the Bitnami chart, distributed
+as an OCI image: oci://registry-1.docker.io/bitnamicharts/kafka`,
 		Example:      "arkade install kafka",
 		SilenceUsage: true,
 	}
 
-	kafka.Flags().Bool("zookeeper", true, "enable Zookeeper")
-	kafka.Flags().Int("zookeeper-server-count", 1, "server count of Zookeeper")
-
+	kafka.Flags().Int("replicas", 1, "number of Kafka brokers")
+	kafka.Flags().Int("controller-replicas", 1, "number of Kafka controllers (KRaft mode)")
+	kafka.Flags().String("storage-class", "", "override the storage class for Kafka data")
+	kafka.Flags().String("heap", "1g", "JVM heap size for the Kafka broker, e.g. 1g or 2g")
 	kafka.Flags().Bool("kafka", true, "enable Kafka")
-	kafka.Flags().Int("kafka-broker-count", 1, "broker count of Kafka")
-
-	kafka.Flags().Bool("schema-registry", false, "enable Schema Registry")
-	kafka.Flags().Bool("kafka-rest", false, "enable Kafka Rest")
-
-	kafka.Flags().Bool("kafka-connect", false, "enable Kafka Connect")
-
-	kafka.Flags().Bool("ksql-server", false, "enable KSQL Server")
-
-	kafka.Flags().Bool("control-center", false, "enable KSQL Server")
-
+	kafka.Flags().StringArray("set", []string{},
+		"Use custom flags or override existing flags \n(example --set persistence.enabled=true)")
 	kafka.Flags().Bool("update-repo", true, "Update the helm repo")
+
+	// Deprecated aliases kept for existing automation.
+	kafka.Flags().Int("kafka-broker-count", 0, "(deprecated: use --replicas) number of Kafka brokers")
 
 	kafka.RunE = func(command *cobra.Command, args []string) error {
 		appOpts := types.DefaultInstallOptions()
@@ -48,77 +46,84 @@ func MakeInstallConfluentPlatformKafka() *cobra.Command {
 		kubeConfigPath, _ := command.Flags().GetString("kubeconfig")
 		namespace, _ := command.Flags().GetString("namespace")
 
-		updateRepo, err := command.Flags().GetBool("update-repo")
-		if err != nil {
+		if _, err := command.Flags().GetBool("update-repo"); err != nil {
 			return err
 		}
 
 		overrides := map[string]string{}
 
-		enableZookeeper, err := command.Flags().GetBool("zookeeper")
-		if err != nil {
-			return err
-		}
-		overrides["cp-zookeeper.enabled"] = strconv.FormatBool(enableZookeeper)
-
-		zookeeperServerCount, err := command.Flags().GetInt("zookeeper-server-count")
-		if err != nil {
-			return err
-		}
-		overrides["cp-zookeeper.servers"] = fmt.Sprintf("%d", zookeeperServerCount)
-
 		enableKafka, err := command.Flags().GetBool("kafka")
 		if err != nil {
 			return err
 		}
-		overrides["cp-kafka.enabled"] = strconv.FormatBool(enableKafka)
+		overrides["kafka.enabled"] = fmt.Sprintf("%v", enableKafka)
 
-		kafkaBrokerCount, err := command.Flags().GetInt("kafka-broker-count")
+		replicas, err := command.Flags().GetInt("replicas")
 		if err != nil {
 			return err
 		}
-		overrides["cp-kafka.brokers"] = fmt.Sprintf("%d", kafkaBrokerCount)
+		if command.Flags().Changed("kafka-broker-count") {
+			deprecatedCount, err := command.Flags().GetInt("kafka-broker-count")
+			if err != nil {
+				return err
+			}
+			fmt.Println("[Warning] --kafka-broker-count is deprecated, use --replicas instead.")
+			replicas = deprecatedCount
+		}
+		overrides["broker.replicaCount"] = fmt.Sprintf("%d", replicas)
 
-		enableSchemaRegistry, err := command.Flags().GetBool("schema-registry")
+		controllerReplicas, err := command.Flags().GetInt("controller-replicas")
 		if err != nil {
 			return err
 		}
-		overrides["cp-schema-registry.enabled"] = strconv.FormatBool(enableSchemaRegistry)
+		overrides["controller.replicaCount"] = fmt.Sprintf("%d", controllerReplicas)
 
-		enableKafkaRest, err := command.Flags().GetBool("kafka-rest")
+		heap, err := command.Flags().GetString("heap")
 		if err != nil {
 			return err
 		}
-		overrides["cp-kafka-rest.enabled"] = strconv.FormatBool(enableKafkaRest)
+		if len(heap) > 0 {
+			overrides["heapOpts"] = fmt.Sprintf("-Xmx%s -Xms%s", heap, heap)
+		}
 
-		enableKafkaConnect, err := command.Flags().GetBool("kafka-connect")
+		storageClass, err := command.Flags().GetString("storage-class")
 		if err != nil {
 			return err
 		}
-		overrides["cp-kafka-connect.enabled"] = strconv.FormatBool(enableKafkaConnect)
+		if len(storageClass) > 0 {
+			overrides["persistence.storageClass"] = storageClass
+			overrides["logPersistence.storageClass"] = storageClass
+		}
 
-		enableKSQLServer, err := command.Flags().GetBool("ksql-server")
-		if err != nil {
+		// Bitnami moved its free container images to the frozen
+		// "bitnamilegacy" registry in Aug 2025, the chart's default
+		// bitnami/kafka tags are gone. Point at the legacy images so
+		// the install works out of the box; --set values below win.
+		overrides["global.imageRegistry"] = ""
+		overrides["image.registry"] = "docker.io"
+		overrides["image.repository"] = "bitnamilegacy/kafka"
+		overrides["controller.image.registry"] = "docker.io"
+		overrides["controller.image.repository"] = "bitnamilegacy/kafka"
+		overrides["controller-els.image.registry"] = "docker.io"
+		overrides["controller-els.image.repository"] = "bitnamilegacy/kafka"
+
+		customFlags, _ := command.Flags().GetStringArray("set")
+		if err := config.MergeFlags(overrides, customFlags); err != nil {
 			return err
 		}
-		overrides["cp-ksql-server.enabled"] = strconv.FormatBool(enableKSQLServer)
-
-		enableControlCenter, err := command.Flags().GetBool("control-center")
-		if err != nil {
-			return err
-		}
-		overrides["cp-control-center.enabled"] = strconv.FormatBool(enableControlCenter)
 
 		appOpts.
 			WithKubeconfigPath(kubeConfigPath).
 			WithOverrides(overrides).
-			WithValuesFiles([]string{"values.yaml"}).
-			WithHelmURL("https://confluentinc.github.io/cp-helm-charts/").
-			WithHelmRepo("confluentinc/cp-helm-charts").
-			WithHelmUpdateRepo(updateRepo).
+			WithHelmURL("oci://registry-1.docker.io/bitnamicharts/kafka").
+			WithHelmRepo("oci://registry-1.docker.io/bitnamicharts/kafka").
 			WithNamespace(namespace).
 			WithInstallNamespace(false).
 			WithWait(wait)
+
+		// The default options includes the `values.yaml` file but this is
+		// already implied when using the OCI chart.
+		appOpts.Helm.ValuesFiles = []string{}
 
 		if _, err := apps.MakeInstallChart(appOpts); err != nil {
 			return err
@@ -132,8 +137,8 @@ func MakeInstallConfluentPlatformKafka() *cobra.Command {
 	return kafka
 }
 
-const KafkaInfoMsg = `You can visit the official Helm Chart repository to get more detail about the installation:
-https://github.com/confluentinc/cp-helm-charts
+const KafkaInfoMsg = `You can visit the official Helm Chart to get more detail about the installation:
+https://artifacthub.io/packages/helm/bitnami/kafka
 `
 
 var kafkaPostInstallMsg = `=======================================================================
