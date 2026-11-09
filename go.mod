@@ -10,7 +10,7 @@ require (
 	github.com/alexellis/fstail v0.0.0-20260829220843-70547782676c
 	github.com/alexellis/gha-bump v0.0.7
 	github.com/alexellis/go-execute/v2 v2.2.1
-	github.com/docker/cli v29.9.2+incompatible
+	github.com/docker/cli v29.9.3+incompatible
 	github.com/docker/go-units v0.5.0
 	github.com/google/go-containerregistry v0.22.1
 	github.com/mattn/go-isatty v0.0.24
