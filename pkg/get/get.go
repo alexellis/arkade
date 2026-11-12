@@ -275,18 +275,36 @@ func (tool Tool) Head(uri string) (int, string, http.Header, error) {
 
 	req.Header.Set("User-Agent", pkg.UserAgent())
 
-	res, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return http.StatusBadRequest, "", nil, err
-	}
-
+	timeout := 10 * time.Second
+	client := makeHTTPClient(&timeout, false)
+	defer client.CloseIdleConnections()
+	status := http.StatusBadRequest
 	var body string
-	if res.Body != nil {
-		b, _ := io.ReadAll(res.Body)
-		body = string(b)
-	}
+	var headers http.Header
+	_, err = retryWithBackoff(func() (string, error) {
+		res, err := client.Do(req)
+		if err != nil {
+			return "", err
+		}
+		defer res.Body.Close()
 
-	return res.StatusCode, body, res.Header, nil
+		status = res.StatusCode
+		headers = res.Header
+		b, err := io.ReadAll(res.Body)
+		if err != nil {
+			return "", err
+		}
+		body = string(b)
+
+		// Retry transient server failures, leaving other statuses for
+		// the caller to validate without retrying permanent failures.
+		if status >= 500 && status < 600 {
+			return "", fmt.Errorf("server returned status: %d", status)
+		}
+		return "", nil
+	}, 3, 100*time.Millisecond)
+
+	return status, body, headers, err
 }
 
 func (tool Tool) GetURL(os, arch, version string, quiet bool) (string, string, error) {

@@ -1301,6 +1301,11 @@ kluctl_{{.Version}}_{{$os}}_{{$arch}}.{{if HasPrefix .OS "ming"}}zip{{else}}tar.
 			Repo:        "cli",
 			Name:        "civo",
 			Description: "CLI for interacting with your Civo resources.",
+			// Pinned to v1.6.0, transient: v1.6.1 ships no binaries.
+			// Unpin once release binaries are restored.
+			// Previous occurrence: civo/cli#570 (v1.4.5).
+			// https://github.com/civo/cli/issues/570
+			Version: "v1.6.0",
 			// BinaryTemplate: `civo`,
 			BinaryTemplate: `
 
@@ -1321,6 +1326,8 @@ kluctl_{{.Version}}_{{$os}}_{{$arch}}.{{if HasPrefix .OS "ming"}}zip{{else}}tar.
 		{{$archStr := .Arch}}
 		{{- if eq .Arch "armv7l" -}}
 		{{$archStr = "arm"}}
+		{{- else if eq .Arch "aarch64" -}}
+		{{$archStr = "arm64"}}
 		{{- else if eq .Arch "x86_64" -}}
 		{{$archStr = "amd64"}}
 		{{- end -}}
