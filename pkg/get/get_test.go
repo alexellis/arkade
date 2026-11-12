@@ -516,6 +516,83 @@ func TestRetryWithBackoffDoesNotRetryURLParseErrors(t *testing.T) {
 	}
 }
 
+func Test_ToolHead(t *testing.T) {
+	tests := []struct {
+		name     string
+		statuses []int
+		attempts int
+		wantErr  bool
+	}{
+		{name: "success", statuses: []int{http.StatusOK}, attempts: 1},
+		{name: "gateway timeout recovers", statuses: []int{http.StatusGatewayTimeout, http.StatusOK}, attempts: 2},
+		{name: "server failures recover", statuses: []int{http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusOK}, attempts: 3},
+		{name: "server failure exhausts retries", statuses: []int{http.StatusGatewayTimeout}, attempts: 4, wantErr: true},
+		{name: "not found is not retried", statuses: []int{http.StatusNotFound}, attempts: 1},
+		{name: "forbidden is not retried", statuses: []int{http.StatusForbidden}, attempts: 1},
+		{name: "rate limit is not retried", statuses: []int{http.StatusTooManyRequests}, attempts: 1},
+	}
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			var attempts atomic.Int32
+			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				if r.Method != http.MethodHead {
+					t.Errorf("expected HEAD request, got %s", r.Method)
+				}
+				if r.Header.Get("User-Agent") == "" {
+					t.Error("expected User-Agent header")
+				}
+				attempt := int(attempts.Add(1)) - 1
+				if attempt >= len(tc.statuses) {
+					attempt = len(tc.statuses) - 1
+				}
+				w.Header().Set("Content-Length", "42")
+				w.WriteHeader(tc.statuses[attempt])
+			}))
+			defer server.Close()
+
+			status, _, headers, err := (Tool{}).Head(server.URL)
+			if (err != nil) != tc.wantErr {
+				t.Fatalf("expected error: %v, got %v", tc.wantErr, err)
+			}
+			if want := tc.statuses[len(tc.statuses)-1]; status != want {
+				t.Errorf("expected status %d, got %d", want, status)
+			}
+			if headers.Get("Content-Length") != "42" {
+				t.Errorf("expected response headers, got %v", headers)
+			}
+			if got := int(attempts.Load()); got != tc.attempts {
+				t.Errorf("expected %d attempts, got %d", tc.attempts, got)
+			}
+		})
+	}
+}
+
+func Test_ToolHeadRetriesConnectionFailure(t *testing.T) {
+	var attempts atomic.Int32
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if attempts.Add(1) == 1 {
+			conn, _, err := w.(http.Hijacker).Hijack()
+			if err != nil {
+				t.Errorf("hijack connection: %v", err)
+				return
+			}
+			conn.Close()
+			return
+		}
+		w.Header().Set("Content-Length", "42")
+		w.WriteHeader(http.StatusOK)
+	}))
+	defer server.Close()
+
+	status, _, _, err := (Tool{}).Head(server.URL)
+	if err != nil || status != http.StatusOK {
+		t.Fatalf("expected recovery after connection failure, got status %d: %v", status, err)
+	}
+	if got := attempts.Load(); got != 2 {
+		t.Errorf("expected two attempts, got %d", got)
+	}
+}
+
 func Test_MakeSureNoDuplicates(t *testing.T) {
 	count := map[string]int{}
 	tools := MakeTools()
@@ -2191,28 +2268,46 @@ func Test_DownloadCivo(t *testing.T) {
 
 	tool := getTool(name, tools)
 
-	const toolVersion = "v0.7.11"
+	const toolVersion = "v1.6.0"
+	if tool.Version != toolVersion {
+		t.Fatalf("expected default version %s, got %s", toolVersion, tool.Version)
+	}
 
 	tests := []test{
 		{os: "mingw64_nt-10.0-18362",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-windows-amd64.zip`,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-windows-amd64.zip`,
 		},
 		{os: "linux",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-linux-amd64.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-linux-amd64.tar.gz`,
 		},
 		{os: "darwin",
 			arch:    arch64bit,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-darwin-amd64.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-darwin-amd64.tar.gz`,
 		},
 		{os: "linux",
 			arch:    archARM7,
 			version: toolVersion,
-			url:     `https://github.com/civo/cli/releases/download/v0.7.11/civo-0.7.11-linux-arm.tar.gz`,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-linux-arm.tar.gz`,
+		},
+		{os: "linux",
+			arch:    archARM64,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-linux-arm64.tar.gz`,
+		},
+		{os: "linux",
+			arch:    "arm64",
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-linux-arm64.tar.gz`,
+		},
+		{os: "darwin",
+			arch:    archDarwinARM64,
+			version: toolVersion,
+			url:     `https://github.com/civo/cli/releases/download/v1.6.0/civo-1.6.0-darwin-arm64.tar.gz`,
 		},
 	}
 
