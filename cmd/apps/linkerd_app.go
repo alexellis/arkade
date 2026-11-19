@@ -78,6 +78,31 @@ func MakeInstallLinkerd() *cobra.Command {
 			return err
 		}
 
+		// Newer linkerd versions require the CRDs to be installed
+		// before the control plane.
+		crdRes, err := linkerdCli("install", "--crds")
+		if err != nil {
+			return err
+		}
+
+		crdFile, err := os.CreateTemp("", "linkerd")
+		if err != nil {
+			return err
+		}
+
+		crdW := bufio.NewWriter(crdFile)
+		_, err = crdW.WriteString(crdRes.Stdout)
+		if err != nil {
+			return err
+		}
+		crdW.Flush()
+
+		if err := k8s.Kubectl("apply", "-R", "-f", crdFile.Name()); err != nil {
+			return err
+		}
+
+		defer os.Remove(crdFile.Name())
+
 		res, err := linkerdCli("install")
 		if err != nil {
 			return err
